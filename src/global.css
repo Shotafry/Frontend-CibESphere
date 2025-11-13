@@ -1,0 +1,179 @@
+body {
+  margin: 0;
+  line-height: normal;
+  font-family: 'Satoshi', Arial, Helvetica, sans-serif;
+}
+
+:root {
+  /* --- Colores Esenciales --- */
+  --color-cadetblue: #4fbac8;
+  --Gray-100: #f5f5f5;
+  --Gray-300: #d5d7da;
+  --Gray-400: #a1a5ab; /* (Usado en EventCard) */
+  --Gray-500: #717680;
+  --Gray-700: #414651;
+  --White: #fff;
+  --Black: #000;
+  --Event-2: #282828;
+  --Logo-2: #000306;
+
+  /* --- Sombras Esenciales --- */
+  --shadow-drop: 0px 0px 30px rgba(0, 0, 0, 0.25);
+  --shadow-header: 0px 2px 4px rgba(0, 0, 0, 0.1);
+
+  /* --- Gradientes Esenciales --- */
+  --Background-events-2: linear-gradient(
+    242.97deg,
+    rgba(45, 206, 227, 0.05),
+    rgba(36, 165, 182, 0.9)
+  );
+
+  --gradient-button-primary: linear-gradient(225deg, #00d9ff, #01c0fa);
+  --gradient-button-primary-hover: linear-gradient(225deg, #00d1e0, #00a7d1);
+
+  --gradient-header-footer: linear-gradient(
+    135deg,
+    #e0f7fa 0%,
+    #b2ebf2 40%,
+    #80deea 100%
+  );
+
+  font-family: 'Satoshi', Arial, Helvetica, sans-serif;
+}
+
+/* --- Fuente Satoshi --- */
+@font-face {
+  font-family: 'Satoshi';
+  src: url('/fonts/WEB/fonts/Satoshi-Regular.woff2') format('woff2'),
+       url('/fonts/WEB/fonts/Satoshi-Regular.woff') format('woff'),
+       url('/fonts/WEB/fonts/Satoshi-Regular.ttf') format('truetype'),
+       url('/fonts/WEB/fonts/Satoshi-Regular.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Satoshi';
+  src: url('/fonts/WEB/fonts/Satoshi-Bold.woff2') format('woff2'),
+       url('/fonts/WEB/fonts/Satoshi-Bold.woff') format('woff'),
+       url('/fonts/WEB/fonts/Satoshi-Bold.ttf') format('truetype'),
+       url('/fonts/WEB/fonts/Satoshi-Bold.otf') format('opentype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Satoshi';
+  src: url('/fonts/WEB/fonts/Satoshi-Medium.woff2') format('woff2'),
+       url('/fonts/WEB/fonts/Satoshi-Medium.woff') format('woff'),
+       url('/fonts/WEB/fonts/Satoshi-Medium.ttf') format('truetype'),
+       url('/fonts/WEB/fonts/Satoshi-Medium.otf') format('opentype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Satoshi';
+  src: url('/fonts/WEB/fonts/Satoshi-Black.woff2') format('woff2'),
+       url('/fonts/WEB/fonts/Satoshi-Black.woff') format('woff'),
+       url('/fonts/WEB/fonts/Satoshi-Black.ttf') format('truetype'),
+       url('/fonts/WEB/fonts/Satoshi-Black.otf') format('opentype');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+body,
+html,
+:root,
+* {
+  font-family: 'Satoshi', Arial, Helvetica, sans-serif !important;
+}
+
+/* Logo de evento 50% más pequeño */
+.event-logo {
+  width: 200px;
+  height: auto;
+  display: block;
+  margin: 20px;
+}
+
+/* Si el logo no tiene clase, puedes usar el selector más específico según tu estructura:
+   Por ejemplo, si está dentro de .event-card, usa: */
+.event-card img {
+  width: 350px;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
+
+
+/* Color de letra #282828 cuando el fondo es var(--Background-events-2) */
+[style*="var(--Background-events-2)"] {
+  color: #282828 !important;
+}
+[style*="background: var(--Background-events-2)"] *,
+[style*="background: var(--Background-events-2)"] {
+  color: #282828 !important;
+}
+
+/* Box de información para participar en la comunidad */
+.comunidad-box {
+  background: #80deea;
+  border: 0.5px solid var(--color-cadetblue);
+  border-radius: 18px;
+  padding: 2rem;
+  margin: 2rem auto;
+  /* Elimina o comenta el max-width si quieres que el Box lo controle */
+  /* max-width: 600px; */
+  box-shadow: 0 2px 12px rgba(36, 165, 182, 0.08);
+}
+
+.comunidad-box h1 {
+  color: var(--White);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  font-size: 3rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  text-align: center;
+  font-family: 'Satoshi', Arial, Helvetica, sans-serif;
+}
+
+/* Estilos para la Hero Section */
+.comunidad-hero {
+  background: linear-gradient(120deg, #fff 0%, #e0f7fa 100%);
+  border-radius: 24px;
+  box-shadow: 0 8px 32px rgba(36, 165, 182, 0.15);
+  padding: 3rem 1.5rem;
+  margin-bottom: 3rem;
+  position: relative;
+  overflow: hidden;
+  animation: fadeInHero 1.2s cubic-bezier(.4,0,.2,1);
+}
+
+.comunidad-hero h1,
+.comunidad-hero h2,
+.comunidad-hero h3 {
+  color: var(--color-cadetblue);
+  text-shadow: 0 2px 8px #fff;
+  font-family: 'Satoshi', Arial, Helvetica, sans-serif;
+}
+
+.comunidad-hero p,
+.comunidad-hero span,
+.comunidad-hero em {
+  color: #004F6A;
+  text-shadow: #01c0fa;
+  font-family: 'Satoshi', Arial, Helvetica, sans-serif;
+}
+
+.comunidad-hero button {
+  font-family: 'Satoshi', Arial, Helvetica, sans-serif;
+}
+
+@media (max-width: 600px) {
+  .comunidad-hero {
+    padding: 2rem 0.5rem;
+  }
+}
+
