@@ -1,5 +1,5 @@
 // src/mocks/db.ts
-import { Role, User, Event } from '../types'
+import { Role, User, Event, OrganizationSummary } from '../types'
 
 // --- ORGANIZACIONES (Simuladas) ---
 const org1: OrganizationSummary = {

@@ -98,7 +98,6 @@ const SignUp: FunctionComponent = () => {
         }}
       >
         <Grid
-          item
           size={{ xs: 12, md: 5 }}
           sx={{
             // --- CAMBIO DE COLOR ---
@@ -123,7 +122,7 @@ const SignUp: FunctionComponent = () => {
           </Typography>
         </Grid>
 
-        <Grid item size={{ xs: 12, md: 7 }} sx={{ p: 4, background: 'white' }}>
+        <Grid size={{ xs: 12, md: 7 }} sx={{ p: 4, background: 'white' }}>
           <Typography variant='h5' fontWeight='bold' mb={2}>
             {isLogin ? 'Iniciar Sesión' : 'Crear Cuenta'}
           </Typography>
@@ -216,7 +215,7 @@ const SignUp: FunctionComponent = () => {
 
             <Collapse in={!isLogin}>
               <Grid container spacing={2}>
-                <Grid item size={{ xs: 12, sm: 6 }}>
+                <Grid size={{ xs: 12, sm: 6 }}>
                   <TextField
                     fullWidth
                     required={!isLogin}
@@ -236,7 +235,7 @@ const SignUp: FunctionComponent = () => {
                     }}
                   />
                 </Grid>
-                <Grid item size={{ xs: 12, sm: 6 }}>
+                <Grid size={{ xs: 12, sm: 6 }}>
                   <TextField
                     fullWidth
                     required={!isLogin}

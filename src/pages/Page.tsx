@@ -40,7 +40,7 @@ const Page: FunctionComponent = () => {
   const [error, setError] = useState<string | null>(null)
 
   // --- MODIFICADO: El estado se inicializa con los datos del loader si existen ---
-  const [formData, setFormData] = useState<Partial<CreateEventDTO>>({
+  const [formData, setFormData] = useState<any>({
     title: loadedEvent?.title || '',
     description: loadedEvent?.description || '',
     short_desc: loadedEvent?.short_desc || '',
@@ -163,7 +163,7 @@ const Page: FunctionComponent = () => {
           <Box component='form' onSubmit={handleSubmit}>
             <Grid container spacing={3}>
               {/* --- Campos Título, Descripciones, Fechas, etc. (se mantienen igual) --- */}
-              <Grid item size={{ xs: 12 }}>
+              <Grid size={{ xs: 12 }}>
                 <TextField
                   name='title'
                   label='Título del Evento'
@@ -173,7 +173,7 @@ const Page: FunctionComponent = () => {
                   onChange={handleChange}
                 />
               </Grid>
-              <Grid item size={{ xs: 12 }}>
+              <Grid size={{ xs: 12 }}>
                 <TextField
                   name='short_desc'
                   label='Descripción Corta (máx 200 caracteres)'
@@ -184,7 +184,7 @@ const Page: FunctionComponent = () => {
                   inputProps={{ maxLength: 200 }}
                 />
               </Grid>
-              <Grid item size={{ xs: 12 }}>
+              <Grid size={{ xs: 12 }}>
                 <TextField
                   name='description'
                   label='Descripción Completa'
@@ -196,7 +196,7 @@ const Page: FunctionComponent = () => {
                   onChange={handleChange}
                 />
               </Grid>
-              <Grid item size={{ xs: 12, sm: 6 }}>
+              <Grid size={{ xs: 12, sm: 6 }}>
                 <TextField
                   name='type'
                   label='Tipo de Evento'
@@ -211,7 +211,7 @@ const Page: FunctionComponent = () => {
                   <MenuItem value='webinar'>Webinar</MenuItem>
                 </TextField>
               </Grid>
-              <Grid item size={{ xs: 12, sm: 6 }}>
+              <Grid size={{ xs: 12, sm: 6 }}>
                 <TextField
                   name='level'
                   label='Nivel'
@@ -227,7 +227,7 @@ const Page: FunctionComponent = () => {
                   ))}
                 </TextField>
               </Grid>
-              <Grid item size={{ xs: 12 }}>
+              <Grid size={{ xs: 12 }}>
                 <Autocomplete
                   multiple
                   options={CYBERSECURITY_TAGS}
@@ -239,14 +239,14 @@ const Page: FunctionComponent = () => {
                   )}
                 />
               </Grid>
-              <Grid item size={{ xs: 12, sm: 6 }}>
+              <Grid size={{ xs: 12, sm: 6 }}>
                 <DateTimePicker
                   label='Fecha y Hora de Inicio'
                   value={formData.start_date}
                   onChange={handleDateChange('start_date')}
                 />
               </Grid>
-              <Grid item size={{ xs: 12, sm: 6 }}>
+              <Grid size={{ xs: 12, sm: 6 }}>
                 <DateTimePicker
                   label='Fecha y Hora de Fin'
                   value={formData.end_date}
@@ -255,7 +255,7 @@ const Page: FunctionComponent = () => {
               </Grid>
               {/* --- Fin campos sin cambios --- */}
 
-              <Grid item size={{ xs: 12 }}>
+              <Grid size={{ xs: 12 }}>
                 <FormControlLabel
                   control={
                     <Switch
@@ -271,7 +271,7 @@ const Page: FunctionComponent = () => {
               {/* --- CAMPOS DE LOCALIZACIÓN CORREGIDOS --- */}
               <Collapse in={!formData.is_online} sx={{ width: '100%' }}>
                 <Grid container spacing={3} sx={{ p: 2, pt: 0 }}>
-                  <Grid item size={{ xs: 12 }}>
+                  <Grid size={{ xs: 12 }}>
                     <TextField
                       name='venue_name'
                       label='Nombre del Lugar (Ej: IFEMA, Palacio Euskalduna...)'
@@ -280,7 +280,7 @@ const Page: FunctionComponent = () => {
                       onChange={handleChange}
                     />
                   </Grid>
-                  <Grid item size={{ xs: 12 }}>
+                  <Grid size={{ xs: 12 }}>
                     <TextField
                       name='venue_address'
                       label='Dirección (Ej: Av. del Partenón, 5)'
@@ -291,7 +291,7 @@ const Page: FunctionComponent = () => {
                   </Grid>
 
                   {/* --- 1. COMUNIDAD AUTÓNOMA (Elige primero) --- */}
-                  <Grid item size={{ xs: 12, sm: 6 }}>
+                  <Grid size={{ xs: 12, sm: 6 }}>
                     <Autocomplete
                       options={AUTONOMOUS_COMMUNITIES}
                       value={formData.venue_community || null}
@@ -309,7 +309,7 @@ const Page: FunctionComponent = () => {
                   </Grid>
 
                   {/* --- 2. CIUDAD (Filtrada por comunidad) --- */}
-                  <Grid item size={{ xs: 12, sm: 6 }}>
+                  <Grid size={{ xs: 12, sm: 6 }}>
                     <Autocomplete
                       options={availableCities} // <-- Opciones dinámicas
                       value={formData.venue_city || null}
@@ -338,7 +338,7 @@ const Page: FunctionComponent = () => {
                   onChange={handleChange}
                 />
               </Collapse>
-              <Grid item size={{ xs: 12 }}>
+              <Grid size={{ xs: 12 }}>
                 <FormControlLabel
                   control={
                     <Switch
@@ -366,12 +366,11 @@ const Page: FunctionComponent = () => {
                 />
               </Collapse>
               {error && (
-                <Grid item size={{ xs: 12 }}>
+                <Grid size={{ xs: 12 }}>
                   <Alert severity='error'>{error}</Alert>
                 </Grid>
               )}
               <Grid
-                item
                 size={{ xs: 12 }}
                 sx={{ display: 'flex', justifyContent: 'flex-end', mt: 3 }}
               >

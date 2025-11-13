@@ -227,7 +227,6 @@ export const EventFilters: React.FC<EventFiltersProps> = ({
             </Grid>
 
             <Grid
-              item
               size={{ xs: 12 }}
               sx={{
                 display: 'flex',

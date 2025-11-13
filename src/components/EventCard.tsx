@@ -88,25 +88,19 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
 
           <Grid container spacing={2} alignItems='center'>
             <Grid
-              item // 'item' añadido por claridad
               size={{ xs: 12, sm: 4 }}
               sx={{ display: 'flex', alignItems: 'center' }}
             >
-              <CalendarTodayIcon
-                sx={{ mr: 1, color: 'var(--Logo-2)' }}
-              />
+              <CalendarTodayIcon sx={{ mr: 1, color: 'var(--Logo-2)' }} />
               <Typography variant='body2'>
                 {formatDate(event.start_date)}
               </Typography>
             </Grid>
             <Grid
-              item
               size={{ xs: 12, sm: 4 }}
               sx={{ display: 'flex', alignItems: 'center' }}
             >
-              <LocationOnIcon
-                sx={{ mr: 1, color: 'var(--Logo-2)' }}
-              />
+              <LocationOnIcon sx={{ mr: 1, color: 'var(--Logo-2)' }} />
               <Typography variant='body2'>
                 {/* --- LÍNEA CORREGIDA --- */}
                 {event.is_online
@@ -116,13 +110,10 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
               </Typography>
             </Grid>
             <Grid
-              item
               size={{ xs: 12, sm: 4 }}
               sx={{ display: 'flex', alignItems: 'center' }}
             >
-              <GroupIcon
-                sx={{ mr: 1, color: 'var(--Logo-2)' }}
-              />
+              <GroupIcon sx={{ mr: 1, color: 'var(--Logo-2)' }} />
               <Typography variant='body2'>
                 {event.current_attendees} asistentes
               </Typography>

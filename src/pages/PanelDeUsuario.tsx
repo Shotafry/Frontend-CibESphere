@@ -111,7 +111,7 @@ const PanelDeUsuario: FunctionComponent = () => {
         Panel de Usuario
       </Typography>
       <Grid container spacing={4}>
-        <Grid item size={{ xs: 12, md: 4 }}>
+        <Grid size={{ xs: 12, md: 4 }}>
           {' '}
           {/* 'item' añadido */}
           <Paper sx={{ p: 3, borderRadius: '16px' }}>
@@ -131,7 +131,7 @@ const PanelDeUsuario: FunctionComponent = () => {
             </Box>
           </Paper>
         </Grid>
-        <Grid item size={{ xs: 12, md: 8 }}>
+        <Grid size={{ xs: 12, md: 8 }}>
           {' '}
           {/* 'item' añadido */}
           <Typography variant='h5' component='h2' gutterBottom>

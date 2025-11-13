@@ -14,6 +14,11 @@ import GroupIcon from '@mui/icons-material/Group'
 // --- SIN Icono personalizado ---
 // (Usaremos el default de Leaflet)
 
+// --- AÑADIR ESTA INTERFAZ ---
+interface EventMapProps {
+  events: Event[]
+}
+
 // --- Componente interno para el contenido del Popup ---
 // (Este es el diseño que te gustó, se mantiene 100% igual)
 const EventPopupContent: React.FC<{ event: Event }> = ({ event }) => {

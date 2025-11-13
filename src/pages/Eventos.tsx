@@ -96,7 +96,7 @@ const Eventos: FunctionComponent = () => {
   return (
     <Container maxWidth='lg' sx={{ my: 5 }}>
       <Grid container spacing={4}>
-        <Grid item size={{ xs: 12, md: 8 }}>
+        <Grid size={{ xs: 12, md: 8 }}>
           <Box
             component='img'
             src={
@@ -149,7 +149,7 @@ const Eventos: FunctionComponent = () => {
           </Box>
         </Grid>
 
-        <Grid item size={{ xs: 12, md: 4 }}>
+        <Grid size={{ xs: 12, md: 4 }}>
           <Box sx={{ position: 'sticky', top: 100 }}>
             <Box sx={{ border: '1px solid #ddd', borderRadius: '16px', p: 3 }}>
               <Box

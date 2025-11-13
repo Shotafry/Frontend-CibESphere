@@ -4,7 +4,7 @@ import { Box, Typography, Container, Grid, Button } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
 // --- LOGO MODIFICADO ---
 // Usando el nombre de archivo que me diste
-import logoVertical from '/Logo-Vertical.png'
+const logoVertical = '/Logo-Vertical.png'
 
 export const Hero: FunctionComponent = () => {
   const navigate = useNavigate()
@@ -26,7 +26,6 @@ export const Hero: FunctionComponent = () => {
         <Grid container spacing={4} alignItems='center' justifyContent='center'>
           {/* Columna Izquierda: Logo */}
           <Grid
-            item
             size={{ xs: 12, md: 5 }}
             sx={{
               display: 'flex',
@@ -68,7 +67,6 @@ export const Hero: FunctionComponent = () => {
 
           {/* Columna Derecha: Texto (sin cambios) */}
           <Grid
-            item
             size={{ xs: 12, md: 7 }}
             sx={{ textAlign: { xs: 'center', md: 'left' } }}
           >
@@ -76,7 +74,7 @@ export const Hero: FunctionComponent = () => {
               variant='h2'
               component='h1'
               fontWeight='bold'
-              sx={{ color: 'var(--Gray-700)', mb: 2, marginBottom: 10,}}
+              sx={{ color: 'var(--Gray-700)', mb: 2, marginBottom: 10 }}
             >
               La web de referencia para eventos y congresos de Ciberseguridad
               más grande de España.
@@ -106,8 +104,7 @@ export const Hero: FunctionComponent = () => {
                   background: 'var(--gradient-button-primary-hover)'
                 },
                 px: 4,
-                py: 1.5,
-                
+                py: 1.5
               }}
             >
               Explorar Eventos

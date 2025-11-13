@@ -259,9 +259,9 @@ export const createEvent = (
         is_past: false,
         is_ongoing: false,
         organization: organization,
-        category: eventData.tags[0] || 'General',
-        type: eventData.tags[0] || 'General',
-        ...eventData
+        ...eventData,
+        category: eventData.category || eventData.tags[0] || 'General',
+        type: eventData.type || 'conference'
       }
       mockEvents.push(newEvent)
       resolve(newEvent)

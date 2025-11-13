@@ -69,7 +69,7 @@ const LandingPage: FunctionComponent = () => {
             {events.length > 0 ? (
               events.map((event) => <EventCard key={event.id} event={event} />)
             ) : (
-              <Grid item size={{ xs: 12 }}>
+              <Grid size={{ xs: 12 }}>
                 <Typography align='center' sx={{ mt: 5 }}>
                   No se encontraron eventos que coincidan con los filtros
                   seleccionados.

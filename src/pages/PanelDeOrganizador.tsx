@@ -127,7 +127,7 @@ const PanelDeOrganizador: FunctionComponent = () => {
 
       {/* Estadísticas */}
       <Grid container spacing={3} sx={{ mb: 4 }}>
-        <Grid item size={{ xs: 12, sm: 6, md: 3 }}>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           {' '}
           {/* 'item' añadido */}
           <StatCard
@@ -136,21 +136,21 @@ const PanelDeOrganizador: FunctionComponent = () => {
             icon={<EventIcon fontSize='large' color='primary' />}
           />
         </Grid>
-        <Grid item size={{ xs: 12, sm: 6, md: 3 }}>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <StatCard
             title='Asistentes Totales'
             value={stats.total_attendees}
             icon={<GroupIcon fontSize='large' color='secondary' />}
           />
         </Grid>
-        <Grid item size={{ xs: 12, sm: 6, md: 3 }}>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <StatCard
             title='Ciudades Cubiertas'
             value={stats.total_cities}
             icon={<LocationCityIcon fontSize='large' color='success' />}
           />
         </Grid>
-        <Grid item size={{ xs: 12, sm: 6, md: 3 }}>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <StatCard
             title='Eventos Publicados'
             value={stats.published_events}
