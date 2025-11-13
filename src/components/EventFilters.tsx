@@ -161,8 +161,9 @@ export const EventFilters: React.FC<EventFiltersProps> = ({
 
       <Collapse in={isOpen}>
         <Box component='div' sx={{ pt: 3 }}>
+          {/* --- CORRECCIÓN: Eliminados todos los props 'item' --- */}
           <Grid container spacing={3}>
-            <Grid item size={{ xs: 12, md: 6 }}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <DatePicker
                 label='Desde'
                 value={dates.startDate}
@@ -170,7 +171,7 @@ export const EventFilters: React.FC<EventFiltersProps> = ({
                 sx={{ width: '100%' }}
               />
             </Grid>
-            <Grid item size={{ xs: 12, md: 6 }}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <DatePicker
                 label='Hasta'
                 value={dates.endDate}
@@ -179,7 +180,7 @@ export const EventFilters: React.FC<EventFiltersProps> = ({
               />
             </Grid>
 
-            <Grid item size={{ xs: 12, md: 6 }}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <Autocomplete
                 multiple
                 options={AUTONOMOUS_COMMUNITIES}
@@ -190,7 +191,7 @@ export const EventFilters: React.FC<EventFiltersProps> = ({
                 )}
               />
             </Grid>
-            <Grid item size={{ xs: 12, md: 6 }}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <Autocomplete
                 multiple
                 options={availableCities}
@@ -202,7 +203,7 @@ export const EventFilters: React.FC<EventFiltersProps> = ({
               />
             </Grid>
 
-            <Grid item size={{ xs: 12 }}>
+            <Grid size={{ xs: 12 }}>
               <Autocomplete
                 multiple
                 options={CYBERSECURITY_TAGS}
@@ -214,7 +215,7 @@ export const EventFilters: React.FC<EventFiltersProps> = ({
               />
             </Grid>
 
-            <Grid item size={{ xs: 12 }}>
+            <Grid size={{ xs: 12 }}>
               <Autocomplete
                 multiple
                 options={EVENT_LEVELS}

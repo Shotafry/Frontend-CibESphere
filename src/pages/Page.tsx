@@ -72,7 +72,7 @@ const Page: FunctionComponent = () => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target
-    setFormData((prev) => ({
+    setFormData((prev: any) => ({
       ...prev,
       [name]: type === 'checkbox' ? checked : value
     }))
@@ -81,13 +81,13 @@ const Page: FunctionComponent = () => {
   const handleDateChange =
     (field: 'start_date' | 'end_date') => (date: Date | null) => {
       if (date) {
-        setFormData((prev) => ({ ...prev, [field]: date }))
+        setFormData((prev: any) => ({ ...prev, [field]: date }))
       }
     }
 
   const handleAutocompleteChange =
     (field: 'tags') => (event: any, value: string[]) => {
-      setFormData((prev) => ({ ...prev, [field]: value }))
+      setFormData((prev: any) => ({ ...prev, [field]: value }))
     }
 
   // --- MODIFICADO: Handler para Autocomplete ---
@@ -98,7 +98,7 @@ const Page: FunctionComponent = () => {
       if (field === 'venue_community') {
         // Si cambia la comunidad...
         const newCommunity = value || ''
-        setFormData((prev) => ({
+        setFormData((prev: any) => ({
           ...prev,
           venue_community: newCommunity,
           venue_city: '' // <-- Reseteamos la ciudad
@@ -107,7 +107,7 @@ const Page: FunctionComponent = () => {
         setAvailableCities(newCommunity ? LOCATION_DATA[newCommunity] : [])
       } else {
         // Si cambia la ciudad...
-        setFormData((prev) => ({ ...prev, [field]: value || '' }))
+        setFormData((prev: any) => ({ ...prev, [field]: value || '' }))
       }
     }
 
