@@ -27,28 +27,23 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
   }, [navigate, event])
 
   return (
-    // Grid v2: No se necesita el prop `component` ni `item`.
-    // El tamaño se define con el prop `size`.
     <Grid size={{ xs: 12 }} sx={{ maxWidth: '100%' }}>
       <Box
         onClick={onCardClick}
         sx={{
           display: 'flex',
           flexDirection: { xs: 'column', md: 'row' },
-          alignItems: 'stretch',
+          alignItems: 'center', // Centrado verticalmente
           width: '100%',
           maxWidth: 1362,
           cursor: 'pointer',
-          borderRadius: '25px',
-          background: 'var(--Background-events-2)',
-          boxShadow: 'var(--shadow-drop)',
-          color: 'var(--event-2)',
-          fontFamily: 'var(--Heading-Font-Family)',
-          minHeight: '225px',
-          overflow: 'hidden' // Para que el borde redondeado afecte a la imagen
+          position: 'relative',
+          overflow: 'visible', // Permitir que la imagen sobresalga si es necesario
+          mt: { xs: 0, md: 2 }, // Margen superior en desktop para la imagen grande
+          mb: { xs: 4, md: 2 }
         }}
       >
-        {/* Imagen del Evento */}
+        {/* Imagen del Evento (Flotante/Superpuesta) */}
         <Box
           component='img'
           className='event-logo'
@@ -58,23 +53,36 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
           }
           alt={`Imagen de ${event.title}`}
           sx={{
-            width: { xs: '100%', md: 300 },
-            height: { xs: 200, md: 'auto' },
+            width: { xs: '100%', md: 260 },
+            height: { xs: 200, md: 260 },
             objectFit: 'cover',
-            borderTopLeftRadius: { xs: '25px', md: '25px' },
-            borderBottomLeftRadius: { xs: 0, md: '25px' },
-            borderTopRightRadius: { xs: '25px', md: 0 }
+            borderRadius: { xs: '25px 25px 0 0', md: '25px' }, // Redondeado completo en desktop
+            boxShadow: { md: '4px 4px 20px rgba(0,0,0,0.25)' }, // Sombra fuerte en desktop
+            zIndex: 2, // Por encima de la tarjeta
+            marginRight: { md: -6 }, // Margen negativo para superponerse
+            marginBottom: { xs: -3, md: 0 }, // Margen negativo en mobile para unir
+            position: 'relative'
           }}
         />
 
         {/* Contenido de la Card */}
         <Box
           sx={{
+            flex: 1,
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'space-between',
-            p: 3,
-            flex: 1
+            p: { xs: 3, md: 4 },
+            pt: { xs: 5, md: 4 }, // Padding extra arriba en mobile por el overlap
+            pl: { md: 10 }, // Padding extra a la izquierda en desktop por el overlap
+            borderRadius: '25px',
+            background: 'var(--Background-events-2)',
+            boxShadow: 'var(--shadow-drop)',
+            color: 'var(--event-2)',
+            fontFamily: 'var(--Heading-Font-Family)',
+            minHeight: { md: '220px' },
+            zIndex: 1,
+            width: '100%'
           }}
         >
           <Box>
@@ -102,11 +110,9 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
             >
               <LocationOnIcon sx={{ mr: 1, color: 'var(--Logo-2)' }} />
               <Typography variant='body2'>
-                {/* --- LÍNEA CORREGIDA --- */}
                 {event.is_online
                   ? 'Online'
                   : `${event.venue_city}, ${event.venue_community}`}
-                {/* --- FIN CORRECCIÓN --- */}
               </Typography>
             </Grid>
             <Grid

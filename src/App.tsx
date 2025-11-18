@@ -210,7 +210,11 @@ const routes: RouteObject[] = [
 export const router = createBrowserRouter(routes)
 
 // Componente App (sin cambios)
-const muiTheme = createTheme()
+const muiTheme = createTheme({
+  typography: {
+    fontFamily: "'Satoshi', Arial, Helvetica, sans-serif"
+  }
+})
 
 function App() {
   return (

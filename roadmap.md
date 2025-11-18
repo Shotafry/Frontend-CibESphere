@@ -36,12 +36,12 @@ El objetivo de esta fase fue migrar el proyecto a tecnologías modernas y asegur
 
 El objetivo es corregir las incoherencias visuales restantes y definir una identidad de marca unificada.
 
-- **❌ Tarea 2.1 (Error Header):** Rediseñar el `Header.tsx` para que coincida estéticamente con el `Footer.tsx`. Debe usar el mismo gradiente cian y forma curva.
+- **✅ Tarea 2.1 (Error Header):** Rediseñar el `Header.tsx` para que coincida estéticamente con el `Footer.tsx`. Debe usar el mismo gradiente cian y forma curva.
   - **En `LandingPage`:** Mantener la lógica de ser transparente sobre el `Hero` y transformarse en el nuevo diseño curvo/cian al hacer scroll.
   - **En otras páginas:** El nuevo diseño curvo/cian debe ser visible permanentemente, reemplazando el actual `Header` blanco y plano.
-- **❌ Tarea 2.2 (Error Fuente):** Investigar e implementar la fuente **Satoshi** globalmente.
+- **✅ Tarea 2.2 (Error Fuente):** Investigar e implementar la fuente **Satoshi** globalmente.
   - **Acción:** Se debe añadir la fuente (vía importación en `index.html` o `global.css`) y establecerla como la `font-family` principal en `global.css` para toda la aplicación.
-- **❌ Tarea 2.3 (Error Tarjeta de Evento):** Rediseñar el componente `EventCard.tsx`. La imagen del evento (logo) necesita estar posicionada fuera del contenedor principal de la tarjeta para un mayor impacto visual.
+- **✅ Tarea 2.3 (Error Tarjeta de Evento):** Rediseñar el componente `EventCard.tsx`. La imagen del evento (logo) necesita estar posicionada fuera del contenedor principal de la tarjeta para un mayor impacto visual.
 - **⏳Tarea 2.4 Fondo Dinámico**
   - Retomar la implementación del fondo dinámico probando con React particles y si no funciona usaremos otras librerías.
 

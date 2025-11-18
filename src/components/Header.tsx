@@ -15,14 +15,15 @@ export const Header: FunctionComponent = () => {
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50)
+      // El punto de corte es aprox donde termina el Hero (350-400px)
+      setIsScrolled(window.scrollY > 380)
     }
 
     if (isLandingPage) {
       window.addEventListener('scroll', handleScroll)
       handleScroll()
     } else {
-      // Si no es la landing, el header es blanco por defecto
+      // En otras páginas, siempre está "scrolled" (visible con color)
       setIsScrolled(true)
     }
 
@@ -31,14 +32,23 @@ export const Header: FunctionComponent = () => {
     }
   }, [isLandingPage, location.pathname])
 
-  // --- LÓGICA REVERTIDA ---
-  // Vuelve a ser 'transparent' o 'var(--White)'
-  const headerBackground =
-    !isLandingPage || isScrolled ? 'var(--White)' : 'transparent'
-  const headerShadow =
-    !isLandingPage || isScrolled ? 'var(--shadow-header)' : 'none'
+  // Lógica de estilos dinámica
+  const isTransparent = isLandingPage && !isScrolled
 
-  // Color oscuro para que se lea sobre el fondo claro del Hero
+  const headerBackground = isTransparent
+    ? 'transparent'
+    : 'var(--gradient-header-footer)'
+
+  const headerShadow = isTransparent ? 'none' : 'var(--shadow-header)'
+
+  // Clip-path solo cuando tiene color de fondo (para hacer la curva)
+  // La curva debe ser sutil hacia abajo o recta?
+  // El usuario pidió: "al bajar... comience a verse ya el header... coger el color de fondo igual que el hero o footer"
+  // El footer tiene curva hacia ARRIBA. El Hero tiene curva hacia ABAJO.
+  // Haremos una curva suave en el borde inferior si no es transparente.
+  const headerClipPath = isTransparent ? 'none' : 'ellipse(150% 100% at 50% 0%)' // Curva convexa suave en la parte inferior
+
+  // Color de texto
   const textColor = 'var(--Gray-700)'
   const buttonColor = 'var(--gradient-button-primary)'
   const buttonBorderColor = 'var(--color-cadetblue)'
@@ -64,14 +74,17 @@ export const Header: FunctionComponent = () => {
       component='header'
       sx={{
         width: '100%',
-        backgroundColor: headerBackground, // Fondo dinámico (blanco o trans)
-        boxShadow: headerShadow, // Sombra dinámica
+        backgroundColor: headerBackground,
+        boxShadow: headerShadow,
         position: 'fixed',
         top: 0,
         zIndex: 1100,
         display: 'flex',
         justifyContent: 'center',
-        transition: 'background-color 0.3s ease, box-shadow 0.3s ease' // Transición simple
+        transition: 'all 0.4s ease',
+        // Si queremos que la curva se note, necesitamos un poco más de altura o padding cuando está activo
+        pb: isTransparent ? 0 : 2,
+        clipPath: headerClipPath
       }}
     >
       <Box
@@ -81,7 +94,7 @@ export const Header: FunctionComponent = () => {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          padding: '16px 32px', // Padding simple
+          padding: '16px 32px',
           boxSizing: 'border-box'
         }}
       >
@@ -93,7 +106,7 @@ export const Header: FunctionComponent = () => {
             cursor: 'pointer'
           }}
           alt='CibESphere Logo'
-          src='/cyberLogo-1@2x.png' // <-- Tu logo
+          src='/cyberLogo-1@2x.png'
           onClick={onLogoClick}
         />
 
