@@ -86,7 +86,8 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
             pt: { xs: 5, md: 4 },
             pl: { md: 10 },
             borderRadius: '25px',
-            background: 'var(--Background-events-2)',
+            backgroundColor: 'var(--White)', // Fondo base opaco
+            backgroundImage: 'var(--Background-events-2)', // Gradiente encima
             boxShadow: 'var(--shadow-drop)',
             color: 'var(--event-2)',
             fontFamily: 'var(--Heading-Font-Family)',

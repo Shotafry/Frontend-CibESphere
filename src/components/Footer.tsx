@@ -18,7 +18,9 @@ export const Footer: FunctionComponent = () => {
         clipPath: 'ellipse(150% 85% at 50% 100%)',
         // Damos padding para que el contenido no se corte
         pt: { xs: 8, md: 10 },
-        pb: 6
+        pb: 6,
+        position: 'relative', // Asegurar contexto
+        zIndex: 1 // Por encima del fondo
         // --- FIN NUEVA FORMA ---
       }}
     >
