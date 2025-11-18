@@ -33,17 +33,26 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
         sx={{
           display: 'flex',
           flexDirection: { xs: 'column', md: 'row' },
-          alignItems: 'center', // Centrado verticalmente
+          alignItems: 'center',
           width: '100%',
           maxWidth: 1362,
           cursor: 'pointer',
           position: 'relative',
-          overflow: 'visible', // Permitir que la imagen sobresalga si es necesario
-          mt: { xs: 0, md: 2 }, // Margen superior en desktop para la imagen grande
-          mb: { xs: 4, md: 2 }
+          overflow: 'visible',
+          mt: { xs: 0, md: 2 },
+          mb: { xs: 4, md: 2 },
+          // --- NUEVO: Efecto Hover en toda la tarjeta ---
+          transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+          '&:hover': {
+            transform: 'translateY(-5px)',
+            // Aplicamos el efecto de sombra al contenedor del contenido, ya que es el que tiene fondo
+            '& .event-content': {
+              boxShadow: '0 10px 40px rgba(0,0,0,0.2)'
+            }
+          }
         }}
       >
-        {/* Imagen del Evento (Flotante/Superpuesta) */}
+        {/* Imagen del Evento (Flotante/Superpuesta) - SIN SOMBRA NI CAJA */}
         <Box
           component='img'
           className='event-logo'
@@ -55,26 +64,27 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
           sx={{
             width: { xs: '100%', md: 260 },
             height: { xs: 200, md: 260 },
-            objectFit: 'cover',
-            borderRadius: { xs: '25px 25px 0 0', md: '25px' }, // Redondeado completo en desktop
-            boxShadow: { md: '4px 4px 20px rgba(0,0,0,0.25)' }, // Sombra fuerte en desktop
-            zIndex: 2, // Por encima de la tarjeta
-            marginRight: { md: -6 }, // Margen negativo para superponerse
-            marginBottom: { xs: -3, md: 0 }, // Margen negativo en mobile para unir
-            position: 'relative'
+            objectFit: 'contain', // Cambiado a contain para que se vea el logo entero
+            zIndex: 2,
+            marginRight: { md: -6 },
+            marginBottom: { xs: -3, md: 0 },
+            position: 'relative',
+            // Eliminadas sombras y bordes redondeados específicos
+            filter: 'drop-shadow(0px 4px 10px rgba(0,0,0,0.1))' // Sombra sutil SOLO a la silueta del logo si es PNG
           }}
         />
 
         {/* Contenido de la Card */}
         <Box
+          className='event-content' // Clase para el selector del hover
           sx={{
             flex: 1,
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'space-between',
             p: { xs: 3, md: 4 },
-            pt: { xs: 5, md: 4 }, // Padding extra arriba en mobile por el overlap
-            pl: { md: 10 }, // Padding extra a la izquierda en desktop por el overlap
+            pt: { xs: 5, md: 4 },
+            pl: { md: 10 },
             borderRadius: '25px',
             background: 'var(--Background-events-2)',
             boxShadow: 'var(--shadow-drop)',
@@ -82,7 +92,8 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
             fontFamily: 'var(--Heading-Font-Family)',
             minHeight: { md: '220px' },
             zIndex: 1,
-            width: '100%'
+            width: '100%',
+            transition: 'box-shadow 0.3s ease'
           }}
         >
           <Box>
