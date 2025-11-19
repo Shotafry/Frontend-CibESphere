@@ -94,7 +94,7 @@ const Eventos: FunctionComponent = () => {
   }
 
   return (
-    <Container maxWidth='xl' sx={{ mt: 9, mb: 8, px: { xs: 2, md: 8 } }}>
+    <Container maxWidth='xl' sx={{ mt: 8, mb: 8, px: { xs: 2, md: 8 } }}>
       <Grid container spacing={8} justifyContent='center'>
         {/* Columna Principal: Contenido (Ancho ajustado) */}
         <Grid size={{ xs: 12, md: 8 }}>
