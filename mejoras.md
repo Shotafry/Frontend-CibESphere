@@ -43,38 +43,20 @@ Aprovecha la fortaleza de las herramientas que ya usas:
 
 Las siguientes son áreas de oportunidad para aplicar mejores prácticas:
 
-
-
 1.  ### Inserción de Estilos Globales (CSS-in-JS vs. Ficheros CSS)
-
-
 
     La inclusión de etiquetas `<style>` dentro del JSX para definir los `@keyframes` (`fadeInHero` y `iconPulse`) es una práctica que se debe evitar en la mayoría de los casos.
 
-
-
     * **Mejor Práctica**: Mover estas definiciones de animación a un archivo CSS/SCSS dedicado o utilizar la funcionalidad de animación que ofrece **`styled-components`**, **Emotion** (que usa MUI por debajo), o el sistema de **`theme` de MUI**, para mantener la separación de intereses.
-
-
 
 2.  ### Estilos Inline Complejos en el `Modal`
 
-
-
     El `Modal` utiliza muchos estilos *inline* anidados a través del prop `sx`, y en algunos casos, estilos CSS *inline* con el atributo `style` (e.g., el `span` dentro del `Typography` del Modal). Esto hace que el componente sea denso y difícil de leer.
-
-
 
     * **Mejor Práctica**: **Extraer** el contenido del `Modal` en un **subcomponente dedicado** (e.g., `<OrganizadorModal />`) para limpiar la estructura del `ComunidadBox`.
 
-
-
 3.  ### Falta de Extracción de Componentes Reutilizables
 
-
-
     Los botones de "Soy Organizador" y "Soy Participante" tienen estilos idénticos y se repiten, violando el principio DRY.
-
-
 
     * **Mejor Práctica**: Crear un componente **`CustomButton`** (o similar) que encapsule esos estilos compartidos, aplicando el principio **DRY (Don't Repeat Yourself)**.
