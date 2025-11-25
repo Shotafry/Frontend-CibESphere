@@ -124,11 +124,12 @@ export const ParticlesBackground: React.FC = () => {
           }
         }
 
-        // Dibujar líneas al mouse
+        // Dibujar líneas al mouse (ELIMINADO)
+        /*
         if (distMouse < mouseDistance) {
           ctx.beginPath()
           ctx.strokeStyle = particleColor
-          ctx.lineWidth = 1.0 // Línea más gruesa
+          ctx.lineWidth = 1.0
           const opacity = 1 - distMouse / mouseDistance
           ctx.globalAlpha = opacity
           ctx.moveTo(p.x, p.y)
@@ -136,6 +137,7 @@ export const ParticlesBackground: React.FC = () => {
           ctx.stroke()
           ctx.globalAlpha = 1.0
         }
+        */
       })
 
       animationFrameId = requestAnimationFrame(draw)
