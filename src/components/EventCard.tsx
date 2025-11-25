@@ -27,28 +27,32 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
   }, [navigate, event])
 
   return (
-    // Grid v2: No se necesita el prop `component` ni `item`.
-    // El tamaño se define con el prop `size`.
     <Grid size={{ xs: 12 }} sx={{ maxWidth: '100%' }}>
       <Box
         onClick={onCardClick}
         sx={{
           display: 'flex',
           flexDirection: { xs: 'column', md: 'row' },
-          alignItems: 'stretch',
+          alignItems: 'center',
           width: '100%',
           maxWidth: 1362,
           cursor: 'pointer',
-          borderRadius: '25px',
-          background: 'var(--Background-events-2)',
-          boxShadow: 'var(--shadow-drop)',
-          color: 'var(--event-2)',
-          fontFamily: 'var(--Heading-Font-Family)',
-          minHeight: '225px',
-          overflow: 'hidden' // Para que el borde redondeado afecte a la imagen
+          position: 'relative',
+          overflow: 'visible',
+          mt: { xs: 0, md: 2 },
+          mb: { xs: 4, md: 2 },
+          // --- NUEVO: Efecto Hover en toda la tarjeta ---
+          transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+          '&:hover': {
+            transform: 'translateY(-5px)',
+            // Aplicamos el efecto de sombra al contenedor del contenido, ya que es el que tiene fondo
+            '& .event-content': {
+              boxShadow: '0 10px 40px rgba(0,0,0,0.2)'
+            }
+          }
         }}
       >
-        {/* Imagen del Evento */}
+        {/* Imagen del Evento (Flotante/Superpuesta) - SIN SOMBRA NI CAJA */}
         <Box
           component='img'
           className='event-logo'
@@ -58,23 +62,39 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
           }
           alt={`Imagen de ${event.title}`}
           sx={{
-            width: { xs: '100%', md: 300 },
-            height: { xs: 200, md: 'auto' },
-            objectFit: 'cover',
-            borderTopLeftRadius: { xs: '25px', md: '25px' },
-            borderBottomLeftRadius: { xs: 0, md: '25px' },
-            borderTopRightRadius: { xs: '25px', md: 0 }
+            width: { xs: '100%', md: 260 },
+            height: { xs: 200, md: 260 },
+            objectFit: 'contain', // Cambiado a contain para que se vea el logo entero
+            zIndex: 2,
+            marginRight: { md: -6 },
+            marginBottom: { xs: -3, md: 0 },
+            position: 'relative',
+            // Eliminadas sombras y bordes redondeados específicos
+            filter: 'drop-shadow(0px 4px 10px rgba(0,0,0,0.1))' // Sombra sutil SOLO a la silueta del logo si es PNG
           }}
         />
 
         {/* Contenido de la Card */}
         <Box
+          className='event-content' // Clase para el selector del hover
           sx={{
+            flex: 1,
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'space-between',
-            p: 3,
-            flex: 1
+            p: { xs: 3, md: 4 },
+            pt: { xs: 5, md: 4 },
+            pl: { md: 10 },
+            borderRadius: '25px',
+            backgroundColor: 'var(--White)', // Fondo base opaco
+            backgroundImage: 'var(--Background-events-2)', // Gradiente encima
+            boxShadow: 'var(--shadow-drop)',
+            color: 'var(--event-2)',
+            fontFamily: 'var(--Heading-Font-Family)',
+            minHeight: { md: '220px' },
+            zIndex: 1,
+            width: '100%',
+            transition: 'box-shadow 0.3s ease'
           }}
         >
           <Box>
@@ -102,11 +122,9 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
             >
               <LocationOnIcon sx={{ mr: 1, color: 'var(--Logo-2)' }} />
               <Typography variant='body2'>
-                {/* --- LÍNEA CORREGIDA --- */}
                 {event.is_online
                   ? 'Online'
                   : `${event.venue_city}, ${event.venue_community}`}
-                {/* --- FIN CORRECCIÓN --- */}
               </Typography>
             </Grid>
             <Grid

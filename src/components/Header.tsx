@@ -31,7 +31,7 @@ export const Header: FunctionComponent = () => {
     }
   }, [isLandingPage, location.pathname])
 
-  // --- LÓGICA REVERTIDA ---
+  // --- LÓGICA ORIGINAL RESTAURADA ---
   // Vuelve a ser 'transparent' o 'var(--White)'
   const headerBackground =
     !isLandingPage || isScrolled ? 'var(--White)' : 'transparent'

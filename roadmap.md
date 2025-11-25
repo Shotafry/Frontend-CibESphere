@@ -36,14 +36,15 @@ El objetivo de esta fase fue migrar el proyecto a tecnologías modernas y asegur
 
 El objetivo es corregir las incoherencias visuales restantes y definir una identidad de marca unificada.
 
-- **❌ Tarea 2.1 (Error Header):** Rediseñar el `Header.tsx` para que coincida estéticamente con el `Footer.tsx`. Debe usar el mismo gradiente cian y forma curva.
-  - **En `LandingPage`:** Mantener la lógica de ser transparente sobre el `Hero` y transformarse en el nuevo diseño curvo/cian al hacer scroll.
-  - **En otras páginas:** El nuevo diseño curvo/cian debe ser visible permanentemente, reemplazando el actual `Header` blanco y plano.
-- **❌ Tarea 2.2 (Error Fuente):** Investigar e implementar la fuente **Satoshi** globalmente.
+- **❌ Tarea 2.1 (Header):** Se decidió **MANTENER** el diseño original (Blanco/Transparente) tras probar el diseño curvo/cian.
+  - **Estado:** Revertido a petición del usuario.
+  - **En `LandingPage`:** Transparente -> Blanco al hacer scroll.
+  - **En otras páginas:** Siempre Blanco.
+- **✅ Tarea 2.2 (Error Fuente):** Investigar e implementar la fuente **Satoshi** globalmente.
   - **Acción:** Se debe añadir la fuente (vía importación en `index.html` o `global.css`) y establecerla como la `font-family` principal en `global.css` para toda la aplicación.
-- **❌ Tarea 2.3 (Error Tarjeta de Evento):** Rediseñar el componente `EventCard.tsx`. La imagen del evento (logo) necesita estar posicionada fuera del contenedor principal de la tarjeta para un mayor impacto visual.
-- **⏳Tarea 2.4 Fondo Dinámico**
-  - Retomar la implementación del fondo dinámico probando con React particles y si no funciona usaremos otras librerías.
+- **✅ Tarea 2.3 (Error Tarjeta de Evento):** Rediseñar el componente `EventCard.tsx`. La imagen del evento (logo) necesita estar posicionada fuera del contenedor principal de la tarjeta para un mayor impacto visual.
+- **✅ Tarea 2.4 (Fondo Dinámico):** Implementar un fondo dinámico con partículas conectadas.
+  - **Estado:** Completado. Se implementó un componente personalizado `ParticlesBackground` con Canvas (puntos cian sobre fondo blanco) que funciona correctamente sin librerías externas pesadas. Se ajustaron los `z-index` y fondos de los componentes para asegurar la legibilidad.
 
 ---
 
@@ -55,8 +56,10 @@ El objetivo es enriquecer la información que se muestra, dando más valor tanto
 - **⏳ Tarea 3.2 (Límite de Asistentes):** Implementar el control de aforo.
   - **Acción:** Añadir un campo numérico en `Page.tsx` para "Límite de Asistentes". Un valor de 0 o vacío significará "infinito".
   - **Acción:** En la página `Eventos.tsx`, el botón "Inscribirse" debe comprobar si `current_attendees >= max_attendees` (y si `max_attendees` no es 0). Si el cupo está lleno, el botón debe desactivarse con un mensaje claro (ej. "Aforo completo").
-- ** Tarea 3.3 (Expandir Info. Evento):** Añadir más información a la página de detalle del evento (`src/pages/Eventos.tsx`).
-  - **Acción:** Añadir nuevos campos al formulario `Page.tsx` (ej. un editor de texto para "Agenda", campos para "Ponentes", "Requisitos previos") y mostrarlos de forma atractiva en `Eventos.tsx`.
+- **🚧 Tarea 3.3 (Rediseño y Expansión Info. Evento):** Mejorar el diseño y la información de la página de detalle del evento (`src/pages/Eventos.tsx`).
+  - **Estado:** En Progreso (50%).
+  - **✅ Diseño:** Se rediseñó completamente la página `Eventos.tsx` con contenedores estilizados y estética mejorada.
+  - **⏳ Funcionalidad:** Falta añadir nuevos campos al formulario `Page.tsx` (ej. Agenda, Ponentes, Requisitos) y mostrarlos en la nueva interfaz.
 - **✅ Tarea 3.4 (Mapa de Eventos):** Verificar que los eventos nuevos aparezcan en el mapa.
   - **Estado:** **VERIFICADO.** La arquitectura de `loader` asegura que `EventMap.tsx` siempre reciba los datos actualizados del `apiService`. No se necesita trabajo adicional aquí.
 - **⏳ Tarea 3.5 (Interesante Añadir):** Crear **Perfiles Públicos de Organización**.

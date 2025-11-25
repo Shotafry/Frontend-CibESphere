@@ -3,6 +3,7 @@ import React, { ReactNode } from 'react'
 import { Box } from '@mui/material'
 import { Header } from './Header'
 import { Footer } from './Footer'
+import { ParticlesBackground } from './ParticlesBackground' // Importar
 import { Outlet, useNavigation, useLocation } from 'react-router-dom'
 
 interface LayoutProps {
@@ -19,7 +20,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
       sx={{
         width: '100%',
         position: 'relative',
-        backgroundColor: 'var(--White)',
+        // backgroundColor: 'var(--White)', // Eliminado para ver las partículas
         overflowX: 'hidden',
         display: 'flex',
         flexDirection: 'column',
@@ -29,6 +30,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
         letterSpacing: 'normal'
       }}
     >
+      <ParticlesBackground /> {/* Fondo dinámico añadido aquí */}
       <Header />
       <Box
         component='main'
@@ -38,6 +40,8 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
+          position: 'relative', // Asegurar contexto de apilamiento
+          zIndex: 1, // Por encima del fondo
           opacity: navigation.state === 'loading' ? 0.7 : 1,
 
           // --- ARREGLO DEL WARNING DE VITE ---
