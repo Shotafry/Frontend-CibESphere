@@ -126,6 +126,11 @@ export const getEvents = (filters: EventFilterParams): Promise<Event[]> => {
           (e) => e.level && filters.levels.includes(e.level)
         )
       }
+      if (filters.languages.length > 0) {
+        filteredEvents = filteredEvents.filter(
+          (e) => e.language && filters.languages.includes(e.language)
+        )
+      }
       resolve(filteredEvents)
     }, SIMULATED_DELAY / 2)
   })

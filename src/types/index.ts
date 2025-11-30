@@ -84,6 +84,13 @@ export interface Event {
   image_url: string
   banner_url: string
   tags: string[]
+  language:
+    | 'Español'
+    | 'Inglés'
+    | 'Catalán'
+    | 'Euskera'
+    | 'Gallego'
+    | 'Valenciano'
   organization: OrganizationSummary
   status: 'published' | 'draft' | 'canceled'
   is_upcoming: boolean
@@ -114,6 +121,7 @@ export interface EventFilterParams {
   tags: string[]
   locations: string[]
   levels: string[]
+  languages: string[]
 }
 
 // --- TIPOS DE DASHBOARD ---

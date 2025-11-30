@@ -82,10 +82,10 @@ export const LOCATION_DATA: Record<string, string[]> = {
     'Leganés',
     'Alcobendas'
   ],
-  'Murcia, Región de': ['Murcia', 'Cartagena', 'Lorca'],
-  'Comunidad Foral de Navarra': ['Pamplona', 'Tudela'],
+  'Región de Murcia': ['Murcia', 'Cartagena', 'Lorca'],
+  Navarra: ['Pamplona', 'Tudela'],
   'País Vasco': ['Bilbao', 'Vitoria-Gasteiz', 'San Sebastián', 'Barakaldo'],
-  'Rioja, La': ['Logroño'],
+  'La Rioja': ['Logroño'],
   Ceuta: ['Ceuta'],
   Melilla: ['Melilla']
 }
@@ -108,51 +108,44 @@ export const LOCATION_OPTIONS = [
 // --- Listas que se mantienen igual ---
 
 export const CYBERSECURITY_TAGS = [
-  // Tipos de Evento
-  'Conferencia',
-  'Taller',
-  'Bootcamp',
-  'Meetup',
-  'Competición',
-  'CTF (Capture The Flag)',
-  'Webinar',
-  'Curso',
-
-  // Áreas Técnicas
-  'Pentesting',
-  'Hacking Ético',
-  'Red Team',
-  'Blue Team',
-  'Purple Team',
   'Análisis de Malware',
-  'DFIR (Forense y Respuesta a Incidentes)',
-  'Reversing',
+  'Blockchain',
+  'Blue Team',
+  'Bootcamp',
+  'Ciberinteligencia',
+  'Competición',
+  'Conferencia',
+  'Contenedores (Docker, Kubernetes)',
   'Criptografía',
-  'Seguridad en la Nube (Cloud Security)',
-  'Seguridad Ofensiva',
-  'Seguridad Defensiva',
-
-  // Plataformas y Tecnologías
+  'CTF (Capture The Flag)',
+  'Cumplimiento (Compliance)',
+  'Curso',
+  'DevSecOps',
+  'DFIR (Forense y Respuesta a Incidentes)',
+  'Gobernanza (GRC)',
+  'Hacking',
+  'Hacking Ético',
+  'Inteligencia Artificial (IA)',
+  'Meetup',
+  'Networking',
+  'OSINT',
+  'Pentesting',
+  'Privacidad de Datos',
+  'Purple Team',
+  'Red Team',
+  'Reversing',
   'Seguridad AWS',
   'Seguridad Azure',
-  'Seguridad GCP',
   'Seguridad de Redes',
+  'Seguridad Defensiva',
+  'Seguridad en la Nube (Cloud Security)',
+  'Seguridad GCP',
   'Seguridad IoT',
   'Seguridad Móvil (Android/iOS)',
+  'Seguridad Ofensiva',
   'Seguridad OT / SCADA',
-  'Contenedores (Docker, Kubernetes)',
-  'Blockchain',
-  'Inteligencia Artificial (IA)',
-
-  // Roles y Conceptos
-  'Gobernanza (GRC)',
-  'Cumplimiento (Compliance)',
-  'Hacking',
-  'Ciberinteligencia',
-  'OSINT',
-  'DevSecOps',
-  'Networking',
-  'Privacidad de Datos'
+  'Taller',
+  'Webinar'
 ]
 
 export const EVENT_LEVELS = [

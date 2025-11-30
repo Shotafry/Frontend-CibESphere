@@ -109,7 +109,8 @@ const routes: RouteObject[] = [
               : null,
             tags: searchParams.getAll('tags') || [],
             locations: searchParams.getAll('locations') || [],
-            levels: searchParams.getAll('levels') || []
+            levels: searchParams.getAll('levels') || [],
+            languages: searchParams.getAll('languages') || []
           }
 
           const events = await apiService.getEvents(filters)

@@ -35,14 +35,17 @@ export const Footer: FunctionComponent = () => {
         }}
       >
         {/* 1. Logo (Nuevo) */}
-        <img
-          style={{
-            height: '40px', // Ajustado a la altura del logo de solo letras
-            objectFit: 'contain'
-          }}
-          alt='CibESphere Logo'
-          src='/Logo-Solo-Letras.png' // <-- Logo nuevo
-        />
+        {/* 1. Logo (Nuevo) - Ahora con Link */}
+        <RouterLink to='/'>
+          <img
+            style={{
+              height: '40px', // Ajustado a la altura del logo de solo letras
+              objectFit: 'contain'
+            }}
+            alt='CibESphere Logo'
+            src='/Logo-Solo-Letras.png'
+          />
+        </RouterLink>
 
         {/* 2. Enlaces (sin cambios) */}
         <Box
