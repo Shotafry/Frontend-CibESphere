@@ -12,7 +12,7 @@ import {
   Alert,
   Paper
 } from '@mui/material'
-import { useLoaderData, useNavigation } from 'react-router-dom'
+import { useLoaderData, useNavigation, Link } from 'react-router-dom'
 import { Event } from '../types'
 import { SingleEventMap } from '../components/SingleEventMap'
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday'
@@ -135,6 +135,32 @@ const Eventos: FunctionComponent = () => {
             >
               {event.title}
             </Typography>
+
+            {/* ENLACE A ORGANIZACIÓN */}
+            {event.organization && (
+              <Box
+                sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}
+              >
+                <Typography variant='subtitle1' color='text.secondary'>
+                  Organizado por:
+                </Typography>
+                <Link
+                  to={`/organizacion/${event.organization.slug || '#'}`}
+                  style={{ textDecoration: 'none' }}
+                >
+                  <Typography
+                    variant='subtitle1'
+                    fontWeight='bold'
+                    sx={{
+                      color: 'var(--color-cadetblue)',
+                      '&:hover': { textDecoration: 'underline' }
+                    }}
+                  >
+                    {event.organization.name}
+                  </Typography>
+                </Link>
+              </Box>
+            )}
 
             <Box sx={{ my: 3 }}>
               <Typography

@@ -8,7 +8,18 @@ const org1: OrganizationSummary = {
   name: 'CyberSecurity Spain',
   logo_url: '/CloudEvents-logo-2@2x.png',
   is_verified: true,
-  city: 'Madrid'
+  city: 'Madrid',
+  description:
+    'Somos la comunidad líder en ciberseguridad en España. Organizamos eventos, conferencias y talleres para profesionales y entusiastas del sector. Nuestro objetivo es fomentar el conocimiento y la colaboración en el ámbito de la seguridad informática.',
+  banner_url:
+    'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=1600&q=80',
+  website: 'https://cybersecurityspain.local',
+  email: 'contacto@cybersecurityspain.local',
+  social_links: {
+    twitter: 'https://twitter.com/cyberspain',
+    linkedin: 'https://linkedin.com/company/cyberspain',
+    github: 'https://github.com/cyberspain'
+  }
 }
 const org2: OrganizationSummary = {
   id: 'org-002',
@@ -16,7 +27,17 @@ const org2: OrganizationSummary = {
   name: 'Hackingétic',
   logo_url: '/cyberLogo-gigapixel-art-scale-2-00x-godpix-1@2x.png',
   is_verified: true,
-  city: 'Barcelona'
+  city: 'Barcelona',
+  description:
+    'Grupo dedicado al Hacking Ético y la Ciberinteligencia. Realizamos CTFs, talleres de Red Team y Blue Team, y charlas sobre las últimas vulnerabilidades.',
+  banner_url:
+    'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=1600&q=80',
+  website: 'https://hackingetic.local',
+  email: 'info@hackingetic.local',
+  social_links: {
+    twitter: 'https://twitter.com/hackingetic',
+    github: 'https://github.com/hackingetic'
+  }
 }
 const org3: OrganizationSummary = {
   id: 'org-003',
@@ -24,7 +45,16 @@ const org3: OrganizationSummary = {
   name: 'SecurIT All',
   logo_url: '/asturcon-low-1@2x.png',
   is_verified: true,
-  city: 'Sevilla'
+  city: 'Sevilla',
+  description:
+    'Consultora de seguridad que organiza eventos formativos gratuitos para la comunidad. Especializados en DFIR y respuesta a incidentes.',
+  banner_url:
+    'https://images.unsplash.com/photo-1563206767-5b1d972d9323?auto=format&fit=crop&w=1600&q=80',
+  website: 'https://securitall.local',
+  email: 'events@securitall.local',
+  social_links: {
+    linkedin: 'https://linkedin.com/company/securitall'
+  }
 }
 
 // --- EVENTOS ---

@@ -54,6 +54,15 @@ export interface OrganizationSummary {
   logo_url: string
   is_verified: boolean
   city: string
+  description?: string
+  banner_url?: string
+  website?: string
+  email?: string
+  social_links?: {
+    twitter?: string
+    linkedin?: string
+    github?: string
+  }
 }
 
 // --- TIPOS de EVENTO ---
