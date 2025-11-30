@@ -1,5 +1,5 @@
 // src/pages/Page.tsx
-import { FunctionComponent, useState, useEffect } from 'react' // <-- AÑADIDO useEffect
+import { FunctionComponent, useState, useEffect } from 'react'
 import {
   Box,
   Typography,
@@ -26,9 +26,26 @@ import { CreateEventDTO, Event } from '../types'
 import {
   CYBERSECURITY_TAGS,
   EVENT_LEVELS,
-  LOCATION_DATA, // <-- NUEVO: Importamos el objeto de datos
-  AUTONOMOUS_COMMUNITIES // <-- Importamos la lista de comunidades
+  LOCATION_DATA,
+  AUTONOMOUS_COMMUNITIES
 } from '../constants/filters'
+
+// Estilo común para inputs modernos
+const commonInputSx = {
+  '& .MuiFilledInput-root': {
+    backgroundColor: '#F3F6F9',
+    borderRadius: '12px',
+    border: '1px solid transparent',
+    transition: 'all 0.2s',
+    '&:hover': { backgroundColor: '#EBEEF2' },
+    '&.Mui-focused': {
+      backgroundColor: '#fff',
+      borderColor: 'var(--color-cadetblue)',
+      boxShadow: '0 0 0 4px rgba(79, 186, 200, 0.1)'
+    },
+    '&:before, &:after': { display: 'none' }
+  }
+}
 
 const Page: FunctionComponent = () => {
   const navigate = useNavigate()
@@ -39,7 +56,6 @@ const Page: FunctionComponent = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  // --- MODIFICADO: El estado se inicializa con los datos del loader si existen ---
   const [formData, setFormData] = useState<any>({
     title: loadedEvent?.title || '',
     description: loadedEvent?.description || '',
@@ -47,6 +63,7 @@ const Page: FunctionComponent = () => {
     type: loadedEvent?.type || 'conference',
     category: loadedEvent?.category || '',
     level: loadedEvent?.level || 'intermediate',
+    language: loadedEvent?.language || 'Español', // Nuevo campo
     start_date: loadedEvent ? new Date(loadedEvent.start_date) : new Date(),
     end_date: loadedEvent ? new Date(loadedEvent.end_date) : new Date(),
     is_online: loadedEvent?.is_online || false,
@@ -60,10 +77,8 @@ const Page: FunctionComponent = () => {
     price: loadedEvent?.price || 0
   })
 
-  // --- NUEVO: Estado para las ciudades disponibles según la comunidad ---
   const [availableCities, setAvailableCities] = useState<string[]>([])
 
-  // --- NUEVO: Efecto para cargar las ciudades si estamos en modo edición ---
   useEffect(() => {
     if (isEditMode && formData.venue_community) {
       setAvailableCities(LOCATION_DATA[formData.venue_community] || [])
@@ -90,23 +105,22 @@ const Page: FunctionComponent = () => {
       setFormData((prev: any) => ({ ...prev, [field]: value }))
     }
 
-  // --- MODIFICADO: Handler para Autocomplete ---
+  const handleLanguageChange = (event: any, value: string | null) => {
+    setFormData((prev: any) => ({ ...prev, language: value || 'Español' }))
+  }
+
   const handleSingleAutocompleteChange =
     (field: 'venue_city' | 'venue_community') =>
     (event: any, value: string | null) => {
-      // Lógica de dependencia
       if (field === 'venue_community') {
-        // Si cambia la comunidad...
         const newCommunity = value || ''
         setFormData((prev: any) => ({
           ...prev,
           venue_community: newCommunity,
-          venue_city: '' // <-- Reseteamos la ciudad
+          venue_city: ''
         }))
-        // Actualizamos la lista de ciudades disponibles
         setAvailableCities(newCommunity ? LOCATION_DATA[newCommunity] : [])
       } else {
-        // Si cambia la ciudad...
         setFormData((prev: any) => ({ ...prev, [field]: value || '' }))
       }
     }
@@ -151,26 +165,36 @@ const Page: FunctionComponent = () => {
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
       <Container maxWidth='md' sx={{ my: 5 }}>
-        <Paper sx={{ p: 4, borderRadius: '16px' }}>
+        <Paper
+          elevation={3}
+          sx={{
+            p: 4,
+            borderRadius: '25px',
+            background: 'var(--White)',
+            boxShadow: 'var(--shadow-drop)'
+          }}
+        >
           <Typography
             variant='h4'
             component='h1'
             fontWeight='bold'
             gutterBottom
+            sx={{ color: 'var(--color-cadetblue)', mb: 3 }}
           >
             {isEditMode ? 'Editar Evento' : 'Crear Nuevo Evento'}
           </Typography>
           <Box component='form' onSubmit={handleSubmit}>
             <Grid container spacing={3}>
-              {/* --- Campos Título, Descripciones, Fechas, etc. (se mantienen igual) --- */}
               <Grid size={{ xs: 12 }}>
                 <TextField
                   name='title'
                   label='Título del Evento'
                   fullWidth
                   required
+                  variant='filled'
                   value={formData.title}
                   onChange={handleChange}
+                  sx={commonInputSx}
                 />
               </Grid>
               <Grid size={{ xs: 12 }}>
@@ -179,9 +203,11 @@ const Page: FunctionComponent = () => {
                   label='Descripción Corta (máx 200 caracteres)'
                   fullWidth
                   required
+                  variant='filled'
                   value={formData.short_desc}
                   onChange={handleChange}
                   inputProps={{ maxLength: 200 }}
+                  sx={commonInputSx}
                 />
               </Grid>
               <Grid size={{ xs: 12 }}>
@@ -192,18 +218,24 @@ const Page: FunctionComponent = () => {
                   required
                   multiline
                   rows={4}
+                  variant='filled'
                   value={formData.description}
                   onChange={handleChange}
+                  sx={commonInputSx}
                 />
               </Grid>
-              <Grid size={{ xs: 12, sm: 6 }}>
+
+              {/* Fila: Tipo, Nivel, Idioma */}
+              <Grid size={{ xs: 12, md: 4 }}>
                 <TextField
                   name='type'
                   label='Tipo de Evento'
                   select
                   fullWidth
+                  variant='filled'
                   value={formData.type}
                   onChange={handleChange}
+                  sx={commonInputSx}
                 >
                   <MenuItem value='conference'>Conferencia</MenuItem>
                   <MenuItem value='workshop'>Taller</MenuItem>
@@ -211,14 +243,16 @@ const Page: FunctionComponent = () => {
                   <MenuItem value='webinar'>Webinar</MenuItem>
                 </TextField>
               </Grid>
-              <Grid size={{ xs: 12, sm: 6 }}>
+              <Grid size={{ xs: 12, md: 4 }}>
                 <TextField
                   name='level'
                   label='Nivel'
                   select
                   fullWidth
+                  variant='filled'
                   value={formData.level}
                   onChange={handleChange}
+                  sx={commonInputSx}
                 >
                   {EVENT_LEVELS.map((level) => (
                     <MenuItem key={level} value={level.toLowerCase()}>
@@ -227,6 +261,30 @@ const Page: FunctionComponent = () => {
                   ))}
                 </TextField>
               </Grid>
+              <Grid size={{ xs: 12, md: 4 }}>
+                <Autocomplete
+                  options={[
+                    'Español',
+                    'Inglés',
+                    'Catalán',
+                    'Euskera',
+                    'Gallego',
+                    'Valenciano'
+                  ]}
+                  value={formData.language}
+                  onChange={handleLanguageChange}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label='Idioma'
+                      variant='filled'
+                      required
+                      sx={commonInputSx}
+                    />
+                  )}
+                />
+              </Grid>
+
               <Grid size={{ xs: 12 }}>
                 <Autocomplete
                   multiple
@@ -235,25 +293,44 @@ const Page: FunctionComponent = () => {
                   onChange={handleAutocompleteChange('tags')}
                   freeSolo
                   renderInput={(params) => (
-                    <TextField {...params} label='Tags' />
+                    <TextField
+                      {...params}
+                      label='Tags'
+                      variant='filled'
+                      sx={commonInputSx}
+                    />
                   )}
                 />
               </Grid>
-              <Grid size={{ xs: 12, sm: 6 }}>
+
+              <Grid size={{ xs: 12, md: 6 }}>
                 <DateTimePicker
                   label='Fecha y Hora de Inicio'
                   value={formData.start_date}
                   onChange={handleDateChange('start_date')}
+                  slotProps={{
+                    textField: {
+                      variant: 'filled',
+                      fullWidth: true,
+                      sx: commonInputSx
+                    }
+                  }}
                 />
               </Grid>
-              <Grid size={{ xs: 12, sm: 6 }}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <DateTimePicker
                   label='Fecha y Hora de Fin'
                   value={formData.end_date}
                   onChange={handleDateChange('end_date')}
+                  slotProps={{
+                    textField: {
+                      variant: 'filled',
+                      fullWidth: true,
+                      sx: commonInputSx
+                    }
+                  }}
                 />
               </Grid>
-              {/* --- Fin campos sin cambios --- */}
 
               <Grid size={{ xs: 12 }}>
                 <FormControlLabel
@@ -268,30 +345,32 @@ const Page: FunctionComponent = () => {
                 />
               </Grid>
 
-              {/* --- CAMPOS DE LOCALIZACIÓN CORREGIDOS --- */}
               <Collapse in={!formData.is_online} sx={{ width: '100%' }}>
                 <Grid container spacing={3} sx={{ p: 2, pt: 0 }}>
                   <Grid size={{ xs: 12 }}>
                     <TextField
                       name='venue_name'
-                      label='Nombre del Lugar (Ej: IFEMA, Palacio Euskalduna...)'
+                      label='Nombre del Lugar'
                       fullWidth
+                      variant='filled'
                       value={formData.venue_name}
                       onChange={handleChange}
+                      sx={commonInputSx}
                     />
                   </Grid>
                   <Grid size={{ xs: 12 }}>
                     <TextField
                       name='venue_address'
-                      label='Dirección (Ej: Av. del Partenón, 5)'
+                      label='Dirección'
                       fullWidth
+                      variant='filled'
                       value={formData.venue_address}
                       onChange={handleChange}
+                      sx={commonInputSx}
                     />
                   </Grid>
 
-                  {/* --- 1. COMUNIDAD AUTÓNOMA (Elige primero) --- */}
-                  <Grid size={{ xs: 12, sm: 6 }}>
+                  <Grid size={{ xs: 12, md: 6 }}>
                     <Autocomplete
                       options={AUTONOMOUS_COMMUNITIES}
                       value={formData.venue_community || null}
@@ -302,40 +381,44 @@ const Page: FunctionComponent = () => {
                         <TextField
                           {...params}
                           label='Comunidad Autónoma'
-                          required={!formData.is_online} // Requerido si no es online
+                          variant='filled'
+                          required={!formData.is_online}
+                          sx={commonInputSx}
                         />
                       )}
                     />
                   </Grid>
 
-                  {/* --- 2. CIUDAD (Filtrada por comunidad) --- */}
-                  <Grid size={{ xs: 12, sm: 6 }}>
+                  <Grid size={{ xs: 12, md: 6 }}>
                     <Autocomplete
-                      options={availableCities} // <-- Opciones dinámicas
+                      options={availableCities}
                       value={formData.venue_city || null}
                       onChange={handleSingleAutocompleteChange('venue_city')}
-                      disabled={!formData.venue_community} // <-- Deshabilitado hasta elegir comunidad
-                      freeSolo // Permitir ciudades no listadas
+                      disabled={!formData.venue_community}
+                      freeSolo
                       renderInput={(params) => (
                         <TextField
                           {...params}
                           label='Ciudad'
-                          required={!formData.is_online} // Requerido si no es online
+                          variant='filled'
+                          required={!formData.is_online}
+                          sx={commonInputSx}
                         />
                       )}
                     />
                   </Grid>
                 </Grid>
               </Collapse>
-              {/* --- FIN DE CAMPOS DE LOCALIZACIÓN --- */}
 
               <Collapse in={formData.is_online} sx={{ width: '100%', px: 2 }}>
                 <TextField
                   name='online_url'
                   label='URL del Evento Online'
                   fullWidth
+                  variant='filled'
                   value={formData.online_url}
                   onChange={handleChange}
+                  sx={commonInputSx}
                 />
               </Collapse>
               <Grid size={{ xs: 12 }}>
@@ -356,6 +439,7 @@ const Page: FunctionComponent = () => {
                   label='Precio'
                   type='number'
                   fullWidth
+                  variant='filled'
                   value={formData.price}
                   onChange={handleChange}
                   InputProps={{
@@ -363,6 +447,7 @@ const Page: FunctionComponent = () => {
                       <InputAdornment position='start'>€</InputAdornment>
                     )
                   }}
+                  sx={commonInputSx}
                 />
               </Collapse>
               {error && (
@@ -382,8 +467,10 @@ const Page: FunctionComponent = () => {
                   sx={{
                     borderRadius: '25px',
                     background: 'var(--gradient-button-primary)',
+                    boxShadow: '0 4px 14px rgba(0, 217, 255, 0.3)',
                     '&:hover': {
-                      background: 'var(--gradient-button-primary-hover)'
+                      background: 'var(--gradient-button-primary-hover)',
+                      boxShadow: '0 6px 20px rgba(0, 217, 255, 0.5)'
                     }
                   }}
                 >
