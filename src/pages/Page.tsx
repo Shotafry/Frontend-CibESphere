@@ -15,14 +15,19 @@ import {
   FormControlLabel,
   Autocomplete,
   Alert,
-  Collapse
+  Collapse,
+  IconButton,
+  Divider,
+  Card,
+  CardContent
 } from '@mui/material'
+import { Delete as DeleteIcon, Add as AddIcon } from '@mui/icons-material'
 import { LocalizationProvider, DateTimePicker } from '@mui/x-date-pickers'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 import { useNavigate, useLoaderData } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import * as apiService from '../services/apiService'
-import { CreateEventDTO, Event } from '../types'
+import { CreateEventDTO, Event, AgendaItem, Speaker } from '../types'
 import {
   CYBERSECURITY_TAGS,
   EVENT_LEVELS,
@@ -63,7 +68,7 @@ const Page: FunctionComponent = () => {
     type: loadedEvent?.type || 'conference',
     category: loadedEvent?.category || '',
     level: loadedEvent?.level || 'intermediate',
-    language: loadedEvent?.language || 'Español', // Nuevo campo
+    language: loadedEvent?.language || 'Español',
     start_date: loadedEvent ? new Date(loadedEvent.start_date) : new Date(),
     end_date: loadedEvent ? new Date(loadedEvent.end_date) : new Date(),
     is_online: loadedEvent?.is_online || false,
@@ -74,7 +79,12 @@ const Page: FunctionComponent = () => {
     venue_city: loadedEvent?.venue_city || '',
     venue_community: loadedEvent?.venue_community || '',
     online_url: loadedEvent?.online_url || '',
-    price: loadedEvent?.price || 0
+    price: loadedEvent?.price || 0,
+    image_url: loadedEvent?.image_url || '',
+    max_attendees: loadedEvent?.max_attendees || 0,
+    agenda: loadedEvent?.agenda || [],
+    speakers: loadedEvent?.speakers || [],
+    requirements: loadedEvent?.requirements || ''
   })
 
   const [availableCities, setAvailableCities] = useState<string[]>([])
@@ -125,6 +135,68 @@ const Page: FunctionComponent = () => {
       }
     }
 
+  // --- AGENDA MANAGEMENT ---
+  const handleAddAgendaItem = () => {
+    setFormData((prev: any) => ({
+      ...prev,
+      agenda: [
+        ...prev.agenda,
+        { id: Date.now().toString(), time: '', title: '', description: '' }
+      ]
+    }))
+  }
+
+  const handleRemoveAgendaItem = (id: string) => {
+    setFormData((prev: any) => ({
+      ...prev,
+      agenda: prev.agenda.filter((item: AgendaItem) => item.id !== id)
+    }))
+  }
+
+  const handleAgendaItemChange = (
+    id: string,
+    field: keyof AgendaItem,
+    value: string
+  ) => {
+    setFormData((prev: any) => ({
+      ...prev,
+      agenda: prev.agenda.map((item: AgendaItem) =>
+        item.id === id ? { ...item, [field]: value } : item
+      )
+    }))
+  }
+
+  // --- SPEAKER MANAGEMENT ---
+  const handleAddSpeaker = () => {
+    setFormData((prev: any) => ({
+      ...prev,
+      speakers: [
+        ...prev.speakers,
+        { id: Date.now().toString(), name: '', role: '', topic: '', time: '' }
+      ]
+    }))
+  }
+
+  const handleRemoveSpeaker = (id: string) => {
+    setFormData((prev: any) => ({
+      ...prev,
+      speakers: prev.speakers.filter((item: Speaker) => item.id !== id)
+    }))
+  }
+
+  const handleSpeakerChange = (
+    id: string,
+    field: keyof Speaker,
+    value: string
+  ) => {
+    setFormData((prev: any) => ({
+      ...prev,
+      speakers: prev.speakers.map((item: Speaker) =>
+        item.id === id ? { ...item, [field]: value } : item
+      )
+    }))
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!user || !user.organization) {
@@ -142,7 +214,8 @@ const Page: FunctionComponent = () => {
     try {
       const eventData: CreateEventDTO = {
         ...formData,
-        organization_id: user.organization.id
+        organization_id: user.organization.id,
+        max_attendees: Number(formData.max_attendees)
       } as CreateEventDTO
 
       if (isEditMode) {
@@ -197,6 +270,20 @@ const Page: FunctionComponent = () => {
                   sx={commonInputSx}
                 />
               </Grid>
+
+              <Grid size={{ xs: 12 }}>
+                <TextField
+                  name='image_url'
+                  label='URL del Logo o Imagen Principal'
+                  fullWidth
+                  variant='filled'
+                  value={formData.image_url}
+                  onChange={handleChange}
+                  placeholder='https://ejemplo.com/imagen.jpg'
+                  sx={commonInputSx}
+                />
+              </Grid>
+
               <Grid size={{ xs: 12 }}>
                 <TextField
                   name='short_desc'
@@ -225,7 +312,246 @@ const Page: FunctionComponent = () => {
                 />
               </Grid>
 
-              {/* Fila: Tipo, Nivel, Idioma */}
+              {/* --- SECCIÓN ITINERARIO --- */}
+              <Grid size={{ xs: 12 }}>
+                <Card
+                  variant='outlined'
+                  sx={{
+                    borderRadius: '16px',
+                    borderColor: 'var(--Gray-300)',
+                    mt: 2,
+                    backgroundColor: '#FAFAFA'
+                  }}
+                >
+                  <CardContent>
+                    <Typography
+                      variant='h6'
+                      fontWeight='bold'
+                      sx={{ color: 'var(--color-cadetblue)', mb: 2 }}
+                    >
+                      Itinerario / Agenda
+                    </Typography>
+                    <Typography
+                      variant='body2'
+                      color='text.secondary'
+                      sx={{ mb: 3 }}
+                    >
+                      Añade los detalles de la agenda y ponentes. Si dejas esto
+                      vacío, no se mostrará en la página del evento.
+                    </Typography>
+
+                    {/* AGENDA */}
+                    <Typography
+                      variant='subtitle1'
+                      fontWeight='bold'
+                      sx={{ mb: 1 }}
+                    >
+                      Agenda
+                    </Typography>
+                    {formData.agenda.map((item: AgendaItem, index: number) => (
+                      <Box
+                        key={item.id}
+                        sx={{
+                          display: 'flex',
+                          gap: 2,
+                          mb: 2,
+                          alignItems: 'flex-start'
+                        }}
+                      >
+                        <TextField
+                          label='Hora'
+                          value={item.time}
+                          onChange={(e) =>
+                            handleAgendaItemChange(
+                              item.id,
+                              'time',
+                              e.target.value
+                            )
+                          }
+                          variant='filled'
+                          size='small'
+                          sx={{ ...commonInputSx, width: '120px' }}
+                          placeholder='09:00'
+                        />
+                        <TextField
+                          label='Título / Actividad'
+                          value={item.title}
+                          onChange={(e) =>
+                            handleAgendaItemChange(
+                              item.id,
+                              'title',
+                              e.target.value
+                            )
+                          }
+                          variant='filled'
+                          size='small'
+                          fullWidth
+                          sx={commonInputSx}
+                        />
+                        <TextField
+                          label='Descripción (Opcional)'
+                          value={item.description}
+                          onChange={(e) =>
+                            handleAgendaItemChange(
+                              item.id,
+                              'description',
+                              e.target.value
+                            )
+                          }
+                          variant='filled'
+                          size='small'
+                          fullWidth
+                          sx={commonInputSx}
+                        />
+                        <IconButton
+                          onClick={() => handleRemoveAgendaItem(item.id)}
+                          color='error'
+                        >
+                          <DeleteIcon />
+                        </IconButton>
+                      </Box>
+                    ))}
+                    <Button
+                      startIcon={<AddIcon />}
+                      onClick={handleAddAgendaItem}
+                      sx={{ mb: 4 }}
+                    >
+                      Añadir Actividad
+                    </Button>
+
+                    <Divider sx={{ my: 2 }} />
+
+                    {/* PONENTES */}
+                    <Typography
+                      variant='subtitle1'
+                      fontWeight='bold'
+                      sx={{ mb: 1 }}
+                    >
+                      Ponentes
+                    </Typography>
+                    {formData.speakers.map(
+                      (speaker: Speaker, index: number) => (
+                        <Box
+                          key={speaker.id}
+                          sx={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            gap: 2,
+                            mb: 3,
+                            p: 2,
+                            border: '1px dashed #ccc',
+                            borderRadius: '8px'
+                          }}
+                        >
+                          <Box
+                            sx={{
+                              display: 'flex',
+                              justifyContent: 'space-between'
+                            }}
+                          >
+                            <Typography
+                              variant='caption'
+                              color='text.secondary'
+                            >
+                              Ponente #{index + 1}
+                            </Typography>
+                            <IconButton
+                              onClick={() => handleRemoveSpeaker(speaker.id)}
+                              color='error'
+                              size='small'
+                            >
+                              <DeleteIcon />
+                            </IconButton>
+                          </Box>
+                          <Box sx={{ display: 'flex', gap: 2 }}>
+                            <TextField
+                              label='Nombre'
+                              value={speaker.name}
+                              onChange={(e) =>
+                                handleSpeakerChange(
+                                  speaker.id,
+                                  'name',
+                                  e.target.value
+                                )
+                              }
+                              variant='filled'
+                              size='small'
+                              fullWidth
+                              sx={commonInputSx}
+                            />
+                            <TextField
+                              label='Cargo / Rol'
+                              value={speaker.role}
+                              onChange={(e) =>
+                                handleSpeakerChange(
+                                  speaker.id,
+                                  'role',
+                                  e.target.value
+                                )
+                              }
+                              variant='filled'
+                              size='small'
+                              fullWidth
+                              sx={commonInputSx}
+                            />
+                          </Box>
+                          <Box sx={{ display: 'flex', gap: 2 }}>
+                            <TextField
+                              label='Tema / Título de la Charla'
+                              value={speaker.topic}
+                              onChange={(e) =>
+                                handleSpeakerChange(
+                                  speaker.id,
+                                  'topic',
+                                  e.target.value
+                                )
+                              }
+                              variant='filled'
+                              size='small'
+                              fullWidth
+                              sx={commonInputSx}
+                            />
+                            <TextField
+                              label='Hora Ligada'
+                              value={speaker.time}
+                              onChange={(e) =>
+                                handleSpeakerChange(
+                                  speaker.id,
+                                  'time',
+                                  e.target.value
+                                )
+                              }
+                              variant='filled'
+                              size='small'
+                              sx={{ ...commonInputSx, width: '150px' }}
+                              placeholder='09:00'
+                            />
+                          </Box>
+                        </Box>
+                      )
+                    )}
+                    <Button startIcon={<AddIcon />} onClick={handleAddSpeaker}>
+                      Añadir Ponente
+                    </Button>
+                  </CardContent>
+                </Card>
+              </Grid>
+
+              <Grid size={{ xs: 12 }}>
+                <TextField
+                  name='requirements'
+                  label='Requisitos para Asistentes'
+                  fullWidth
+                  multiline
+                  rows={2}
+                  variant='filled'
+                  value={formData.requirements}
+                  onChange={handleChange}
+                  placeholder='Traer portátil, instalar X software...'
+                  sx={commonInputSx}
+                />
+              </Grid>
+
               <Grid size={{ xs: 12, md: 4 }}>
                 <TextField
                   name='type'
@@ -329,6 +655,20 @@ const Page: FunctionComponent = () => {
                       sx: commonInputSx
                     }
                   }}
+                />
+              </Grid>
+
+              <Grid size={{ xs: 12 }}>
+                <TextField
+                  name='max_attendees'
+                  label='Límite de Asistentes'
+                  type='number'
+                  fullWidth
+                  variant='filled'
+                  value={formData.max_attendees}
+                  onChange={handleChange}
+                  helperText='Dejar en 0 para aforo ilimitado'
+                  sx={commonInputSx}
                 />
               </Grid>
 

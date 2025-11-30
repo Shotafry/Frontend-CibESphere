@@ -96,6 +96,25 @@ export interface Event {
   is_upcoming: boolean
   is_past: boolean
   is_ongoing: boolean
+  agenda: AgendaItem[]
+  speakers: Speaker[]
+  requirements?: string
+}
+
+export interface AgendaItem {
+  id: string
+  time: string
+  title: string
+  description: string
+}
+
+export interface Speaker {
+  id: string
+  name: string
+  role: string
+  topic: string
+  time: string // Linked to agenda time
+  image_url?: string
 }
 
 export interface CreateEventDTO

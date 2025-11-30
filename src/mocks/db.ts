@@ -61,7 +61,9 @@ export let mockEvents: Event[] = [
     status: 'published',
     is_upcoming: true,
     is_past: false,
-    is_ongoing: false
+    is_ongoing: false,
+    agenda: [],
+    speakers: []
   },
   {
     id: 'evt-002',
@@ -92,7 +94,9 @@ export let mockEvents: Event[] = [
     status: 'published',
     is_upcoming: true,
     is_past: false,
-    is_ongoing: false
+    is_ongoing: false,
+    agenda: [],
+    speakers: []
   },
   {
     id: 'evt-003',
@@ -124,7 +128,9 @@ export let mockEvents: Event[] = [
     status: 'published',
     is_upcoming: true,
     is_past: false,
-    is_ongoing: false
+    is_ongoing: false,
+    agenda: [],
+    speakers: []
   },
   {
     id: 'evt-004',
@@ -158,7 +164,9 @@ export let mockEvents: Event[] = [
     status: 'published',
     is_upcoming: true,
     is_past: false,
-    is_ongoing: false
+    is_ongoing: false,
+    agenda: [],
+    speakers: []
   }
 ]
 
