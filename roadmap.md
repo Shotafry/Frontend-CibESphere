@@ -54,22 +54,26 @@ El objetivo fue corregir las incoherencias visuales, definir una identidad de ma
 
 ---
 
-## ⏳ Fase 3: Expansión de Eventos y Organizadores (Pendiente)
+## ⏳ Fase 3: Expansión de Eventos y Organizadores (En Progreso)
 
 El objetivo es enriquecer la información que se muestra, dando más valor tanto a los asistentes como a los organizadores.
 
-- ** Tarea 3.1 (Subida de Logo):** Añadir un campo para subir una imagen/logo en el formulario de Crear/Editar Evento (`src/pages/Page.tsx`). Esto dará soporte a la Tarea 2.3. (En modo simulado, esto será un campo para una URL de imagen).
-- **⏳ Tarea 3.2 (Límite de Asistentes):** Implementar el control de aforo.
-  - **Acción:** Añadir un campo numérico en `Page.tsx` para "Límite de Asistentes". Un valor de 0 o vacío significará "infinito" (especificarlo al organizador para que lo sepa).
-  - **Acción:** En la página `Eventos.tsx`, el botón "Inscribirse" debe comprobar si `current_attendees >= max_attendees` (y si `max_attendees` no es 0). Si el cupo está lleno, el botón debe desactivarse con un mensaje claro (ej. "Aforo completo").
-- **🚧 Tarea 3.3 (Rediseño y Expansión Info. Evento):** Mejorar el diseño y la información de la página de detalle del evento (`src/pages/Eventos.tsx`).
-  - **Estado:** En Progreso (50%).
+- **✅ Tarea 3.1 (Subida de Logo):** Añadir un campo para subir una imagen/logo en el formulario de Crear/Editar Evento (`src/pages/Page.tsx`).
+  - **Estado:** Completado. Se añadió el campo `image_url` al formulario.
+- **✅ Tarea 3.2 (Límite de Asistentes):** Implementar el control de aforo.
+  - **Acción:** Añadido campo `max_attendees` en `Page.tsx`.
+  - **Acción:** En `Eventos.tsx`, el botón "Inscribirse" se desactiva si el aforo está completo.
+- **✅ Tarea 3.3 (Rediseño y Expansión Info. Evento):** Mejorar el diseño y la información de la página de detalle del evento (`src/pages/Eventos.tsx`).
+  - **Estado:** Completado.
   - **✅ Diseño:** Se rediseñó completamente la página `Eventos.tsx` con contenedores estilizados y estética mejorada.
-  - **⏳ Funcionalidad:** Falta añadir nuevos campos al formulario `Page.tsx` (ej. Agenda, Ponentes, Requisitos) y mostrarlos en la nueva interfaz.
+  - **✅ Funcionalidad:** Se añadieron campos para **Agenda** (Itinerario con horas), **Ponentes** (con roles y temas) y **Requisitos**. Se muestran en una nueva sección "Itinerario" en el detalle del evento.
 - **✅ Tarea 3.4 (Mapa de Eventos):** Verificar que los eventos nuevos aparezcan en el mapa.
-  - **Estado:** **VERIFICADO.** La arquitectura de `loader` asegura que `EventMap.tsx` siempre reciba los datos actualizados del `apiService`. No se necesita trabajo adicional aquí.
-- **⏳ Tarea 3.5 (Interesante Añadir):** Crear **Perfiles Públicos de Organización**.
+  - **Estado:** **VERIFICADO.**
+    **⏳ Tarea 3.5 (Interesante Añadir):** Crear **Perfiles Públicos de Organización**.
   - **Acción:** Dar más peso a las organizaciones. Crear una nueva ruta y página (ej. `/organizacion/:slug`). Esta página mostrará el logo, nombre, web y una descripción de la organización, además de un listado de todos los eventos (pasados y futuros) que haya publicado. Esto da un gran valor a los organizadores y fomenta el descubrimiento por parte de los usuarios.
+- **🚧 Tarea 3.6 (Mejora Paneles - Antes 5.3):** Mejorar el `PanelDeOrganizador.tsx`.
+  - **Estado:** En Progreso (A medias).
+  - **Acción:** Se ha mejorado la interfaz de gestión, pero falta pulir las estadísticas detalladas (ratio de asistentes, etc.).
 
 ---
 
@@ -100,8 +104,6 @@ El objetivo es construir las secciones de contenido estático y las herramientas
 - **⏳ Tarea 5.2 (Panel de Administrador):** Crear un **Panel de Administrador** global (para `Role.Admin`).
   - **Acción:** Crear una nueva ruta protegida (ej. `/admin`) que use un `loader` diferente y muestre un panel distinto al de Organizador.
   - **Funcionalidad:** Este panel debe permitir al Admin ver todos los usuarios, gestionar todos los eventos (no solo los suyos) y, lo más importante, **Verificar Organizaciones** (cambiar `is_verified` de `false` a `true`).
-- **⏳ Tarea 5.3 (Mejora Paneles):** Mejorar el `PanelDeOrganizador.tsx`.
-  - **Acción:** Mostrar estadísticas más detalladas (ej. ratio de `current_attendees` vs `max_attendees` por evento) y mejorar la interfaz de gestión de sus propios eventos.
 
 ---
 

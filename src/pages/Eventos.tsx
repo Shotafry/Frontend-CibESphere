@@ -467,7 +467,13 @@ const Eventos: FunctionComponent = () => {
                         {event.venue_name}
                       </Typography>
                       <Typography variant='body2' color='textSecondary'>
-                        {event.venue_address}, {event.venue_city}
+                        {[
+                          event.venue_address,
+                          event.venue_city,
+                          event.venue_community
+                        ]
+                          .filter(Boolean)
+                          .join(', ')}
                       </Typography>
                     </>
                   )}
