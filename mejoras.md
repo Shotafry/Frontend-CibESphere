@@ -80,3 +80,45 @@ Las siguientes son áreas de oportunidad para aplicar mejores prácticas:
 
 - Fragmentos de código útiles
 - Enlaces a recursos de diseño o documentación
+
+---
+
+## Checklist atomizado para implementar la auditoría y refactorización
+
+1. **Preparación y organización**
+   - [ ] Lee y comprende el diagnóstico completo en `auditoria.md`.
+   - [ ] Prioriza tareas según impacto y facilidad (quick wins primero).
+
+2. **Refactorización de componentes y páginas**
+   - [ ] Extrae componentes reutilizables (botones, modales, tarjetas, inputs).
+   - [ ] Divide archivos grandes en subcomponentes (ej: EventFilters, Eventos, Page, PanelDeOrganizador).
+   - [ ] Renombra archivos/componentes para que coincidan (ej: AboutThis → ComunidadBox).
+   - [ ] Refuerza el tipado en todos los props y estados.
+   - [ ] Separa lógica de negocio de la presentación.
+
+3. **Estilos y sistema de diseño**
+   - [ ] Elimina estilos inline y `<style>` en JSX.
+   - [ ] Centraliza animaciones y tokens en el theme de MUI o CSS global.
+   - [ ] Documenta y aplica tokens de color, tipografía y espaciados.
+   - [ ] Refactoriza `global.css` para contener solo resets, fuentes y variables globales.
+
+4. **Responsive y accesibilidad**
+   - [ ] Usa breakpoints y props `sx` responsivos de MUI.
+   - [ ] Revisa todos los layouts en mobile, tablet y desktop.
+   - [ ] Añade atributos ARIA, roles y textos alternativos donde falten.
+   - [ ] Testea accesibilidad con Lighthouse y herramientas de a11y.
+
+5. **Servicios, mocks y tipos**
+   - [ ] Divide servicios (`apiService.ts`) y mocks en archivos por dominio si crecen.
+   - [ ] Separa tipos en archivos por dominio si es necesario.
+   - [ ] Añade tests unitarios para lógica crítica (auth, eventos, contextos).
+
+6. **QA y documentación**
+   - [ ] Haz pruebas manuales y en dispositivos/emuladores.
+   - [ ] Documenta el sistema de diseño y ejemplos de uso de componentes base.
+   - [ ] Actualiza el README si hay cambios relevantes en la arquitectura.
+
+7. **Iteración y mejora continua**
+   - [ ] Refactoriza por módulos (Landing, Paneles, Eventos, etc.).
+   - [ ] Repite pruebas de accesibilidad y responsive tras cada módulo.
+   - [ ] Revisa y ajusta el checklist tras cada iteración.

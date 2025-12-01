@@ -64,7 +64,7 @@ const ComunidadBox: React.FC = () => {
           fontWeight: 900,
           textAlign: 'center',
           textShadow: '0 2px 8px #282828',
-          mb: 2,
+          mb: 4,
           letterSpacing: 2,
           fontFamily: 'Satoshi, Arial, Helvetica, sans-serif',
           animation: 'fadeInHero 1.5s cubic-bezier(.4,0,.2,1)'
@@ -76,7 +76,7 @@ const ComunidadBox: React.FC = () => {
         sx={{
           color: '#004F6A',
           fontSize: { xs: '1.2rem', md: '1.5rem' },
-          textAlign: 'center',
+          textAlign: 'left',
           maxWidth: 700,
           mb: 3,
           fontWeight: 500,
