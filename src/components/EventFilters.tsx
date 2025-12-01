@@ -21,7 +21,6 @@ import {
   CYBERSECURITY_TAGS,
   EVENT_LEVELS
 } from '../constants/filters'
-import ExpandLess from '@mui/icons-material/ExpandLess'
 import ExpandMore from '@mui/icons-material/ExpandMore'
 import FilterListIcon from '@mui/icons-material/FilterList'
 
@@ -37,6 +36,11 @@ export const EventFilters: React.FC<EventFiltersProps> = ({
 
   const [levels, setLevels] = useState<string[]>(initialFilters.levels)
   const [tags, setTags] = useState<string[]>(initialFilters.tags)
+  // Estado para idiomas
+  const [languages, setLanguages] = useState<string[]>(
+    initialFilters.languages || []
+  )
+
   const [dates, setDates] = useState({
     startDate: initialFilters.startDate,
     endDate: initialFilters.endDate
@@ -115,6 +119,7 @@ export const EventFilters: React.FC<EventFiltersProps> = ({
     tags.forEach((tag) => searchParams.append('tags', tag))
     allLocations.forEach((loc) => searchParams.append('locations', loc))
     levels.forEach((level) => searchParams.append('levels', level))
+    languages.forEach((lang) => searchParams.append('languages', lang))
 
     submit(searchParams)
   }
@@ -123,6 +128,7 @@ export const EventFilters: React.FC<EventFiltersProps> = ({
     setDates({ startDate: null, endDate: null })
     setTags([])
     setLevels([])
+    setLanguages([])
     setSelectedCommunities([])
     setSelectedCities([])
     setAvailableCities(ALL_CITIES)
@@ -134,7 +140,7 @@ export const EventFilters: React.FC<EventFiltersProps> = ({
     <Paper
       elevation={3}
       sx={{
-        p: 2,
+        p: 3,
         mb: 4,
         borderRadius: '25px',
         background: 'var(--White)',
@@ -150,25 +156,60 @@ export const EventFilters: React.FC<EventFiltersProps> = ({
           cursor: 'pointer'
         }}
       >
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-          <FilterListIcon sx={{ color: 'var(--color-cadetblue)' }} />
-          <Typography variant='h6' sx={{ color: 'var(--color-cadetblue)' }}>
-            Filtros
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+          <FilterListIcon
+            sx={{ color: 'var(--color-cadetblue)', fontSize: 28 }}
+          />
+          <Typography
+            variant='h6'
+            sx={{ color: 'var(--color-cadetblue)', fontWeight: 700 }}
+          >
+            Filtros de Evento
           </Typography>
         </Box>
-        <IconButton>{isOpen ? <ExpandLess /> : <ExpandMore />}</IconButton>
+        <IconButton
+          sx={{
+            color: 'var(--color-cadetblue)',
+            transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+            transition: 'transform 0.3s ease'
+          }}
+        >
+          <ExpandMore />
+        </IconButton>
       </Box>
 
       <Collapse in={isOpen}>
-        <Box component='div' sx={{ pt: 3 }}>
-          {/* --- CORRECCIÓN: Eliminados todos los props 'item' --- */}
+        <Box component='div' sx={{ pt: 4 }}>
           <Grid container spacing={3}>
+            {/* FILA 1: FECHAS */}
             <Grid size={{ xs: 12, md: 6 }}>
               <DatePicker
                 label='Desde'
                 value={dates.startDate}
                 onChange={handleDateChange('startDate')}
                 sx={{ width: '100%' }}
+                slotProps={{
+                  textField: {
+                    variant: 'filled',
+                    fullWidth: true,
+                    hiddenLabel: false,
+                    sx: {
+                      '& .MuiFilledInput-root': {
+                        backgroundColor: '#F3F6F9',
+                        borderRadius: '12px',
+                        border: '1px solid transparent',
+                        transition: 'all 0.2s',
+                        '&:hover': { backgroundColor: '#EBEEF2' },
+                        '&.Mui-focused': {
+                          backgroundColor: '#fff',
+                          borderColor: 'var(--color-cadetblue)',
+                          boxShadow: '0 0 0 4px rgba(79, 186, 200, 0.1)'
+                        },
+                        '&:before, &:after': { display: 'none' }
+                      }
+                    }
+                  }
+                }}
               />
             </Grid>
             <Grid size={{ xs: 12, md: 6 }}>
@@ -177,9 +218,31 @@ export const EventFilters: React.FC<EventFiltersProps> = ({
                 value={dates.endDate}
                 onChange={handleDateChange('endDate')}
                 sx={{ width: '100%' }}
+                slotProps={{
+                  textField: {
+                    variant: 'filled',
+                    fullWidth: true,
+                    sx: {
+                      '& .MuiFilledInput-root': {
+                        backgroundColor: '#F3F6F9',
+                        borderRadius: '12px',
+                        border: '1px solid transparent',
+                        transition: 'all 0.2s',
+                        '&:hover': { backgroundColor: '#EBEEF2' },
+                        '&.Mui-focused': {
+                          backgroundColor: '#fff',
+                          borderColor: 'var(--color-cadetblue)',
+                          boxShadow: '0 0 0 4px rgba(79, 186, 200, 0.1)'
+                        },
+                        '&:before, &:after': { display: 'none' }
+                      }
+                    }
+                  }
+                }}
               />
             </Grid>
 
+            {/* FILA 2: UBICACIÓN */}
             <Grid size={{ xs: 12, md: 6 }}>
               <Autocomplete
                 multiple
@@ -187,7 +250,25 @@ export const EventFilters: React.FC<EventFiltersProps> = ({
                 value={selectedCommunities}
                 onChange={handleCommunityChange}
                 renderInput={(params) => (
-                  <TextField {...params} label='Comunidad Autónoma' />
+                  <TextField
+                    {...params}
+                    label='Comunidad Autónoma'
+                    variant='filled'
+                    sx={{
+                      '& .MuiFilledInput-root': {
+                        backgroundColor: '#F3F6F9',
+                        borderRadius: '12px',
+                        border: '1px solid transparent',
+                        '&:hover': { backgroundColor: '#EBEEF2' },
+                        '&.Mui-focused': {
+                          backgroundColor: '#fff',
+                          borderColor: 'var(--color-cadetblue)',
+                          boxShadow: '0 0 0 4px rgba(79, 186, 200, 0.1)'
+                        },
+                        '&:before, &:after': { display: 'none' }
+                      }
+                    }}
+                  />
                 )}
               />
             </Grid>
@@ -198,11 +279,30 @@ export const EventFilters: React.FC<EventFiltersProps> = ({
                 value={selectedCities}
                 onChange={handleCityChange}
                 renderInput={(params) => (
-                  <TextField {...params} label='Ciudad' />
+                  <TextField
+                    {...params}
+                    label='Ciudad'
+                    variant='filled'
+                    sx={{
+                      '& .MuiFilledInput-root': {
+                        backgroundColor: '#F3F6F9',
+                        borderRadius: '12px',
+                        border: '1px solid transparent',
+                        '&:hover': { backgroundColor: '#EBEEF2' },
+                        '&.Mui-focused': {
+                          backgroundColor: '#fff',
+                          borderColor: 'var(--color-cadetblue)',
+                          boxShadow: '0 0 0 4px rgba(79, 186, 200, 0.1)'
+                        },
+                        '&:before, &:after': { display: 'none' }
+                      }
+                    }}
+                  />
                 )}
               />
             </Grid>
 
+            {/* FILA 3: CATEGORÍAS (Ancho completo) */}
             <Grid size={{ xs: 12 }}>
               <Autocomplete
                 multiple
@@ -210,23 +310,98 @@ export const EventFilters: React.FC<EventFiltersProps> = ({
                 value={tags}
                 onChange={handleMultiSelectChange(setTags)}
                 renderInput={(params) => (
-                  <TextField {...params} label='Categorías / Tags' />
+                  <TextField
+                    {...params}
+                    label='Categorías / Tags'
+                    variant='filled'
+                    sx={{
+                      '& .MuiFilledInput-root': {
+                        backgroundColor: '#F3F6F9',
+                        borderRadius: '12px',
+                        border: '1px solid transparent',
+                        '&:hover': { backgroundColor: '#EBEEF2' },
+                        '&.Mui-focused': {
+                          backgroundColor: '#fff',
+                          borderColor: 'var(--color-cadetblue)',
+                          boxShadow: '0 0 0 4px rgba(79, 186, 200, 0.1)'
+                        },
+                        '&:before, &:after': { display: 'none' }
+                      }
+                    }}
+                  />
                 )}
               />
             </Grid>
 
-            <Grid size={{ xs: 12 }}>
+            {/* FILA 4: NIVEL E IDIOMA */}
+            <Grid size={{ xs: 12, md: 6 }}>
               <Autocomplete
                 multiple
                 options={EVENT_LEVELS}
                 value={levels}
                 onChange={handleMultiSelectChange(setLevels)}
                 renderInput={(params) => (
-                  <TextField {...params} label='Nivel del Evento' />
+                  <TextField
+                    {...params}
+                    label='Nivel del Evento'
+                    variant='filled'
+                    sx={{
+                      '& .MuiFilledInput-root': {
+                        backgroundColor: '#F3F6F9',
+                        borderRadius: '12px',
+                        border: '1px solid transparent',
+                        '&:hover': { backgroundColor: '#EBEEF2' },
+                        '&.Mui-focused': {
+                          backgroundColor: '#fff',
+                          borderColor: 'var(--color-cadetblue)',
+                          boxShadow: '0 0 0 4px rgba(79, 186, 200, 0.1)'
+                        },
+                        '&:before, &:after': { display: 'none' }
+                      }
+                    }}
+                  />
                 )}
               />
             </Grid>
 
+            <Grid size={{ xs: 12, md: 6 }}>
+              <Autocomplete
+                multiple
+                options={[
+                  'Español',
+                  'Inglés',
+                  'Catalán',
+                  'Euskera',
+                  'Gallego',
+                  'Valenciano'
+                ]}
+                value={languages}
+                onChange={handleMultiSelectChange(setLanguages)}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label='Idioma'
+                    variant='filled'
+                    sx={{
+                      '& .MuiFilledInput-root': {
+                        backgroundColor: '#F3F6F9',
+                        borderRadius: '12px',
+                        border: '1px solid transparent',
+                        '&:hover': { backgroundColor: '#EBEEF2' },
+                        '&.Mui-focused': {
+                          backgroundColor: '#fff',
+                          borderColor: 'var(--color-cadetblue)',
+                          boxShadow: '0 0 0 4px rgba(79, 186, 200, 0.1)'
+                        },
+                        '&:before, &:after': { display: 'none' }
+                      }
+                    }}
+                  />
+                )}
+              />
+            </Grid>
+
+            {/* BOTONES */}
             <Grid
               size={{ xs: 12 }}
               sx={{
@@ -236,16 +411,33 @@ export const EventFilters: React.FC<EventFiltersProps> = ({
                 mt: 2
               }}
             >
-              <Button variant='outlined' onClick={handleClearFilters}>
-                Limpiar Filtros
+              <Button
+                variant='outlined'
+                onClick={handleClearFilters}
+                sx={{
+                  borderRadius: '12px',
+                  borderColor: 'var(--Gray-400)',
+                  color: 'var(--Gray-700)',
+                  py: 1.5,
+                  px: 3,
+                  '&:hover': { borderColor: 'var(--Gray-600)' }
+                }}
+              >
+                Limpiar
               </Button>
               <Button
                 variant='contained'
                 onClick={handleApplyFilters}
                 sx={{
+                  borderRadius: '12px',
+                  px: 4,
+                  py: 1.5,
                   background: 'var(--gradient-button-primary)',
+                  boxShadow: '0 4px 14px rgba(0, 217, 255, 0.3)',
+                  fontWeight: 'bold',
                   '&:hover': {
-                    background: 'var(--gradient-button-primary-hover)'
+                    background: 'var(--gradient-button-primary-hover)',
+                    boxShadow: '0 6px 20px rgba(0, 217, 255, 0.5)'
                   }
                 }}
               >

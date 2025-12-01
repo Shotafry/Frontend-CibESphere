@@ -12,7 +12,6 @@ import React, { useEffect } from 'react'
 import { AuthProvider } from './context/AuthContext'
 import { ProtectedRoute } from './components/ProtectedRoute'
 import { Layout } from './components/Layout'
-// ¡ESTA LÍNEA ES LA QUE CAUSABA EL CRASH! Ahora 'EventFilterParams' sí existe.
 import { Role, User, EventFilterParams } from './types'
 import * as apiService from './services/apiService'
 
@@ -25,6 +24,7 @@ import PanelDeOrganizador from './pages/PanelDeOrganizador'
 import Page from './pages/Page'
 import ErrorPage from './pages/ErrorPage'
 import TestFont from './pages/test-font'
+import OrganizationProfile from './pages/OrganizationProfile'
 
 import {
   CssBaseline,
@@ -64,6 +64,8 @@ const AppWrapper = () => {
       title = 'Editar Evento - CibESphere'
     } else if (pathname === '/loginsign-up') {
       title = 'Acceso / Registro - CibESphere'
+    } else if (pathname.startsWith('/organizacion/')) {
+      title = 'Perfil de Organización - CibESphere'
     }
 
     document.title = title
@@ -85,7 +87,7 @@ const AppWrapper = () => {
   )
 }
 
-// --- DEFINICIÓN DE RUTAS (CON LOADER MODIFICADO) ---
+// --- DEFINICIÓN DE RUTAS ---
 const routes: RouteObject[] = [
   {
     path: '/',
@@ -95,7 +97,6 @@ const routes: RouteObject[] = [
       {
         index: true,
         element: <LandingPage />,
-        // --- LOADER MODIFICADO ---
         loader: async ({ request }) => {
           const url = new URL(request.url)
           const searchParams = url.searchParams
@@ -109,17 +110,24 @@ const routes: RouteObject[] = [
               : null,
             tags: searchParams.getAll('tags') || [],
             locations: searchParams.getAll('locations') || [],
-            levels: searchParams.getAll('levels') || []
+            levels: searchParams.getAll('levels') || [],
+            languages: searchParams.getAll('languages') || []
           }
 
           const events = await apiService.getEvents(filters)
-          // Devolvemos tanto los eventos como los filtros aplicados
           return { events, filters }
         }
-        // --- FIN LOADER MODIFICADO ---
       },
       {
-        path: 'loginsign-up',
+        path: 'login',
+        element: <SignUp />
+      },
+      {
+        path: 'registro',
+        element: <SignUp />
+      },
+      {
+        path: 'loginsign-up', // Mantener por compatibilidad si se usa en algún link
         element: <SignUp />
       },
       {
@@ -132,8 +140,20 @@ const routes: RouteObject[] = [
           return apiService.getEventBySlug(params.slug)
         }
       },
+      {
+        path: 'organizacion/:slug',
+        element: <OrganizationProfile />,
+        loader: async ({ params }) => {
+          if (!params.slug) {
+            throw new Response('Not Found', { status: 404 })
+          }
+          const org = await apiService.getOrganizationBySlug(params.slug)
+          const events = await apiService.getOrganizationEvents(org.id)
+          return { organization: org, events }
+        }
+      },
 
-      // --- Rutas Protegidas Asistentes (sin cambios) ---
+      // --- Rutas Protegidas Asistentes ---
       {
         element: <ProtectedRoute allowedRoles={[Role.User, Role.Admin]} />,
         children: [
@@ -150,7 +170,7 @@ const routes: RouteObject[] = [
         ]
       },
 
-      // --- Rutas Protegidas Organizador (sin cambios) ---
+      // --- Rutas Protegidas Organizador ---
       {
         element: <ProtectedRoute allowedRoles={[Role.Organizer, Role.Admin]} />,
         children: [
@@ -206,10 +226,10 @@ const routes: RouteObject[] = [
   }
 ]
 
-// Creación del router (sin cambios)
+// Creación del router
 export const router = createBrowserRouter(routes)
 
-// Componente App (sin cambios)
+// Componente App
 const muiTheme = createTheme({
   typography: {
     fontFamily: "'Satoshi', Arial, Helvetica, sans-serif"

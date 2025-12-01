@@ -54,6 +54,15 @@ export interface OrganizationSummary {
   logo_url: string
   is_verified: boolean
   city: string
+  description?: string
+  banner_url?: string
+  website?: string
+  email?: string
+  social_links?: {
+    twitter?: string
+    linkedin?: string
+    github?: string
+  }
 }
 
 // --- TIPOS de EVENTO ---
@@ -84,11 +93,37 @@ export interface Event {
   image_url: string
   banner_url: string
   tags: string[]
+  language:
+    | 'Español'
+    | 'Inglés'
+    | 'Catalán'
+    | 'Euskera'
+    | 'Gallego'
+    | 'Valenciano'
   organization: OrganizationSummary
   status: 'published' | 'draft' | 'canceled'
   is_upcoming: boolean
   is_past: boolean
   is_ongoing: boolean
+  agenda: AgendaItem[]
+  speakers: Speaker[]
+  requirements?: string
+}
+
+export interface AgendaItem {
+  id: string
+  time: string
+  title: string
+  description: string
+}
+
+export interface Speaker {
+  id: string
+  name: string
+  role: string
+  topic: string
+  time: string // Linked to agenda time
+  image_url?: string
 }
 
 export interface CreateEventDTO
@@ -114,6 +149,7 @@ export interface EventFilterParams {
   tags: string[]
   locations: string[]
   levels: string[]
+  languages: string[]
 }
 
 // --- TIPOS DE DASHBOARD ---

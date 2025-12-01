@@ -8,6 +8,7 @@ interface Particle {
   vx: number
   vy: number
   size: number
+  baseSize: number // Recordar tamaño original
 }
 
 export const ParticlesBackground: React.FC = () => {
@@ -22,12 +23,16 @@ export const ParticlesBackground: React.FC = () => {
 
     let animationFrameId: number
     let particles: Particle[] = []
+    // Usar referencias mutables para el estado del mouse para evitar problemas de clausura
+    const mouseRef = { x: -1000, y: -1000 }
+    const isMouseDownRef = { current: false }
 
     // Configuración
-    const particleCount = 80 // Cantidad de puntos
-    const connectionDistance = 150 // Distancia para conectar líneas
-    const particleColor = '#4fbac8' // Cian
-    const particleSpeed = 0.5 // Velocidad base
+    const particleCount = 80
+    const connectionDistance = 150
+    const mouseDistance = 250 // Aumentado para facilitar la interacción
+    const particleColor = '#4fbac8'
+    const particleSpeed = 0.5
 
     const resizeCanvas = () => {
       canvas.width = window.innerWidth
@@ -37,12 +42,14 @@ export const ParticlesBackground: React.FC = () => {
     const createParticles = () => {
       particles = []
       for (let i = 0; i < particleCount; i++) {
+        const size = Math.random() * 2 + 1
         particles.push({
           x: Math.random() * canvas.width,
           y: Math.random() * canvas.height,
           vx: (Math.random() - 0.5) * particleSpeed,
           vy: (Math.random() - 0.5) * particleSpeed,
-          size: Math.random() * 2 + 1 // Tamaño entre 1 y 3
+          size: size,
+          baseSize: size
         })
       }
     }
@@ -50,11 +57,42 @@ export const ParticlesBackground: React.FC = () => {
     const draw = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height)
 
-      // Actualizar y dibujar partículas
       particles.forEach((p, index) => {
-        // Movimiento
+        // --- INTERACCIÓN CON EL MOUSE ---
+        const dxMouse = p.x - mouseRef.x
+        const dyMouse = p.y - mouseRef.y
+        const distMouse = Math.sqrt(dxMouse * dxMouse + dyMouse * dyMouse)
+
+        // 1. Efecto Burbuja (ELIMINADO)
+        // p.size = p.baseSize
+
+        // 2. Efecto Repulsión (Click) - SUTIL
+        if (isMouseDownRef.current && distMouse < mouseDistance) {
+          const force = (mouseDistance - distMouse) / mouseDistance
+          const angle = Math.atan2(dyMouse, dxMouse)
+          const push = force * 2 // Fuerza de empuje MUCHO más suave (era 15)
+
+          // Aplicar empuje suave
+          p.vx += Math.cos(angle) * push
+          p.vy += Math.sin(angle) * push
+        }
+
+        // Movimiento normal
         p.x += p.vx
         p.y += p.vy
+
+        // Normalizar velocidad (Evitar caos)
+        // Si la velocidad supera el límite normal, la reducimos suavemente
+        const currentSpeed = Math.sqrt(p.vx * p.vx + p.vy * p.vy)
+        const maxSpeed = particleSpeed * 2 // Permitir solo un pequeño aumento temporal
+
+        if (currentSpeed > maxSpeed) {
+          p.vx *= 0.9 // Fricción fuerte para volver a la normalidad rápido
+          p.vy *= 0.9
+        } else if (currentSpeed > particleSpeed) {
+          p.vx *= 0.98 // Fricción suave para estabilizar
+          p.vy *= 0.98
+        }
 
         // Rebote en bordes
         if (p.x < 0 || p.x > canvas.width) p.vx *= -1
@@ -66,7 +104,7 @@ export const ParticlesBackground: React.FC = () => {
         ctx.fillStyle = particleColor
         ctx.fill()
 
-        // Dibujar líneas a vecinos cercanos
+        // Dibujar líneas a vecinos
         for (let j = index + 1; j < particles.length; j++) {
           const p2 = particles[j]
           const dx = p.x - p2.x
@@ -77,15 +115,29 @@ export const ParticlesBackground: React.FC = () => {
             ctx.beginPath()
             ctx.strokeStyle = particleColor
             ctx.lineWidth = 0.5
-            // Opacidad basada en la distancia (más lejos = más transparente)
             const opacity = 1 - distance / connectionDistance
             ctx.globalAlpha = opacity
             ctx.moveTo(p.x, p.y)
             ctx.lineTo(p2.x, p2.y)
             ctx.stroke()
-            ctx.globalAlpha = 1.0 // Resetear opacidad
+            ctx.globalAlpha = 1.0
           }
         }
+
+        // Dibujar líneas al mouse (ELIMINADO)
+        /*
+        if (distMouse < mouseDistance) {
+          ctx.beginPath()
+          ctx.strokeStyle = particleColor
+          ctx.lineWidth = 1.0
+          const opacity = 1 - distMouse / mouseDistance
+          ctx.globalAlpha = opacity
+          ctx.moveTo(p.x, p.y)
+          ctx.lineTo(mouseRef.x, mouseRef.y)
+          ctx.stroke()
+          ctx.globalAlpha = 1.0
+        }
+        */
       })
 
       animationFrameId = requestAnimationFrame(draw)
@@ -97,13 +149,37 @@ export const ParticlesBackground: React.FC = () => {
     draw()
 
     // Event Listeners
-    window.addEventListener('resize', () => {
+    const handleResize = () => {
       resizeCanvas()
-      createParticles() // Recrear para distribuir bien
-    })
+      createParticles()
+    }
+    const handleMouseMove = (e: MouseEvent) => {
+      mouseRef.x = e.clientX
+      mouseRef.y = e.clientY
+    }
+    const handleMouseLeave = () => {
+      mouseRef.x = -1000
+      mouseRef.y = -1000
+    }
+    const handleMouseDown = () => {
+      isMouseDownRef.current = true
+    }
+    const handleMouseUp = () => {
+      isMouseDownRef.current = false
+    }
+
+    window.addEventListener('resize', handleResize)
+    window.addEventListener('mousemove', handleMouseMove)
+    window.addEventListener('mouseout', handleMouseLeave)
+    window.addEventListener('mousedown', handleMouseDown)
+    window.addEventListener('mouseup', handleMouseUp)
 
     return () => {
-      window.removeEventListener('resize', resizeCanvas)
+      window.removeEventListener('resize', handleResize)
+      window.removeEventListener('mousemove', handleMouseMove)
+      window.removeEventListener('mouseout', handleMouseLeave)
+      window.removeEventListener('mousedown', handleMouseDown)
+      window.removeEventListener('mouseup', handleMouseUp)
       cancelAnimationFrame(animationFrameId)
     }
   }, [])

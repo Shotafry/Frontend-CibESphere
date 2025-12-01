@@ -8,7 +8,18 @@ const org1: OrganizationSummary = {
   name: 'CyberSecurity Spain',
   logo_url: '/CloudEvents-logo-2@2x.png',
   is_verified: true,
-  city: 'Madrid'
+  city: 'Madrid',
+  description:
+    'Somos la comunidad líder en ciberseguridad en España. Organizamos eventos, conferencias y talleres para profesionales y entusiastas del sector. Nuestro objetivo es fomentar el conocimiento y la colaboración en el ámbito de la seguridad informática.',
+  banner_url:
+    'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=1600&q=80',
+  website: 'https://cybersecurityspain.local',
+  email: 'contacto@cybersecurityspain.local',
+  social_links: {
+    twitter: 'https://twitter.com/cyberspain',
+    linkedin: 'https://linkedin.com/company/cyberspain',
+    github: 'https://github.com/cyberspain'
+  }
 }
 const org2: OrganizationSummary = {
   id: 'org-002',
@@ -16,7 +27,17 @@ const org2: OrganizationSummary = {
   name: 'Hackingétic',
   logo_url: '/cyberLogo-gigapixel-art-scale-2-00x-godpix-1@2x.png',
   is_verified: true,
-  city: 'Barcelona'
+  city: 'Barcelona',
+  description:
+    'Grupo dedicado al Hacking Ético y la Ciberinteligencia. Realizamos CTFs, talleres de Red Team y Blue Team, y charlas sobre las últimas vulnerabilidades.',
+  banner_url:
+    'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=1600&q=80',
+  website: 'https://hackingetic.local',
+  email: 'info@hackingetic.local',
+  social_links: {
+    twitter: 'https://twitter.com/hackingetic',
+    github: 'https://github.com/hackingetic'
+  }
 }
 const org3: OrganizationSummary = {
   id: 'org-003',
@@ -24,7 +45,16 @@ const org3: OrganizationSummary = {
   name: 'SecurIT All',
   logo_url: '/asturcon-low-1@2x.png',
   is_verified: true,
-  city: 'Sevilla'
+  city: 'Sevilla',
+  description:
+    'Consultora de seguridad que organiza eventos formativos gratuitos para la comunidad. Especializados en DFIR y respuesta a incidentes.',
+  banner_url:
+    'https://images.unsplash.com/photo-1563206767-5b1d972d9323?auto=format&fit=crop&w=1600&q=80',
+  website: 'https://securitall.local',
+  email: 'events@securitall.local',
+  social_links: {
+    linkedin: 'https://linkedin.com/company/securitall'
+  }
 }
 
 // --- EVENTOS ---
@@ -46,7 +76,7 @@ export let mockEvents: Event[] = [
     venue_name: 'Palacio de Congresos',
     venue_address: 'Paseo de la Castellana, 99',
     venue_city: 'Madrid',
-    venue_community: 'Comunidad de Madrid', // <-- CAMPO AÑADIDO
+    venue_community: 'Comunidad de Madrid',
     latitude: 40.452,
     longitude: -3.6922,
     max_attendees: 500,
@@ -55,12 +85,15 @@ export let mockEvents: Event[] = [
     price: 25000,
     image_url: '/asturcon-low-1@2x.png',
     banner_url: '',
-    tags: ['Conferencia', 'Networking', 'Madrid', 'Ciberinteligencia'],
+    tags: ['Ciberinteligencia', 'Conferencia', 'Madrid', 'Networking'],
+    language: 'Inglés',
     organization: org1,
     status: 'published',
     is_upcoming: true,
     is_past: false,
-    is_ongoing: false
+    is_ongoing: false,
+    agenda: [],
+    speakers: []
   },
   {
     id: 'evt-002',
@@ -78,7 +111,7 @@ export let mockEvents: Event[] = [
     is_online: true,
     online_url: 'https://zoom.us/j/123456',
     venue_city: 'Online',
-    venue_community: 'Online', // <-- CAMPO AÑADIDO
+    venue_community: 'Online',
     max_attendees: 30,
     current_attendees: 15,
     is_free: false,
@@ -86,11 +119,14 @@ export let mockEvents: Event[] = [
     image_url: '/CloudEvents-logo-1@2x.png',
     banner_url: '',
     tags: ['Bootcamp', 'Curso', 'Hacking Ético', 'Online'],
+    language: 'Español',
     organization: org1,
     status: 'published',
     is_upcoming: true,
     is_past: false,
-    is_ongoing: false
+    is_ongoing: false,
+    agenda: [],
+    speakers: []
   },
   {
     id: 'evt-003',
@@ -108,7 +144,7 @@ export let mockEvents: Event[] = [
     venue_name: 'Universidad Politécnica',
     venue_address: 'Campus Universitario, Aula Magna',
     venue_city: 'Barcelona',
-    venue_community: 'Cataluña', // <-- CAMPO AÑADIDO
+    venue_community: 'Cataluña',
     latitude: 41.3851,
     longitude: 2.1734,
     max_attendees: 200,
@@ -116,12 +152,15 @@ export let mockEvents: Event[] = [
     is_free: true,
     image_url: '/cyberLogo-gigapixel-art-scale-2-00x-godpix-1@2x.png',
     banner_url: '',
-    tags: ['Competición', 'Red Team', 'Blue Team', 'Barcelona', 'CTF'],
+    tags: ['Barcelona', 'Blue Team', 'Competición', 'CTF', 'Red Team'],
+    language: 'Catalán',
     organization: org2,
     status: 'published',
     is_upcoming: true,
     is_past: false,
-    is_ongoing: false
+    is_ongoing: false,
+    agenda: [],
+    speakers: []
   },
   {
     id: 'evt-004',
@@ -140,7 +179,7 @@ export let mockEvents: Event[] = [
     venue_name: 'Cámara de Comercio',
     venue_address: 'Plaza de la Contratación, 8',
     venue_city: 'Sevilla',
-    venue_community: 'Andalucía', // <-- CAMPO AÑADIDO
+    venue_community: 'Andalucía',
     latitude: 37.3826,
     longitude: -5.9965,
     max_attendees: 50,
@@ -149,12 +188,15 @@ export let mockEvents: Event[] = [
     price: 7500,
     image_url: '/cyberLogo-gigapixel-art-scale-2-00x-godpix-11@2x.png',
     banner_url: '',
-    tags: ['Taller', 'DFIR', 'Forense', 'Respuesta a Incidentes', 'Sevilla'],
+    tags: ['DFIR', 'Forense', 'Respuesta a Incidentes', 'Sevilla', 'Taller'],
+    language: 'Español',
     organization: org3,
     status: 'published',
     is_upcoming: true,
     is_past: false,
-    is_ongoing: false
+    is_ongoing: false,
+    agenda: [],
+    speakers: []
   }
 ]
 
