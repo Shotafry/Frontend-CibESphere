@@ -9,7 +9,8 @@ import {
   Role,
   DashboardStats,
   OrganizationSummary,
-  CreateEventDTO
+  CreateEventDTO,
+  Notification
 } from '../types'
 import { mockEvents, mockUsers } from '../mocks/db'
 
@@ -437,4 +438,95 @@ export const updateUser = async (
   localUsers[userIndex] = updatedUser
   saveUsers()
   return updatedUser
+}
+
+// --- BOOKMARKS (MOCK) ---
+
+export const toggleBookmark = async (
+  userId: string,
+  eventId: string
+): Promise<{ isBookmarked: boolean; message: string }> => {
+  await delay(300)
+  const userIndex = localUsers.findIndex((u) => u.id === userId)
+  if (userIndex === -1) throw new Error('Usuario no encontrado')
+
+  const user = localUsers[userIndex]
+  const event = localEvents.find((e) => e.id === eventId)
+  if (!event) throw new Error('Evento no encontrado')
+
+  if (!user.BookmarkedEvents) {
+    user.BookmarkedEvents = []
+  }
+
+  const alreadyBookmarked = user.BookmarkedEvents.some((e) => e.id === eventId)
+  let isBookmarked = false
+
+  if (alreadyBookmarked) {
+    user.BookmarkedEvents = user.BookmarkedEvents.filter(
+      (e) => e.id !== eventId
+    )
+    isBookmarked = false
+  } else {
+    user.BookmarkedEvents.push(event)
+    isBookmarked = true
+  }
+
+  localUsers[userIndex] = user
+  saveUsers()
+
+  return {
+    isBookmarked,
+    message: isBookmarked ? 'Evento guardado' : 'Evento eliminado de guardados'
+  }
+}
+
+// --- NOTIFICACIONES (MOCK) ---
+
+const mockNotifications: Notification[] = [
+  {
+    id: 'notif-1',
+    title: 'Evento Próximo',
+    message: 'Tu evento "CyberSec 2024" comienza mañana.',
+    date: new Date().toISOString(),
+    is_read: false,
+    type: 'info',
+    link: '/eventos/cybersec-2024'
+  },
+  {
+    id: 'notif-2',
+    title: 'Registro Exitoso',
+    message: 'Te has registrado correctamente en "Workshop Hacking Ético".',
+    date: new Date(Date.now() - 86400000).toISOString(),
+    is_read: true,
+    type: 'success',
+    link: '/eventos/workshop-hacking-etico'
+  },
+  {
+    id: 'notif-3',
+    title: 'Nueva Organización',
+    message: 'Una nueva organización "SecOps Madrid" se ha unido.',
+    date: new Date(Date.now() - 172800000).toISOString(),
+    is_read: false,
+    type: 'info'
+  }
+]
+
+export const getNotifications = (userId: string): Promise<Notification[]> => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve([...mockNotifications])
+    }, 500)
+  })
+}
+
+export const markNotificationAsRead = (id: string): Promise<void> => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      const notif = mockNotifications.find((n) => n.id === id)
+      if (notif) {
+        notif.is_read = true
+      }
+      resolve()
+    }, 300)
+  })
 }

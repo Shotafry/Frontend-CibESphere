@@ -1,9 +1,19 @@
 // src/components/Header.tsx
 import { FunctionComponent, useCallback, useState, useEffect } from 'react'
-import { Box, Button, CircularProgress, Typography } from '@mui/material'
+import {
+  Box,
+  Button,
+  CircularProgress,
+  Typography,
+  IconButton,
+  Badge
+} from '@mui/material'
+import NotificationsIcon from '@mui/icons-material/Notifications'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
-import { Role } from '../types'
+import { Role, Notification } from '../types'
+import { getNotifications } from '../services/apiService'
+import { NotificationMenu } from './NotificationMenu'
 
 export const Header: FunctionComponent = () => {
   const navigate = useNavigate()
@@ -11,7 +21,11 @@ export const Header: FunctionComponent = () => {
   const { isAuthenticated, user, logout, isLoading } = useAuth()
 
   const [isScrolled, setIsScrolled] = useState(false)
+  const [notifications, setNotifications] = useState<Notification[]>([])
+  const [unreadCount, setUnreadCount] = useState(0)
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const isLandingPage = location.pathname === '/'
+  const openNotifications = Boolean(anchorEl)
 
   useEffect(() => {
     const handleScroll = () => {
@@ -30,6 +44,30 @@ export const Header: FunctionComponent = () => {
       window.removeEventListener('scroll', handleScroll)
     }
   }, [isLandingPage, location.pathname])
+
+  useEffect(() => {
+    if (isAuthenticated && user) {
+      getNotifications(user.id).then((data) => {
+        setNotifications(data)
+        setUnreadCount(data.filter((n) => !n.is_read).length)
+      })
+    }
+  }, [isAuthenticated, user])
+
+  const handleOpenNotifications = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget)
+  }
+
+  const handleCloseNotifications = () => {
+    setAnchorEl(null)
+  }
+
+  const handleMarkAsRead = (id: string) => {
+    setNotifications((prev) =>
+      prev.map((n) => (n.id === id ? { ...n, is_read: true } : n))
+    )
+    setUnreadCount((prev) => Math.max(0, prev - 1))
+  }
 
   // --- LÓGICA ORIGINAL RESTAURADA ---
   // Vuelve a ser 'transparent' o 'var(--White)'
@@ -102,6 +140,18 @@ export const Header: FunctionComponent = () => {
             <CircularProgress size={24} />
           ) : isAuthenticated ? (
             <>
+              <IconButton onClick={handleOpenNotifications} sx={{ mr: 1 }}>
+                <Badge badgeContent={unreadCount} color='error'>
+                  <NotificationsIcon sx={{ color: textColor }} />
+                </Badge>
+              </IconButton>
+              <NotificationMenu
+                anchorEl={anchorEl}
+                open={openNotifications}
+                onClose={handleCloseNotifications}
+                notifications={notifications}
+                onMarkAsRead={handleMarkAsRead}
+              />
               <Typography sx={{ color: textColor, fontWeight: 500 }}>
                 Hola, {user?.first_name || user?.email}
               </Typography>

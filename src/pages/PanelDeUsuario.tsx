@@ -15,7 +15,10 @@ import {
   TextField,
   InputAdornment,
   Alert,
-  Fade
+  Fade,
+  Switch,
+  FormControlLabel,
+  FormGroup
 } from '@mui/material'
 import { useLoaderData, useNavigate, useNavigation } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
@@ -31,6 +34,7 @@ import GitHubIcon from '@mui/icons-material/GitHub'
 import LanguageIcon from '@mui/icons-material/Language'
 import SaveIcon from '@mui/icons-material/Save'
 import ImageIcon from '@mui/icons-material/Image'
+import SettingsIcon from '@mui/icons-material/Settings'
 import { useForm, Controller, useWatch } from 'react-hook-form'
 import { EventCard } from '../components/EventCard'
 
@@ -202,7 +206,9 @@ const PanelDeUsuario: FunctionComponent = () => {
             }}
           >
             <Tab label='Mis Eventos' />
+            <Tab label='Guardados' />
             <Tab label='Editar Perfil' />
+            <Tab label='Configuración' />
           </Tabs>
         </Container>
       </Box>
@@ -337,9 +343,52 @@ const PanelDeUsuario: FunctionComponent = () => {
           </Fade>
         )}
 
-        {/* TAB 1: EDITAR PERFIL */}
+        {/* TAB 1: GUARDADOS */}
         {tabValue === 1 && (
           <Fade in={tabValue === 1} timeout={500}>
+            <Box>
+              <Typography
+                variant='h6'
+                fontWeight='bold'
+                gutterBottom
+                sx={{ mb: 3 }}
+              >
+                Eventos Guardados ({user?.BookmarkedEvents?.length || 0})
+              </Typography>
+              <Stack spacing={3}>
+                {user?.BookmarkedEvents && user.BookmarkedEvents.length > 0 ? (
+                  user.BookmarkedEvents.map((event) => (
+                    <EventCard key={event.id} event={event} />
+                  ))
+                ) : (
+                  <Paper
+                    sx={{
+                      p: 4,
+                      textAlign: 'center',
+                      borderRadius: '16px',
+                      bgcolor: 'white'
+                    }}
+                  >
+                    <Typography color='text.secondary'>
+                      No tienes eventos guardados.
+                    </Typography>
+                    <Button
+                      variant='contained'
+                      href='/'
+                      sx={{ mt: 2, borderRadius: '8px' }}
+                    >
+                      Explorar Eventos
+                    </Button>
+                  </Paper>
+                )}
+              </Stack>
+            </Box>
+          </Fade>
+        )}
+
+        {/* TAB 2: EDITAR PERFIL */}
+        {tabValue === 2 && (
+          <Fade in={tabValue === 2} timeout={500}>
             <Box>
               <EditProfileForm
                 user={user}
@@ -350,6 +399,104 @@ const PanelDeUsuario: FunctionComponent = () => {
                 saveMessage={saveMessage}
               />
             </Box>
+          </Fade>
+        )}
+
+        {/* TAB 3: CONFIGURACIÓN */}
+        {tabValue === 3 && (
+          <Fade in={tabValue === 3} timeout={500}>
+            <Container maxWidth='md'>
+              <Paper
+                elevation={0}
+                sx={{
+                  p: 4,
+                  borderRadius: '24px',
+                  border: '1px solid #E2E8F0',
+                  mb: 4
+                }}
+              >
+                <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
+                  <SettingsIcon sx={{ mr: 2, color: 'primary.main' }} />
+                  <Typography variant='h6' fontWeight='bold'>
+                    Configuración de Notificaciones
+                  </Typography>
+                </Box>
+                <Divider sx={{ mb: 3 }} />
+                <FormGroup>
+                  <FormControlLabel
+                    control={<Switch defaultChecked />}
+                    label={
+                      <Box>
+                        <Typography fontWeight='500'>
+                          Notificaciones por Email
+                        </Typography>
+                        <Typography variant='body2' color='text.secondary'>
+                          Recibe correos sobre tus eventos próximos y novedades.
+                        </Typography>
+                      </Box>
+                    }
+                    sx={{ mb: 3, alignItems: 'flex-start' }}
+                  />
+                  <FormControlLabel
+                    control={<Switch defaultChecked />}
+                    label={
+                      <Box>
+                        <Typography fontWeight='500'>
+                          Notificaciones Push
+                        </Typography>
+                        <Typography variant='body2' color='text.secondary'>
+                          Recibe alertas en el navegador cuando estés en línea.
+                        </Typography>
+                      </Box>
+                    }
+                    sx={{ mb: 3, alignItems: 'flex-start' }}
+                  />
+                  <FormControlLabel
+                    control={<Switch />}
+                    label={
+                      <Box>
+                        <Typography fontWeight='500'>
+                          Boletín Semanal
+                        </Typography>
+                        <Typography variant='body2' color='text.secondary'>
+                          Un resumen de los mejores eventos de la semana.
+                        </Typography>
+                      </Box>
+                    }
+                    sx={{ alignItems: 'flex-start' }}
+                  />
+                </FormGroup>
+                <Box
+                  sx={{ mt: 4, display: 'flex', justifyContent: 'flex-end' }}
+                >
+                  <Button
+                    variant='contained'
+                    sx={{
+                      borderRadius: '12px',
+                      textTransform: 'none',
+                      bgcolor: 'var(--color-cadetblue)'
+                    }}
+                    onClick={() =>
+                      setSaveMessage({
+                        type: 'success',
+                        text: 'Preferencias guardadas correctamente'
+                      })
+                    }
+                  >
+                    Guardar Preferencias
+                  </Button>
+                </Box>
+              </Paper>
+              {saveMessage && tabValue === 3 && (
+                <Alert
+                  severity={saveMessage.type}
+                  sx={{ mb: 4, borderRadius: '12px' }}
+                  onClose={() => setSaveMessage(null)}
+                >
+                  {saveMessage.text}
+                </Alert>
+              )}
+            </Container>
           </Fade>
         )}
       </Container>

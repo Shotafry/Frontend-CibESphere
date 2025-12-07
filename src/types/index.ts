@@ -47,7 +47,8 @@ export interface User {
   position?: string
   created_at: string
   organization?: OrganizationSummary
-  FavoriteEvents?: Event[] // Para el panel de usuario
+  FavoriteEvents?: Event[] // Para el panel de usuario (Inscripciones)
+  BookmarkedEvents?: Event[] // Guardados para ver luego
   // Perfil Público
   avatar_url?: string
   banner_url?: string
@@ -175,4 +176,16 @@ export interface DashboardStats {
   total_attendees: number
   total_cities: number
   published_events: number
+}
+
+// --- NOTIFICACIONES ---
+
+export interface Notification {
+  id: string
+  title: string
+  message: string
+  date: string
+  is_read: boolean
+  type: 'info' | 'success' | 'warning' | 'error'
+  link?: string
 }
