@@ -247,6 +247,8 @@ export let mockUsers: User[] = [
     created_at: new Date().toISOString(),
     FavoriteEvents: [mockEvents[0], mockEvents[2]],
     avatar_url: 'https://i.pravatar.cc/300?img=11',
+    banner_url:
+      'https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=1600&q=80',
     bio: 'Apasionado de la ciberseguridad y el desarrollo seguro. Buscando siempre aprender nuevas técnicas de defensa y ataque.',
     city: 'Madrid, España',
     social_links: {

@@ -47,10 +47,25 @@ const UserProfile: React.FC = () => {
       {/* HERO SECTION */}
       <Box
         sx={{
-          height: 300,
-          background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)',
+          height: 350,
+          backgroundImage: `url(${
+            user.banner_url ||
+            'https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=1600&q=80'
+          })`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
           position: 'relative',
-          mb: 12
+          mb: 12,
+          '&::before': {
+            content: '""',
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background:
+              'linear-gradient(to bottom, rgba(0,0,0,0.2), rgba(0,0,0,0.8))'
+          }
         }}
       >
         <Container maxWidth='lg' sx={{ height: '100%', position: 'relative' }}>

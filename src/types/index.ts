@@ -50,6 +50,7 @@ export interface User {
   FavoriteEvents?: Event[] // Para el panel de usuario
   // Perfil Público
   avatar_url?: string
+  banner_url?: string
   bio?: string
   city?: string
   social_links?: {
