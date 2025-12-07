@@ -14,7 +14,8 @@ import {
   Avatar,
   TextField,
   InputAdornment,
-  Alert
+  Alert,
+  Fade
 } from '@mui/material'
 import { useLoaderData, useNavigate, useNavigation } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
@@ -209,139 +210,147 @@ const PanelDeUsuario: FunctionComponent = () => {
       <Container maxWidth='xl' sx={{ mt: 6 }}>
         {/* TAB 0: EVENTOS */}
         {tabValue === 0 && (
-          <Grid container spacing={4}>
-            <Grid size={{ xs: 12, md: 8 }}>
-              <Typography
-                variant='h6'
-                fontWeight='bold'
-                gutterBottom
-                sx={{ mb: 3 }}
-              >
-                Próximos Eventos ({upcomingEvents.length})
-              </Typography>
-              <Stack spacing={3}>
-                {upcomingEvents.length > 0 ? (
-                  upcomingEvents.map((event) => (
-                    <Box key={event.id} sx={{ position: 'relative' }}>
-                      <EventCard event={event} />
-                      <Button
-                        variant='contained'
-                        color='error'
-                        size='small'
-                        onClick={() => handleCancelSubscription(event.id)}
-                        sx={{
-                          position: 'absolute',
-                          top: 16,
-                          right: 16,
-                          borderRadius: '8px',
-                          zIndex: 10
-                        }}
-                      >
-                        Cancelar
-                      </Button>
-                    </Box>
-                  ))
-                ) : (
-                  <Paper
-                    sx={{
-                      p: 4,
-                      textAlign: 'center',
-                      borderRadius: '16px',
-                      bgcolor: 'white'
-                    }}
-                  >
-                    <Typography color='text.secondary'>
-                      No tienes eventos próximos.
-                    </Typography>
-                    <Button
-                      variant='contained'
-                      href='/'
-                      sx={{ mt: 2, borderRadius: '8px' }}
-                    >
-                      Explorar Eventos
-                    </Button>
-                  </Paper>
-                )}
-              </Stack>
-
-              {pastEvents.length > 0 && (
-                <Box sx={{ mt: 6 }}>
+          <Fade in={tabValue === 0} timeout={500}>
+            <Box>
+              <Grid container spacing={4}>
+                <Grid size={{ xs: 12, md: 8 }}>
                   <Typography
                     variant='h6'
                     fontWeight='bold'
                     gutterBottom
-                    sx={{ mb: 3, opacity: 0.7 }}
+                    sx={{ mb: 3 }}
                   >
-                    Historial de Eventos ({pastEvents.length})
+                    Próximos Eventos ({upcomingEvents.length})
                   </Typography>
-                  <Stack spacing={3} sx={{ opacity: 0.8 }}>
-                    {pastEvents.map((event) => (
-                      <EventCard key={event.id} event={event} />
-                    ))}
+                  <Stack spacing={3}>
+                    {upcomingEvents.length > 0 ? (
+                      upcomingEvents.map((event) => (
+                        <Box key={event.id} sx={{ position: 'relative' }}>
+                          <EventCard event={event} />
+                          <Button
+                            variant='contained'
+                            color='error'
+                            size='small'
+                            onClick={() => handleCancelSubscription(event.id)}
+                            sx={{
+                              position: 'absolute',
+                              top: 16,
+                              right: 16,
+                              borderRadius: '8px',
+                              zIndex: 10
+                            }}
+                          >
+                            Cancelar
+                          </Button>
+                        </Box>
+                      ))
+                    ) : (
+                      <Paper
+                        sx={{
+                          p: 4,
+                          textAlign: 'center',
+                          borderRadius: '16px',
+                          bgcolor: 'white'
+                        }}
+                      >
+                        <Typography color='text.secondary'>
+                          No tienes eventos próximos.
+                        </Typography>
+                        <Button
+                          variant='contained'
+                          href='/'
+                          sx={{ mt: 2, borderRadius: '8px' }}
+                        >
+                          Explorar Eventos
+                        </Button>
+                      </Paper>
+                    )}
                   </Stack>
-                </Box>
-              )}
-            </Grid>
 
-            <Grid size={{ xs: 12, md: 4 }}>
-              <Paper
-                sx={{
-                  p: 3,
-                  borderRadius: '20px',
-                  bgcolor: 'white',
-                  border: '1px solid #E2E8F0'
-                }}
-              >
-                <Typography variant='h6' fontWeight='bold' gutterBottom>
-                  Resumen
-                </Typography>
-                <Stack spacing={2} sx={{ mt: 2 }}>
-                  <Box
+                  {pastEvents.length > 0 && (
+                    <Box sx={{ mt: 6 }}>
+                      <Typography
+                        variant='h6'
+                        fontWeight='bold'
+                        gutterBottom
+                        sx={{ mb: 3, opacity: 0.7 }}
+                      >
+                        Historial de Eventos ({pastEvents.length})
+                      </Typography>
+                      <Stack spacing={3} sx={{ opacity: 0.8 }}>
+                        {pastEvents.map((event) => (
+                          <EventCard key={event.id} event={event} />
+                        ))}
+                      </Stack>
+                    </Box>
+                  )}
+                </Grid>
+
+                <Grid size={{ xs: 12, md: 4 }}>
+                  <Paper
                     sx={{
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      p: 2,
-                      bgcolor: '#F8FAFC',
-                      borderRadius: '12px'
+                      p: 3,
+                      borderRadius: '20px',
+                      bgcolor: 'white',
+                      border: '1px solid #E2E8F0'
                     }}
                   >
-                    <Typography color='text.secondary'>
-                      Eventos Asistidos
+                    <Typography variant='h6' fontWeight='bold' gutterBottom>
+                      Resumen
                     </Typography>
-                    <Typography fontWeight='bold'>
-                      {pastEvents.length}
-                    </Typography>
-                  </Box>
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      p: 2,
-                      bgcolor: '#F8FAFC',
-                      borderRadius: '12px'
-                    }}
-                  >
-                    <Typography color='text.secondary'>Próximos</Typography>
-                    <Typography fontWeight='bold' color='primary'>
-                      {upcomingEvents.length}
-                    </Typography>
-                  </Box>
-                </Stack>
-              </Paper>
-            </Grid>
-          </Grid>
+                    <Stack spacing={2} sx={{ mt: 2 }}>
+                      <Box
+                        sx={{
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          p: 2,
+                          bgcolor: '#F8FAFC',
+                          borderRadius: '12px'
+                        }}
+                      >
+                        <Typography color='text.secondary'>
+                          Eventos Asistidos
+                        </Typography>
+                        <Typography fontWeight='bold'>
+                          {pastEvents.length}
+                        </Typography>
+                      </Box>
+                      <Box
+                        sx={{
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          p: 2,
+                          bgcolor: '#F8FAFC',
+                          borderRadius: '12px'
+                        }}
+                      >
+                        <Typography color='text.secondary'>Próximos</Typography>
+                        <Typography fontWeight='bold' color='primary'>
+                          {upcomingEvents.length}
+                        </Typography>
+                      </Box>
+                    </Stack>
+                  </Paper>
+                </Grid>
+              </Grid>
+            </Box>
+          </Fade>
         )}
 
         {/* TAB 1: EDITAR PERFIL */}
         {tabValue === 1 && (
-          <EditProfileForm
-            user={user}
-            control={control}
-            handleSubmit={handleSubmit}
-            onSaveProfile={onSaveProfile}
-            isSaving={isSaving}
-            saveMessage={saveMessage}
-          />
+          <Fade in={tabValue === 1} timeout={500}>
+            <Box>
+              <EditProfileForm
+                user={user}
+                control={control}
+                handleSubmit={handleSubmit}
+                onSaveProfile={onSaveProfile}
+                isSaving={isSaving}
+                saveMessage={saveMessage}
+              />
+            </Box>
+          </Fade>
         )}
       </Container>
     </Box>

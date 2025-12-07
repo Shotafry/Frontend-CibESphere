@@ -20,7 +20,8 @@ import {
   InputAdornment,
   Card,
   CardContent,
-  Avatar
+  Avatar,
+  Fade
 } from '@mui/material'
 import { useLoaderData, useNavigate, useNavigation } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
@@ -710,236 +711,249 @@ const PanelDeOrganizador: FunctionComponent = () => {
       <Container maxWidth='xl' sx={{ mt: 5 }}>
         {/* TAB DASHBOARD */}
         {tabValue === 0 && (
-          <>
-            {/* Estadísticas */}
-            <Grid container spacing={3} sx={{ mb: 6 }}>
-              <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-                <StatCard
-                  title='Eventos Totales'
-                  value={stats.total_events}
-                  icon={<EventIcon />}
-                  color='#3B82F6'
-                  trend={`${upcomingEventsCount} Próximos`}
-                />
+          <Fade in={tabValue === 0} timeout={500}>
+            <Box>
+              {/* Estadísticas */}
+              <Grid container spacing={3} sx={{ mb: 6 }}>
+                <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+                  <StatCard
+                    title='Eventos Totales'
+                    value={stats.total_events}
+                    icon={<EventIcon />}
+                    color='#3B82F6'
+                    trend={`${upcomingEventsCount} Próximos`}
+                  />
+                </Grid>
+                <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+                  <StatCard
+                    title='Asistentes Totales'
+                    value={stats.total_attendees}
+                    icon={<GroupIcon />}
+                    color='#10B981'
+                    trend={`~${avgAttendees} por evento`}
+                  />
+                </Grid>
+                <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+                  <StatCard
+                    title='Ciudades'
+                    value={stats.total_cities}
+                    icon={<LocationCityIcon />}
+                    color='#8B5CF6'
+                  />
+                </Grid>
+                <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+                  <StatCard
+                    title='Publicados'
+                    value={stats.published_events}
+                    icon={<CheckCircleIcon />}
+                    color='#F59E0B'
+                  />
+                </Grid>
               </Grid>
-              <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-                <StatCard
-                  title='Asistentes Totales'
-                  value={stats.total_attendees}
-                  icon={<GroupIcon />}
-                  color='#10B981'
-                  trend={`~${avgAttendees} por evento`}
-                />
-              </Grid>
-              <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-                <StatCard
-                  title='Ciudades'
-                  value={stats.total_cities}
-                  icon={<LocationCityIcon />}
-                  color='#8B5CF6'
-                />
-              </Grid>
-              <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-                <StatCard
-                  title='Publicados'
-                  value={stats.published_events}
-                  icon={<CheckCircleIcon />}
-                  color='#F59E0B'
-                />
-              </Grid>
-            </Grid>
 
-            {/* Gestión de Eventos */}
-            <Typography
-              variant='h5'
-              fontWeight='bold'
-              sx={{ mb: 3, color: 'var(--Gray-800)' }}
-            >
-              Mis Eventos Recientes
-            </Typography>
-            <Paper
-              elevation={0}
-              sx={{
-                borderRadius: '20px',
-                overflow: 'hidden',
-                border: '1px solid #E2E8F0'
-              }}
-            >
-              {events.length > 0 ? (
-                events.map((event, index) => {
-                  const isLast = index === events.length - 1
-                  const occupancy =
-                    event.max_attendees && event.max_attendees > 0
-                      ? Math.round(
-                          (event.current_attendees / event.max_attendees) * 100
-                        )
-                      : 0
+              {/* Gestión de Eventos */}
+              <Typography
+                variant='h5'
+                fontWeight='bold'
+                sx={{ mb: 3, color: 'var(--Gray-800)' }}
+              >
+                Mis Eventos Recientes
+              </Typography>
+              <Paper
+                elevation={0}
+                sx={{
+                  borderRadius: '20px',
+                  overflow: 'hidden',
+                  border: '1px solid #E2E8F0'
+                }}
+              >
+                {events.length > 0 ? (
+                  events.map((event, index) => {
+                    const isLast = index === events.length - 1
+                    const occupancy =
+                      event.max_attendees && event.max_attendees > 0
+                        ? Math.round(
+                            (event.current_attendees / event.max_attendees) *
+                              100
+                          )
+                        : 0
 
-                  return (
-                    <React.Fragment key={event.id}>
-                      <Box
-                        sx={{
-                          display: 'flex',
-                          flexDirection: { xs: 'column', md: 'row' },
-                          justifyContent: 'space-between',
-                          alignItems: { xs: 'flex-start', md: 'center' },
-                          p: 3,
-                          gap: 2,
-                          transition: 'background 0.2s',
-                          '&:hover': { bgcolor: '#F8FAFC' }
-                        }}
-                      >
-                        <Box sx={{ flex: 1 }}>
-                          <Typography
-                            variant='h6'
-                            fontWeight='bold'
-                            onClick={() => navigate(`/eventos/${event.slug}`)}
-                            sx={{
-                              cursor: 'pointer',
-                              color: 'var(--Gray-800)',
-                              '&:hover': { color: 'var(--color-cadetblue)' }
-                            }}
-                          >
-                            {event.title}
-                          </Typography>
-                          <Stack
-                            direction='row'
-                            spacing={2}
-                            sx={{ mt: 1 }}
-                            alignItems='center'
-                          >
-                            <Typography variant='body2' color='text.secondary'>
-                              📅{' '}
-                              {new Date(event.start_date).toLocaleDateString(
-                                'es-ES',
-                                { dateStyle: 'long' }
-                              )}
-                            </Typography>
-                            <Chip
-                              label={
-                                event.status === 'published'
-                                  ? 'Publicado'
-                                  : 'Borrador'
-                              }
-                              size='small'
+                    return (
+                      <React.Fragment key={event.id}>
+                        <Box
+                          sx={{
+                            display: 'flex',
+                            flexDirection: { xs: 'column', md: 'row' },
+                            justifyContent: 'space-between',
+                            alignItems: { xs: 'flex-start', md: 'center' },
+                            p: 3,
+                            gap: 2,
+                            transition: 'background 0.2s',
+                            '&:hover': { bgcolor: '#F8FAFC' }
+                          }}
+                        >
+                          <Box sx={{ flex: 1 }}>
+                            <Typography
+                              variant='h6'
+                              fontWeight='bold'
+                              onClick={() => navigate(`/eventos/${event.slug}`)}
                               sx={{
-                                bgcolor:
-                                  event.status === 'published'
-                                    ? '#DCFCE7'
-                                    : '#F3F4F6',
-                                color:
-                                  event.status === 'published'
-                                    ? '#166534'
-                                    : '#4B5563',
-                                fontWeight: 'bold'
-                              }}
-                            />
-                          </Stack>
-                        </Box>
-
-                        {/* Barra de Aforo */}
-                        {event.max_attendees && event.max_attendees > 0 && (
-                          <Box sx={{ width: { xs: '100%', md: 200 } }}>
-                            <Box
-                              sx={{
-                                display: 'flex',
-                                justifyContent: 'space-between',
-                                mb: 0.5
+                                cursor: 'pointer',
+                                color: 'var(--Gray-800)',
+                                '&:hover': { color: 'var(--color-cadetblue)' }
                               }}
                             >
+                              {event.title}
+                            </Typography>
+                            <Stack
+                              direction='row'
+                              spacing={2}
+                              sx={{ mt: 1 }}
+                              alignItems='center'
+                            >
                               <Typography
-                                variant='caption'
-                                fontWeight='bold'
+                                variant='body2'
                                 color='text.secondary'
                               >
-                                Aforo
+                                📅{' '}
+                                {new Date(event.start_date).toLocaleDateString(
+                                  'es-ES',
+                                  { dateStyle: 'long' }
+                                )}
                               </Typography>
-                              <Typography
-                                variant='caption'
-                                fontWeight='bold'
-                                color={
-                                  occupancy >= 100
-                                    ? 'error.main'
-                                    : 'primary.main'
+                              <Chip
+                                label={
+                                  event.status === 'published'
+                                    ? 'Publicado'
+                                    : 'Borrador'
                                 }
-                              >
-                                {occupancy}% ({event.current_attendees}/
-                                {event.max_attendees})
-                              </Typography>
-                            </Box>
-                            <LinearProgress
-                              variant='determinate'
-                              value={occupancy > 100 ? 100 : occupancy}
-                              sx={{
-                                height: 6,
-                                borderRadius: 3,
-                                bgcolor: '#E2E8F0',
-                                '& .MuiLinearProgress-bar': {
+                                size='small'
+                                sx={{
                                   bgcolor:
-                                    occupancy >= 100 ? '#EF4444' : '#3B82F6'
-                                }
-                              }}
-                            />
+                                    event.status === 'published'
+                                      ? '#DCFCE7'
+                                      : '#F3F4F6',
+                                  color:
+                                    event.status === 'published'
+                                      ? '#166534'
+                                      : '#4B5563',
+                                  fontWeight: 'bold'
+                                }}
+                              />
+                            </Stack>
                           </Box>
-                        )}
 
-                        <Box sx={{ display: 'flex', gap: 1 }}>
-                          <Button
-                            variant='outlined'
-                            startIcon={<EditIcon />}
-                            onClick={() => onEditarEventoClick(event.slug)}
-                            sx={{ borderRadius: '10px', textTransform: 'none' }}
-                          >
-                            Editar
-                          </Button>
-                          <IconButton
-                            color='error'
-                            onClick={() => handleDeleteEvent(event.id)}
-                            sx={{
-                              bgcolor: '#FEF2F2',
-                              '&:hover': { bgcolor: '#FEE2E2' }
-                            }}
-                          >
-                            <DeleteIcon />
-                          </IconButton>
+                          {/* Barra de Aforo */}
+                          {event.max_attendees && event.max_attendees > 0 && (
+                            <Box sx={{ width: { xs: '100%', md: 200 } }}>
+                              <Box
+                                sx={{
+                                  display: 'flex',
+                                  justifyContent: 'space-between',
+                                  mb: 0.5
+                                }}
+                              >
+                                <Typography
+                                  variant='caption'
+                                  fontWeight='bold'
+                                  color='text.secondary'
+                                >
+                                  Aforo
+                                </Typography>
+                                <Typography
+                                  variant='caption'
+                                  fontWeight='bold'
+                                  color={
+                                    occupancy >= 100
+                                      ? 'error.main'
+                                      : 'primary.main'
+                                  }
+                                >
+                                  {occupancy}% ({event.current_attendees}/
+                                  {event.max_attendees})
+                                </Typography>
+                              </Box>
+                              <LinearProgress
+                                variant='determinate'
+                                value={occupancy > 100 ? 100 : occupancy}
+                                sx={{
+                                  height: 6,
+                                  borderRadius: 3,
+                                  bgcolor: '#E2E8F0',
+                                  '& .MuiLinearProgress-bar': {
+                                    bgcolor:
+                                      occupancy >= 100 ? '#EF4444' : '#3B82F6'
+                                  }
+                                }}
+                              />
+                            </Box>
+                          )}
+
+                          <Box sx={{ display: 'flex', gap: 1 }}>
+                            <Button
+                              variant='outlined'
+                              startIcon={<EditIcon />}
+                              onClick={() => onEditarEventoClick(event.slug)}
+                              sx={{
+                                borderRadius: '10px',
+                                textTransform: 'none'
+                              }}
+                            >
+                              Editar
+                            </Button>
+                            <IconButton
+                              color='error'
+                              onClick={() => handleDeleteEvent(event.id)}
+                              sx={{
+                                bgcolor: '#FEF2F2',
+                                '&:hover': { bgcolor: '#FEE2E2' }
+                              }}
+                            >
+                              <DeleteIcon />
+                            </IconButton>
+                          </Box>
                         </Box>
-                      </Box>
-                      {!isLast && <Divider />}
-                    </React.Fragment>
-                  )
-                })
-              ) : (
-                <Box sx={{ p: 8, textAlign: 'center' }}>
-                  <EventIcon
-                    sx={{ fontSize: 60, color: 'var(--Gray-300)', mb: 2 }}
-                  />
-                  <Typography variant='h6' color='text.secondary'>
-                    No has creado ningún evento todavía.
-                  </Typography>
-                  <Button
-                    variant='contained'
-                    sx={{ mt: 2, borderRadius: '20px' }}
-                    onClick={onCrearEventoClick}
-                  >
-                    Crear mi primer evento
-                  </Button>
-                </Box>
-              )}
-            </Paper>
-          </>
+                        {!isLast && <Divider />}
+                      </React.Fragment>
+                    )
+                  })
+                ) : (
+                  <Box sx={{ p: 8, textAlign: 'center' }}>
+                    <EventIcon
+                      sx={{ fontSize: 60, color: 'var(--Gray-300)', mb: 2 }}
+                    />
+                    <Typography variant='h6' color='text.secondary'>
+                      No has creado ningún evento todavía.
+                    </Typography>
+                    <Button
+                      variant='contained'
+                      sx={{ mt: 2, borderRadius: '20px' }}
+                      onClick={onCrearEventoClick}
+                    >
+                      Crear mi primer evento
+                    </Button>
+                  </Box>
+                )}
+              </Paper>
+            </Box>
+          </Fade>
         )}
 
         {/* TAB PERFIL */}
         {tabValue === 1 && (
-          <ProfileTabContent
-            user={user}
-            control={control}
-            errors={errors}
-            isSaving={isSaving}
-            handleSubmit={handleSubmit}
-            onSaveProfile={onSaveProfile}
-            saveMessage={saveMessage}
-          />
+          <Fade in={tabValue === 1} timeout={500}>
+            <Box>
+              <ProfileTabContent
+                user={user}
+                control={control}
+                errors={errors}
+                isSaving={isSaving}
+                handleSubmit={handleSubmit}
+                onSaveProfile={onSaveProfile}
+                saveMessage={saveMessage}
+              />
+            </Box>
+          </Fade>
         )}
       </Container>
     </Box>

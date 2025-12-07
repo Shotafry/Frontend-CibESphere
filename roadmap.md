@@ -74,6 +74,7 @@ El objetivo es enriquecer la información que se muestra, dando más valor tanto
 - **✅ Tarea 3.6 (Mejora Paneles - Antes 5.3):** Mejorar el `PanelDeOrganizador.tsx`.
   - **Estado:** Completado.
   - **Acción:** Se ha rediseñado completamente el panel con una estética premium, layout "Full Width" para maximizar el espacio, tarjetas de estadísticas mejoradas (con tendencias y colores), y una lista de eventos con barras de progreso de aforo. La pestaña de perfil ahora cuenta con un diseño **"Immersive Header"** con previsualización en tiempo real y efectos glassmorphism.
+- **✅ Tarea 3.7** Se rediseño el panel de usuario y se creo tambien una pagina de perfil de usuario moderna.
 
 ---
 

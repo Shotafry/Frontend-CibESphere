@@ -15,13 +15,56 @@ import { mockEvents, mockUsers } from '../mocks/db'
 
 const SIMULATED_DELAY = 800
 
+// --- LOCAL STORAGE PERSISTENCE HELPERS ---
+const DBS_KEYS = {
+  USERS: 'cibesphere_users_v1',
+  EVENTS: 'cibesphere_events_v1'
+}
+
+// Initialize local state from LocalStorage or fallback to mocks
+let localUsers: User[] = (() => {
+  try {
+    const stored = localStorage.getItem(DBS_KEYS.USERS)
+    return stored ? JSON.parse(stored) : [...mockUsers]
+  } catch (e) {
+    console.error('Error loading users from LS:', e)
+    return [...mockUsers]
+  }
+})()
+
+let localEvents: Event[] = (() => {
+  try {
+    const stored = localStorage.getItem(DBS_KEYS.EVENTS)
+    return stored ? JSON.parse(stored) : [...mockEvents]
+  } catch (e) {
+    console.error('Error loading events from LS:', e)
+    return [...mockEvents]
+  }
+})()
+
+const saveUsers = () => {
+  try {
+    localStorage.setItem(DBS_KEYS.USERS, JSON.stringify(localUsers))
+  } catch (e) {
+    console.error('Error saving users to LS:', e)
+  }
+}
+
+const saveEvents = () => {
+  try {
+    localStorage.setItem(DBS_KEYS.EVENTS, JSON.stringify(localEvents))
+  } catch (e) {
+    console.error('Error saving events to LS:', e)
+  }
+}
+
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 
 // --- login ---
 export const login = (data: LoginDTO): Promise<AuthResponse> => {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
-      const user = mockUsers.find(
+      const user = localUsers.find(
         (u) => u.email === data.email && u.password === data.password
       )
       if (user) {
@@ -44,7 +87,7 @@ export const login = (data: LoginDTO): Promise<AuthResponse> => {
 export const register = (data: RegisterDTO): Promise<AuthResponse> => {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
-      if (mockUsers.find((u) => u.email === data.email)) {
+      if (localUsers.find((u) => u.email === data.email)) {
         reject(new Error('El email ya está registrado'))
         return
       }
@@ -52,7 +95,7 @@ export const register = (data: RegisterDTO): Promise<AuthResponse> => {
       let newUserOrg: OrganizationSummary | undefined = undefined
       if (data.role === Role.Organizer && data.organization_name) {
         newUserOrg = {
-          id: `org-00${mockUsers.length + 1}`,
+          id: `org-00${localUsers.length + 1}`,
           slug: data.organization_name.toLowerCase().replace(/\s+/g, '-'),
           name: data.organization_name,
           logo_url: '',
@@ -75,7 +118,8 @@ export const register = (data: RegisterDTO): Promise<AuthResponse> => {
         organization: newUserOrg
       }
 
-      mockUsers.push(newUser)
+      localUsers.push(newUser)
+      saveUsers()
 
       const authResponse: AuthResponse = {
         user: newUser,
@@ -94,7 +138,7 @@ export const getEvents = (filters: EventFilterParams): Promise<Event[]> => {
   return new Promise((resolve) => {
     setTimeout(() => {
       let filteredEvents = [
-        ...mockEvents.filter((e) => e.status === 'published')
+        ...localEvents.filter((e) => e.status === 'published')
       ]
       if (filters.startDate) {
         filteredEvents = filteredEvents.filter(
@@ -137,7 +181,7 @@ export const getEvents = (filters: EventFilterParams): Promise<Event[]> => {
 export const getEventBySlug = (slug: string): Promise<Event> => {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
-      const event = mockEvents.find((e) => e.slug === slug)
+      const event = localEvents.find((e) => e.slug === slug)
       if (event) {
         resolve(event)
       } else {
@@ -154,9 +198,10 @@ export const subscribeToEvent = (
 ): Promise<{ message: string }> => {
   return new Promise((resolve) => {
     setTimeout(() => {
-      const eventIndex = mockEvents.findIndex((e) => e.id === eventId)
+      const eventIndex = localEvents.findIndex((e) => e.id === eventId)
       if (eventIndex !== -1) {
-        mockEvents[eventIndex].current_attendees += 1
+        localEvents[eventIndex].current_attendees += 1
+        saveEvents()
       }
 
       console.log(`Email ${email} suscrito al evento ${eventId}`)
@@ -169,7 +214,7 @@ export const subscribeToEvent = (
 export const getMe = (userId: string): Promise<User> => {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
-      const user = mockUsers.find((u) => u.id === userId)
+      const user = localUsers.find((u) => u.id === userId)
       if (user) {
         resolve(user)
       } else {
@@ -188,17 +233,21 @@ export const unsubscribeFromEvent = (
     setTimeout(() => {
       // 1. Modificamos la lista de favoritos del usuario (simulado)
       // En un caso real, esto sería una llamada a la API
-      const userIndex = mockUsers.findIndex((u) => u.id === userId)
+      // 1. Modificamos la lista de favoritos del usuario (simulado)
+      // En un caso real, esto sería una llamada a la API
+      const userIndex = localUsers.findIndex((u) => u.id === userId)
       if (userIndex !== -1) {
-        mockUsers[userIndex].FavoriteEvents = mockUsers[
+        localUsers[userIndex].FavoriteEvents = localUsers[
           userIndex
         ].FavoriteEvents?.filter((event) => event.id !== eventId)
+        saveUsers()
       }
 
       // Decrementar el contador de asistentes del evento
-      const eventIndex = mockEvents.findIndex((e) => e.id === eventId)
-      if (eventIndex !== -1 && mockEvents[eventIndex].current_attendees > 0) {
-        mockEvents[eventIndex].current_attendees -= 1
+      const eventIndex = localEvents.findIndex((e) => e.id === eventId)
+      if (eventIndex !== -1 && localEvents[eventIndex].current_attendees > 0) {
+        localEvents[eventIndex].current_attendees -= 1
+        saveEvents()
       }
 
       console.log(
@@ -215,7 +264,7 @@ export const getOrganizerDashboard = (
 ): Promise<DashboardStats> => {
   return new Promise((resolve) => {
     setTimeout(() => {
-      const orgEvents = mockEvents.filter((e) => e.organization.id === orgId)
+      const orgEvents = localEvents.filter((e) => e.organization.id === orgId)
       const totalAttendees = orgEvents.reduce(
         (sum, e) => sum + e.current_attendees,
         0
@@ -236,7 +285,7 @@ export const getOrganizerDashboard = (
 export const getOrganizationEvents = (orgId: string): Promise<Event[]> => {
   return new Promise((resolve) => {
     setTimeout(() => {
-      const orgEvents = mockEvents.filter((e) => e.organization.id === orgId)
+      const orgEvents = localEvents.filter((e) => e.organization.id === orgId)
       resolve(orgEvents)
     }, SIMULATED_DELAY / 2)
   })
@@ -249,7 +298,7 @@ export const getOrganizationBySlug = (
   return new Promise((resolve, reject) => {
     setTimeout(() => {
       // Buscamos la organización en los eventos existentes
-      const eventWithOrg = mockEvents.find((e) => e.organization.slug === slug)
+      const eventWithOrg = localEvents.find((e) => e.organization.slug === slug)
       if (eventWithOrg) {
         resolve(eventWithOrg.organization)
       } else {
@@ -267,7 +316,7 @@ export const createEvent = (
   return new Promise((resolve) => {
     setTimeout(() => {
       const newEvent: Event = {
-        id: `evt-00${mockEvents.length + 1}`,
+        id: `evt-00${localEvents.length + 1}`,
         slug: eventData.title.toLowerCase().replace(/\s+/g, '-'),
         status: 'published',
         current_attendees: 0,
@@ -279,7 +328,8 @@ export const createEvent = (
         category: eventData.category || eventData.tags[0] || 'General',
         type: eventData.type || 'conference'
       }
-      mockEvents.push(newEvent)
+      localEvents.push(newEvent)
+      saveEvents()
       resolve(newEvent)
     }, SIMULATED_DELAY)
   })
@@ -292,12 +342,12 @@ export const updateEvent = (
 ): Promise<Event> => {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
-      const eventIndex = mockEvents.findIndex((e) => e.id === eventId)
+      const eventIndex = localEvents.findIndex((e) => e.id === eventId)
       if (eventIndex === -1) {
         return reject(new Error('Evento no encontrado para actualizar'))
       }
 
-      const originalEvent = mockEvents[eventIndex]
+      const originalEvent = localEvents[eventIndex]
       const updatedEvent: Event = {
         ...originalEvent,
         ...eventData,
@@ -308,7 +358,8 @@ export const updateEvent = (
         organization: originalEvent.organization
       }
 
-      mockEvents[eventIndex] = updatedEvent
+      localEvents[eventIndex] = updatedEvent
+      saveEvents()
       resolve(updatedEvent)
     }, SIMULATED_DELAY)
   })
@@ -318,9 +369,10 @@ export const updateEvent = (
 export const deleteEvent = (eventId: string): Promise<void> => {
   return new Promise((resolve) => {
     setTimeout(() => {
-      const index = mockEvents.findIndex((e) => e.id === eventId)
+      const index = localEvents.findIndex((e) => e.id === eventId)
       if (index !== -1) {
-        mockEvents.splice(index, 1)
+        localEvents.splice(index, 1)
+        saveEvents()
       }
       resolve()
     }, SIMULATED_DELAY / 2)
@@ -337,24 +389,26 @@ export const updateOrganization = async (
   // Aquí actualizamos los eventos asociados para reflejar cambios (mock)
   let updatedOrg: OrganizationSummary | undefined
 
-  mockEvents.forEach((e) => {
+  localEvents.forEach((e) => {
     if (e.organization.id === orgId) {
       e.organization = { ...e.organization, ...data }
       updatedOrg = e.organization
     }
   })
+  if (updatedOrg) saveEvents()
 
   // También actualizar en mockUsers si el usuario tiene esa org
-  mockUsers.forEach((u) => {
+  localUsers.forEach((u) => {
     if (u.organization && u.organization.id === orgId) {
       u.organization = { ...u.organization, ...data }
       updatedOrg = u.organization
     }
   })
+  saveUsers()
 
   if (!updatedOrg) {
     // Si no se encontró en eventos ni usuarios, buscar en eventos de nuevo por si acaso
-    const event = mockEvents.find((e) => e.organization.id === orgId)
+    const event = localEvents.find((e) => e.organization.id === orgId)
     if (event) updatedOrg = event.organization
   }
 
@@ -376,10 +430,11 @@ export const updateUser = async (
   data: Partial<User>
 ): Promise<User> => {
   await delay(500)
-  const userIndex = mockUsers.findIndex((u) => u.id === userId)
+  const userIndex = localUsers.findIndex((u) => u.id === userId)
   if (userIndex === -1) throw new Error('Usuario no encontrado')
 
-  const updatedUser = { ...mockUsers[userIndex], ...data }
-  mockUsers[userIndex] = updatedUser
+  const updatedUser = { ...localUsers[userIndex], ...data }
+  localUsers[userIndex] = updatedUser
+  saveUsers()
   return updatedUser
 }
