@@ -119,14 +119,16 @@ export const Header: FunctionComponent = () => {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          padding: '16px 32px', // Padding simple
-          boxSizing: 'border-box'
+          padding: { xs: '10px 8px', sm: '12px 16px', md: '16px 32px' },
+          boxSizing: 'border-box',
+          gap: { xs: 1, sm: 2 }
+
         }}
       >
         <img
           style={{
-            height: '48px',
-            width: '180px',
+            height: '36px',
+            width: '120px',
             objectFit: 'contain',
             cursor: 'pointer'
           }}
@@ -159,7 +161,7 @@ export const Header: FunctionComponent = () => {
                 variant='contained'
                 onClick={onPanelClick}
                 sx={{
-                  borderRadius: '25px',
+                  borderRadius: '12px',
                   background: 'var(--gradient-button-primary)',
                   color: 'var(--White)',
                   '&:hover': {
@@ -173,7 +175,7 @@ export const Header: FunctionComponent = () => {
                 variant='outlined'
                 onClick={logout}
                 sx={{
-                  borderRadius: '25px',
+                  borderRadius: '12px',
                   borderColor: buttonBorderColor,
                   color: buttonColor,
                   '&:hover': {
@@ -190,7 +192,7 @@ export const Header: FunctionComponent = () => {
               variant='contained'
               onClick={onLoginClick}
               sx={{
-                borderRadius: '25px',
+                borderRadius: '12px',
                 background: 'var(--gradient-button-primary)',
                 color: 'var(--White)',
                 '&:hover': {

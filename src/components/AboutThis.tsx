@@ -6,14 +6,16 @@ const ComunidadBox: React.FC = () => {
   const [open, setOpen] = useState(false);
 
   return (
+
     <Box
       className="comunidad-hero"
       sx={{
-        maxWidth: 1362,
         width: '100%',
         margin: '0 auto',
-        mb: 6,
-        minHeight: { xs: 400, md: 520 },
+        mb: { xs: 3, md: 6 },
+        minHeight: { xs: 340, md: 520 },
+        px: { xs: 1, sm: 3, md: 0 },
+        py: { xs: 2, md: 0 },
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
@@ -22,7 +24,7 @@ const ComunidadBox: React.FC = () => {
         overflow: 'hidden',
         background: 'linear-gradient(120deg, #01c0fa 0%, #282828 100%)',
         boxShadow: '0 8px 32px rgba(36, 165, 182, 0.15)',
-        borderRadius: 24,
+        borderRadius: { xs: 3, md: 24 },
         animation: 'fadeInHero 1.2s cubic-bezier(.4,0,.2,1)'
       }}
     >
@@ -39,6 +41,7 @@ const ComunidadBox: React.FC = () => {
           }
         `}
       </style>
+
       <Box
         sx={{
           display: 'flex',
@@ -64,7 +67,7 @@ const ComunidadBox: React.FC = () => {
           fontWeight: 900,
           textAlign: 'center',
           textShadow: '0 2px 8px #282828',
-          mb: 2,
+          mb: 4,
           letterSpacing: 2,
           fontFamily: 'Satoshi, Arial, Helvetica, sans-serif',
           animation: 'fadeInHero 1.5s cubic-bezier(.4,0,.2,1)'
@@ -76,7 +79,7 @@ const ComunidadBox: React.FC = () => {
         sx={{
           color: '#004F6A',
           fontSize: { xs: '1.2rem', md: '1.5rem' },
-          textAlign: 'center',
+          textAlign: 'left',
           maxWidth: 700,
           mb: 3,
           fontWeight: 500,
@@ -112,7 +115,18 @@ const ComunidadBox: React.FC = () => {
       >
         ¿Cómo participar?
       </Typography>
-      <Box sx={{ display: 'flex', justifyContent: 'center', gap: 3, mt: 2, animation: 'fadeInHero 2.4s cubic-bezier(.4,0,.2,1)' }}>
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: { xs: 'column', sm: 'row' },
+          justifyContent: 'center',
+          alignItems: 'center',
+          gap: { xs: 2, sm: 3 },
+          mt: 2,
+          width: '100%',
+          animation: 'fadeInHero 2.4s cubic-bezier(.4,0,.2,1)'
+        }}
+      >
         <Button
           variant="contained"
           color="primary"
@@ -121,9 +135,8 @@ const ComunidadBox: React.FC = () => {
             color: '#fff',
             fontWeight: 700,
             fontFamily: 'Satoshi, Arial, Helvetica, sans-serif',
-            px: 4,
-            py: 1.8,
-            borderRadius: '16px',
+            p: { xs: 1, md: 4 },
+            borderRadius: '12px',
             fontSize: '1.2rem',
             boxShadow: '0 4px 16px rgba(36, 165, 182, 0.18)',
             transition: 'transform 0.2s',
@@ -145,9 +158,8 @@ const ComunidadBox: React.FC = () => {
             color: '#fff',
             fontWeight: 700,
             fontFamily: 'Satoshi, Arial, Helvetica, sans-serif',
-            px: 4,
-            py: 1.8,
-            borderRadius: '16px',
+            p: { xs: 1, md: 4 },
+            borderRadius: '12px',
             fontSize: '1.2rem',
             boxShadow: '0 4px 16px rgba(36, 165, 182, 0.18)',
             transition: 'transform 0.2s',
