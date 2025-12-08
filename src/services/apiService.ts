@@ -10,7 +10,8 @@ import {
   DashboardStats,
   OrganizationSummary,
   CreateEventDTO,
-  Notification
+  Notification,
+  Review
 } from '../types'
 import { mockEvents, mockUsers } from '../mocks/db'
 
@@ -528,5 +529,80 @@ export const markNotificationAsRead = (id: string): Promise<void> => {
       }
       resolve()
     }, 300)
+  })
+}
+
+// --- RESEÑAS (MOCK) ---
+
+const saveReviews = () => {
+  try {
+    localStorage.setItem('cibesphere_reviews_v1', JSON.stringify(localReviews))
+  } catch (e) {
+    console.error('Error saving reviews to LS:', e)
+  }
+}
+
+let localReviews: Review[] = (() => {
+  try {
+    const stored = localStorage.getItem('cibesphere_reviews_v1')
+    return stored
+      ? JSON.parse(stored)
+      : [
+          {
+            id: 'rev-1',
+            eventId: 'evt-001',
+            userId: 'u-002',
+            userName: 'María García',
+            userAvatar: '',
+            userCompany: 'TechSoft',
+            userPosition: 'Analista de Seguridad',
+            userQuote: 'Protegiendo el futuro digital, bit a bit.',
+            rating: 5,
+            comment:
+              '¡Increíble evento! Aprendí muchísimo sobre ciberseguridad.',
+            date: new Date(Date.now() - 864000000).toISOString()
+          },
+          {
+            id: 'rev-2',
+            eventId: 'evt-001',
+            userId: 'u-003',
+            userName: 'Carlos Ruiz',
+            userAvatar: '',
+            userCompany: 'CyberCorp',
+            userPosition: 'Director de Tecnología',
+            userQuote: 'Innovación es la clave del éxito.',
+            rating: 4,
+            comment:
+              'Muy buena organización, aunque el catering podría mejorar.',
+            date: new Date(Date.now() - 432000000).toISOString()
+          }
+        ]
+  } catch (e) {
+    return []
+  }
+})()
+
+export const getEventReviews = (eventId: string): Promise<Review[]> => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(localReviews.filter((r) => r.eventId === eventId))
+    }, 300)
+  })
+}
+
+export const createReview = (
+  review: Omit<Review, 'id' | 'date'>
+): Promise<Review> => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      const newReview: Review = {
+        ...review,
+        id: `rev-${Date.now()}`,
+        date: new Date().toISOString()
+      }
+      localReviews.push(newReview)
+      saveReviews()
+      resolve(newReview)
+    }, 500)
   })
 }

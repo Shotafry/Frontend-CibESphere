@@ -18,12 +18,24 @@ import {
   Fade,
   Switch,
   FormControlLabel,
-  FormGroup
+  FormGroup,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Rating
 } from '@mui/material'
+import StarHalfIcon from '@mui/icons-material/StarHalf'
+import FormatQuoteIcon from '@mui/icons-material/FormatQuote'
 import { useLoaderData, useNavigate, useNavigation } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { Event, User } from '../types'
-import * as apiService from '../services/apiService'
+import {
+  createReview,
+  getEventReviews,
+  unsubscribeFromEvent,
+  updateUser
+} from '../services/apiService'
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday'
 import MailOutlineIcon from '@mui/icons-material/MailOutline'
 import PersonIcon from '@mui/icons-material/Person'
@@ -81,7 +93,7 @@ const PanelDeUsuario: FunctionComponent = () => {
   const handleCancelSubscription = async (eventId: string) => {
     if (!user) return
     try {
-      await apiService.unsubscribeFromEvent(user.id, eventId)
+      await unsubscribeFromEvent(user.id, eventId)
       const newSubscribedEvents = subscribedEvents.filter(
         (e) => e.id !== eventId
       )
@@ -98,7 +110,7 @@ const PanelDeUsuario: FunctionComponent = () => {
     setIsSaving(true)
     setSaveMessage(null)
     try {
-      const updatedUser = await apiService.updateUser(user.id, data)
+      const updatedUser = await updateUser(user.id, data)
       refreshUserData(updatedUser)
       setSaveMessage({
         type: 'success',
@@ -109,6 +121,64 @@ const PanelDeUsuario: FunctionComponent = () => {
       setSaveMessage({ type: 'error', text: 'Error al actualizar el perfil' })
     } finally {
       setIsSaving(false)
+    }
+  }
+
+  // Review Modal Logic
+  const [reviewModalOpen, setReviewModalOpen] = useState(false)
+  const [selectedEventToReview, setSelectedEventToReview] =
+    useState<Event | null>(null)
+  const [reviewRating, setReviewRating] = useState<number | null>(5)
+  const [reviewComment, setReviewComment] = useState('')
+
+  const handleOpenReviewModal = async (event: Event) => {
+    // Check if user has already reviewed this event
+    try {
+      const existingReviews = await getEventReviews(event.id)
+      const userReview = existingReviews.find((r) => r.userId === user?.id)
+
+      if (userReview) {
+        setSaveMessage({
+          type: 'error',
+          text: 'Ya has escrito una reseña para este evento. Solo se permite una por usuario.'
+        })
+        return
+      }
+
+      setSelectedEventToReview(event)
+      setReviewModalOpen(true)
+      setReviewRating(5)
+      setReviewComment('')
+    } catch (error) {
+      console.error('Error checking reviews:', error)
+    }
+  }
+
+  const handleCloseReviewModal = () => {
+    setReviewModalOpen(false)
+    setSelectedEventToReview(null)
+  }
+
+  const handleSubmitReview = async () => {
+    if (!selectedEventToReview || !user) return
+
+    try {
+      await createReview({
+        eventId: selectedEventToReview.id,
+        userId: user.id,
+        userName: user.first_name + ' ' + user.last_name,
+        userAvatar: user.avatar_url,
+        userCompany: user.company,
+        userPosition: user.position,
+        userQuote: user.personal_quote,
+        rating: reviewRating || 5,
+        comment: reviewComment
+      })
+      setReviewModalOpen(false)
+      setSaveMessage({ type: 'success', text: 'Reseña enviada correctamente' })
+    } catch (error) {
+      console.error('Error submitting review:', error)
+      setSaveMessage({ type: 'error', text: 'Error al enviar la reseña' })
     }
   }
 
@@ -285,7 +355,59 @@ const PanelDeUsuario: FunctionComponent = () => {
                       </Typography>
                       <Stack spacing={3} sx={{ opacity: 0.8 }}>
                         {pastEvents.map((event) => (
-                          <EventCard key={event.id} event={event} />
+                          <Paper
+                            key={event.id}
+                            elevation={0}
+                            sx={{
+                              p: 0,
+                              borderRadius: '25px',
+                              overflow: 'hidden',
+                              bgcolor: 'white',
+                              border: '1px solid #E2E8F0',
+                              transition: 'transform 0.2s, box-shadow 0.2s',
+                              '&:hover': {
+                                transform: 'translateY(-4px)',
+                                boxShadow: '0 12px 24px rgba(0,0,0,0.1)'
+                              }
+                            }}
+                          >
+                            {/* We can reuse EventCard but we want to customize the footer. 
+                                Since EventCard has its own styles, we can wrap it or just use it. 
+                                To avoid layout issues, let's keep EventCard as is but add an action bar below it.
+                                Or better: Create a "Review Action" wrapper.
+                             */}
+                            <EventCard event={event} />
+                            <Box
+                              sx={{
+                                p: 2,
+                                borderTop: '1px solid #E2E8F0',
+                                display: 'flex',
+                                justifyContent: 'flex-end',
+                                bgcolor: '#FAFAFA'
+                              }}
+                            >
+                              <Button
+                                variant='contained'
+                                startIcon={<StarHalfIcon />}
+                                onClick={() => handleOpenReviewModal(event)}
+                                sx={{
+                                  textTransform: 'none',
+                                  borderRadius: '10px',
+                                  bgcolor: 'var(--color-cadetblue)',
+                                  color: 'white',
+                                  fontWeight: 'bold',
+                                  boxShadow:
+                                    '0 4px 12px rgba(79, 186, 200, 0.3)',
+                                  '&:hover': {
+                                    bgcolor: 'var(--color-cadetblue)',
+                                    filter: 'brightness(1.1)'
+                                  }
+                                }}
+                              >
+                                Escribir Reseña
+                              </Button>
+                            </Box>
+                          </Paper>
                         ))}
                       </Stack>
                     </Box>
@@ -500,6 +622,56 @@ const PanelDeUsuario: FunctionComponent = () => {
           </Fade>
         )}
       </Container>
+
+      {/* DIALOG DE RESEÑA */}
+      <Dialog
+        open={reviewModalOpen}
+        onClose={handleCloseReviewModal}
+        fullWidth
+        maxWidth='sm'
+      >
+        <DialogTitle sx={{ fontWeight: 'bold' }}>Escribir Reseña</DialogTitle>
+        <DialogContent>
+          <Typography variant='body2' color='text.secondary' gutterBottom>
+            Comparte tu experiencia en {selectedEventToReview?.title}
+          </Typography>
+          <Box sx={{ my: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
+            <Typography component='legend'>Valoración:</Typography>
+            <Rating
+              name='simple-controlled'
+              value={reviewRating}
+              onChange={(event, newValue) => {
+                setReviewRating(newValue)
+              }}
+            />
+          </Box>
+          <TextField
+            autoFocus
+            margin='dense'
+            id='comment'
+            label='Tu comentario'
+            type='text'
+            fullWidth
+            variant='outlined'
+            multiline
+            rows={4}
+            value={reviewComment}
+            onChange={(e) => setReviewComment(e.target.value)}
+          />
+        </DialogContent>
+        <DialogActions sx={{ p: 3 }}>
+          <Button onClick={handleCloseReviewModal} color='inherit'>
+            Cancelar
+          </Button>
+          <Button
+            onClick={handleSubmitReview}
+            variant='contained'
+            sx={{ bgcolor: 'var(--color-cadetblue)', color: 'white' }}
+          >
+            Enviar Reseña
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   )
 }

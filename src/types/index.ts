@@ -60,6 +60,7 @@ export interface User {
     github?: string
     website?: string
   }
+  personal_quote?: string
 }
 
 // --- TIPOS DE ORGANIZACIÓN ---
@@ -188,4 +189,20 @@ export interface Notification {
   is_read: boolean
   type: 'info' | 'success' | 'warning' | 'error'
   link?: string
+}
+
+// --- RESEÑAS ---
+
+export interface Review {
+  id: string
+  eventId: string
+  userId: string
+  userName: string
+  userAvatar?: string
+  userCompany?: string
+  userPosition?: string
+  userQuote?: string
+  rating: number
+  comment: string
+  date: string
 }
