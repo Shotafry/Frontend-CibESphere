@@ -29,30 +29,35 @@ export const Footer: FunctionComponent = () => {
         sx={{
           display: 'flex',
           flexDirection: { xs: 'column', md: 'row' },
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          gap: 3
+          justifyContent: { md: 'center', xs: 'space-between' },
+          margin: '8px',
+          alignItems: { xs: 'flex-start', md: 'center' },
+          gap: { xs: 2, md: 3 },
+          px: { xs: 0.5, md: 0 }
+
         }}
       >
         {/* 1. Logo (Nuevo) */}
         {/* 1. Logo (Nuevo) - Ahora con Link */}
-        <RouterLink to='/'>
-          <img
-            style={{
-              height: '40px', // Ajustado a la altura del logo de solo letras
-              objectFit: 'contain'
-            }}
-            alt='CibESphere Logo'
-            src='/Logo-Solo-Letras.png'
-          />
-        </RouterLink>
+        <Box sx={{ width: '100%', display: 'flex', justifyContent: { xs: 'flex-start', md: 'center' }, mb: { xs: 2, md: 0 } }}>
+          <RouterLink to='/'>
+            <img
+              style={{
+                height: '40px',
+                objectFit: 'contain',
+              }}
+              alt='CibESphere Logo'
+              src='/Logo-Solo-Letras.png'
+            />
+          </RouterLink>
+        </Box>
 
         {/* 2. Enlaces (sin cambios) */}
         <Box
           sx={{
-            display: 'flex',
-            gap: 4,
-            textAlign: { xs: 'center', md: 'left' }
+            display: 'contents',
+            gap: 2,
+            textAlign: { xs: 'left', md: 'center' }
           }}
         >
           <MuiLink
@@ -79,7 +84,11 @@ export const Footer: FunctionComponent = () => {
         <Typography
           variant='body2'
           color='var(--Gray-700)'
-          sx={{ textAlign: { xs: 'center', md: 'right' } }}
+          sx={{
+            width: '100%',
+            textAlign: { xs: 'left', md: 'center' },
+            mt: { xs: 2, md: 0 }
+          }}
         >
           © {new Date().getFullYear()} CibESphere. Todos los derechos
           reservados.

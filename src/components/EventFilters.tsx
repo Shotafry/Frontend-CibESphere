@@ -100,9 +100,9 @@ export const EventFilters: React.FC<EventFiltersProps> = ({
 
   const handleMultiSelectChange =
     (setter: React.Dispatch<React.SetStateAction<string[]>>) =>
-    (event: React.SyntheticEvent, value: string[]) => {
-      setter(value)
-    }
+      (event: React.SyntheticEvent, value: string[]) => {
+        setter(value)
+      }
 
   const handleApplyFilters = () => {
     const allLocations = [
@@ -140,9 +140,9 @@ export const EventFilters: React.FC<EventFiltersProps> = ({
     <Paper
       elevation={3}
       sx={{
-        p: 3,
-        mb: 4,
-        borderRadius: '25px',
+        p: 1,
+        mb: 2,
+        borderRadius: '15px',
         background: 'var(--White)',
         boxShadow: 'var(--shadow-drop)'
       }}
@@ -158,11 +158,11 @@ export const EventFilters: React.FC<EventFiltersProps> = ({
       >
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
           <FilterListIcon
-            sx={{ color: 'var(--color-cadetblue)', fontSize: 28 }}
+            sx={{ color: 'var(--color-cadetblue)', fontSize: 18 }}
           />
           <Typography
             variant='h6'
-            sx={{ color: 'var(--color-cadetblue)', fontWeight: 700 }}
+            sx={{ color: 'var(--color-cadetblue)', fontWeight: 400 }}
           >
             Filtros de Evento
           </Typography>

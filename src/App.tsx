@@ -25,7 +25,6 @@ import Page from './pages/Page'
 import ErrorPage from './pages/ErrorPage'
 import TestFont from './pages/test-font'
 import OrganizationProfile from './pages/OrganizationProfile'
-import UserProfile from './pages/UserProfile'
 
 import {
   CssBaseline,
@@ -151,17 +150,6 @@ const routes: RouteObject[] = [
           const org = await apiService.getOrganizationBySlug(params.slug)
           const events = await apiService.getOrganizationEvents(org.id)
           return { organization: org, events }
-        }
-      },
-      {
-        path: 'usuario/:id',
-        element: <UserProfile />,
-        loader: async ({ params }) => {
-          if (!params.id) {
-            throw new Response('Not Found', { status: 404 })
-          }
-          const user = await apiService.getUserById(params.id)
-          return { user }
         }
       },
 
