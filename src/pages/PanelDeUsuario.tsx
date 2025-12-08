@@ -859,6 +859,28 @@ const EditProfileForm: React.FC<{
                   )}
                 />
               </Grid>
+              <Grid size={{ xs: 12 }}>
+                <Controller
+                  name='personal_quote'
+                  control={control}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      label='Frase Personal / Cita'
+                      fullWidth
+                      placeholder='Ej: "Innovación es la clave del éxito"'
+                      helperText='Esta frase aparecerá al pasar el ratón sobre tu nombre en las reseñas.'
+                      InputProps={{
+                        startAdornment: (
+                          <InputAdornment position='start'>
+                            <FormatQuoteIcon color='action' />
+                          </InputAdornment>
+                        )
+                      }}
+                    />
+                  )}
+                />
+              </Grid>
               <Grid size={{ xs: 12, md: 6 }}>
                 <Controller
                   name='city'
