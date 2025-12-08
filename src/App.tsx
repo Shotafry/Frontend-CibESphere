@@ -272,7 +272,7 @@ const theme = createTheme({
     'none',
     '0px 0px 30px rgba(0, 0, 0, 0.25)', // shadow-drop
     '0px 2px 4px rgba(0, 0, 0, 0.1)',    // shadow-header
-    ...Array(21).fill('none')
+    ...Array(22).fill('none')
   ],
   components: {
     MuiButton: {
