@@ -361,3 +361,25 @@ export const updateOrganization = async (
   if (!updatedOrg) throw new Error('Organización no encontrada')
   return updatedOrg
 }
+
+// --- getUserById (NUEVO) ---
+export const getUserById = async (userId: string): Promise<User> => {
+  await delay(500)
+  const user = mockUsers.find((u) => u.id === userId)
+  if (!user) throw new Error('Usuario no encontrado')
+  return user
+}
+
+// --- updateUser (NUEVO) ---
+export const updateUser = async (
+  userId: string,
+  data: Partial<User>
+): Promise<User> => {
+  await delay(500)
+  const userIndex = mockUsers.findIndex((u) => u.id === userId)
+  if (userIndex === -1) throw new Error('Usuario no encontrado')
+
+  const updatedUser = { ...mockUsers[userIndex], ...data }
+  mockUsers[userIndex] = updatedUser
+  return updatedUser
+}

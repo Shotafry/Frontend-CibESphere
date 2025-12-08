@@ -16,6 +16,11 @@ export interface AuthResponse {
   expires_in: number
 }
 
+export interface LoginDTO {
+  email: string
+  password: string
+}
+
 export interface RegisterDTO {
   email: string
   password: string
@@ -43,6 +48,17 @@ export interface User {
   created_at: string
   organization?: OrganizationSummary
   FavoriteEvents?: Event[] // Para el panel de usuario
+  // Perfil Público
+  avatar_url?: string
+  banner_url?: string
+  bio?: string
+  city?: string
+  social_links?: {
+    twitter?: string
+    linkedin?: string
+    github?: string
+    website?: string
+  }
 }
 
 // --- TIPOS DE ORGANIZACIÓN ---

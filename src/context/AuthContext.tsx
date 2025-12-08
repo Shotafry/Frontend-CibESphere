@@ -68,7 +68,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   const login = async (email: string, password: string) => {
     setIsLoading(true)
     try {
-      const data = await apiService.login(email, password)
+      const data = await apiService.login({ email, password })
       handleLoginSuccess(data)
     } catch (error) {
       setIsLoading(false)
