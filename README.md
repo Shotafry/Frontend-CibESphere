@@ -33,6 +33,7 @@ Esta aplicación ha sido modernizada para utilizar las últimas tecnologías del
   - **Formularios Dependientes:** Al crear/editar un evento, la lista de "Ciudades" se filtra según la "Comunidad Autónoma" seleccionada.
 
 - **Interactividad (Asistente):**
+
   - **Carga de Datos (React Router):** Uso de la arquitectura "Data Routers" de React Router v7. Los datos se cargan a nivel de ruta usando `loader` en `App.tsx`.
   - **Filtros Avanzados:** Sistema de filtros (fecha, tags, nivel) que utiliza `useSubmit` para actualizar los parámetros de la URL. El `loader` principal lee la URL, haciendo de esta la "fuente de la verdad".
   - **Flujo de Inscripción:** Funcionalidad real de "Inscribirse a Evento". La acción actualiza el `AuthContext`, guarda el evento en el perfil del usuario y actualiza el contador de asistentes en la API simulada.
@@ -41,6 +42,11 @@ Esta aplicación ha sido modernizada para utilizar las últimas tecnologías del
     - Los marcadores usan la chincheta por defecto de Leaflet para mayor claridad.
     - Incluye **Popups personalizados** con un diseño "tech", información clave del evento (título, fecha, asistentes, tags) y un botón para navegar a la página de detalles.
   - **Manejo de Errores:** La aplicación presenta una página de error personalizada (`ErrorPage.tsx`) si una ruta o un `loader` falla.
+
+- **Social y Engagement:**
+  - **Sistema de Reseñas:** Los usuarios pueden valorar eventos pasados. Incluye visualización de estrellas y comentarios con identidad del usuario (popover con info profesional/frase).
+  - **Bookmarks:** Funcionalidad para guardar eventos favoritos sin inscribirse.
+  - **Notificaciones:** Centro de notificaciones en el header y configuración de preferencias en el perfil.
 
 ## 🛠️ Stack Tecnológico (Modernizado)
 

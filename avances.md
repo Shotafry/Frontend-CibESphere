@@ -68,7 +68,32 @@ Se implementó un sistema completo para que las organizaciones tengan presencia 
 - **Integración**:
   - En la página de detalle del evento (`Eventos.tsx`), se añadió un enlace **"Organizado por: [Nombre]"** que redirige al perfil público de la organización.
 
-## 4. Correcciones Técnicas y Mantenimiento
+## 4. Experiencia de Usuario, Comunidad y Reseñas (Fase 4)
+
+Se implementaron funcionalidades clave para la interacción social y la retención de usuarios.
+
+- **Sistema de Notificaciones**:
+
+  - **UI**: Icono de campana en el Header con contador de no leídas y menú desplegable.
+  - **Configuración**: Pestaña dedicada en el Panel de Usuario para gestionar preferencias (Email, Push, Boletín).
+
+- **Bookmarks (Guardados)**:
+
+  - Nueva funcionalidad para guardar eventos sin inscribirse.
+  - Botón de marcador en cada tarjeta de evento.
+  - Pestaña "Guardados" en el Panel de Usuario para gestión rápida.
+
+- **Sistema de Reseñas (Reviews)**:
+
+  - **Publicación**: Los usuarios pueden valorar (estrellas) y comentar eventos pasados desde su historial.
+  - **Visualización**: Nueva sección de reseñas en la página del evento.
+  - **Perfil Social**: Al pasar el ratón sobre el nombre de un reviewer, un moderno **Popover** muestra su foto, nombre y su frase personal (ej. "Security Analyst").
+  - **Restricciones**: Lógica para limitar a 1 reseña por usuario por evento.
+
+- **Rediseño del Panel de Usuario**:
+
+  - Estructura basada en pestañas (**Tabs**) para una navegación más limpia: "Mis Eventos", "Guardados", "Editar Perfil", "Configuración".
+  - **Frase Personal**: Nuevo campo en el perfil de usuario que se utiliza como distintivo en las reseñas.
 
 - **Rutas y Autenticación**:
   - Se unificó la lógica de Login y Registro en `SignUp.tsx`.

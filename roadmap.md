@@ -78,21 +78,26 @@ El objetivo es enriquecer la información que se muestra, dando más valor tanto
 
 ---
 
-## Fase 4: Experiencia de Usuario y Notificaciones (Pendiente)
+## ✅ Fase 4: Experiencia de Usuario y Notificaciones (Completada)
 
-El objetivo es mejorar la retención de usuarios y la interfaz de los paneles personales, implementando el sistema clave de notificaciones.
+El objetivo fue mejorar la retención de usuarios y la interfaz de los paneles personales, implementando el sistema clave de notificaciones, guardados y reseñas.
 
-- **⏳ Tarea 4.1 (Notificaciones):** Implementar el **Sistema de Notificaciones**. Esta es una funcionalidad clave.
-  - **Acción (UI):** Añadir un icono de "campana" en el `Header.tsx` que muestre un panel desplegable con "Notificaciones Recientes" (ej. "Te has inscrito a...", "El evento X empieza mañana").
-  - **Acción (Panel):** Añadir una nueva sección en `PanelDeUsuario.tsx` para "Configuración de Notificaciones", permitiendo al usuario activar/desactivar alertas por email o push (simulado).
-  - **Lógica (Simulada):** Simular la lógica de recordatorios de eventos (para `FavoriteEvents`) y alertas de nuevos eventos que coincidan con filtros guardados.
-- **⏳ Tarea 4.2 (Interesante Añadir):** Implementar "Guardar para después" (Bookmarks).
-  - **Acción:** Separar el flujo de "Inscribirse" (compromiso firme) de "Guardar" (interés). Añadir un icono de "marcador" en `EventCard.tsx` que añada el evento a una nueva lista (`user.BookmarkedEvents`).
-- **⏳ Tarea 4.3 (Interesante Añadir):** Implementar **Sistema de Reseñas y Valoraciones**.
-  - **Acción:** En `PanelDeUsuario.tsx`, permitir a los usuarios dejar una valoración (1-5 estrellas) y un comentario a los eventos _pasados_ a los que estuvieron inscritos.
-  - **Acción:** Mostrar la valoración media de estrellas en `EventCard.tsx` y `Eventos.tsx`.
-- **⏳ Tarea 4.4 (Mejora Paneles):** Mejorar el `PanelDeUsuario.tsx`.
-  - **Acción:** Rediseñar el panel para incluir diferentes pestañas: "Mis Inscripciones" (lo actual), "Eventos Guardados" (de Tarea 4.2) y "Mis Reseñas" (de Tarea 4.3).
+- **✅ Tarea 4.1 (Notificaciones):** Implementar el **Sistema de Notificaciones**.
+  - **UI:** Icono de campana en `Header.tsx` con dropdown de notificaciones recientes.
+  - **Panel:** Sección de configuración en `PanelDeUsuario.tsx` (switches para email/push).
+  - **Lógica:** Mock de notificaciones implementado en `apiService`.
+- **✅ Tarea 4.2 (Bookmarks):** Implementar "Guardar para después".
+  - **Acción:** Icono de marcador en `EventCard.tsx`.
+  - **Estado:** Gestión de `BookmarkedEvents` en el perfil del usuario.
+  - **UI:** Pestaña dedicada "Guardados" en el panel de usuario.
+- **✅ Tarea 4.3 (Sistema de Reseñas):** Valoraciones y comentarios.
+  - **Creación:** Modal en "Historial de Eventos" para puntuar y comentar.
+  - **Validación:** Límite de 1 reseña por usuario/evento.
+  - **Visualización:** Sección de reseñas en `Eventos.tsx` con estrellas y tarjetas.
+  - **Social:** Popover al pasar el ratón sobre el autor mostrando su cargo/empresa o frase personal.
+- **✅ Tarea 4.4 (Panel de Usuario):** Rediseño completo con pestañas.
+  - **Estructura:** Tabs para "Mis Eventos", "Guardados", "Editar Perfil" y "Configuración".
+  - **Perfil:** Edición completa de datos, incluyendo la nueva "Frase Personal".
 
 ---
 

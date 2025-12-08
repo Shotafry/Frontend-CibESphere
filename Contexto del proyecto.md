@@ -80,9 +80,16 @@ Cualquier IA que trabaje en este proyecto DEBE conocer las siguientes correccion
   - **Popups de Mapa:** Se rediseñó el `<Popup>` en `EventMap.tsx` con un diseño personalizado (fondo blanco, info clave, botón de navegación) para mejorar la UX.
 
 - **Fase 4 (Diseño Unificado):**
+
   - **Hero Section:** Se creó `Hero.tsx` con el logo `Logo-Vertical.png` y se añadió a `LandingPage.tsx`.
   - **Footer Curvo:** Se rediseñó `Footer.tsx` con el gradiente cian (`--gradient-header-footer`) y una forma curva (`clip-path`), usando el logo `Logo-Solo-Letras.png`.
   - **Unificación de `SignUp`:** Se actualizó `SignUp.tsx` para usar el gradiente cian (`--gradient-header-footer`), reemplazando el azul anterior.
+
+- **Fase 4 (Engagement y Social):**
+  - **Notificaciones:** Sistema completo mockeado con UI en Header y configuración en panel.
+  - **Reseñas:** Flujo end-to-end de creación y visualización de reseñas con elementos sociales (popover de perfil).
+  - **Bookmarks:** Gestión de eventos guardados separada de inscripciones.
+  - **Panel de Usuario:** Arquitectura de pestañas para organizar la creciente funcionalidad del usuario.
 
 ## Decisiones de Diseño e Iteraciones (IMPORTANTE)
 
@@ -94,7 +101,9 @@ Cualquier IA que trabaje en este proyecto DEBE conocer las siguientes correccion
 
 ## Siguientes Pasos (Pendientes)
 
-El trabajo en las Fases 1-3 está completo, y la mayor parte de la Fase 4 (diseño) también. Quedan pendientes las siguientes tareas complejas:
+## Siguientes Pasos (Pendientes)
 
-- **Fase 4 (Punto 3):** Implementar un fondo dinámico (ej. `particles.js`).
-- **Fase 4 (Punto 4):** Implementar el sistema de notificaciones (push, email).
+El trabajo en las Fases 1-4 está completo. El foco se desplaza ahora a la administración y contenido estático:
+
+- **Fase 5 (Administración):** Crear Panel de Administrador y Página "Sobre Nosotros".
+- **Fase 6 (Futuro):** Chat de comunidad e IA.
