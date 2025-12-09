@@ -57,7 +57,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     localStorage.setItem('token', data.access_token)
 
     if (data.user.role === Role.Admin) {
-      navigate('/panel-de-organizador')
+      navigate('/admin')
     } else if (data.user.role === Role.Organizer) {
       navigate('/panel-de-organizador')
     } else {

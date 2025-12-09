@@ -21,11 +21,13 @@ import SignUp from './pages/SignUp'
 import Eventos from './pages/Eventos'
 import PanelDeUsuario from './pages/PanelDeUsuario'
 import PanelDeOrganizador from './pages/PanelDeOrganizador'
+import PanelDeAdministrador from './pages/PanelDeAdministrador'
 import Page from './pages/Page'
 import ErrorPage from './pages/ErrorPage'
 import TestFont from './pages/test-font'
 import OrganizationProfile from './pages/OrganizationProfile'
 import AboutUs from './pages/AboutUs'
+import UserProfile from './pages/UserProfile'
 
 import {
   CssBaseline,
@@ -157,6 +159,20 @@ const routes: RouteObject[] = [
           return { organization: org, events }
         }
       },
+      {
+        path: 'usuario/:userId',
+        element: <UserProfile />,
+        loader: async ({ params }) => {
+          if (!params.userId) {
+            throw new Response('Not Found', { status: 404 })
+          }
+          // Intenta obtener usuario de la API simulada mock
+          // Si no existe método específico, se puede usar getUserById
+          // Nota: apiService debe tener getUserById
+          const user = await apiService.getUserById(params.userId)
+          return { user }
+        }
+      },
 
       // --- Rutas Protegidas Asistentes ---
       {
@@ -223,6 +239,21 @@ const routes: RouteObject[] = [
           }
         ]
       },
+      // --- Rutas Protegidas Administrador ---
+      {
+        element: <ProtectedRoute allowedRoles={[Role.Admin]} />,
+        children: [
+          {
+            path: 'admin',
+            element: <PanelDeAdministrador />,
+            loader: async () => {
+              const stats = await apiService.getAdminDashboard()
+              return { stats }
+            }
+          }
+        ]
+      },
+
       {
         path: 'test-font',
         element: <TestFont />

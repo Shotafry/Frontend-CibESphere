@@ -260,6 +260,107 @@ export const unsubscribeFromEvent = (
   })
 }
 
+// --- ADMIN PANELS HELPERS ---
+
+export const getAdminDashboard = (): Promise<DashboardStats> => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      const totalEvents = localEvents.length
+      const totalAttendees = localEvents.reduce(
+        (acc, curr) => acc + curr.current_attendees,
+        0
+      )
+      // Contar ciudades únicas
+      const cities = new Set(
+        localEvents
+          .map((e) => e.venue_city || e.venue_community)
+          .filter(Boolean)
+      )
+      const publishedEvents = localEvents.filter(
+        (e) => e.status === 'published'
+      ).length
+
+      resolve({
+        total_events: totalEvents,
+        total_attendees: totalAttendees,
+        total_cities: cities.size,
+        published_events: publishedEvents
+      })
+    }, SIMULATED_DELAY)
+  })
+}
+
+export const getAllUsers = (): Promise<User[]> => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve([...localUsers])
+    }, SIMULATED_DELAY)
+  })
+}
+
+export const getAllOrganizations = (): Promise<OrganizationSummary[]> => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      // Extraemos organizaciones de los usuarios que tienen rol organizador y objeto organization
+      const orgs: OrganizationSummary[] = []
+      localUsers.forEach((u) => {
+        if (u.role === Role.Organizer && u.organization) {
+          orgs.push(u.organization)
+        }
+      })
+      resolve(orgs)
+    }, SIMULATED_DELAY)
+  })
+}
+
+export const verifyOrganization = (
+  orgId: string
+): Promise<OrganizationSummary> => {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      let updatedOrg: OrganizationSummary | undefined
+
+      // 1. Actualizar en usuarios
+      localUsers.forEach((u) => {
+        if (u.organization && u.organization.id === orgId) {
+          u.organization.is_verified = true
+          updatedOrg = u.organization
+        }
+      })
+
+      // 2. Actualizar en eventos
+      localEvents.forEach((e) => {
+        if (e.organization && e.organization.id === orgId) {
+          e.organization.is_verified = true
+        }
+      })
+
+      if (updatedOrg) {
+        saveUsers()
+        saveEvents()
+        resolve(updatedOrg)
+      } else {
+        reject(new Error('Organización no encontrada'))
+      }
+    }, SIMULATED_DELAY)
+  })
+}
+
+export const deleteUser = (userId: string): Promise<void> => {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      const index = localUsers.findIndex((u) => u.id === userId)
+      if (index !== -1) {
+        localUsers.splice(index, 1)
+        saveUsers()
+        resolve()
+      } else {
+        reject(new Error('Usuario no encontrado'))
+      }
+    }, SIMULATED_DELAY)
+  })
+}
+
 // --- getOrganizerDashboard ---
 export const getOrganizerDashboard = (
   orgId: string
