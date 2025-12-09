@@ -55,7 +55,7 @@ interface LoaderData {
 const StatCard: React.FC<{
   title: string
   value: number | string
-  icon: React.ReactElement
+  icon: React.ReactElement<any>
   color: string
   trend?: string
 }> = ({ title, value, icon, color, trend }) => (
