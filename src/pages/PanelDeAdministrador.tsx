@@ -82,7 +82,9 @@ const StatCard: React.FC<{
         display: 'flex'
       }}
     >
-      {React.cloneElement(icon, { fontSize: 'large' })}
+      {React.cloneElement(icon as React.ReactElement<any>, {
+        fontSize: 'large'
+      })}
     </Box>
     <Box>
       <Typography variant='h4' fontWeight='800' sx={{ color: '#1e293b' }}>
@@ -102,7 +104,7 @@ const DashboardTab: React.FC<{ stats: DashboardStats }> = ({ stats }) => (
         Resumen General
       </Typography>
       <Grid container spacing={3}>
-        <Grid item xs={12} sm={6} md={3}>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <StatCard
             title='Eventos Totales'
             value={stats.total_events}
@@ -110,7 +112,7 @@ const DashboardTab: React.FC<{ stats: DashboardStats }> = ({ stats }) => (
             color='#0ea5e9'
           />
         </Grid>
-        <Grid item xs={12} sm={6} md={3}>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <StatCard
             title='Usuarios'
             value={stats.total_attendees}
@@ -118,7 +120,7 @@ const DashboardTab: React.FC<{ stats: DashboardStats }> = ({ stats }) => (
             color='#10b981'
           />
         </Grid>
-        <Grid item xs={12} sm={6} md={3}>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <StatCard
             title='Ciudades'
             value={stats.total_cities}
@@ -126,7 +128,7 @@ const DashboardTab: React.FC<{ stats: DashboardStats }> = ({ stats }) => (
             color='#f59e0b'
           />
         </Grid>
-        <Grid item xs={12} sm={6} md={3}>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <StatCard
             title='Publicados'
             value={stats.published_events}
