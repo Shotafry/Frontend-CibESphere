@@ -90,7 +90,9 @@ export const Header: FunctionComponent = () => {
   }, [navigate])
 
   const onPanelClick = useCallback(() => {
-    if (user?.role === Role.Organizer || user?.role === Role.Admin) {
+    if (user?.role === Role.Admin) {
+      navigate('/admin')
+    } else if (user?.role === Role.Organizer) {
       navigate('/panel-de-organizador')
     } else {
       navigate('/panel-de-usuario')
@@ -122,7 +124,6 @@ export const Header: FunctionComponent = () => {
           padding: { xs: '10px 8px', sm: '12px 16px', md: '16px 32px' },
           boxSizing: 'border-box',
           gap: { xs: 1, sm: 2 }
-
         }}
       >
         <img

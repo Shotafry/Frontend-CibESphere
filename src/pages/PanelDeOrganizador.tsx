@@ -52,6 +52,7 @@ interface LoaderData {
 }
 
 // --- COMPONENTE STAT CARD PREMIUM ---
+// --- COMPONENTE STAT CARD PREMIUM ---
 const StatCard: React.FC<{
   title: string
   value: number | string
@@ -68,27 +69,25 @@ const StatCard: React.FC<{
       justifyContent: 'space-between',
       borderRadius: '20px',
       background: 'white',
-      boxShadow: '0 4px 20px rgba(0,0,0,0.05)',
-      transition: 'transform 0.2s ease',
+      border: '1px solid',
+      borderColor: 'divider',
+      transition: 'all 0.3s ease',
       '&:hover': {
-        transform: 'translateY(-4px)',
-        boxShadow: '0 8px 25px rgba(0,0,0,0.1)'
+        transform: 'translateY(-5px)',
+        boxShadow: `0 10px 30px -10px ${color}40`,
+        borderColor: color
       },
       position: 'relative',
       overflow: 'hidden'
     }}
   >
     <Box sx={{ position: 'relative', zIndex: 1 }}>
-      <Typography
-        variant='h4'
-        fontWeight='bold'
-        sx={{ color: 'var(--Gray-900)' }}
-      >
+      <Typography variant='h4' fontWeight='bold' sx={{ color: '#1e293b' }}>
         {value}
       </Typography>
       <Typography
         variant='body2'
-        sx={{ color: 'var(--Gray-500)', fontWeight: 600, mt: 0.5 }}
+        sx={{ color: 'text.secondary', fontWeight: 600, mt: 0.5 }}
       >
         {title}
       </Typography>
@@ -115,7 +114,7 @@ const StatCard: React.FC<{
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        bgcolor: `${color}15`, // Opacidad del 10-15%
+        bgcolor: `${color}15`,
         color: color
       }}
     >

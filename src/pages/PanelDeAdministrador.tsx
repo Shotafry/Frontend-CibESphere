@@ -19,7 +19,8 @@ import {
   TableRow,
   Avatar,
   Stack,
-  Alert
+  Alert,
+  Fade
 } from '@mui/material'
 import { useLoaderData, useNavigate } from 'react-router-dom'
 import {
@@ -47,55 +48,95 @@ interface AdminLoaderData {
 
 // --- TAB PANELS ---
 
-const DashboardTab: React.FC<{ stats: DashboardStats }> = ({ stats }) => (
-  <Grid container spacing={3}>
-    {[
-      { label: 'Eventos Totales', value: stats.total_events, color: '#0ea5e9' },
-      {
-        label: 'Usuarios Registrados',
-        value: stats.total_attendees,
-        color: '#10b981'
-      }, // Note: reusing field for simplified mock
-      {
-        label: 'Ciudades Activas',
-        value: stats.total_cities,
-        color: '#f59e0b'
-      },
-      {
-        label: 'Eventos Publicados',
-        value: stats.published_events,
-        color: '#6366f1'
+const StatCard: React.FC<{
+  title: string
+  value: number
+  icon: React.ReactElement
+  color: string
+}> = ({ title, value, icon, color }) => (
+  <Paper
+    elevation={0}
+    sx={{
+      p: 3,
+      borderRadius: '20px',
+      background: 'white',
+      border: '1px solid',
+      borderColor: 'divider',
+      transition: 'all 0.3s ease',
+      display: 'flex',
+      alignItems: 'center',
+      gap: 2,
+      '&:hover': {
+        transform: 'translateY(-5px)',
+        boxShadow: `0 10px 30px -10px ${color}40`,
+        borderColor: color
       }
-    ].map((item) => (
-      <Grid item xs={12} sm={6} md={3} key={item.label}>
-        <Paper
-          elevation={0}
-          sx={{
-            p: 3,
-            borderRadius: 4,
-            bgcolor: 'white',
-            border: '1px solid #e2e8f0',
-            textAlign: 'center'
-          }}
-        >
-          <Typography
-            variant='h3'
-            fontWeight='bold'
-            sx={{ color: item.color, mb: 1 }}
-          >
-            {item.value}
-          </Typography>
-          <Typography
-            variant='subtitle2'
-            color='text.secondary'
-            fontWeight='600'
-          >
-            {item.label}
-          </Typography>
-        </Paper>
+    }}
+  >
+    <Box
+      sx={{
+        p: 1.5,
+        borderRadius: '16px',
+        bgcolor: `${color}15`,
+        color: color,
+        display: 'flex'
+      }}
+    >
+      {React.cloneElement(icon, { fontSize: 'large' })}
+    </Box>
+    <Box>
+      <Typography variant='h4' fontWeight='800' sx={{ color: '#1e293b' }}>
+        {value}
+      </Typography>
+      <Typography variant='body2' fontWeight='600' color='text.secondary'>
+        {title}
+      </Typography>
+    </Box>
+  </Paper>
+)
+
+const DashboardTab: React.FC<{ stats: DashboardStats }> = ({ stats }) => (
+  <Fade in timeout={500}>
+    <Box>
+      <Typography variant='h6' fontWeight='bold' mb={3}>
+        Resumen General
+      </Typography>
+      <Grid container spacing={3}>
+        <Grid item xs={12} sm={6} md={3}>
+          <StatCard
+            title='Eventos Totales'
+            value={stats.total_events}
+            icon={<EventIcon />}
+            color='#0ea5e9'
+          />
+        </Grid>
+        <Grid item xs={12} sm={6} md={3}>
+          <StatCard
+            title='Usuarios'
+            value={stats.total_attendees}
+            icon={<PeopleIcon />}
+            color='#10b981'
+          />
+        </Grid>
+        <Grid item xs={12} sm={6} md={3}>
+          <StatCard
+            title='Ciudades'
+            value={stats.total_cities}
+            icon={<BusinessIcon />}
+            color='#f59e0b'
+          />
+        </Grid>
+        <Grid item xs={12} sm={6} md={3}>
+          <StatCard
+            title='Publicados'
+            value={stats.published_events}
+            icon={<VerifiedIcon />}
+            color='#6366f1'
+          />
+        </Grid>
       </Grid>
-    ))}
-  </Grid>
+    </Box>
+  </Fade>
 )
 
 const OrganizationsTab: React.FC = () => {
@@ -125,81 +166,138 @@ const OrganizationsTab: React.FC = () => {
   if (loading) return <CircularProgress />
 
   return (
-    <TableContainer
-      component={Paper}
-      elevation={0}
-      sx={{ borderRadius: 3, border: '1px solid #e2e8f0' }}
-    >
-      <Table>
-        <TableHead sx={{ bgcolor: '#f8fafc' }}>
-          <TableRow>
-            <TableCell>Organización</TableCell>
-            <TableCell>Ciudad</TableCell>
-            <TableCell align='center'>Estado</TableCell>
-            <TableCell align='right'>Acciones</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {orgs.map((org) => (
-            <TableRow key={org.id}>
-              <TableCell>
-                <Stack direction='row' spacing={2} alignItems='center'>
-                  <Avatar src={org.logo_url} variant='rounded'>
-                    {org.name[0]}
-                  </Avatar>
-                  <Box>
-                    <Typography fontWeight='bold'>{org.name}</Typography>
-                    <Typography variant='caption' color='text.secondary'>
-                      {org.email || 'Sin email'}
+    <Fade in timeout={500}>
+      <Box>
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            mb: 3
+          }}
+        >
+          <Typography variant='h6' fontWeight='bold'>
+            Gestión de Organizaciones
+          </Typography>
+          <Chip label={`${orgs.length} Registradas`} size='small' />
+        </Box>
+        <TableContainer
+          component={Paper}
+          elevation={0}
+          sx={{
+            borderRadius: 3,
+            border: '1px solid #e2e8f0',
+            overflow: 'hidden'
+          }}
+        >
+          <Table>
+            <TableHead sx={{ bgcolor: '#f8fafc' }}>
+              <TableRow>
+                <TableCell sx={{ fontWeight: 'bold' }}>Organización</TableCell>
+                <TableCell sx={{ fontWeight: 'bold' }}>Ubicación</TableCell>
+                <TableCell align='center' sx={{ fontWeight: 'bold' }}>
+                  Estado
+                </TableCell>
+                <TableCell align='right' sx={{ fontWeight: 'bold' }}>
+                  Acciones
+                </TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {orgs.map((org) => (
+                <TableRow
+                  key={org.id}
+                  hover
+                  sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                >
+                  <TableCell>
+                    <Stack direction='row' spacing={2} alignItems='center'>
+                      <Avatar
+                        src={org.logo_url}
+                        variant='rounded'
+                        sx={{
+                          bgcolor: 'white',
+                          border: '1px solid #e2e8f0',
+                          color: 'var(--color-cadetblue)'
+                        }}
+                      >
+                        {org.name[0]}
+                      </Avatar>
+                      <Box>
+                        <Typography fontWeight='bold' variant='body2'>
+                          {org.name}
+                        </Typography>
+                        <Typography variant='caption' color='text.secondary'>
+                          {org.email || 'Sin contacto'}
+                        </Typography>
+                      </Box>
+                    </Stack>
+                  </TableCell>
+                  <TableCell>{org.city}</TableCell>
+                  <TableCell align='center'>
+                    {org.is_verified ? (
+                      <Chip
+                        icon={<VerifiedIcon sx={{ fontSize: 16 }} />}
+                        label='Verificada'
+                        color='success'
+                        size='small'
+                        sx={{
+                          bgcolor: '#dcfce7',
+                          color: '#166534',
+                          border: 'none',
+                          fontWeight: 600
+                        }}
+                      />
+                    ) : (
+                      <Chip
+                        icon={<GppBadIcon sx={{ fontSize: 16 }} />}
+                        label='Pendiente'
+                        color='warning'
+                        size='small'
+                        sx={{
+                          bgcolor: '#fef3c7',
+                          color: '#92400e',
+                          border: 'none',
+                          fontWeight: 600
+                        }}
+                      />
+                    )}
+                  </TableCell>
+                  <TableCell align='right'>
+                    {!org.is_verified && (
+                      <Button
+                        variant='contained'
+                        size='small'
+                        disableElevation
+                        startIcon={<CheckCircleIcon />}
+                        onClick={() => handleVerify(org.id)}
+                        sx={{
+                          bgcolor: '#10b981',
+                          '&:hover': { bgcolor: '#059669' },
+                          textTransform: 'none',
+                          borderRadius: '8px'
+                        }}
+                      >
+                        Aprobar
+                      </Button>
+                    )}
+                  </TableCell>
+                </TableRow>
+              ))}
+              {orgs.length === 0 && (
+                <TableRow>
+                  <TableCell colSpan={4} align='center' sx={{ py: 8 }}>
+                    <Typography color='text.secondary'>
+                      No hay organizaciones registradas.
                     </Typography>
-                  </Box>
-                </Stack>
-              </TableCell>
-              <TableCell>{org.city}</TableCell>
-              <TableCell align='center'>
-                {org.is_verified ? (
-                  <Chip
-                    icon={<VerifiedIcon />}
-                    label='Verificada'
-                    color='success'
-                    size='small'
-                    variant='outlined'
-                  />
-                ) : (
-                  <Chip
-                    icon={<GppBadIcon />}
-                    label='Pendiente'
-                    color='warning'
-                    size='small'
-                    variant='outlined'
-                  />
-                )}
-              </TableCell>
-              <TableCell align='right'>
-                {!org.is_verified && (
-                  <Button
-                    variant='contained'
-                    size='small'
-                    color='success'
-                    startIcon={<CheckCircleIcon />}
-                    onClick={() => handleVerify(org.id)}
-                  >
-                    Verificar
-                  </Button>
-                )}
-              </TableCell>
-            </TableRow>
-          ))}
-          {orgs.length === 0 && (
-            <TableRow>
-              <TableCell colSpan={4} align='center'>
-                No hay organizaciones registradas.
-              </TableCell>
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
-    </TableContainer>
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Box>
+    </Fade>
   )
 }
 
@@ -221,7 +319,11 @@ const UsersTab: React.FC = () => {
   }, [])
 
   const handleDelete = async (userId: string) => {
-    if (window.confirm('¿Estás seguro de eliminar este usuario?')) {
+    if (
+      window.confirm(
+        '¿Estás seguro de eliminar este usuario? Esta acción es irreversible.'
+      )
+    ) {
       await apiService.deleteUser(userId)
       loadUsers()
     }
@@ -230,60 +332,121 @@ const UsersTab: React.FC = () => {
   if (loading) return <CircularProgress />
 
   return (
-    <TableContainer
-      component={Paper}
-      elevation={0}
-      sx={{ borderRadius: 3, border: '1px solid #e2e8f0' }}
-    >
-      <Table>
-        <TableHead sx={{ bgcolor: '#f8fafc' }}>
-          <TableRow>
-            <TableCell>Usuario</TableCell>
-            <TableCell>Rol</TableCell>
-            <TableCell>Registro</TableCell>
-            <TableCell align='right'>Acciones</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {users.map((user) => (
-            <TableRow key={user.id}>
-              <TableCell>
-                <Stack direction='row' spacing={2} alignItems='center'>
-                  <Avatar src={user.avatar_url}>{user.first_name[0]}</Avatar>
-                  <Box>
-                    <Typography fontWeight='bold'>{user.full_name}</Typography>
-                    <Typography variant='caption' color='text.secondary'>
-                      {user.email}
-                    </Typography>
-                  </Box>
-                </Stack>
-              </TableCell>
-              <TableCell>
-                <Chip
-                  label={user.role}
-                  size='small'
-                  color={
-                    user.role === Role.Admin
-                      ? 'secondary'
-                      : user.role === Role.Organizer
-                      ? 'primary'
-                      : 'default'
-                  }
-                />
-              </TableCell>
-              <TableCell>
-                {new Date(user.created_at).toLocaleDateString()}
-              </TableCell>
-              <TableCell align='right'>
-                <IconButton color='error' onClick={() => handleDelete(user.id)}>
-                  <DeleteIcon />
-                </IconButton>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+    <Fade in timeout={500}>
+      <Box>
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            mb: 3
+          }}
+        >
+          <Typography variant='h6' fontWeight='bold'>
+            Directorio de Usuarios
+          </Typography>
+          <Chip label={`${users.length} Usuarios`} size='small' />
+        </Box>
+        <TableContainer
+          component={Paper}
+          elevation={0}
+          sx={{
+            borderRadius: 3,
+            border: '1px solid #e2e8f0',
+            overflow: 'hidden'
+          }}
+        >
+          <Table>
+            <TableHead sx={{ bgcolor: '#f8fafc' }}>
+              <TableRow>
+                <TableCell sx={{ fontWeight: 'bold' }}>Usuario</TableCell>
+                <TableCell sx={{ fontWeight: 'bold' }}>Rol</TableCell>
+                <TableCell sx={{ fontWeight: 'bold' }}>Registro</TableCell>
+                <TableCell align='right' sx={{ fontWeight: 'bold' }}>
+                  Acciones
+                </TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {users.map((user) => (
+                <TableRow
+                  key={user.id}
+                  hover
+                  sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                >
+                  <TableCell>
+                    <Stack direction='row' spacing={2} alignItems='center'>
+                      <Avatar
+                        src={user.avatar_url}
+                        sx={{
+                          bgcolor: 'var(--color-cadetblue)',
+                          width: 36,
+                          height: 36,
+                          fontSize: '0.9rem'
+                        }}
+                      >
+                        {user.first_name[0]}
+                      </Avatar>
+                      <Box>
+                        <Typography fontWeight='bold' variant='body2'>
+                          {user.full_name}
+                        </Typography>
+                        <Typography variant='caption' color='text.secondary'>
+                          {user.email}
+                        </Typography>
+                      </Box>
+                    </Stack>
+                  </TableCell>
+                  <TableCell>
+                    <Chip
+                      label={
+                        user.role === Role.Admin
+                          ? 'Administrador'
+                          : user.role === Role.Organizer
+                          ? 'Organizador'
+                          : 'Asistente'
+                      }
+                      size='small'
+                      sx={{
+                        bgcolor:
+                          user.role === Role.Admin
+                            ? '#fce7f3'
+                            : user.role === Role.Organizer
+                            ? '#dbeafe'
+                            : '#f1f5f9',
+                        color:
+                          user.role === Role.Admin
+                            ? '#be185d'
+                            : user.role === Role.Organizer
+                            ? '#1d4ed8'
+                            : '#475569',
+                        fontWeight: 600,
+                        border: 'none'
+                      }}
+                    />
+                  </TableCell>
+                  <TableCell>
+                    {new Date(user.created_at).toLocaleDateString()}
+                  </TableCell>
+                  <TableCell align='right'>
+                    <IconButton
+                      size='small'
+                      sx={{
+                        color: '#ef4444',
+                        '&:hover': { bgcolor: '#fee2e2' }
+                      }}
+                      onClick={() => handleDelete(user.id)}
+                    >
+                      <DeleteIcon fontSize='small' />
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Box>
+    </Fade>
   )
 }
 
@@ -291,53 +454,129 @@ const PanelDeAdministrador: React.FC = () => {
   const { stats } = useLoaderData() as AdminLoaderData
   const [currentTab, setCurrentTab] = useState(0)
 
+  // Efecto "fade" simple al cambiar tabs
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setCurrentTab(newValue)
   }
 
   return (
-    <Box sx={{ minHeight: '100vh', bgcolor: '#f1f5f9', pb: 8 }}>
-      {/* Header */}
-      <Box sx={{ bgcolor: '#1e293b', color: 'white', pt: 4, pb: 8 }}>
-        <Container maxWidth='lg'>
-          <Typography variant='h4' fontWeight='800'>
-            Panel de Administración
-          </Typography>
-          <Typography variant='subtitle1' sx={{ opacity: 0.7 }}>
-            Gestión global de CibESphere
+    <Box sx={{ minHeight: '100vh', bgcolor: '#f8fafc', pb: 8 }}>
+      {/* Header Premium */}
+      <Box
+        sx={{
+          background: 'var(--gradient-header-footer)',
+          color: 'white',
+          pt: { xs: 8, md: 10 },
+          pb: { xs: 10, md: 12 },
+          clipPath: 'polygon(0 0, 100% 0, 100% 85%, 0% 100%)',
+          mb: 6,
+          position: 'relative'
+        }}
+      >
+        <Container maxWidth='xl'>
+          <Stack direction='row' alignItems='center' spacing={2} mb={2}>
+            <VerifiedIcon sx={{ fontSize: 40, opacity: 0.8 }} />
+            <Typography
+              variant='h3'
+              fontWeight='900'
+              sx={{ textShadow: '0 4px 20px rgba(0,0,0,0.2)' }}
+            >
+              Panel de Control
+            </Typography>
+          </Stack>
+          <Typography
+            variant='h6'
+            sx={{ opacity: 0.9, maxWidth: '600px', fontWeight: 400 }}
+          >
+            Bienvenido, Administrador. Aquí tienes el control total sobre
+            usuarios, organizaciones y eventos de CibESphere.
           </Typography>
         </Container>
       </Box>
 
-      {/* Content */}
-      <Container maxWidth='lg' sx={{ mt: -4 }}>
-        <Paper elevation={0} sx={{ borderRadius: 4, overflow: 'hidden' }}>
-          <Tabs
-            value={currentTab}
-            onChange={handleTabChange}
-            variant='scrollable'
-            scrollButtons='auto'
+      {/* Main Content */}
+      <Container maxWidth='xl' sx={{ mt: -10 }}>
+        <Paper
+          elevation={0}
+          sx={{
+            borderRadius: '24px',
+            overflow: 'hidden',
+            border: '1px solid rgba(226, 232, 240, 0.8)',
+            boxShadow: '0 20px 40px -10px rgba(0,0,0,0.05)',
+            bgcolor: 'white',
+            minHeight: '600px',
+            display: 'flex',
+            flexDirection: { xs: 'column', md: 'row' }
+          }}
+        >
+          {/* Sidebar Navigation (Desktop) / Tabs (Mobile) */}
+          <Box
             sx={{
-              px: 2,
-              bgcolor: 'white',
-              borderBottom: '1px solid #e2e8f0',
-              '& .MuiTab-root': { fontWeight: 600, minHeight: 64 }
+              width: { xs: '100%', md: 280 },
+              borderRight: { xs: 'none', md: '1px solid #f1f5f9' },
+              borderBottom: { xs: '1px solid #f1f5f9', md: 'none' },
+              bgcolor: '#fff',
+              p: 2
             }}
           >
-            <Tab
-              icon={<DashboardIcon />}
-              iconPosition='start'
-              label='Dashboard'
-            />
-            <Tab
-              icon={<BusinessIcon />}
-              iconPosition='start'
-              label='Organizaciones'
-            />
-            <Tab icon={<PeopleIcon />} iconPosition='start' label='Usuarios' />
-          </Tabs>
+            <Typography
+              variant='overline'
+              fontWeight='bold'
+              sx={{ px: 2, color: 'text.secondary', letterSpacing: 1 }}
+            >
+              Menu
+            </Typography>
+            <Tabs
+              orientation={window.innerWidth >= 900 ? 'vertical' : 'horizontal'}
+              value={currentTab}
+              onChange={handleTabChange}
+              variant='scrollable'
+              scrollButtons={false}
+              sx={{
+                mt: 2,
+                '& .MuiTab-root': {
+                  justifyContent: 'flex-start',
+                  minHeight: 48,
+                  borderRadius: '12px',
+                  mb: 1,
+                  textTransform: 'none',
+                  fontSize: '0.95rem',
+                  fontWeight: 600,
+                  transition: 'all 0.2s',
+                  '&:hover': {
+                    bgcolor: '#f1f5f9',
+                    color: 'var(--color-cadetblue)'
+                  },
+                  '&.Mui-selected': {
+                    bgcolor: 'var(--color-cadetblue)',
+                    color: 'white'
+                  }
+                },
+                '& .MuiTabs-indicator': {
+                  display: 'none' // Hide default indicator for "button" look
+                }
+              }}
+            >
+              <Tab
+                icon={<DashboardIcon />}
+                iconPosition='start'
+                label='Dashboard'
+              />
+              <Tab
+                icon={<BusinessIcon />}
+                iconPosition='start'
+                label='Organizaciones'
+              />
+              <Tab
+                icon={<PeopleIcon />}
+                iconPosition='start'
+                label='Usuarios'
+              />
+            </Tabs>
+          </Box>
 
-          <Box sx={{ p: 4 }}>
+          {/* Tab Content Area */}
+          <Box sx={{ flex: 1, p: { xs: 3, md: 5 }, bgcolor: '#fff' }}>
             {currentTab === 0 && <DashboardTab stats={stats} />}
             {currentTab === 1 && <OrganizationsTab />}
             {currentTab === 2 && <UsersTab />}
