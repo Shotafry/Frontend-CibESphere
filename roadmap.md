@@ -119,5 +119,5 @@ Estas son funcionalidades complejas que se planifican a largo plazo y que requer
 
 - **🚀 Tarea 6.1 (Comunidad):** Chat / Foro / Meetups.
   - **Concepto:** Diseñar un sistema (ej. un chat simple por evento o un foro general) para que los asistentes puedan coordinarse, organizar quedadas, compartir coche, etc.
-- **🚀 Tarea 6.2 (IA):** Añadir un Agente de IA.
+- **🚀 Tarea 6.2 (IA) (no hacer de momento):** Añadir un Agente de IA.
   - **Concepto:** Implementar un chatbot de ayuda que permita a los usuarios encontrar eventos usando lenguaje natural (ej. "¿Qué eventos de hacking hay en Madrid el mes que viene?").

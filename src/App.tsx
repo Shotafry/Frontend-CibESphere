@@ -25,6 +25,7 @@ import Page from './pages/Page'
 import ErrorPage from './pages/ErrorPage'
 import TestFont from './pages/test-font'
 import OrganizationProfile from './pages/OrganizationProfile'
+import AboutUs from './pages/AboutUs'
 
 import {
   CssBaseline,
@@ -125,6 +126,10 @@ const routes: RouteObject[] = [
       {
         path: 'registro',
         element: <SignUp />
+      },
+      {
+        path: 'sobre-nosotros',
+        element: <AboutUs />
       },
       {
         path: 'loginsign-up', // Mantener por compatibilidad si se usa en algún link
@@ -234,26 +239,26 @@ const theme = createTheme({
   palette: {
     primary: {
       main: '#01c0fa',
-      contrastText: '#fff',
+      contrastText: '#fff'
     },
     secondary: {
-      main: '#4fbac8',
+      main: '#4fbac8'
     },
     background: {
       default: '#f5f5f5',
-      paper: '#fff',
+      paper: '#fff'
     },
     text: {
       primary: '#282828',
-      secondary: '#414651',
+      secondary: '#414651'
     },
     grey: {
       100: '#f5f5f5',
       300: '#d5d7da',
       400: '#a1a5ab',
       500: '#717680',
-      700: '#414651',
-    },
+      700: '#414651'
+    }
   },
   typography: {
     fontFamily: "'Satoshi', Arial, Helvetica, sans-serif",
@@ -263,16 +268,16 @@ const theme = createTheme({
     h4: { fontWeight: 700 },
     h5: { fontWeight: 600 },
     h6: { fontWeight: 500 },
-    button: { fontWeight: 700 },
+    button: { fontWeight: 700 }
   },
   shape: {
-    borderRadius: 16,
+    borderRadius: 16
   },
   shadows: [
     'none',
     '0px 0px 30px rgba(0, 0, 0, 0.25)', // shadow-drop
-    '0px 2px 4px rgba(0, 0, 0, 0.1)',    // shadow-header
-    ...Array(22).fill('none') 
+    '0px 2px 4px rgba(0, 0, 0, 0.1)', // shadow-header
+    ...Array(22).fill('none')
   ] as any,
   components: {
     MuiButton: {
@@ -286,19 +291,19 @@ const theme = createTheme({
           boxShadow: '0 4px 14px rgba(0, 217, 255, 0.3)',
           '&:hover': {
             background: 'linear-gradient(225deg, #00d1e0, #00a7d1)',
-            boxShadow: '0 6px 20px rgba(0, 217, 255, 0.5)',
-          },
-        },
-      },
+            boxShadow: '0 6px 20px rgba(0, 217, 255, 0.5)'
+          }
+        }
+      }
     },
     MuiPaper: {
       styleOverrides: {
         root: {
-          borderRadius: 24,
-        },
-      },
-    },
-  },
+          borderRadius: 24
+        }
+      }
+    }
+  }
 })
 
 function App() {
