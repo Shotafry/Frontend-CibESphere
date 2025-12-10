@@ -80,13 +80,12 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
           overflow: 'visible',
           mt: { xs: 0, md: 2 },
           mb: { xs: 4, md: 2 },
-          // --- NUEVO: Efecto Hover en toda la tarjeta ---
-          transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+          // --- EFECTO CARD PREMIUM: Elevación y Sombra Iluminada ---
+          transition: 'all 0.3s ease-out',
           '&:hover': {
-            transform: 'translateY(-5px)',
-            // Aplicamos el efecto de sombra al contenedor del contenido, ya que es el que tiene fondo
+            transform: 'translateY(-8px)', // Elevación suave
             '& .event-content': {
-              boxShadow: '0 10px 40px rgba(0,0,0,0.2)'
+              boxShadow: '0 18px 40px -5px rgba(79, 186, 200, 0.5)' // Sombra Glow Aumentada (Mayor blur y opacidad)
             }
           }
         }}
@@ -125,15 +124,16 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
             pt: { xs: 5, md: 4 },
             pl: { md: 10 },
             borderRadius: '25px',
-            backgroundColor: 'var(--White)', // Fondo base opaco
-            backgroundImage: 'var(--Background-events-2)', // Gradiente encima
-            boxShadow: 'var(--shadow-drop)',
+            // Default State restaurado
+            backgroundColor: 'var(--White)',
+            backgroundImage: 'var(--Background-events-2)',
+            boxShadow: 'var(--shadow-drop)', // Sombra original por defecto
             color: 'var(--event-2)',
             fontFamily: 'var(--Heading-Font-Family)',
             minHeight: { md: '220px' },
             zIndex: 1,
             width: '100%',
-            transition: 'box-shadow 0.3s ease',
+            transition: 'all 0.3s ease',
             position: 'relative' // Para posicionar el icono de bookmark
           }}
         >

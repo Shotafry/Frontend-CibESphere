@@ -508,7 +508,9 @@ const PanelDeAdministrador: React.FC = () => {
             bgcolor: 'white',
             minHeight: '600px',
             display: 'flex',
-            flexDirection: { xs: 'column', md: 'row' }
+            flexDirection: { xs: 'column', md: 'row' },
+            position: 'relative', // Fix overlap
+            zIndex: 100 // Ensure it sits above the Hero
           }}
         >
           {/* Sidebar Navigation (Desktop) / Tabs (Mobile) */}

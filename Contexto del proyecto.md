@@ -101,9 +101,57 @@ Cualquier IA que trabaje en este proyecto DEBE conocer las siguientes correccion
 
 ## Siguientes Pasos (Pendientes)
 
-## Siguientes Pasos (Pendientes)
+## Arquitectura y Decisiones Técnicas (Detalle Profundo)
 
-El trabajo en las Fases 1-4 está completo. El foco se desplaza ahora a la administración y contenido estático:
+### 1. Stack Tecnológico de Vanguardia
 
-- **Fase 5 (Administración):** Crear Panel de Administrador y Página "Sobre Nosotros".
-- **Fase 6 (Futuro):** Chat de comunidad e IA.
+El proyecto ha sido migrado a las últimas versiones estables del ecosistema React (Diciembre 2025):
+
+- **React 19 & React Router 7:** Uso extensivo de las nuevas APIs. El enrutamiento se maneja con `createBrowserRouter` (Data Routers). La carga de datos NO se hace con `useEffect`, sino a través de `loader` functions en `App.tsx` que inyectan los datos antes de renderizar la ruta. Las mutaciones usan `useSubmit` o llamadas directas a la API simulada.
+- **MUI v7:** Sistema de diseño basado en Material UI 7. Se complementa con un archivo `global.css` que contiene variables CSS críticas (`--shadow-drop`, `--gradient-header-footer`) exportadas del diseño original de Figma.
+
+### 2. Backend Simulado y Persistencia
+
+Dada la naturaleza "Frontend-Only" de esta fase, se ha construido un **Backend Virtual** completo en `src/services/apiService.ts`.
+
+- **Persistencia Híbrida:** Los datos iniciales provienen de `src/mocks/db.ts`, pero cualquier mutación (crear evento, registrar usuario) se guarda en `localStorage`. Al recargar, el servicio fusiona los datos del mock con los del storage local para mantener la persistencia entre sesiones.
+- **Latencia Artificial:** Las funciones del servicio incluyen un `delay` artificial para simular tiempos de red y probar los estados de carga (`isLoading`) de la UI.
+
+### 3. Autenticación y Roles (RBAC)
+
+El sistema gestiona tres roles distintos con lógica de redirección específica en `AuthContext.tsx`:
+
+- **Role.User (Asistente):** Accede al `/panel-de-usuario`. Puede inscribirse (`subscribeToEvent`), guardar favoritos y dejar reseñas.
+- **Role.Organizer (Organizador):** Accede al `/panel-de-organizador`. Puede crear/editar/borrar sus propios eventos. Tiene un perfil público de organización.
+- **Role.Admin (Administrador):** Accede al `/admin`. Tiene permisos globales.
+  - **Lógica de Verificación:** Puede cambiar el estado `is_verified` de cualquier organización. Esto añade un "Check Azul" en la UI pública de la organización.
+
+### 4. Implementaciones Específicas Complejas
+
+#### A. Sistema de Eventos Dinámico
+
+- **Formulario (`Page.tsx`):** Utiliza `react-hook-form` con estructuras de array dinámicas (`useFieldArray`) para gestionar **Agenda** y **Ponentes**. Esto permite añadir "n" filas de ítems de agenda o ponentes sin límite.
+- **Filtros URL-First:** El estado de los filtros (`EventFilters.tsx`) se sincroniza con la URL. Al filtrar, se actualizan los _search params_. El `loader` de `LandingPage` lee estos parámetros y filtra el dataset crudo antes de pasarlo al componente.
+
+#### B. Sistema de Reseñas y Validaciones
+
+- **Restricción 1:1:** La lógica en `apiService` impide que un usuario envíe más de una reseña para el mismo evento.
+- **Validación de Fecha:** Solo se permite reseñar eventos cuya `end_date` sea anterior a `new Date()`.
+- **UI Social:** Al pasar el ratón por el autor de una reseña, un `Popover` recupera dinámicamente los datos del usuario (foto, cargo, frase personal) para mostrar una tarjeta de perfil flotante.
+
+#### C. Diseño "Premium Glow" & Glassmorphism
+
+Para diferenciar visualmente los paneles (especialmente Admin y Organizador), se implementó un sistema de estilos avanzado:
+
+- **Efecto Hover:** Las tarjetas (`EventCard`, `StatCard`) utilizan una combinación de `transform: translateY(-8px)` y una sombra `boxShadow` coloreada dinámica (cian o variable) para crear un efecto de "iluminación" o neón.
+- **Immersive Headers:** Los perfiles de organización y el panel de admin usan cabeceras con gradientes complejos y superposición de elementos (Z-Index manejado cuidadosamente) para evitar cortes visuales ("clipping bugs" resueltos con `position: relative` y `zIndex` explícito).
+
+## Notas para Desarrollo Futuro (Roadmap Técnico)
+
+1.  **Sustitución de API:** `apiService.ts` está diseñado con firmas asíncronas (`Promise<T>`). Para conectar un backend real (Node/Python), solo se debería reemplazar el contenido de estas funciones por llamadas `fetch` o `axios` sin cambiar los componentes de UI.
+2.  **Gestión de Imágenes:** Actualmente las imágenes son URLs externas o assets locales. Se necesitará un servicio de almacenamiento (S3/Cloudinary) para la subida real de avatares y logos.
+3.  **Leaflet SSR:** Si se migra a Next.js o similar, tener cuidado con `React Leaflet` ya que requiere `window` y debe cargarse dinámicamente (no-SSR).
+
+## Estado Final Fase 5 (Diciembre 2025)
+
+El frontend es **Feature Complete** según el alcance inicial. Todas las vistas (Landing, Auth, Paneles User/Org/Admin, Eventos, Mapa) están implementadas, estilizadas y conectadas a la lógica simulada.
