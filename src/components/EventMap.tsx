@@ -1,9 +1,10 @@
 // src/components/EventMap.tsx
 import React from 'react'
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
-import { Box, Typography, Button, Chip } from '@mui/material'
+import { Box, Typography, Chip } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
 import { Event } from '../types'
+import { Button } from './Button'
 // No importamos L (Leaflet) ni el icono
 
 // Iconos para el popup (look tecnológico)
@@ -130,21 +131,9 @@ const EventPopupContent: React.FC<{ event: Event }> = ({ event }) => {
 
       {/* 6. Botón de Acción */}
       <Button
-        variant='contained'
+        variant="primary"
         fullWidth
         onClick={handleNavigate}
-        sx={{
-          borderRadius: '12px',
-          py: 1,
-          background: 'var(--gradient-button-primary)',
-          textTransform: 'none',
-          fontWeight: 'bold',
-          boxShadow: '0 4px 14px rgba(0, 217, 255, 0.3)',
-          '&:hover': {
-            background: 'var(--gradient-button-primary-hover)',
-            boxShadow: '0 6px 20px rgba(0, 217, 255, 0.5)'
-          }
-        }}
       >
         Ver Detalles
       </Button>
@@ -188,7 +177,7 @@ export const EventMap: React.FC<EventMapProps> = ({ events }) => {
               <Marker
                 key={event.id}
                 position={[event.latitude, event.longitude]}
-                // No hay prop "icon", por lo que usará el default
+              // No hay prop "icon", por lo que usará el default
               >
                 <Popup>
                   {/* USAMOS EL COMPONENTE PERSONALIZADO */}
