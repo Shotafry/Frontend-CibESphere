@@ -15,6 +15,7 @@ interface CustomButtonProps {
     fullWidth?: boolean
     disabled?: boolean
     type?: 'button' | 'submit' | 'reset'
+    startIcon?: React.ReactNode
 }
 
 export const Button: FunctionComponent<CustomButtonProps> = ({
@@ -26,7 +27,8 @@ export const Button: FunctionComponent<CustomButtonProps> = ({
     size = 'medium',
     fullWidth = false,
     disabled = false,
-    type = 'button'
+    type = 'button',
+    startIcon
 }) => {
     const theme = useTheme()
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
@@ -76,7 +78,8 @@ export const Button: FunctionComponent<CustomButtonProps> = ({
         size,
         fullWidth,
         disabled,
-        type
+        type,
+        startIcon
     }
 
     if (to) {
