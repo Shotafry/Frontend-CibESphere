@@ -10,6 +10,8 @@ interface CustomButtonProps {
     children: React.ReactNode
     sx?: object
     to?: string
+    href?: string
+    target?: string
     onClick?: () => void
     size?: 'small' | 'medium' | 'large'
     fullWidth?: boolean
@@ -23,6 +25,8 @@ export const Button: FunctionComponent<CustomButtonProps> = ({
     children,
     sx = {},
     to,
+    href,
+    target,
     onClick,
     size = 'medium',
     fullWidth = false,
@@ -79,7 +83,9 @@ export const Button: FunctionComponent<CustomButtonProps> = ({
         fullWidth,
         disabled,
         type,
-        startIcon
+        startIcon,
+        href,
+        target
     }
 
     if (to) {
