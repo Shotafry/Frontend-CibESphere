@@ -4,7 +4,6 @@ import { useForm, SubmitHandler, Controller } from 'react-hook-form'
 import {
   Box,
   Typography,
-  Button,
   TextField,
   InputAdornment,
   IconButton,
@@ -16,7 +15,7 @@ import {
   Grid,
   Alert
 } from '@mui/material'
-import { useNavigate } from 'react-router-dom' // <-- Importación (ya estaba)
+import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { Role, RegisterDTO } from '../types'
 import MailOutlineIcon from '@mui/icons-material/MailOutline'
@@ -25,6 +24,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility'
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'
 import PersonIcon from '@mui/icons-material/Person'
 import BusinessIcon from '@mui/icons-material/Business'
+import { Button } from '../components/Button'
 
 const SignUp: FunctionComponent = () => {
   // --- ARREGLO DEL CRASH ---
@@ -292,19 +292,15 @@ const SignUp: FunctionComponent = () => {
             )}
 
             <Button
-              type='submit'
+              type="submit"
               fullWidth
-              variant='contained'
+              variant="primary"
               disabled={isLoading}
               sx={{
                 mt: 3,
                 mb: 2,
                 py: 1.5,
-                borderRadius: '25px',
-                background: 'var(--gradient-button-primary)',
-                '&:hover': {
-                  background: 'var(--gradient-button-primary-hover)'
-                }
+                borderRadius: '25px'
               }}
             >
               {isLoading ? (
@@ -320,6 +316,7 @@ const SignUp: FunctionComponent = () => {
 
             <Button
               fullWidth
+              variant="secondary"
               onClick={() => setIsLogin(!isLogin)}
               sx={{ mt: 2 }}
             >
