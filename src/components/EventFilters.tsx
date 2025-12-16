@@ -5,7 +5,6 @@ import {
   Typography,
   Grid,
   Paper,
-  Button,
   Collapse,
   IconButton,
   TextField,
@@ -23,6 +22,7 @@ import {
 } from '../constants/filters'
 import ExpandMore from '@mui/icons-material/ExpandMore'
 import FilterListIcon from '@mui/icons-material/FilterList'
+import { Button } from './Button'
 
 interface EventFiltersProps {
   initialFilters: EventFilterParams
@@ -412,34 +412,14 @@ export const EventFilters: React.FC<EventFiltersProps> = ({
               }}
             >
               <Button
-                variant='outlined'
+                variant="primary"
                 onClick={handleClearFilters}
-                sx={{
-                  borderRadius: '12px',
-                  borderColor: 'var(--Gray-400)',
-                  color: 'var(--Gray-700)',
-                  py: 1.5,
-                  px: 3,
-                  '&:hover': { borderColor: 'var(--Gray-600)' }
-                }}
               >
                 Limpiar
               </Button>
               <Button
-                variant='contained'
+                variant="secondary"
                 onClick={handleApplyFilters}
-                sx={{
-                  borderRadius: '12px',
-                  px: 4,
-                  py: 1.5,
-                  background: 'var(--gradient-button-primary)',
-                  boxShadow: '0 4px 14px rgba(0, 217, 255, 0.3)',
-                  fontWeight: 'bold',
-                  '&:hover': {
-                    background: 'var(--gradient-button-primary-hover)',
-                    boxShadow: '0 6px 20px rgba(0, 217, 255, 0.5)'
-                  }
-                }}
               >
                 Aplicar Filtros
               </Button>
