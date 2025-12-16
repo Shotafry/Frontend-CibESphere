@@ -1,18 +1,32 @@
 import { FunctionComponent } from 'react'
-import { Button as MuiButton, ButtonProps } from '@mui/material'
+import { Button as MuiButton } from '@mui/material'
 import { useTheme, useMediaQuery } from '@mui/material'
+import { Link } from 'react-router-dom'
 
 export type ButtonVariant = 'primary' | 'secondary'
 
-interface CustomButtonProps extends Omit<ButtonProps, 'variant'> {
+interface CustomButtonProps {
     variant?: ButtonVariant
+    children: React.ReactNode
+    sx?: object
+    to?: string
+    onClick?: () => void
+    size?: 'small' | 'medium' | 'large'
+    fullWidth?: boolean
+    disabled?: boolean
+    type?: 'button' | 'submit' | 'reset'
 }
 
 export const Button: FunctionComponent<CustomButtonProps> = ({
     variant = 'primary',
     children,
     sx = {},
-    ...props
+    to,
+    onClick,
+    size = 'medium',
+    fullWidth = false,
+    disabled = false,
+    type = 'button'
 }) => {
     const theme = useTheme()
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
@@ -56,11 +70,31 @@ export const Button: FunctionComponent<CustomButtonProps> = ({
         return baseStyles
     }
 
+    const commonProps = {
+        variant: variant === 'primary' ? 'contained' as const : 'outlined' as const,
+        sx: { ...getStyles(), ...sx },
+        size,
+        fullWidth,
+        disabled,
+        type
+    }
+
+    if (to) {
+        return (
+            <MuiButton
+                {...commonProps}
+                component={Link}
+                to={to}
+            >
+                {children}
+            </MuiButton>
+        )
+    }
+
     return (
         <MuiButton
-            variant={variant === 'primary' ? 'contained' : 'outlined'}
-            sx={{ ...getStyles(), ...sx }}
-            {...props}
+            {...commonProps}
+            onClick={onClick}
         >
             {children}
         </MuiButton>

@@ -10,8 +10,7 @@ import {
   ListItemText,
   ListItemAvatar,
   Avatar,
-  Divider,
-  Button
+  Divider
 } from '@mui/material'
 import NotificationsIcon from '@mui/icons-material/Notifications'
 import CircleNotificationsIcon from '@mui/icons-material/CircleNotifications'
@@ -22,6 +21,7 @@ import ErrorIcon from '@mui/icons-material/Error'
 import { Notification } from '../types'
 import { useNavigate } from 'react-router-dom'
 import { markNotificationAsRead } from '../services/apiService'
+import { Button } from './Button'
 
 interface NotificationMenuProps {
   anchorEl: null | HTMLElement
@@ -170,7 +170,7 @@ export const NotificationMenu: React.FC<NotificationMenuProps> = ({
         )}
       </List>
       <Box sx={{ p: 1.5, borderTop: '1px solid #F1F5F9', textAlign: 'center' }}>
-        <Button size='small' onClick={onClose}>
+        <Button variant="primary" size="small" onClick={onClose}>
           Cerrar
         </Button>
       </Box>
