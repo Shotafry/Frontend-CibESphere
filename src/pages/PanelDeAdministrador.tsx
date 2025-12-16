@@ -8,7 +8,6 @@ import {
   Tabs,
   Tab,
   CircularProgress,
-  Button,
   Chip,
   IconButton,
   Table,
@@ -23,6 +22,7 @@ import {
   Fade
 } from '@mui/material'
 import { useLoaderData, useNavigate } from 'react-router-dom'
+import { Button } from '../components/Button'
 import {
   DashboardStats,
   User,
@@ -268,17 +268,10 @@ const OrganizationsTab: React.FC = () => {
                   <TableCell align='right'>
                     {!org.is_verified && (
                       <Button
-                        variant='contained'
-                        size='small'
-                        disableElevation
+                        variant="primary"
+                        size="small"
                         startIcon={<CheckCircleIcon />}
                         onClick={() => handleVerify(org.id)}
-                        sx={{
-                          bgcolor: '#10b981',
-                          '&:hover': { bgcolor: '#059669' },
-                          textTransform: 'none',
-                          borderRadius: '8px'
-                        }}
                       >
                         Aprobar
                       </Button>
@@ -405,8 +398,8 @@ const UsersTab: React.FC = () => {
                         user.role === Role.Admin
                           ? 'Administrador'
                           : user.role === Role.Organizer
-                          ? 'Organizador'
-                          : 'Asistente'
+                            ? 'Organizador'
+                            : 'Asistente'
                       }
                       size='small'
                       sx={{
@@ -414,14 +407,14 @@ const UsersTab: React.FC = () => {
                           user.role === Role.Admin
                             ? '#fce7f3'
                             : user.role === Role.Organizer
-                            ? '#dbeafe'
-                            : '#f1f5f9',
+                              ? '#dbeafe'
+                              : '#f1f5f9',
                         color:
                           user.role === Role.Admin
                             ? '#be185d'
                             : user.role === Role.Organizer
-                            ? '#1d4ed8'
-                            : '#475569',
+                              ? '#1d4ed8'
+                              : '#475569',
                         fontWeight: 600,
                         border: 'none'
                       }}

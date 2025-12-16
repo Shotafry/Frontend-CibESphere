@@ -3,7 +3,6 @@ import React, { FunctionComponent, useCallback, useState } from 'react'
 import {
   Box,
   Typography,
-  Button,
   Container,
   Grid,
   Paper,
@@ -28,6 +27,7 @@ import { useAuth } from '../context/AuthContext'
 import { DashboardStats, Event, OrganizationSummary } from '../types'
 import * as apiService from '../services/apiService'
 import EventIcon from '@mui/icons-material/Event'
+import { Button } from '../components/Button'
 import GroupIcon from '@mui/icons-material/Group'
 import LocationCityIcon from '@mui/icons-material/LocationCity'
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'
@@ -141,393 +141,379 @@ const ProfileTabContent: React.FC<{
   onSaveProfile,
   saveMessage
 }) => {
-  const watchedBanner = useWatch({ control, name: 'banner_url' })
-  const watchedLogo = useWatch({ control, name: 'logo_url' })
-  const watchedName = useWatch({ control, name: 'name' })
-  const watchedCity = useWatch({ control, name: 'city' })
+    const watchedBanner = useWatch({ control, name: 'banner_url' })
+    const watchedLogo = useWatch({ control, name: 'logo_url' })
+    const watchedName = useWatch({ control, name: 'name' })
+    const watchedCity = useWatch({ control, name: 'city' })
 
-  const bannerUrl =
-    watchedBanner ||
-    user?.organization?.banner_url ||
-    'https://images.unsplash.com/photo-1550751827-4bd374c3f58b'
-  const logoUrl =
-    watchedLogo || user?.organization?.logo_url || '/default-logo.png'
+    const bannerUrl =
+      watchedBanner ||
+      user?.organization?.banner_url ||
+      'https://images.unsplash.com/photo-1550751827-4bd374c3f58b'
+    const logoUrl =
+      watchedLogo || user?.organization?.logo_url || '/default-logo.png'
 
-  return (
-    <Box component='form' onSubmit={handleSubmit(onSaveProfile)}>
-      {/* 1. HEADER PREVIEW (Immersive) */}
-      <Paper
-        elevation={0}
-        sx={{
-          borderRadius: '24px',
-          overflow: 'hidden',
-          mb: 4,
-          border: '1px solid #E2E8F0',
-          position: 'relative'
-        }}
-      >
-        {/* Banner Background */}
-        <Box
+    return (
+      <Box component='form' onSubmit={handleSubmit(onSaveProfile)}>
+        {/* 1. HEADER PREVIEW (Immersive) */}
+        <Paper
+          elevation={0}
           sx={{
-            height: 200,
-            width: '100%',
-            backgroundImage: `url(${bannerUrl})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            position: 'relative',
-            '&::after': {
-              content: '""',
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              background:
-                'linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.6))'
-            }
-          }}
-        />
-
-        {/* Glassmorphism Info Bar */}
-        <Box
-          sx={{
-            position: 'absolute',
-            bottom: 0,
-            left: 0,
-            right: 0,
-            p: 3,
-            display: 'flex',
-            alignItems: 'flex-end',
-            gap: 3,
-            zIndex: 2
+            borderRadius: '24px',
+            overflow: 'hidden',
+            mb: 4,
+            border: '1px solid #E2E8F0',
+            position: 'relative'
           }}
         >
-          <Avatar
-            src={logoUrl}
+          {/* Banner Background */}
+          <Box
             sx={{
-              width: 100,
-              height: 100,
-              border: '4px solid white',
-              boxShadow: '0 4px 20px rgba(0,0,0,0.2)'
+              height: 200,
+              width: '100%',
+              backgroundImage: `url(${bannerUrl})`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              position: 'relative',
+              '&::after': {
+                content: '""',
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                background:
+                  'linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.6))'
+              }
             }}
           />
-          <Box sx={{ color: 'white', pb: 1 }}>
-            <Typography
-              variant='h4'
-              fontWeight='900'
-              sx={{ textShadow: '0 2px 4px rgba(0,0,0,0.5)' }}
-            >
-              {watchedName || 'Tu Organización'}
-            </Typography>
-            <Box
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 1,
-                opacity: 0.9
-              }}
-            >
-              <LocationCityIcon fontSize='small' />
-              <Typography variant='body1' fontWeight='500'>
-                {watchedCity || 'Ciudad'}
-              </Typography>
-            </Box>
-          </Box>
-        </Box>
-      </Paper>
 
-      {saveMessage && (
-        <Alert severity={saveMessage.type} sx={{ mb: 4, borderRadius: '12px' }}>
-          {saveMessage.text}
-        </Alert>
-      )}
-
-      {/* 2. FORM GRID */}
-      <Grid container spacing={4}>
-        {/* LEFT COLUMN: MAIN INFO */}
-        <Grid size={{ xs: 12, md: 7 }}>
-          <Paper
-            elevation={0}
+          {/* Glassmorphism Info Bar */}
+          <Box
             sx={{
-              p: 4,
-              borderRadius: '24px',
-              border: '1px solid #E2E8F0',
-              height: '100%'
+              position: 'absolute',
+              bottom: 0,
+              left: 0,
+              right: 0,
+              p: 3,
+              display: 'flex',
+              alignItems: 'flex-end',
+              gap: 3,
+              zIndex: 2
             }}
           >
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 3 }}>
-              <BusinessIcon sx={{ color: 'var(--color-cadetblue)' }} />
-              <Typography variant='h6' fontWeight='bold'>
-                Información General
-              </Typography>
-            </Box>
-
-            <Stack spacing={3}>
-              <Controller
-                name='name'
-                control={control}
-                rules={{ required: 'El nombre es obligatorio' }}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    label='Nombre de la Organización'
-                    fullWidth
-                    variant='outlined'
-                    error={!!errors.name}
-                    helperText={errors.name?.message}
-                  />
-                )}
-              />
-              <Controller
-                name='description'
-                control={control}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    label='Sobre nosotros'
-                    fullWidth
-                    multiline
-                    minRows={4}
-                    placeholder='Describe tu misión, visión y los eventos que organizas...'
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment
-                          position='start'
-                          sx={{ alignSelf: 'flex-start', mt: 1.5 }}
-                        >
-                          <DescriptionIcon color='action' />
-                        </InputAdornment>
-                      )
-                    }}
-                  />
-                )}
-              />
-              <Grid container spacing={2}>
-                <Grid size={{ xs: 12, sm: 6 }}>
-                  <Controller
-                    name='city'
-                    control={control}
-                    render={({ field }) => (
-                      <TextField
-                        {...field}
-                        label='Ciudad'
-                        fullWidth
-                        InputProps={{
-                          startAdornment: (
-                            <InputAdornment position='start'>
-                              <LocationCityIcon color='action' />
-                            </InputAdornment>
-                          )
-                        }}
-                      />
-                    )}
-                  />
-                </Grid>
-                <Grid size={{ xs: 12, sm: 6 }}>
-                  <Controller
-                    name='website'
-                    control={control}
-                    render={({ field }) => (
-                      <TextField
-                        {...field}
-                        label='Sitio Web'
-                        fullWidth
-                        placeholder='https://...'
-                        InputProps={{
-                          startAdornment: (
-                            <InputAdornment position='start'>
-                              <LanguageIcon color='action' />
-                            </InputAdornment>
-                          )
-                        }}
-                      />
-                    )}
-                  />
-                </Grid>
-              </Grid>
-            </Stack>
-          </Paper>
-        </Grid>
-
-        {/* RIGHT COLUMN: ASSETS & SOCIAL */}
-        <Grid size={{ xs: 12, md: 5 }}>
-          <Stack spacing={4}>
-            {/* Visual Assets Card */}
-            <Paper
-              elevation={0}
-              sx={{ p: 4, borderRadius: '24px', border: '1px solid #E2E8F0' }}
-            >
-              <Box
-                sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 3 }}
-              >
-                <ImageIcon sx={{ color: 'var(--color-cadetblue)' }} />
-                <Typography variant='h6' fontWeight='bold'>
-                  Recursos Visuales
-                </Typography>
-              </Box>
-              <Stack spacing={3}>
-                <Controller
-                  name='logo_url'
-                  control={control}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      label='URL del Logo'
-                      fullWidth
-                      size='small'
-                      helperText='Recomendado: 400x400px'
-                      InputProps={{
-                        startAdornment: (
-                          <InputAdornment position='start'>
-                            <LinkIcon fontSize='small' />
-                          </InputAdornment>
-                        )
-                      }}
-                    />
-                  )}
-                />
-                <Controller
-                  name='banner_url'
-                  control={control}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      label='URL del Banner'
-                      fullWidth
-                      size='small'
-                      helperText='Recomendado: 1200x400px'
-                      InputProps={{
-                        startAdornment: (
-                          <InputAdornment position='start'>
-                            <LinkIcon fontSize='small' />
-                          </InputAdornment>
-                        )
-                      }}
-                    />
-                  )}
-                />
-              </Stack>
-            </Paper>
-
-            {/* Social Media Card */}
-            <Paper
-              elevation={0}
-              sx={{ p: 4, borderRadius: '24px', border: '1px solid #E2E8F0' }}
-            >
-              <Box
-                sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 3 }}
-              >
-                <GroupIcon sx={{ color: 'var(--color-cadetblue)' }} />
-                <Typography variant='h6' fontWeight='bold'>
-                  Redes Sociales
-                </Typography>
-              </Box>
-              <Stack spacing={2}>
-                <Controller
-                  name='social_links.twitter'
-                  control={control}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      label='Twitter'
-                      fullWidth
-                      size='small'
-                      InputProps={{
-                        startAdornment: (
-                          <InputAdornment position='start'>
-                            <TwitterIcon
-                              fontSize='small'
-                              sx={{ color: '#1DA1F2' }}
-                            />
-                          </InputAdornment>
-                        )
-                      }}
-                    />
-                  )}
-                />
-                <Controller
-                  name='social_links.linkedin'
-                  control={control}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      label='LinkedIn'
-                      fullWidth
-                      size='small'
-                      InputProps={{
-                        startAdornment: (
-                          <InputAdornment position='start'>
-                            <LinkedInIcon
-                              fontSize='small'
-                              sx={{ color: '#0A66C2' }}
-                            />
-                          </InputAdornment>
-                        )
-                      }}
-                    />
-                  )}
-                />
-                <Controller
-                  name='social_links.github'
-                  control={control}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      label='GitHub'
-                      fullWidth
-                      size='small'
-                      InputProps={{
-                        startAdornment: (
-                          <InputAdornment position='start'>
-                            <GitHubIcon
-                              fontSize='small'
-                              sx={{ color: '#333' }}
-                            />
-                          </InputAdornment>
-                        )
-                      }}
-                    />
-                  )}
-                />
-              </Stack>
-            </Paper>
-
-            {/* Save Button */}
-            <Button
-              type='submit'
-              variant='contained'
-              fullWidth
-              disabled={isSaving}
-              startIcon={
-                isSaving ? (
-                  <CircularProgress size={20} color='inherit' />
-                ) : (
-                  <SaveIcon />
-                )
-              }
+            <Avatar
+              src={logoUrl}
               sx={{
-                py: 2,
-                borderRadius: '16px',
-                fontSize: '1.1rem',
-                fontWeight: 'bold',
-                background: 'var(--gradient-button-primary)',
-                boxShadow: '0 8px 20px rgba(0, 217, 255, 0.25)',
-                '&:hover': {
-                  background: 'var(--gradient-button-primary-hover)',
-                  boxShadow: '0 10px 25px rgba(0, 217, 255, 0.4)',
-                  transform: 'translateY(-2px)'
-                },
-                transition: 'all 0.2s ease'
+                width: 100,
+                height: 100,
+                border: '4px solid white',
+                boxShadow: '0 4px 20px rgba(0,0,0,0.2)'
+              }}
+            />
+            <Box sx={{ color: 'white', pb: 1 }}>
+              <Typography
+                variant='h4'
+                fontWeight='900'
+                sx={{ textShadow: '0 2px 4px rgba(0,0,0,0.5)' }}
+              >
+                {watchedName || 'Tu Organización'}
+              </Typography>
+              <Box
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 1,
+                  opacity: 0.9
+                }}
+              >
+                <LocationCityIcon fontSize='small' />
+                <Typography variant='body1' fontWeight='500'>
+                  {watchedCity || 'Ciudad'}
+                </Typography>
+              </Box>
+            </Box>
+          </Box>
+        </Paper>
+
+        {saveMessage && (
+          <Alert severity={saveMessage.type} sx={{ mb: 4, borderRadius: '12px' }}>
+            {saveMessage.text}
+          </Alert>
+        )}
+
+        {/* 2. FORM GRID */}
+        <Grid container spacing={4}>
+          {/* LEFT COLUMN: MAIN INFO */}
+          <Grid size={{ xs: 12, md: 7 }}>
+            <Paper
+              elevation={0}
+              sx={{
+                p: 4,
+                borderRadius: '24px',
+                border: '1px solid #E2E8F0',
+                height: '100%'
               }}
             >
-              {isSaving ? 'Guardando...' : 'Guardar Cambios'}
-            </Button>
-          </Stack>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 3 }}>
+                <BusinessIcon sx={{ color: 'var(--color-cadetblue)' }} />
+                <Typography variant='h6' fontWeight='bold'>
+                  Información General
+                </Typography>
+              </Box>
+
+              <Stack spacing={3}>
+                <Controller
+                  name='name'
+                  control={control}
+                  rules={{ required: 'El nombre es obligatorio' }}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      label='Nombre de la Organización'
+                      fullWidth
+                      variant='outlined'
+                      error={!!errors.name}
+                      helperText={errors.name?.message}
+                    />
+                  )}
+                />
+                <Controller
+                  name='description'
+                  control={control}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      label='Sobre nosotros'
+                      fullWidth
+                      multiline
+                      minRows={4}
+                      placeholder='Describe tu misión, visión y los eventos que organizas...'
+                      InputProps={{
+                        startAdornment: (
+                          <InputAdornment
+                            position='start'
+                            sx={{ alignSelf: 'flex-start', mt: 1.5 }}
+                          >
+                            <DescriptionIcon color='action' />
+                          </InputAdornment>
+                        )
+                      }}
+                    />
+                  )}
+                />
+                <Grid container spacing={2}>
+                  <Grid size={{ xs: 12, sm: 6 }}>
+                    <Controller
+                      name='city'
+                      control={control}
+                      render={({ field }) => (
+                        <TextField
+                          {...field}
+                          label='Ciudad'
+                          fullWidth
+                          InputProps={{
+                            startAdornment: (
+                              <InputAdornment position='start'>
+                                <LocationCityIcon color='action' />
+                              </InputAdornment>
+                            )
+                          }}
+                        />
+                      )}
+                    />
+                  </Grid>
+                  <Grid size={{ xs: 12, sm: 6 }}>
+                    <Controller
+                      name='website'
+                      control={control}
+                      render={({ field }) => (
+                        <TextField
+                          {...field}
+                          label='Sitio Web'
+                          fullWidth
+                          placeholder='https://...'
+                          InputProps={{
+                            startAdornment: (
+                              <InputAdornment position='start'>
+                                <LanguageIcon color='action' />
+                              </InputAdornment>
+                            )
+                          }}
+                        />
+                      )}
+                    />
+                  </Grid>
+                </Grid>
+              </Stack>
+            </Paper>
+          </Grid>
+
+          {/* RIGHT COLUMN: ASSETS & SOCIAL */}
+          <Grid size={{ xs: 12, md: 5 }}>
+            <Stack spacing={4}>
+              {/* Visual Assets Card */}
+              <Paper
+                elevation={0}
+                sx={{ p: 4, borderRadius: '24px', border: '1px solid #E2E8F0' }}
+              >
+                <Box
+                  sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 3 }}
+                >
+                  <ImageIcon sx={{ color: 'var(--color-cadetblue)' }} />
+                  <Typography variant='h6' fontWeight='bold'>
+                    Recursos Visuales
+                  </Typography>
+                </Box>
+                <Stack spacing={3}>
+                  <Controller
+                    name='logo_url'
+                    control={control}
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        label='URL del Logo'
+                        fullWidth
+                        size='small'
+                        helperText='Recomendado: 400x400px'
+                        InputProps={{
+                          startAdornment: (
+                            <InputAdornment position='start'>
+                              <LinkIcon fontSize='small' />
+                            </InputAdornment>
+                          )
+                        }}
+                      />
+                    )}
+                  />
+                  <Controller
+                    name='banner_url'
+                    control={control}
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        label='URL del Banner'
+                        fullWidth
+                        size='small'
+                        helperText='Recomendado: 1200x400px'
+                        InputProps={{
+                          startAdornment: (
+                            <InputAdornment position='start'>
+                              <LinkIcon fontSize='small' />
+                            </InputAdornment>
+                          )
+                        }}
+                      />
+                    )}
+                  />
+                </Stack>
+              </Paper>
+
+              {/* Social Media Card */}
+              <Paper
+                elevation={0}
+                sx={{ p: 4, borderRadius: '24px', border: '1px solid #E2E8F0' }}
+              >
+                <Box
+                  sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 3 }}
+                >
+                  <GroupIcon sx={{ color: 'var(--color-cadetblue)' }} />
+                  <Typography variant='h6' fontWeight='bold'>
+                    Redes Sociales
+                  </Typography>
+                </Box>
+                <Stack spacing={2}>
+                  <Controller
+                    name='social_links.twitter'
+                    control={control}
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        label='Twitter'
+                        fullWidth
+                        size='small'
+                        InputProps={{
+                          startAdornment: (
+                            <InputAdornment position='start'>
+                              <TwitterIcon
+                                fontSize='small'
+                                sx={{ color: '#1DA1F2' }}
+                              />
+                            </InputAdornment>
+                          )
+                        }}
+                      />
+                    )}
+                  />
+                  <Controller
+                    name='social_links.linkedin'
+                    control={control}
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        label='LinkedIn'
+                        fullWidth
+                        size='small'
+                        InputProps={{
+                          startAdornment: (
+                            <InputAdornment position='start'>
+                              <LinkedInIcon
+                                fontSize='small'
+                                sx={{ color: '#0A66C2' }}
+                              />
+                            </InputAdornment>
+                          )
+                        }}
+                      />
+                    )}
+                  />
+                  <Controller
+                    name='social_links.github'
+                    control={control}
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        label='GitHub'
+                        fullWidth
+                        size='small'
+                        InputProps={{
+                          startAdornment: (
+                            <InputAdornment position='start'>
+                              <GitHubIcon
+                                fontSize='small'
+                                sx={{ color: '#333' }}
+                              />
+                            </InputAdornment>
+                          )
+                        }}
+                      />
+                    )}
+                  />
+                </Stack>
+              </Paper>
+
+              {/* Save Button */}
+              <Button
+                type="submit"
+                variant="primary"
+                fullWidth
+                disabled={isSaving}
+                startIcon={
+                  isSaving ? (
+                    <CircularProgress size={20} color='inherit' />
+                  ) : (
+                    <SaveIcon />
+                  )
+                }
+              >
+                {isSaving ? 'Guardando...' : 'Guardar Cambios'}
+              </Button>
+            </Stack>
+          </Grid>
         </Grid>
-      </Grid>
-    </Box>
-  )
-}
+      </Box>
+    )
+  }
 
 const PanelDeOrganizador: FunctionComponent = () => {
   const { stats, events } = useLoaderData() as LoaderData
@@ -663,20 +649,9 @@ const PanelDeOrganizador: FunctionComponent = () => {
             </Box>
             {tabValue === 0 && (
               <Button
-                variant='contained'
+                variant="secondary"
                 startIcon={<AddCircleOutlineIcon />}
                 onClick={onCrearEventoClick}
-                sx={{
-                  borderRadius: '12px',
-                  px: 3,
-                  py: 1.5,
-                  background: 'var(--gradient-button-primary)',
-                  boxShadow: '0 4px 14px rgba(0, 217, 255, 0.3)',
-                  '&:hover': {
-                    background: 'var(--gradient-button-primary-hover)',
-                    boxShadow: '0 6px 20px rgba(0, 217, 255, 0.5)'
-                  }
-                }}
               >
                 Crear Evento
               </Button>
@@ -772,9 +747,9 @@ const PanelDeOrganizador: FunctionComponent = () => {
                     const occupancy =
                       event.max_attendees && event.max_attendees > 0
                         ? Math.round(
-                            (event.current_attendees / event.max_attendees) *
-                              100
-                          )
+                          (event.current_attendees / event.max_attendees) *
+                          100
+                        )
                         : 0
 
                     return (
@@ -890,13 +865,9 @@ const PanelDeOrganizador: FunctionComponent = () => {
 
                           <Box sx={{ display: 'flex', gap: 1 }}>
                             <Button
-                              variant='outlined'
+                              variant="primary"
                               startIcon={<EditIcon />}
                               onClick={() => onEditarEventoClick(event.slug)}
-                              sx={{
-                                borderRadius: '10px',
-                                textTransform: 'none'
-                              }}
                             >
                               Editar
                             </Button>
@@ -925,8 +896,7 @@ const PanelDeOrganizador: FunctionComponent = () => {
                       No has creado ningún evento todavía.
                     </Typography>
                     <Button
-                      variant='contained'
-                      sx={{ mt: 2, borderRadius: '20px' }}
+                      variant="secondary"
                       onClick={onCrearEventoClick}
                     >
                       Crear mi primer evento
