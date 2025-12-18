@@ -5,7 +5,6 @@ import {
   Container,
   Typography,
   Avatar,
-  Button,
   Tabs,
   Tab,
   IconButton,
@@ -28,6 +27,7 @@ import {
 import { useLoaderData } from 'react-router-dom'
 import { OrganizationSummary, Event } from '../types'
 import { EventCard } from '../components/EventCard'
+import { Button } from '../components/Button'
 
 interface LoaderData {
   organization: OrganizationSummary
@@ -64,9 +64,8 @@ const OrganizationProfile: FunctionComponent = () => {
         sx={{
           height: { xs: 200, md: 350 },
           width: '100%',
-          backgroundImage: `url(${
-            organization.banner_url || '/default-banner.jpg'
-          })`,
+          backgroundImage: `url(${organization.banner_url || '/default-banner.jpg'
+            })`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           position: 'relative',
@@ -238,26 +237,9 @@ const OrganizationProfile: FunctionComponent = () => {
             }}
           >
             <Button
-              variant={isFollowing ? 'outlined' : 'contained'}
+              variant={isFollowing ? 'secondary' : 'primary'}
               startIcon={isFollowing ? <FollowingIcon /> : <FollowIcon />}
               onClick={handleFollow}
-              sx={{
-                borderRadius: '50px',
-                px: 4,
-                py: 1.5,
-                fontWeight: 'bold',
-                textTransform: 'none',
-                fontSize: '1rem',
-                bgcolor: isFollowing ? 'transparent' : 'var(--color-cadetblue)',
-                color: isFollowing ? 'var(--color-cadetblue)' : 'white',
-                borderColor: 'var(--color-cadetblue)',
-                '&:hover': {
-                  bgcolor: isFollowing
-                    ? 'rgba(79, 186, 200, 0.1)'
-                    : 'var(--color-cadetblue-hover)',
-                  borderColor: 'var(--color-cadetblue)'
-                }
-              }}
             >
               {isFollowing ? 'Siguiendo' : 'Seguir'}
             </Button>

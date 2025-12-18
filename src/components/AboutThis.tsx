@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
-import { Box, Button, cardHeaderClasses, Modal, Typography } from '@mui/material';
+import { Box, cardHeaderClasses, Modal, Typography } from '@mui/material';
 import CampaignIcon from '@mui/icons-material/Campaign';
+import { Button } from './Button';
 
 const ComunidadBox: React.FC = () => {
   const [open, setOpen] = useState(false);
+
 
   return (
 
@@ -128,47 +130,14 @@ const ComunidadBox: React.FC = () => {
         }}
       >
         <Button
-          variant="contained"
-          color="primary"
-          sx={{
-            background: '#01c0fa',
-            color: '#fff',
-            fontWeight: 700,
-            fontFamily: 'Satoshi, Arial, Helvetica, sans-serif',
-            p: { xs: 1, md: 4 },
-            borderRadius: '12px',
-            fontSize: '1.2rem',
-            boxShadow: '0 4px 16px rgba(36, 165, 182, 0.18)',
-            transition: 'transform 0.2s',
-            '&:hover': {
-              background: '#00a7d1',
-              color: '#fff',
-              transform: 'scale(1.07)'
-            }
-          }}
+          variant="primary"
           onClick={() => setOpen(true)}
         >
           Soy Organizador
         </Button>
         <Button
-          variant="contained"
-          color="primary"
-          sx={{
-            background: '#01c0fa',
-            color: '#fff',
-            fontWeight: 700,
-            fontFamily: 'Satoshi, Arial, Helvetica, sans-serif',
-            p: { xs: 1, md: 4 },
-            borderRadius: '12px',
-            fontSize: '1.2rem',
-            boxShadow: '0 4px 16px rgba(36, 165, 182, 0.18)',
-            transition: 'transform 0.2s',
-            '&:hover': {
-              background: '#00a7d1',
-              color: '#fff',
-              transform: 'scale(1.07)'
-            }
-          }}
+          variant="secondary"
+          onClick={() => setOpen(true)}
         >
           Soy Participante
         </Button>
@@ -187,7 +156,7 @@ const ComunidadBox: React.FC = () => {
             p: 5,
             maxWidth: 420,
             width: '95%',
-            textAlign: 'center',
+            textAlign: 'left',
             color: '#222',
             display: 'flex',
             flexDirection: 'column',
@@ -196,32 +165,14 @@ const ComunidadBox: React.FC = () => {
           }}
         >
           <CampaignIcon sx={{ fontSize: '5rem', color: '#01c0fa', mb: 2 }} />
-          <Typography variant="h4" sx={{ mb: 2, fontWeight: 900, letterSpacing: 1, color: '#01c0fa' }}>
+          <Typography variant="h4" sx={{ mb: 2, fontWeight: 900, letterSpacing: 1, color: '#01c0fa', textAlign: 'center' }}>
             ¡Participa como Organizador!
           </Typography>
-          <Typography sx={{ mb: 3, fontSize: '1.2rem', fontWeight: 500, lineHeight: 1.7, color: '#222' }}>
-            <span style={{ display: 'block', marginBottom: '1rem' }}>Date de alta como usuario.</span>
-            <span style={{ display: 'block', marginBottom: '1rem' }}>Cuéntanos tu evento.</span>
-            <span style={{ display: 'block', marginBottom: '1rem' }}>Daremos visibilidad en nuestra plataforma.</span>
+          <Typography sx={{ mb: 1, fontSize: '1rem', fontWeight: 500, lineHeight: 1.7, color: '#222' }}>
+            Date de alta como usuario, cuéntanos tu evento y le daremos visibilidad en nuestra plataforma.
           </Typography>
           <Button
-            variant="contained"
-            color="primary"
-            sx={{
-              background: '#01c0fa',
-              color: '#fff',
-              fontWeight: 700,
-              borderRadius: '8px',
-              px: 4,
-              py: 1.5,
-              fontSize: '1.1rem',
-              boxShadow: '0 2px 8px rgba(36, 165, 182, 0.15)',
-              mt: 2,
-              '&:hover': {
-                background: '#282828',
-                color: '#fff'
-              }
-            }}
+            variant="primary"
             onClick={() => setOpen(false)}
           >
             Cerrar

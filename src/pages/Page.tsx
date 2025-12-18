@@ -6,7 +6,6 @@ import {
   TextField,
   InputAdornment,
   MenuItem,
-  Button,
   Container,
   Paper,
   Grid,
@@ -28,6 +27,7 @@ import { useNavigate, useLoaderData } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import * as apiService from '../services/apiService'
 import { CreateEventDTO, Event, AgendaItem, Speaker } from '../types'
+import { Button } from '../components/Button'
 import {
   CYBERSECURITY_TAGS,
   EVENT_LEVELS,
@@ -121,19 +121,19 @@ const Page: FunctionComponent = () => {
 
   const handleSingleAutocompleteChange =
     (field: 'venue_city' | 'venue_community') =>
-    (event: any, value: string | null) => {
-      if (field === 'venue_community') {
-        const newCommunity = value || ''
-        setFormData((prev: any) => ({
-          ...prev,
-          venue_community: newCommunity,
-          venue_city: ''
-        }))
-        setAvailableCities(newCommunity ? LOCATION_DATA[newCommunity] : [])
-      } else {
-        setFormData((prev: any) => ({ ...prev, [field]: value || '' }))
+      (event: any, value: string | null) => {
+        if (field === 'venue_community') {
+          const newCommunity = value || ''
+          setFormData((prev: any) => ({
+            ...prev,
+            venue_community: newCommunity,
+            venue_city: ''
+          }))
+          setAvailableCities(newCommunity ? LOCATION_DATA[newCommunity] : [])
+        } else {
+          setFormData((prev: any) => ({ ...prev, [field]: value || '' }))
+        }
       }
-    }
 
   // --- AGENDA MANAGEMENT ---
   const handleAddAgendaItem = () => {
@@ -202,8 +202,8 @@ const Page: FunctionComponent = () => {
     if (!user || !user.organization) {
       setError(
         'Debes ser un organizador verificado para ' +
-          (isEditMode ? 'editar' : 'crear') +
-          ' un evento.'
+        (isEditMode ? 'editar' : 'crear') +
+        ' un evento.'
       )
       return
     }
@@ -228,7 +228,7 @@ const Page: FunctionComponent = () => {
     } catch (err: any) {
       setError(
         err.message ||
-          `Error al ${isEditMode ? 'actualizar' : 'crear'} el evento.`
+        `Error al ${isEditMode ? 'actualizar' : 'crear'} el evento.`
       )
     } finally {
       setIsLoading(false)
@@ -412,6 +412,7 @@ const Page: FunctionComponent = () => {
                       </Box>
                     ))}
                     <Button
+                      variant="primary"
                       startIcon={<AddIcon />}
                       onClick={handleAddAgendaItem}
                       sx={{ mb: 4 }}
@@ -530,7 +531,7 @@ const Page: FunctionComponent = () => {
                         </Box>
                       )
                     )}
-                    <Button startIcon={<AddIcon />} onClick={handleAddSpeaker}>
+                    <Button variant="secondary" startIcon={<AddIcon />} onClick={handleAddSpeaker}>
                       Añadir Ponente
                     </Button>
                   </CardContent>
@@ -800,16 +801,14 @@ const Page: FunctionComponent = () => {
                 sx={{ display: 'flex', justifyContent: 'flex-end', mt: 3 }}
               >
                 <Button
-                  type='submit'
-                  variant='contained'
-                  size='large'
+                  type="submit"
+                  variant="primary"
+                  size="large"
                   disabled={isLoading}
                   sx={{
                     borderRadius: '25px',
-                    background: 'var(--gradient-button-primary)',
                     boxShadow: '0 4px 14px rgba(0, 217, 255, 0.3)',
                     '&:hover': {
-                      background: 'var(--gradient-button-primary-hover)',
                       boxShadow: '0 6px 20px rgba(0, 217, 255, 0.5)'
                     }
                   }}

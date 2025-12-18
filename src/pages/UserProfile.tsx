@@ -7,7 +7,6 @@ import {
   Paper,
   Grid,
   Stack,
-  Button,
   Tab,
   Tabs
 } from '@mui/material'
@@ -20,6 +19,7 @@ import LinkedInIcon from '@mui/icons-material/LinkedIn'
 import GitHubIcon from '@mui/icons-material/GitHub'
 import LanguageIcon from '@mui/icons-material/Language'
 import { EventCard } from '../components/EventCard'
+import { Button } from '../components/Button'
 
 interface LoaderData {
   user: User
@@ -48,10 +48,9 @@ const UserProfile: React.FC = () => {
       <Box
         sx={{
           height: 350,
-          backgroundImage: `url(${
-            user.banner_url ||
+          backgroundImage: `url(${user.banner_url ||
             'https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=1600&q=80'
-          })`,
+            })`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           position: 'relative',
@@ -176,13 +175,11 @@ const UserProfile: React.FC = () => {
                     <Button
                       startIcon={<TwitterIcon />}
                       fullWidth
-                      variant='outlined'
+                      variant="primary"
                       href={user.social_links.twitter}
-                      target='_blank'
+                      target="_blank"
                       sx={{
-                        justifyContent: 'flex-start',
-                        color: '#1DA1F2',
-                        borderColor: '#E2E8F0'
+                        justifyContent: 'flex-start'
                       }}
                     >
                       Twitter
@@ -192,13 +189,11 @@ const UserProfile: React.FC = () => {
                     <Button
                       startIcon={<LinkedInIcon />}
                       fullWidth
-                      variant='outlined'
+                      variant="secondary"
                       href={user.social_links.linkedin}
-                      target='_blank'
+                      target="_blank"
                       sx={{
-                        justifyContent: 'flex-start',
-                        color: '#0A66C2',
-                        borderColor: '#E2E8F0'
+                        justifyContent: 'flex-start'
                       }}
                     >
                       LinkedIn
@@ -208,13 +203,11 @@ const UserProfile: React.FC = () => {
                     <Button
                       startIcon={<GitHubIcon />}
                       fullWidth
-                      variant='outlined'
+                      variant="primary"
                       href={user.social_links.github}
-                      target='_blank'
+                      target="_blank"
                       sx={{
-                        justifyContent: 'flex-start',
-                        color: '#333',
-                        borderColor: '#E2E8F0'
+                        justifyContent: 'flex-start'
                       }}
                     >
                       GitHub
@@ -224,13 +217,11 @@ const UserProfile: React.FC = () => {
                     <Button
                       startIcon={<LanguageIcon />}
                       fullWidth
-                      variant='outlined'
+                      variant="secondary"
                       href={user.social_links.website}
-                      target='_blank'
+                      target="_blank"
                       sx={{
-                        justifyContent: 'flex-start',
-                        color: 'var(--Gray-700)',
-                        borderColor: '#E2E8F0'
+                        justifyContent: 'flex-start'
                       }}
                     >
                       Sitio Web

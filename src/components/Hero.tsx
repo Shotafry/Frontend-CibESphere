@@ -1,7 +1,8 @@
 // src/components/Hero.tsx
 import { FunctionComponent } from 'react'
-import { Box, Typography, Container, Grid, Button } from '@mui/material'
+import { Box, Typography, Container, Grid } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
+import { Button } from './Button'
 // --- LOGO MODIFICADO ---
 // Usando el nombre de archivo que me diste
 const logoVertical = '/Logo-Vertical.png'
@@ -100,20 +101,14 @@ export const Hero: FunctionComponent = () => {
               nuevos contactos e incluso amigos y mantente actualizado.
             </Typography>
             <Button
-              variant='contained'
-              size='large'
+              variant="primary"
+              size="large"
               onClick={() =>
                 document
                   .getElementById('filtros')
                   ?.scrollIntoView({ behavior: 'smooth' })
               }
               sx={{
-                borderRadius: '12px',
-                background: 'var(--gradient-button-primary)',
-                color: 'var(--White)',
-                '&:hover': {
-                  background: 'var(--gradient-button-primary-hover)'
-                },
                 px: { xs: 2, md: 4 },
                 py: { xs: 1, md: 1.5 },
                 fontSize: { xs: '1rem', md: '1.2rem' }

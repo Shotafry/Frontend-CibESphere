@@ -2,7 +2,6 @@
 import { FunctionComponent, useCallback, useState, useEffect } from 'react'
 import {
   Box,
-  Button,
   CircularProgress,
   Typography,
   IconButton,
@@ -14,6 +13,7 @@ import { useAuth } from '../context/AuthContext'
 import { Role, Notification } from '../types'
 import { getNotifications } from '../services/apiService'
 import { NotificationMenu } from './NotificationMenu'
+import { Button } from './Button'
 
 export const Header: FunctionComponent = () => {
   const navigate = useNavigate()
@@ -159,47 +159,22 @@ export const Header: FunctionComponent = () => {
                 Hola, {user?.first_name || user?.email}
               </Typography>
               <Button
-                variant='contained'
+                variant="primary"
                 onClick={onPanelClick}
-                sx={{
-                  borderRadius: '12px',
-                  background: 'var(--gradient-button-primary)',
-                  color: 'var(--White)',
-                  '&:hover': {
-                    background: 'var(--gradient-button-primary-hover)'
-                  }
-                }}
               >
                 Mi Panel
               </Button>
               <Button
-                variant='outlined'
+                variant="secondary"
                 onClick={logout}
-                sx={{
-                  borderRadius: '12px',
-                  borderColor: buttonBorderColor,
-                  color: buttonColor,
-                  '&:hover': {
-                    borderColor: buttonColor,
-                    backgroundColor: 'rgba(79, 186, 200, 0.1)'
-                  }
-                }}
               >
                 Cerrar Sesión
               </Button>
             </>
           ) : (
             <Button
-              variant='contained'
+              variant="primary"
               onClick={onLoginClick}
-              sx={{
-                borderRadius: '12px',
-                background: 'var(--gradient-button-primary)',
-                color: 'var(--White)',
-                '&:hover': {
-                  background: 'var(--gradient-button-primary-hover)'
-                }
-              }}
             >
               Login / Sign Up
             </Button>
