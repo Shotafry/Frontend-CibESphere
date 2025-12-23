@@ -3,6 +3,7 @@ import React from 'react'
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
 import { Box, Typography } from '@mui/material'
 import { Event } from '../types'
+import { Height } from '@mui/icons-material'
 
 interface SingleEventMapProps {
   event: Event
@@ -19,7 +20,7 @@ export const SingleEventMap: React.FC<SingleEventMapProps> = ({ event }) => {
   return (
     <Box
       sx={{
-        height: '400px', // Más pequeño que el mapa principal
+        height: { xs: '200px', md: '400px' }, // 200px en móvil, 400px en desktop
         width: '100%',
         borderRadius: '25px',
         overflow: 'hidden',

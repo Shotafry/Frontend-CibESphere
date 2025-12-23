@@ -16,6 +16,11 @@ export interface AuthResponse {
   expires_in: number
 }
 
+export interface LoginDTO {
+  email: string
+  password: string
+}
+
 export interface RegisterDTO {
   email: string
   password: string
@@ -42,7 +47,20 @@ export interface User {
   position?: string
   created_at: string
   organization?: OrganizationSummary
-  FavoriteEvents?: Event[] // Para el panel de usuario
+  FavoriteEvents?: Event[] // Para el panel de usuario (Inscripciones)
+  BookmarkedEvents?: Event[] // Guardados para ver luego
+  // Perfil Público
+  avatar_url?: string
+  banner_url?: string
+  bio?: string
+  city?: string
+  social_links?: {
+    twitter?: string
+    linkedin?: string
+    github?: string
+    website?: string
+  }
+  personal_quote?: string
 }
 
 // --- TIPOS DE ORGANIZACIÓN ---
@@ -54,6 +72,15 @@ export interface OrganizationSummary {
   logo_url: string
   is_verified: boolean
   city: string
+  description?: string
+  banner_url?: string
+  website?: string
+  email?: string
+  social_links?: {
+    twitter?: string
+    linkedin?: string
+    github?: string
+  }
 }
 
 // --- TIPOS de EVENTO ---
@@ -84,11 +111,37 @@ export interface Event {
   image_url: string
   banner_url: string
   tags: string[]
+  language:
+    | 'Español'
+    | 'Inglés'
+    | 'Catalán'
+    | 'Euskera'
+    | 'Gallego'
+    | 'Valenciano'
   organization: OrganizationSummary
   status: 'published' | 'draft' | 'canceled'
   is_upcoming: boolean
   is_past: boolean
   is_ongoing: boolean
+  agenda: AgendaItem[]
+  speakers: Speaker[]
+  requirements?: string
+}
+
+export interface AgendaItem {
+  id: string
+  time: string
+  title: string
+  description: string
+}
+
+export interface Speaker {
+  id: string
+  name: string
+  role: string
+  topic: string
+  time: string // Linked to agenda time
+  image_url?: string
 }
 
 export interface CreateEventDTO
@@ -114,6 +167,7 @@ export interface EventFilterParams {
   tags: string[]
   locations: string[]
   levels: string[]
+  languages: string[]
 }
 
 // --- TIPOS DE DASHBOARD ---
@@ -123,4 +177,32 @@ export interface DashboardStats {
   total_attendees: number
   total_cities: number
   published_events: number
+}
+
+// --- NOTIFICACIONES ---
+
+export interface Notification {
+  id: string
+  title: string
+  message: string
+  date: string
+  is_read: boolean
+  type: 'info' | 'success' | 'warning' | 'error'
+  link?: string
+}
+
+// --- RESEÑAS ---
+
+export interface Review {
+  id: string
+  eventId: string
+  userId: string
+  userName: string
+  userAvatar?: string
+  userCompany?: string
+  userPosition?: string
+  userQuote?: string
+  rating: number
+  comment: string
+  date: string
 }

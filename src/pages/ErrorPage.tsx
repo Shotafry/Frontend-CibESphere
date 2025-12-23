@@ -1,8 +1,9 @@
 // src/pages/ErrorPage.tsx
 import { FunctionComponent } from 'react'
 import { useRouteError, isRouteErrorResponse, Link } from 'react-router-dom'
-import { Box, Typography, Button, Container, Paper } from '@mui/material'
+import { Box, Typography, Container, Paper } from '@mui/material'
 import ReportProblemOutlinedIcon from '@mui/icons-material/ReportProblemOutlined'
+import { Button } from '../components/Button'
 
 const ErrorPage: FunctionComponent = () => {
   const error = useRouteError()
@@ -58,16 +59,8 @@ const ErrorPage: FunctionComponent = () => {
           {message}
         </Typography>
         <Button
-          component={Link}
-          to='/'
-          variant='contained'
-          sx={{
-            borderRadius: '25px',
-            background: 'var(--gradient-button-primary)', // Usaremos el gradiente unificado
-            '&:hover': {
-              background: 'var(--gradient-button-primary-hover)'
-            }
-          }}
+          to="/"
+          variant="primary"
         >
           Volver al Inicio
         </Button>

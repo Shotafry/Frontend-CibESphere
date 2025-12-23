@@ -1,9 +1,19 @@
 // src/components/Header.tsx
 import { FunctionComponent, useCallback, useState, useEffect } from 'react'
-import { Box, Button, CircularProgress, Typography } from '@mui/material'
+import {
+  Box,
+  CircularProgress,
+  Typography,
+  IconButton,
+  Badge
+} from '@mui/material'
+import NotificationsIcon from '@mui/icons-material/Notifications'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
-import { Role } from '../types'
+import { Role, Notification } from '../types'
+import { getNotifications } from '../services/apiService'
+import { NotificationMenu } from './NotificationMenu'
+import { Button } from './Button'
 
 export const Header: FunctionComponent = () => {
   const navigate = useNavigate()
@@ -11,7 +21,11 @@ export const Header: FunctionComponent = () => {
   const { isAuthenticated, user, logout, isLoading } = useAuth()
 
   const [isScrolled, setIsScrolled] = useState(false)
+  const [notifications, setNotifications] = useState<Notification[]>([])
+  const [unreadCount, setUnreadCount] = useState(0)
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const isLandingPage = location.pathname === '/'
+  const openNotifications = Boolean(anchorEl)
 
   useEffect(() => {
     const handleScroll = () => {
@@ -30,6 +44,30 @@ export const Header: FunctionComponent = () => {
       window.removeEventListener('scroll', handleScroll)
     }
   }, [isLandingPage, location.pathname])
+
+  useEffect(() => {
+    if (isAuthenticated && user) {
+      getNotifications(user.id).then((data) => {
+        setNotifications(data)
+        setUnreadCount(data.filter((n) => !n.is_read).length)
+      })
+    }
+  }, [isAuthenticated, user])
+
+  const handleOpenNotifications = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget)
+  }
+
+  const handleCloseNotifications = () => {
+    setAnchorEl(null)
+  }
+
+  const handleMarkAsRead = (id: string) => {
+    setNotifications((prev) =>
+      prev.map((n) => (n.id === id ? { ...n, is_read: true } : n))
+    )
+    setUnreadCount((prev) => Math.max(0, prev - 1))
+  }
 
   // --- LÓGICA ORIGINAL RESTAURADA ---
   // Vuelve a ser 'transparent' o 'var(--White)'
@@ -52,7 +90,9 @@ export const Header: FunctionComponent = () => {
   }, [navigate])
 
   const onPanelClick = useCallback(() => {
-    if (user?.role === Role.Organizer || user?.role === Role.Admin) {
+    if (user?.role === Role.Admin) {
+      navigate('/admin')
+    } else if (user?.role === Role.Organizer) {
       navigate('/panel-de-organizador')
     } else {
       navigate('/panel-de-usuario')
@@ -81,14 +121,15 @@ export const Header: FunctionComponent = () => {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          padding: '16px 32px', // Padding simple
-          boxSizing: 'border-box'
+          padding: { xs: '10px 8px', sm: '12px 16px', md: '16px 32px' },
+          boxSizing: 'border-box',
+          gap: { xs: 1, sm: 2 }
         }}
       >
         <img
           style={{
-            height: '48px',
-            width: '180px',
+            height: '36px',
+            width: '120px',
             objectFit: 'contain',
             cursor: 'pointer'
           }}
@@ -102,51 +143,38 @@ export const Header: FunctionComponent = () => {
             <CircularProgress size={24} />
           ) : isAuthenticated ? (
             <>
+              <IconButton onClick={handleOpenNotifications} sx={{ mr: 1 }}>
+                <Badge badgeContent={unreadCount} color='error'>
+                  <NotificationsIcon sx={{ color: textColor }} />
+                </Badge>
+              </IconButton>
+              <NotificationMenu
+                anchorEl={anchorEl}
+                open={openNotifications}
+                onClose={handleCloseNotifications}
+                notifications={notifications}
+                onMarkAsRead={handleMarkAsRead}
+              />
               <Typography sx={{ color: textColor, fontWeight: 500 }}>
                 Hola, {user?.first_name || user?.email}
               </Typography>
               <Button
-                variant='contained'
+                variant="primary"
                 onClick={onPanelClick}
-                sx={{
-                  borderRadius: '25px',
-                  background: 'var(--gradient-button-primary)',
-                  color: 'var(--White)',
-                  '&:hover': {
-                    background: 'var(--gradient-button-primary-hover)'
-                  }
-                }}
               >
                 Mi Panel
               </Button>
               <Button
-                variant='outlined'
+                variant="secondary"
                 onClick={logout}
-                sx={{
-                  borderRadius: '25px',
-                  borderColor: buttonBorderColor,
-                  color: buttonColor,
-                  '&:hover': {
-                    borderColor: buttonColor,
-                    backgroundColor: 'rgba(79, 186, 200, 0.1)'
-                  }
-                }}
               >
                 Cerrar Sesión
               </Button>
             </>
           ) : (
             <Button
-              variant='contained'
+              variant="primary"
               onClick={onLoginClick}
-              sx={{
-                borderRadius: '25px',
-                background: 'var(--gradient-button-primary)',
-                color: 'var(--White)',
-                '&:hover': {
-                  background: 'var(--gradient-button-primary-hover)'
-                }
-              }}
             >
               Login / Sign Up
             </Button>

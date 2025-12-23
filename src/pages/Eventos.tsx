@@ -9,9 +9,13 @@ import {
   CircularProgress,
   Chip,
   Divider,
-  Alert
+  Alert,
+  Paper,
+  Stack,
+  Avatar,
+  Popover
 } from '@mui/material'
-import { useLoaderData, useNavigation } from 'react-router-dom'
+import { useLoaderData, useNavigation, Link } from 'react-router-dom'
 import { Event } from '../types'
 import { SingleEventMap } from '../components/SingleEventMap'
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday'
@@ -20,6 +24,12 @@ import ConfirmationNumberIcon from '@mui/icons-material/ConfirmationNumber'
 import CategoryIcon from '@mui/icons-material/Category'
 import SchoolIcon from '@mui/icons-material/School'
 import { useAuth } from '../context/AuthContext'
+import { getEventReviews } from '../services/apiService'
+import { Review } from '../types'
+import StarIcon from '@mui/icons-material/Star'
+import StarHalfIcon from '@mui/icons-material/StarHalf'
+import StarOutlineIcon from '@mui/icons-material/StarOutline'
+import { useEffect } from 'react'
 
 const formatDateRange = (start: string, end: string) => {
   const startDate = new Date(start)
@@ -53,6 +63,14 @@ const Eventos: FunctionComponent = () => {
     (favEvent) => favEvent.id === event.id
   )
 
+  const [reviews, setReviews] = useState<Review[]>([])
+
+  useEffect(() => {
+    if (event?.id) {
+      getEventReviews(event.id).then(setReviews)
+    }
+  }, [event])
+
   const handleSubscribe = async () => {
     if (isAlreadySubscribed) return
 
@@ -65,6 +83,58 @@ const Eventos: FunctionComponent = () => {
     } finally {
       setIsSubscribing(false)
     }
+  }
+
+  // Popover Logic
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null)
+  const [popoverUser, setPopoverUser] = useState<{
+    name: string
+    avatar?: string
+    quote?: string
+    id: string
+  } | null>(null)
+
+  const handlePopoverOpen = (
+    event: React.MouseEvent<HTMLElement>,
+    user: any
+  ) => {
+    setAnchorEl(event.currentTarget)
+    setPopoverUser(user)
+  }
+
+  const handlePopoverClose = () => {
+    setAnchorEl(null)
+    setPopoverUser(null)
+  }
+
+  const open = Boolean(anchorEl)
+
+  const renderStars = (rating: number) => {
+    return (
+      <Box sx={{ display: 'flex' }}>
+        {[1, 2, 3, 4, 5].map((star) => {
+          if (rating >= star) {
+            return (
+              <StarIcon key={star} sx={{ color: '#faaf00', fontSize: 20 }} />
+            )
+          } else if (rating >= star - 0.5) {
+            return (
+              <StarHalfIcon
+                key={star}
+                sx={{ color: '#faaf00', fontSize: 20 }}
+              />
+            )
+          } else {
+            return (
+              <StarOutlineIcon
+                key={star}
+                sx={{ color: '#faaf00', fontSize: 20 }}
+              />
+            )
+          }
+        })}
+      </Box>
+    )
   }
 
   if (navigation.state === 'loading') {
@@ -135,6 +205,32 @@ const Eventos: FunctionComponent = () => {
               {event.title}
             </Typography>
 
+            {/* ENLACE A ORGANIZACIÓN */}
+            {event.organization && (
+              <Box
+                sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}
+              >
+                <Typography variant='subtitle1' color='text.secondary'>
+                  Organizado por:
+                </Typography>
+                <Link
+                  to={`/organizacion/${event.organization.slug || '#'}`}
+                  style={{ textDecoration: 'none' }}
+                >
+                  <Typography
+                    variant='subtitle1'
+                    fontWeight='bold'
+                    sx={{
+                      color: 'var(--color-cadetblue)',
+                      '&:hover': { textDecoration: 'underline' }
+                    }}
+                  >
+                    {event.organization.name}
+                  </Typography>
+                </Link>
+              </Box>
+            )}
+
             <Box sx={{ my: 3 }}>
               <Typography
                 variant='body1'
@@ -199,93 +295,406 @@ const Eventos: FunctionComponent = () => {
                 />
               ))}
             </Box>
+
+            {/* SECCIÓN DE ITINERARIO (Agenda y Ponentes) */}
+            {((event.agenda && event.agenda.length > 0) ||
+              (event.speakers && event.speakers.length > 0)) && (
+              <>
+                <Divider sx={{ my: 4, borderColor: 'var(--Gray-300)' }} />
+                <Box sx={{ mb: 4 }}>
+                  <Typography
+                    variant='h4'
+                    fontWeight='bold'
+                    gutterBottom
+                    sx={{ color: 'var(--color-cadetblue)', mb: 3 }}
+                  >
+                    Itinerario del Evento
+                  </Typography>
+
+                  <Grid container spacing={4}>
+                    {/* AGENDA */}
+                    {event.agenda && event.agenda.length > 0 && (
+                      <Grid
+                        size={{
+                          xs: 12,
+                          md:
+                            event.speakers && event.speakers.length > 0 ? 6 : 12
+                        }}
+                      >
+                        <Paper
+                          elevation={0}
+                          sx={{
+                            p: 3,
+                            borderRadius: '16px',
+                            bgcolor: '#F8FAFC',
+                            border: '1px solid #E2E8F0'
+                          }}
+                        >
+                          <Typography
+                            variant='h6'
+                            fontWeight='bold'
+                            sx={{ mb: 3, color: 'var(--Gray-800)' }}
+                          >
+                            Agenda
+                          </Typography>
+                          <Box
+                            sx={{
+                              display: 'flex',
+                              flexDirection: 'column',
+                              gap: 2
+                            }}
+                          >
+                            {event.agenda.map((item) => (
+                              <Box
+                                key={item.id}
+                                sx={{ display: 'flex', gap: 2 }}
+                              >
+                                <Box
+                                  sx={{
+                                    minWidth: '60px',
+                                    textAlign: 'right',
+                                    fontWeight: 'bold',
+                                    color: 'var(--color-cadetblue)',
+                                    pt: 0.5
+                                  }}
+                                >
+                                  {item.time}
+                                </Box>
+                                <Box
+                                  sx={{
+                                    borderLeft: '2px solid var(--Gray-300)',
+                                    pl: 2,
+                                    pb: 2,
+                                    position: 'relative'
+                                  }}
+                                >
+                                  <Box
+                                    sx={{
+                                      position: 'absolute',
+                                      left: '-5px',
+                                      top: '8px',
+                                      width: '8px',
+                                      height: '8px',
+                                      borderRadius: '50%',
+                                      bgcolor: 'var(--color-cadetblue)'
+                                    }}
+                                  />
+                                  <Typography
+                                    variant='subtitle1'
+                                    fontWeight='bold'
+                                    sx={{ lineHeight: 1.2 }}
+                                  >
+                                    {item.title}
+                                  </Typography>
+                                  {item.description && (
+                                    <Typography
+                                      variant='body2'
+                                      color='text.secondary'
+                                      sx={{ mt: 0.5 }}
+                                    >
+                                      {item.description}
+                                    </Typography>
+                                  )}
+                                </Box>
+                              </Box>
+                            ))}
+                          </Box>
+                        </Paper>
+                      </Grid>
+                    )}
+
+                    {/* PONENTES */}
+                    {event.speakers && event.speakers.length > 0 && (
+                      <Grid
+                        size={{
+                          xs: 12,
+                          md: event.agenda && event.agenda.length > 0 ? 6 : 12
+                        }}
+                      >
+                        <Paper
+                          elevation={0}
+                          sx={{
+                            p: 3,
+                            borderRadius: '16px',
+                            bgcolor: '#F8FAFC',
+                            border: '1px solid #E2E8F0'
+                          }}
+                        >
+                          <Typography
+                            variant='h6'
+                            fontWeight='bold'
+                            sx={{ mb: 3, color: 'var(--Gray-800)' }}
+                          >
+                            Ponentes
+                          </Typography>
+                          <Grid container spacing={2}>
+                            {event.speakers.map((speaker) => (
+                              <Grid size={{ xs: 12 }} key={speaker.id}>
+                                <Box
+                                  sx={{
+                                    display: 'flex',
+                                    gap: 2,
+                                    p: 2,
+                                    bgcolor: 'white',
+                                    borderRadius: '12px',
+                                    boxShadow: '0 2px 8px rgba(0,0,0,0.05)'
+                                  }}
+                                >
+                                  <Box sx={{ flex: 1 }}>
+                                    <Typography
+                                      variant='subtitle1'
+                                      fontWeight='bold'
+                                    >
+                                      {speaker.name}
+                                    </Typography>
+                                    <Typography
+                                      variant='caption'
+                                      sx={{
+                                        color: 'var(--color-cadetblue)',
+                                        fontWeight: 600,
+                                        display: 'block',
+                                        mb: 1
+                                      }}
+                                    >
+                                      {speaker.role}
+                                    </Typography>
+                                    <Typography
+                                      variant='body2'
+                                      color='text.secondary'
+                                    >
+                                      <span style={{ fontWeight: 'bold' }}>
+                                        Tema:
+                                      </span>{' '}
+                                      {speaker.topic}
+                                    </Typography>
+                                    {speaker.time && (
+                                      <Typography
+                                        variant='caption'
+                                        color='text.secondary'
+                                        sx={{ display: 'block', mt: 1 }}
+                                      >
+                                        🕒 {speaker.time}
+                                      </Typography>
+                                    )}
+                                  </Box>
+                                </Box>
+                              </Grid>
+                            ))}
+                          </Grid>
+                        </Paper>
+                      </Grid>
+                    )}
+                  </Grid>
+                </Box>
+              </>
+            )}
+
+            {event.requirements && (
+              <>
+                <Divider sx={{ my: 4, borderColor: 'var(--Gray-300)' }} />
+                <Box>
+                  <Typography
+                    variant='h5'
+                    fontWeight='bold'
+                    gutterBottom
+                    sx={{ color: 'var(--Gray-700)' }}
+                  >
+                    Requisitos
+                  </Typography>
+                  <Typography
+                    variant='body1'
+                    sx={{
+                      whiteSpace: 'pre-wrap',
+                      color: 'var(--Gray-600)',
+                      lineHeight: 1.6
+                    }}
+                  >
+                    {event.requirements}
+                  </Typography>
+                </Box>
+              </>
+            )}
+
+            {/* SECCIÓN DE RESEÑAS */}
+            {reviews.length > 0 && (
+              <>
+                <Divider sx={{ my: 4, borderColor: 'var(--Gray-300)' }} />
+                <Box>
+                  <Typography
+                    variant='h4'
+                    fontWeight='bold'
+                    gutterBottom
+                    sx={{ color: 'var(--color-cadetblue)', mb: 3 }}
+                  >
+                    Reseñas y Opiniones
+                  </Typography>
+                  <Stack spacing={3}>
+                    {reviews.map((review) => (
+                      <Paper
+                        key={review.id}
+                        elevation={0}
+                        sx={{
+                          p: 3,
+                          borderRadius: '16px',
+                          bgcolor: '#F8FAFC',
+                          border: '1px solid #E2E8F0'
+                        }}
+                      >
+                        <Box
+                          sx={{
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            alignItems: 'flex-start',
+                            mb: 2
+                          }}
+                        >
+                          <Box
+                            sx={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: 2,
+                              cursor: 'pointer'
+                            }}
+                            aria-owns={open ? 'mouse-over-popover' : undefined}
+                            aria-haspopup='true'
+                            onMouseEnter={(e) =>
+                              handlePopoverOpen(e, {
+                                name: review.userName,
+                                avatar: review.userAvatar,
+                                quote: review.userQuote,
+                                id: review.userId
+                              })
+                            }
+                            onMouseLeave={handlePopoverClose}
+                          >
+                            <Link
+                              to={`/usuario/${review.userId}`}
+                              style={{
+                                textDecoration: 'none',
+                                color: 'inherit',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '16px'
+                              }}
+                            >
+                              <Avatar
+                                src={review.userAvatar}
+                                sx={{ bgcolor: 'var(--color-cadetblue)' }}
+                              >
+                                {review.userName[0]}
+                              </Avatar>
+                              <Box>
+                                <Typography
+                                  fontWeight='bold'
+                                  sx={{
+                                    '&:hover': { textDecoration: 'underline' }
+                                  }}
+                                >
+                                  {review.userName}
+                                </Typography>
+                                {(review.userCompany ||
+                                  review.userPosition) && (
+                                  <Typography
+                                    variant='caption'
+                                    sx={{
+                                      color: 'var(--color-cadetblue)',
+                                      fontWeight: 600,
+                                      display: 'block',
+                                      mt: 0.5
+                                    }}
+                                  >
+                                    {[review.userPosition, review.userCompany]
+                                      .filter(Boolean)
+                                      .join(' | ')}
+                                  </Typography>
+                                )}
+                                <Typography
+                                  variant='caption'
+                                  color='text.secondary'
+                                  sx={{ display: 'block', mt: 0.5 }}
+                                >
+                                  {new Date(review.date).toLocaleDateString()}
+                                </Typography>
+                              </Box>
+                            </Link>
+                          </Box>
+                          {renderStars(review.rating)}
+                        </Box>
+                        <Typography variant='body1' color='var(--Gray-700)'>
+                          {review.comment}
+                        </Typography>
+                      </Paper>
+                    ))}
+                  </Stack>
+                </Box>
+              </>
+            )}
           </Box>
         </Grid>
 
-        {/* Columna Lateral: Sticky Box (Más estrecha y separada) */}
-        <Grid size={{ xs: 12, md: 3.5 }}>
-          <Box sx={{ position: 'sticky', top: 100 }}>
+        {/* Columna Lateral: Info Clave */}
+        <Grid size={{ xs: 12, md: 4 }}>
+          <Box sx={{ position: 'sticky', top: 24 }}>
             <Box
               sx={{
                 backgroundColor: 'var(--White)',
                 borderRadius: '25px',
                 p: 4,
                 boxShadow: 'var(--shadow-drop)',
-                mb: 3,
-                border: '1px solid rgba(79, 186, 200, 0.2)'
+                mb: 4
               }}
             >
-              <Typography
-                variant='h6'
-                fontWeight='bold'
-                gutterBottom
-                sx={{ mb: 3, color: 'var(--Gray-700)' }}
-              >
-                Información de Inscripción
-              </Typography>
-
-              <Box
-                sx={{
-                  display: 'flex',
-                  alignItems: 'flex-start',
-                  gap: 2,
-                  mb: 3
-                }}
-              >
+              <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
                 <CalendarTodayIcon
-                  sx={{ color: 'var(--color-cadetblue)', mt: 0.5 }}
+                  sx={{ color: 'var(--color-cadetblue)', mr: 2, fontSize: 28 }}
                 />
                 <Box>
-                  <Typography variant='subtitle2' color='text.secondary'>
+                  <Typography variant='subtitle2' color='textSecondary'>
                     Fecha y Hora
                   </Typography>
-                  <Typography variant='body1' fontWeight='500'>
+                  <Typography variant='body1' fontWeight='bold'>
                     {formatDateRange(event.start_date, event.end_date)}
                   </Typography>
                 </Box>
               </Box>
 
-              <Box
-                sx={{
-                  display: 'flex',
-                  alignItems: 'flex-start',
-                  gap: 2,
-                  mb: 3
-                }}
-              >
+              <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
                 <LocationOnIcon
-                  sx={{ color: 'var(--color-cadetblue)', mt: 0.5 }}
+                  sx={{ color: 'var(--color-cadetblue)', mr: 2, fontSize: 28 }}
                 />
                 <Box>
-                  <Typography variant='subtitle2' color='text.secondary'>
+                  <Typography variant='subtitle2' color='textSecondary'>
                     Ubicación
                   </Typography>
-                  <Typography variant='body1' fontWeight='500'>
-                    {event.is_online
-                      ? 'Evento Online'
-                      : `${event.venue_name || ''}, ${event.venue_city || ''}`}
-                  </Typography>
-                  {!event.is_online && event.venue_community && (
-                    <Typography variant='body2' color='text.secondary'>
-                      {event.venue_community}
+                  {event.is_online ? (
+                    <Typography variant='body1' fontWeight='bold'>
+                      Evento Online
                     </Typography>
+                  ) : (
+                    <>
+                      <Typography variant='body1' fontWeight='bold'>
+                        {event.venue_name}
+                      </Typography>
+                      <Typography variant='body2' color='textSecondary'>
+                        {[
+                          event.venue_address,
+                          event.venue_city,
+                          event.venue_community
+                        ]
+                          .filter(Boolean)
+                          .join(', ')}
+                      </Typography>
+                    </>
                   )}
                 </Box>
               </Box>
 
-              <Box
-                sx={{
-                  display: 'flex',
-                  alignItems: 'flex-start',
-                  gap: 2,
-                  mb: 4
-                }}
-              >
+              <Box sx={{ display: 'flex', alignItems: 'center', mb: 4 }}>
                 <ConfirmationNumberIcon
-                  sx={{ color: 'var(--color-cadetblue)', mt: 0.5 }}
+                  sx={{ color: 'var(--color-cadetblue)', mr: 2, fontSize: 28 }}
                 />
                 <Box>
-                  <Typography variant='subtitle2' color='text.secondary'>
+                  <Typography variant='subtitle2' color='textSecondary'>
                     Precio
                   </Typography>
                   <Typography
@@ -293,7 +702,7 @@ const Eventos: FunctionComponent = () => {
                     fontWeight='bold'
                     color='var(--color-cadetblue)'
                   >
-                    {event.is_free ? 'Gratuito' : `${event.price}€`}
+                    {event.is_free ? 'Gratis' : `${event.price} €`}
                   </Typography>
                 </Box>
               </Box>
@@ -303,7 +712,14 @@ const Eventos: FunctionComponent = () => {
                 fullWidth
                 size='large'
                 disabled={
-                  !isAuthenticated || isAlreadySubscribed || isSubscribing
+                  !isAuthenticated ||
+                  isAlreadySubscribed ||
+                  isSubscribing ||
+                  !!(
+                    event.max_attendees &&
+                    event.max_attendees > 0 &&
+                    event.current_attendees >= event.max_attendees
+                  )
                 }
                 onClick={handleSubscribe}
                 sx={{
@@ -314,20 +730,40 @@ const Eventos: FunctionComponent = () => {
                   textTransform: 'none',
                   background: isAlreadySubscribed
                     ? 'var(--Gray-300)'
+                    : event.max_attendees &&
+                      event.max_attendees > 0 &&
+                      event.current_attendees >= event.max_attendees
+                    ? 'var(--Gray-300)'
                     : 'var(--gradient-button-primary)',
-                  color: isAlreadySubscribed
-                    ? 'var(--Gray-500)'
-                    : 'var(--White)',
-                  boxShadow: isAlreadySubscribed
-                    ? 'none'
-                    : '0 4px 14px rgba(0, 217, 255, 0.4)',
-                  '&:hover': {
-                    background: isAlreadySubscribed
-                      ? 'var(--Gray-300)'
-                      : 'var(--gradient-button-primary-hover)',
-                    boxShadow: isAlreadySubscribed
+                  color:
+                    isAlreadySubscribed ||
+                    (event.max_attendees &&
+                      event.max_attendees > 0 &&
+                      event.current_attendees >= event.max_attendees)
+                      ? 'var(--Gray-500)'
+                      : 'var(--White)',
+                  boxShadow:
+                    isAlreadySubscribed ||
+                    (event.max_attendees &&
+                      event.max_attendees > 0 &&
+                      event.current_attendees >= event.max_attendees)
                       ? 'none'
-                      : '0 6px 20px rgba(0, 217, 255, 0.6)'
+                      : '0 4px 14px rgba(0, 217, 255, 0.4)',
+                  '&:hover': {
+                    background:
+                      isAlreadySubscribed ||
+                      (event.max_attendees &&
+                        event.max_attendees > 0 &&
+                        event.current_attendees >= event.max_attendees)
+                        ? 'var(--Gray-300)'
+                        : 'var(--gradient-button-primary-hover)',
+                    boxShadow:
+                      isAlreadySubscribed ||
+                      (event.max_attendees &&
+                        event.max_attendees > 0 &&
+                        event.current_attendees >= event.max_attendees)
+                        ? 'none'
+                        : '0 6px 20px rgba(0, 217, 255, 0.6)'
                   }
                 }}
               >
@@ -337,25 +773,28 @@ const Eventos: FunctionComponent = () => {
                   'Inicia sesión para inscribirte'
                 ) : isAlreadySubscribed ? (
                   'Ya estás inscrito'
+                ) : event.max_attendees &&
+                  event.max_attendees > 0 &&
+                  event.current_attendees >= event.max_attendees ? (
+                  'Aforo Completo'
                 ) : (
                   'Inscribirse Ahora'
                 )}
               </Button>
               {error && (
-                <Alert severity='error' sx={{ mt: 2, borderRadius: '12px' }}>
+                <Alert severity='error' sx={{ mt: 2 }}>
                   {error}
                 </Alert>
               )}
             </Box>
 
-            {/* Mapa (Si existe) */}
-            {event.latitude && event.longitude && (
+            {!event.is_online && event.latitude && event.longitude && (
               <Box
                 sx={{
+                  height: 300,
                   borderRadius: '25px',
                   overflow: 'hidden',
-                  boxShadow: 'var(--shadow-drop)',
-                  border: '4px solid var(--White)'
+                  boxShadow: 'var(--shadow-drop)'
                 }}
               >
                 <SingleEventMap event={event} />
@@ -364,6 +803,65 @@ const Eventos: FunctionComponent = () => {
           </Box>
         </Grid>
       </Grid>
+
+      <Popover
+        id='mouse-over-popover'
+        sx={{
+          pointerEvents: 'none'
+        }}
+        open={open}
+        anchorEl={anchorEl}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'left'
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'left'
+        }}
+        onClose={handlePopoverClose}
+        disableRestoreFocus
+        PaperProps={{
+          sx: {
+            p: 2,
+            borderRadius: '12px',
+            boxShadow: '0 8px 16px rgba(0,0,0,0.1)',
+            minWidth: 200
+          }
+        }}
+      >
+        {popoverUser && (
+          <Box>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 1 }}>
+              <Avatar
+                src={popoverUser.avatar}
+                sx={{
+                  width: 40,
+                  height: 40,
+                  bgcolor: 'var(--color-cadetblue)'
+                }}
+              >
+                {popoverUser.name[0]}
+              </Avatar>
+              <Typography fontWeight='bold'>{popoverUser.name}</Typography>
+            </Box>
+            <Divider sx={{ my: 1 }} />
+            {popoverUser.quote ? (
+              <Typography
+                variant='body2'
+                color='text.secondary'
+                sx={{ fontStyle: 'italic', textAlign: 'center' }}
+              >
+                "{popoverUser.quote}"
+              </Typography>
+            ) : (
+              <Typography variant='caption' color='text.secondary'>
+                Miembro de la comunidad
+              </Typography>
+            )}
+          </Box>
+        )}
+      </Popover>
     </Container>
   )
 }

@@ -1,35 +1,77 @@
 // src/services/apiService.ts
-import { mockUsers as dbUsers, mockEvents as dbEvents } from '../mocks/db'
 import {
-  AuthResponse,
-  User,
   Event,
-  DashboardStats,
-  CreateEventDTO,
   EventFilterParams,
+  User,
+  LoginDTO,
   RegisterDTO,
+  AuthResponse,
   Role,
-  OrganizationSummary
+  DashboardStats,
+  OrganizationSummary,
+  CreateEventDTO,
+  Notification,
+  Review
 } from '../types'
+import { mockEvents, mockUsers } from '../mocks/db'
 
-let mockUsers = [...dbUsers]
-let mockEvents = [...dbEvents]
+const SIMULATED_DELAY = 800
 
-const SIMULATED_DELAY = 1000
+// --- LOCAL STORAGE PERSISTENCE HELPERS ---
+const DBS_KEYS = {
+  USERS: 'cibesphere_users_v1',
+  EVENTS: 'cibesphere_events_v1'
+}
 
-// --- login (sin cambios) ---
-export const login = (
-  email: string,
-  password: string
-): Promise<AuthResponse> => {
+// Initialize local state from LocalStorage or fallback to mocks
+let localUsers: User[] = (() => {
+  try {
+    const stored = localStorage.getItem(DBS_KEYS.USERS)
+    return stored ? JSON.parse(stored) : [...mockUsers]
+  } catch (e) {
+    console.error('Error loading users from LS:', e)
+    return [...mockUsers]
+  }
+})()
+
+let localEvents: Event[] = (() => {
+  try {
+    const stored = localStorage.getItem(DBS_KEYS.EVENTS)
+    return stored ? JSON.parse(stored) : [...mockEvents]
+  } catch (e) {
+    console.error('Error loading events from LS:', e)
+    return [...mockEvents]
+  }
+})()
+
+const saveUsers = () => {
+  try {
+    localStorage.setItem(DBS_KEYS.USERS, JSON.stringify(localUsers))
+  } catch (e) {
+    console.error('Error saving users to LS:', e)
+  }
+}
+
+const saveEvents = () => {
+  try {
+    localStorage.setItem(DBS_KEYS.EVENTS, JSON.stringify(localEvents))
+  } catch (e) {
+    console.error('Error saving events to LS:', e)
+  }
+}
+
+const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
+
+// --- login ---
+export const login = (data: LoginDTO): Promise<AuthResponse> => {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
-      const user = mockUsers.find(
-        (u) => u.email === email && u.password === password
+      const user = localUsers.find(
+        (u) => u.email === data.email && u.password === data.password
       )
       if (user) {
         const authResponse: AuthResponse = {
-          user: user,
+          user,
           access_token: 'fake-access-token-' + Math.random(),
           refresh_token: 'fake-refresh-token-' + Math.random(),
           token_type: 'Bearer',
@@ -37,17 +79,17 @@ export const login = (
         }
         resolve(authResponse)
       } else {
-        reject(new Error('Email o contraseña incorrectos'))
+        reject(new Error('Credenciales inválidas'))
       }
     }, SIMULATED_DELAY)
   })
 }
 
-// --- register (sin cambios) ---
+// --- register ---
 export const register = (data: RegisterDTO): Promise<AuthResponse> => {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
-      if (mockUsers.find((u) => u.email === data.email)) {
+      if (localUsers.find((u) => u.email === data.email)) {
         reject(new Error('El email ya está registrado'))
         return
       }
@@ -55,7 +97,7 @@ export const register = (data: RegisterDTO): Promise<AuthResponse> => {
       let newUserOrg: OrganizationSummary | undefined = undefined
       if (data.role === Role.Organizer && data.organization_name) {
         newUserOrg = {
-          id: `org-00${mockUsers.length + 1}`,
+          id: `org-00${localUsers.length + 1}`,
           slug: data.organization_name.toLowerCase().replace(/\s+/g, '-'),
           name: data.organization_name,
           logo_url: '',
@@ -78,7 +120,8 @@ export const register = (data: RegisterDTO): Promise<AuthResponse> => {
         organization: newUserOrg
       }
 
-      mockUsers.push(newUser)
+      localUsers.push(newUser)
+      saveUsers()
 
       const authResponse: AuthResponse = {
         user: newUser,
@@ -92,12 +135,12 @@ export const register = (data: RegisterDTO): Promise<AuthResponse> => {
   })
 }
 
-// --- getEvents (sin cambios) ---
+// --- getEvents ---
 export const getEvents = (filters: EventFilterParams): Promise<Event[]> => {
   return new Promise((resolve) => {
     setTimeout(() => {
       let filteredEvents = [
-        ...mockEvents.filter((e) => e.status === 'published')
+        ...localEvents.filter((e) => e.status === 'published')
       ]
       if (filters.startDate) {
         filteredEvents = filteredEvents.filter(
@@ -126,16 +169,21 @@ export const getEvents = (filters: EventFilterParams): Promise<Event[]> => {
           (e) => e.level && filters.levels.includes(e.level)
         )
       }
+      if (filters.languages.length > 0) {
+        filteredEvents = filteredEvents.filter(
+          (e) => e.language && filters.languages.includes(e.language)
+        )
+      }
       resolve(filteredEvents)
     }, SIMULATED_DELAY / 2)
   })
 }
 
-// --- getEventBySlug (sin cambios) ---
+// --- getEventBySlug ---
 export const getEventBySlug = (slug: string): Promise<Event> => {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
-      const event = mockEvents.find((e) => e.slug === slug)
+      const event = localEvents.find((e) => e.slug === slug)
       if (event) {
         resolve(event)
       } else {
@@ -145,16 +193,17 @@ export const getEventBySlug = (slug: string): Promise<Event> => {
   })
 }
 
-// --- subscribeToEvent (MODIFICADO) ---
+// --- subscribeToEvent ---
 export const subscribeToEvent = (
   eventId: string,
   email: string
 ): Promise<{ message: string }> => {
   return new Promise((resolve) => {
     setTimeout(() => {
-      const eventIndex = mockEvents.findIndex((e) => e.id === eventId)
+      const eventIndex = localEvents.findIndex((e) => e.id === eventId)
       if (eventIndex !== -1) {
-        mockEvents[eventIndex].current_attendees += 1
+        localEvents[eventIndex].current_attendees += 1
+        saveEvents()
       }
 
       console.log(`Email ${email} suscrito al evento ${eventId}`)
@@ -163,11 +212,11 @@ export const subscribeToEvent = (
   })
 }
 
-// --- getMe (sin cambios) ---
+// --- getMe ---
 export const getMe = (userId: string): Promise<User> => {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
-      const user = mockUsers.find((u) => u.id === userId)
+      const user = localUsers.find((u) => u.id === userId)
       if (user) {
         resolve(user)
       } else {
@@ -177,31 +226,32 @@ export const getMe = (userId: string): Promise<User> => {
   })
 }
 
-// --- unsubscribeFromEvent (sin cambios) ---
+// --- unsubscribeFromEvent ---
 export const unsubscribeFromEvent = (
   userId: string,
   eventId: string
 ): Promise<void> => {
   return new Promise((resolve) => {
     setTimeout(() => {
-      mockUsers = mockUsers.map((user) => {
-        // 1. Modificamos la lista de favoritos del usuario
-        if (user.id === userId) {
-          return {
-            ...user,
-            FavoriteEvents: user.FavoriteEvents?.filter(
-              (event) => event.id !== eventId
-            )
-          }
-        }
-        return user
-      })
-      // --- NUEVO ARREGLO: Decrementar el contador de asistentes del evento ---
-      const eventIndex = mockEvents.findIndex((e) => e.id === eventId)
-      if (eventIndex !== -1 && mockEvents[eventIndex].current_attendees > 0) {
-        mockEvents[eventIndex].current_attendees -= 1
+      // 1. Modificamos la lista de favoritos del usuario (simulado)
+      // En un caso real, esto sería una llamada a la API
+      // 1. Modificamos la lista de favoritos del usuario (simulado)
+      // En un caso real, esto sería una llamada a la API
+      const userIndex = localUsers.findIndex((u) => u.id === userId)
+      if (userIndex !== -1) {
+        localUsers[userIndex].FavoriteEvents = localUsers[
+          userIndex
+        ].FavoriteEvents?.filter((event) => event.id !== eventId)
+        saveUsers()
       }
-      // --- FIN NUEVO ARREGLO ---
+
+      // Decrementar el contador de asistentes del evento
+      const eventIndex = localEvents.findIndex((e) => e.id === eventId)
+      if (eventIndex !== -1 && localEvents[eventIndex].current_attendees > 0) {
+        localEvents[eventIndex].current_attendees -= 1
+        saveEvents()
+      }
+
       console.log(
         `Usuario ${userId} ha cancelado suscripción al evento ${eventId}`
       )
@@ -210,13 +260,114 @@ export const unsubscribeFromEvent = (
   })
 }
 
-// --- getOrganizerDashboard (sin cambios) ---
+// --- ADMIN PANELS HELPERS ---
+
+export const getAdminDashboard = (): Promise<DashboardStats> => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      const totalEvents = localEvents.length
+      const totalAttendees = localEvents.reduce(
+        (acc, curr) => acc + curr.current_attendees,
+        0
+      )
+      // Contar ciudades únicas
+      const cities = new Set(
+        localEvents
+          .map((e) => e.venue_city || e.venue_community)
+          .filter(Boolean)
+      )
+      const publishedEvents = localEvents.filter(
+        (e) => e.status === 'published'
+      ).length
+
+      resolve({
+        total_events: totalEvents,
+        total_attendees: totalAttendees,
+        total_cities: cities.size,
+        published_events: publishedEvents
+      })
+    }, SIMULATED_DELAY)
+  })
+}
+
+export const getAllUsers = (): Promise<User[]> => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve([...localUsers])
+    }, SIMULATED_DELAY)
+  })
+}
+
+export const getAllOrganizations = (): Promise<OrganizationSummary[]> => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      // Extraemos organizaciones de los usuarios que tienen rol organizador y objeto organization
+      const orgs: OrganizationSummary[] = []
+      localUsers.forEach((u) => {
+        if (u.role === Role.Organizer && u.organization) {
+          orgs.push(u.organization)
+        }
+      })
+      resolve(orgs)
+    }, SIMULATED_DELAY)
+  })
+}
+
+export const verifyOrganization = (
+  orgId: string
+): Promise<OrganizationSummary> => {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      let updatedOrg: OrganizationSummary | undefined
+
+      // 1. Actualizar en usuarios
+      localUsers.forEach((u) => {
+        if (u.organization && u.organization.id === orgId) {
+          u.organization.is_verified = true
+          updatedOrg = u.organization
+        }
+      })
+
+      // 2. Actualizar en eventos
+      localEvents.forEach((e) => {
+        if (e.organization && e.organization.id === orgId) {
+          e.organization.is_verified = true
+        }
+      })
+
+      if (updatedOrg) {
+        saveUsers()
+        saveEvents()
+        resolve(updatedOrg)
+      } else {
+        reject(new Error('Organización no encontrada'))
+      }
+    }, SIMULATED_DELAY)
+  })
+}
+
+export const deleteUser = (userId: string): Promise<void> => {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      const index = localUsers.findIndex((u) => u.id === userId)
+      if (index !== -1) {
+        localUsers.splice(index, 1)
+        saveUsers()
+        resolve()
+      } else {
+        reject(new Error('Usuario no encontrado'))
+      }
+    }, SIMULATED_DELAY)
+  })
+}
+
+// --- getOrganizerDashboard ---
 export const getOrganizerDashboard = (
   orgId: string
 ): Promise<DashboardStats> => {
   return new Promise((resolve) => {
     setTimeout(() => {
-      const orgEvents = mockEvents.filter((e) => e.organization.id === orgId)
+      const orgEvents = localEvents.filter((e) => e.organization.id === orgId)
       const totalAttendees = orgEvents.reduce(
         (sum, e) => sum + e.current_attendees,
         0
@@ -233,17 +384,34 @@ export const getOrganizerDashboard = (
   })
 }
 
-// --- getOrganizationEvents (sin cambios) ---
+// --- getOrganizationEvents ---
 export const getOrganizationEvents = (orgId: string): Promise<Event[]> => {
   return new Promise((resolve) => {
     setTimeout(() => {
-      const orgEvents = mockEvents.filter((e) => e.organization.id === orgId)
+      const orgEvents = localEvents.filter((e) => e.organization.id === orgId)
       resolve(orgEvents)
     }, SIMULATED_DELAY / 2)
   })
 }
 
-// --- createEvent (sin cambios) ---
+// --- getOrganizationBySlug ---
+export const getOrganizationBySlug = (
+  slug: string
+): Promise<OrganizationSummary> => {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      // Buscamos la organización en los eventos existentes
+      const eventWithOrg = localEvents.find((e) => e.organization.slug === slug)
+      if (eventWithOrg) {
+        resolve(eventWithOrg.organization)
+      } else {
+        reject(new Error('Organización no encontrada'))
+      }
+    }, SIMULATED_DELAY / 2)
+  })
+}
+
+// --- createEvent ---
 export const createEvent = (
   eventData: CreateEventDTO,
   organization: OrganizationSummary
@@ -251,7 +419,7 @@ export const createEvent = (
   return new Promise((resolve) => {
     setTimeout(() => {
       const newEvent: Event = {
-        id: `evt-00${mockEvents.length + 1}`,
+        id: `evt-00${localEvents.length + 1}`,
         slug: eventData.title.toLowerCase().replace(/\s+/g, '-'),
         status: 'published',
         current_attendees: 0,
@@ -263,25 +431,26 @@ export const createEvent = (
         category: eventData.category || eventData.tags[0] || 'General',
         type: eventData.type || 'conference'
       }
-      mockEvents.push(newEvent)
+      localEvents.push(newEvent)
+      saveEvents()
       resolve(newEvent)
     }, SIMULATED_DELAY)
   })
 }
 
-// --- updateEvent (sin cambios) ---
+// --- updateEvent ---
 export const updateEvent = (
   eventId: string,
   eventData: Partial<CreateEventDTO>
 ): Promise<Event> => {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
-      const eventIndex = mockEvents.findIndex((e) => e.id === eventId)
+      const eventIndex = localEvents.findIndex((e) => e.id === eventId)
       if (eventIndex === -1) {
         return reject(new Error('Evento no encontrado para actualizar'))
       }
 
-      const originalEvent = mockEvents[eventIndex]
+      const originalEvent = localEvents[eventIndex]
       const updatedEvent: Event = {
         ...originalEvent,
         ...eventData,
@@ -292,18 +461,249 @@ export const updateEvent = (
         organization: originalEvent.organization
       }
 
-      mockEvents[eventIndex] = updatedEvent
+      localEvents[eventIndex] = updatedEvent
+      saveEvents()
       resolve(updatedEvent)
     }, SIMULATED_DELAY)
   })
 }
 
-// --- deleteEvent (sin cambios) ---
+// --- deleteEvent ---
 export const deleteEvent = (eventId: string): Promise<void> => {
   return new Promise((resolve) => {
     setTimeout(() => {
-      mockEvents = mockEvents.filter((e) => e.id !== eventId)
+      const index = localEvents.findIndex((e) => e.id === eventId)
+      if (index !== -1) {
+        localEvents.splice(index, 1)
+        saveEvents()
+      }
       resolve()
     }, SIMULATED_DELAY / 2)
+  })
+}
+
+// --- updateOrganization (NUEVO) ---
+export const updateOrganization = async (
+  orgId: string,
+  data: Partial<OrganizationSummary>
+): Promise<OrganizationSummary> => {
+  await delay(500)
+  // En un backend real, esto actualizaría la DB.
+  // Aquí actualizamos los eventos asociados para reflejar cambios (mock)
+  let updatedOrg: OrganizationSummary | undefined
+
+  localEvents.forEach((e) => {
+    if (e.organization.id === orgId) {
+      e.organization = { ...e.organization, ...data }
+      updatedOrg = e.organization
+    }
+  })
+  if (updatedOrg) saveEvents()
+
+  // También actualizar en mockUsers si el usuario tiene esa org
+  localUsers.forEach((u) => {
+    if (u.organization && u.organization.id === orgId) {
+      u.organization = { ...u.organization, ...data }
+      updatedOrg = u.organization
+    }
+  })
+  saveUsers()
+
+  if (!updatedOrg) {
+    // Si no se encontró en eventos ni usuarios, buscar en eventos de nuevo por si acaso
+    const event = localEvents.find((e) => e.organization.id === orgId)
+    if (event) updatedOrg = event.organization
+  }
+
+  if (!updatedOrg) throw new Error('Organización no encontrada')
+  return updatedOrg
+}
+
+// --- getUserById (NUEVO) ---
+export const getUserById = async (userId: string): Promise<User> => {
+  await delay(500)
+  const user = mockUsers.find((u) => u.id === userId)
+  if (!user) throw new Error('Usuario no encontrado')
+  return user
+}
+
+// --- updateUser (NUEVO) ---
+export const updateUser = async (
+  userId: string,
+  data: Partial<User>
+): Promise<User> => {
+  await delay(500)
+  const userIndex = localUsers.findIndex((u) => u.id === userId)
+  if (userIndex === -1) throw new Error('Usuario no encontrado')
+
+  const updatedUser = { ...localUsers[userIndex], ...data }
+  localUsers[userIndex] = updatedUser
+  saveUsers()
+  return updatedUser
+}
+
+// --- BOOKMARKS (MOCK) ---
+
+export const toggleBookmark = async (
+  userId: string,
+  eventId: string
+): Promise<{ isBookmarked: boolean; message: string }> => {
+  await delay(300)
+  const userIndex = localUsers.findIndex((u) => u.id === userId)
+  if (userIndex === -1) throw new Error('Usuario no encontrado')
+
+  const user = localUsers[userIndex]
+  const event = localEvents.find((e) => e.id === eventId)
+  if (!event) throw new Error('Evento no encontrado')
+
+  if (!user.BookmarkedEvents) {
+    user.BookmarkedEvents = []
+  }
+
+  const alreadyBookmarked = user.BookmarkedEvents.some((e) => e.id === eventId)
+  let isBookmarked = false
+
+  if (alreadyBookmarked) {
+    user.BookmarkedEvents = user.BookmarkedEvents.filter(
+      (e) => e.id !== eventId
+    )
+    isBookmarked = false
+  } else {
+    user.BookmarkedEvents.push(event)
+    isBookmarked = true
+  }
+
+  localUsers[userIndex] = user
+  saveUsers()
+
+  return {
+    isBookmarked,
+    message: isBookmarked ? 'Evento guardado' : 'Evento eliminado de guardados'
+  }
+}
+
+// --- NOTIFICACIONES (MOCK) ---
+
+const mockNotifications: Notification[] = [
+  {
+    id: 'notif-1',
+    title: 'Evento Próximo',
+    message: 'Tu evento "CyberSec 2024" comienza mañana.',
+    date: new Date().toISOString(),
+    is_read: false,
+    type: 'info',
+    link: '/eventos/cybersec-2024'
+  },
+  {
+    id: 'notif-2',
+    title: 'Registro Exitoso',
+    message: 'Te has registrado correctamente en "Workshop Hacking Ético".',
+    date: new Date(Date.now() - 86400000).toISOString(),
+    is_read: true,
+    type: 'success',
+    link: '/eventos/workshop-hacking-etico'
+  },
+  {
+    id: 'notif-3',
+    title: 'Nueva Organización',
+    message: 'Una nueva organización "SecOps Madrid" se ha unido.',
+    date: new Date(Date.now() - 172800000).toISOString(),
+    is_read: false,
+    type: 'info'
+  }
+]
+
+export const getNotifications = (userId: string): Promise<Notification[]> => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve([...mockNotifications])
+    }, 500)
+  })
+}
+
+export const markNotificationAsRead = (id: string): Promise<void> => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      const notif = mockNotifications.find((n) => n.id === id)
+      if (notif) {
+        notif.is_read = true
+      }
+      resolve()
+    }, 300)
+  })
+}
+
+// --- RESEÑAS (MOCK) ---
+
+const saveReviews = () => {
+  try {
+    localStorage.setItem('cibesphere_reviews_v1', JSON.stringify(localReviews))
+  } catch (e) {
+    console.error('Error saving reviews to LS:', e)
+  }
+}
+
+let localReviews: Review[] = (() => {
+  try {
+    const stored = localStorage.getItem('cibesphere_reviews_v1')
+    return stored
+      ? JSON.parse(stored)
+      : [
+          {
+            id: 'rev-1',
+            eventId: 'evt-001',
+            userId: 'u-002',
+            userName: 'María García',
+            userAvatar: '',
+            userCompany: 'TechSoft',
+            userPosition: 'Analista de Seguridad',
+            userQuote: 'Protegiendo el futuro digital, bit a bit.',
+            rating: 5,
+            comment:
+              '¡Increíble evento! Aprendí muchísimo sobre ciberseguridad.',
+            date: new Date(Date.now() - 864000000).toISOString()
+          },
+          {
+            id: 'rev-2',
+            eventId: 'evt-001',
+            userId: 'u-003',
+            userName: 'Carlos Ruiz',
+            userAvatar: '',
+            userCompany: 'CyberCorp',
+            userPosition: 'Director de Tecnología',
+            userQuote: 'Innovación es la clave del éxito.',
+            rating: 4,
+            comment:
+              'Muy buena organización, aunque el catering podría mejorar.',
+            date: new Date(Date.now() - 432000000).toISOString()
+          }
+        ]
+  } catch (e) {
+    return []
+  }
+})()
+
+export const getEventReviews = (eventId: string): Promise<Review[]> => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(localReviews.filter((r) => r.eventId === eventId))
+    }, 300)
+  })
+}
+
+export const createReview = (
+  review: Omit<Review, 'id' | 'date'>
+): Promise<Review> => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      const newReview: Review = {
+        ...review,
+        id: `rev-${Date.now()}`,
+        date: new Date().toISOString()
+      }
+      localReviews.push(newReview)
+      saveReviews()
+      resolve(newReview)
+    }, 500)
   })
 }

@@ -1,11 +1,16 @@
 // src/components/EventCard.tsx
 import React, { useCallback } from 'react'
-import { Box, Typography, Grid, Chip } from '@mui/material'
+import { Box, Typography, Grid, Chip, IconButton } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
 import { Event } from '../types'
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday'
 import LocationOnIcon from '@mui/icons-material/LocationOn'
 import GroupIcon from '@mui/icons-material/Group'
+import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder'
+import BookmarkIcon from '@mui/icons-material/Bookmark'
+import { useAuth } from '../context/AuthContext'
+import { toggleBookmark } from '../services/apiService'
+import { useState, useEffect } from 'react'
 
 interface EventCardProps {
   event: Event
@@ -22,9 +27,43 @@ const formatDate = (dateString: string) => {
 export const EventCard: React.FC<EventCardProps> = ({ event }) => {
   const navigate = useNavigate()
 
+  const { user, refreshUserData } = useAuth()
+  const [isBookmarked, setIsBookmarked] = useState(false)
+
+  useEffect(() => {
+    if (user?.BookmarkedEvents) {
+      setIsBookmarked(user.BookmarkedEvents.some((e) => e.id === event.id))
+    }
+  }, [user, event.id])
+
   const onCardClick = useCallback(() => {
     navigate(`/eventos/${event.slug || event.id}`)
   }, [navigate, event])
+
+  const handleBookmarkClick = async (e: React.MouseEvent) => {
+    e.stopPropagation()
+    if (!user) {
+      navigate('/loginsign-up')
+      return
+    }
+    try {
+      const result = await toggleBookmark(user.id, event.id)
+      setIsBookmarked(result.isBookmarked)
+      // Actualizamos el usuario en el contexto para reflejar el cambio globalmente
+      // (Para que el panel de usuario se actualice si vamos allí)
+      if (user) {
+        let newBookmarks = user.BookmarkedEvents || []
+        if (result.isBookmarked) {
+          newBookmarks = [...newBookmarks, event]
+        } else {
+          newBookmarks = newBookmarks.filter((e) => e.id !== event.id)
+        }
+        refreshUserData({ ...user, BookmarkedEvents: newBookmarks })
+      }
+    } catch (error) {
+      console.error('Error toggling bookmark:', error)
+    }
+  }
 
   return (
     <Grid size={{ xs: 12 }} sx={{ maxWidth: '100%' }}>
@@ -41,13 +80,12 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
           overflow: 'visible',
           mt: { xs: 0, md: 2 },
           mb: { xs: 4, md: 2 },
-          // --- NUEVO: Efecto Hover en toda la tarjeta ---
-          transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+          // --- EFECTO CARD PREMIUM: Elevación y Sombra Iluminada ---
+          transition: 'all 0.3s ease-out',
           '&:hover': {
-            transform: 'translateY(-5px)',
-            // Aplicamos el efecto de sombra al contenedor del contenido, ya que es el que tiene fondo
+            transform: 'translateY(-8px)', // Elevación suave
             '& .event-content': {
-              boxShadow: '0 10px 40px rgba(0,0,0,0.2)'
+              boxShadow: '0 18px 40px -5px rgba(79, 186, 200, 0.5)' // Sombra Glow Aumentada (Mayor blur y opacidad)
             }
           }
         }}
@@ -86,17 +124,35 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
             pt: { xs: 5, md: 4 },
             pl: { md: 10 },
             borderRadius: '25px',
-            backgroundColor: 'var(--White)', // Fondo base opaco
-            backgroundImage: 'var(--Background-events-2)', // Gradiente encima
-            boxShadow: 'var(--shadow-drop)',
+            // Default State restaurado
+            backgroundColor: 'var(--White)',
+            backgroundImage: 'var(--Background-events-2)',
+            boxShadow: 'var(--shadow-drop)', // Sombra original por defecto
             color: 'var(--event-2)',
             fontFamily: 'var(--Heading-Font-Family)',
             minHeight: { md: '220px' },
             zIndex: 1,
             width: '100%',
-            transition: 'box-shadow 0.3s ease'
+            transition: 'all 0.3s ease',
+            position: 'relative' // Para posicionar el icono de bookmark
           }}
         >
+          <Box sx={{ position: 'absolute', top: 16, right: 16, zIndex: 10 }}>
+            <IconButton
+              onClick={handleBookmarkClick}
+              sx={{
+                bgcolor: 'rgba(255,255,255,0.8)',
+                '&:hover': { bgcolor: 'white' }
+              }}
+            >
+              {isBookmarked ? (
+                <BookmarkIcon sx={{ color: 'var(--color-cadetblue)' }} />
+              ) : (
+                <BookmarkBorderIcon sx={{ color: 'var(--Gray-500)' }} />
+              )}
+            </IconButton>
+          </Box>
+
           <Box>
             <Typography variant='h5' component='h3' fontWeight='bold' mb={1}>
               {event.title}
