@@ -121,19 +121,19 @@ const Page: FunctionComponent = () => {
 
   const handleSingleAutocompleteChange =
     (field: 'venue_city' | 'venue_community') =>
-      (event: any, value: string | null) => {
-        if (field === 'venue_community') {
-          const newCommunity = value || ''
-          setFormData((prev: any) => ({
-            ...prev,
-            venue_community: newCommunity,
-            venue_city: ''
-          }))
-          setAvailableCities(newCommunity ? LOCATION_DATA[newCommunity] : [])
-        } else {
-          setFormData((prev: any) => ({ ...prev, [field]: value || '' }))
-        }
+    (event: any, value: string | null) => {
+      if (field === 'venue_community') {
+        const newCommunity = value || ''
+        setFormData((prev: any) => ({
+          ...prev,
+          venue_community: newCommunity,
+          venue_city: ''
+        }))
+        setAvailableCities(newCommunity ? LOCATION_DATA[newCommunity] : [])
+      } else {
+        setFormData((prev: any) => ({ ...prev, [field]: value || '' }))
       }
+    }
 
   // --- AGENDA MANAGEMENT ---
   const handleAddAgendaItem = () => {
@@ -202,8 +202,8 @@ const Page: FunctionComponent = () => {
     if (!user || !user.organization) {
       setError(
         'Debes ser un organizador verificado para ' +
-        (isEditMode ? 'editar' : 'crear') +
-        ' un evento.'
+          (isEditMode ? 'editar' : 'crear') +
+          ' un evento.'
       )
       return
     }
@@ -221,14 +221,14 @@ const Page: FunctionComponent = () => {
       if (isEditMode) {
         await apiService.updateEvent(loadedEvent.id, eventData)
       } else {
-        await apiService.createEvent(eventData, user.organization)
+        await apiService.createEvent(eventData)
       }
 
       navigate('/panel-de-organizador')
     } catch (err: any) {
       setError(
         err.message ||
-        `Error al ${isEditMode ? 'actualizar' : 'crear'} el evento.`
+          `Error al ${isEditMode ? 'actualizar' : 'crear'} el evento.`
       )
     } finally {
       setIsLoading(false)
@@ -412,7 +412,7 @@ const Page: FunctionComponent = () => {
                       </Box>
                     ))}
                     <Button
-                      variant="primary"
+                      variant='primary'
                       startIcon={<AddIcon />}
                       onClick={handleAddAgendaItem}
                       sx={{ mb: 4 }}
@@ -531,7 +531,11 @@ const Page: FunctionComponent = () => {
                         </Box>
                       )
                     )}
-                    <Button variant="secondary" startIcon={<AddIcon />} onClick={handleAddSpeaker}>
+                    <Button
+                      variant='secondary'
+                      startIcon={<AddIcon />}
+                      onClick={handleAddSpeaker}
+                    >
                       Añadir Ponente
                     </Button>
                   </CardContent>
@@ -801,9 +805,9 @@ const Page: FunctionComponent = () => {
                 sx={{ display: 'flex', justifyContent: 'flex-end', mt: 3 }}
               >
                 <Button
-                  type="submit"
-                  variant="primary"
-                  size="large"
+                  type='submit'
+                  variant='primary'
+                  size='large'
                   disabled={isLoading}
                   sx={{
                     borderRadius: '25px',

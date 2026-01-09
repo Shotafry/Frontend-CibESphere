@@ -185,7 +185,9 @@ const routes: RouteObject[] = [
               const userStr = localStorage.getItem('user')
               if (!userStr) return redirect('/loginsign-up')
               const user = JSON.parse(userStr) as User
-              return user.FavoriteEvents || []
+              const favoriteEvents =
+                user?.favorite_events || user?.FavoriteEvents || []
+              return favoriteEvents
             }
           }
         ]

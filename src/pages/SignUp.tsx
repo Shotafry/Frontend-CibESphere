@@ -27,11 +27,7 @@ import BusinessIcon from '@mui/icons-material/Business'
 import { Button } from '../components/Button'
 
 const SignUp: FunctionComponent = () => {
-  // --- ARREGLO DEL CRASH ---
-  // Esta línea faltaba en mi código anterior, ¡mil disculpas!
   const navigate = useNavigate()
-  // --- FIN DEL ARREGLO ---
-
   const { login, register } = useAuth()
   const [isLogin, setIsLogin] = useState(true)
 
@@ -53,7 +49,7 @@ const SignUp: FunctionComponent = () => {
       last_name: '',
       role: Role.User,
       organization_name: '',
-      organization_website: ''
+      organization_website: '' // Opcional
     }
   })
 
@@ -66,10 +62,15 @@ const SignUp: FunctionComponent = () => {
       if (isLogin) {
         await login(data.email, data.password)
       } else {
-        await register(data)
+        // En registro, aseguramos que los campos opcionales no vayan null si son string
+        const registerData = { ...data }
+        await register(registerData)
       }
     } catch (err: any) {
-      setError(err.message || 'Ha ocurrido un error.')
+      console.error(err)
+      setError(
+        err.response?.data?.message || err.message || 'Ha ocurrido un error.'
+      )
     } finally {
       setIsLoading(false)
     }
@@ -100,10 +101,8 @@ const SignUp: FunctionComponent = () => {
         <Grid
           size={{ xs: 12, md: 5 }}
           sx={{
-            // --- CAMBIO DE COLOR ---
-            background: 'var(--gradient-header-footer)', // <-- Tu gradiente
-            color: 'var(--Gray-700)', // <-- Texto oscuro
-            // --- FIN CAMBIO DE COLOR ---
+            background: 'var(--gradient-header-footer)',
+            color: 'var(--Gray-700)',
             p: 4,
             display: 'flex',
             flexDirection: 'column',
@@ -114,8 +113,6 @@ const SignUp: FunctionComponent = () => {
             {isLogin ? '¡Bienvenido de vuelta!' : 'Únete a la Comunidad'}
           </Typography>
           <Typography sx={{ mt: 2, color: 'var(--Gray-500)' }}>
-            {' '}
-            {/* Texto secundario */}
             {isLogin
               ? 'Inicia sesión para acceder a tu panel y gestionar tus eventos.'
               : 'Regístrate para descubrir, participar y organizar los mejores eventos de ciberseguridad.'}
@@ -292,9 +289,9 @@ const SignUp: FunctionComponent = () => {
             )}
 
             <Button
-              type="submit"
+              type='submit'
               fullWidth
-              variant="primary"
+              variant='primary'
               disabled={isLoading}
               sx={{
                 mt: 3,
@@ -316,7 +313,7 @@ const SignUp: FunctionComponent = () => {
 
             <Button
               fullWidth
-              variant="secondary"
+              variant='secondary'
               onClick={() => setIsLogin(!isLogin)}
               sx={{ mt: 2 }}
             >

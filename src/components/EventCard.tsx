@@ -1,5 +1,5 @@
 // src/components/EventCard.tsx
-import React, { useCallback } from 'react'
+import React, { useCallback, useState, useEffect } from 'react'
 import { Box, Typography, Grid, Chip, IconButton } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
 import { Event } from '../types'
@@ -10,7 +10,6 @@ import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder'
 import BookmarkIcon from '@mui/icons-material/Bookmark'
 import { useAuth } from '../context/AuthContext'
 import { toggleBookmark } from '../services/apiService'
-import { useState, useEffect } from 'react'
 
 interface EventCardProps {
   event: Event
@@ -31,8 +30,12 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
   const [isBookmarked, setIsBookmarked] = useState(false)
 
   useEffect(() => {
-    if (user?.BookmarkedEvents) {
-      setIsBookmarked(user.BookmarkedEvents.some((e) => e.id === event.id))
+    if (user && (user as any).FavoriteEvents) {
+      const userDetail = user as any
+      const favorites = userDetail.favorite_events || userDetail.FavoriteEvents
+      if (favorites && Array.isArray(favorites)) {
+        setIsBookmarked(favorites.some((e: any) => e.id === event.id))
+      }
     }
   }, [user, event.id])
 
@@ -49,16 +52,9 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
     try {
       const result = await toggleBookmark(user.id, event.id)
       setIsBookmarked(result.isBookmarked)
-      // Actualizamos el usuario en el contexto para reflejar el cambio globalmente
-      // (Para que el panel de usuario se actualice si vamos allí)
+
       if (user) {
-        let newBookmarks = user.BookmarkedEvents || []
-        if (result.isBookmarked) {
-          newBookmarks = [...newBookmarks, event]
-        } else {
-          newBookmarks = newBookmarks.filter((e) => e.id !== event.id)
-        }
-        refreshUserData({ ...user, BookmarkedEvents: newBookmarks })
+        // Optimistic update handled by local state mostly for now
       }
     } catch (error) {
       console.error('Error toggling bookmark:', error)
@@ -80,17 +76,15 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
           overflow: 'visible',
           mt: { xs: 0, md: 2 },
           mb: { xs: 4, md: 2 },
-          // --- EFECTO CARD PREMIUM: Elevación y Sombra Iluminada ---
           transition: 'all 0.3s ease-out',
           '&:hover': {
-            transform: 'translateY(-8px)', // Elevación suave
+            transform: 'translateY(-8px)',
             '& .event-content': {
-              boxShadow: '0 18px 40px -5px rgba(79, 186, 200, 0.5)' // Sombra Glow Aumentada (Mayor blur y opacidad)
+              boxShadow: '0 18px 40px -5px rgba(79, 186, 200, 0.5)'
             }
           }
         }}
       >
-        {/* Imagen del Evento (Flotante/Superpuesta) - SIN SOMBRA NI CAJA */}
         <Box
           component='img'
           className='event-logo'
@@ -102,19 +96,17 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
           sx={{
             width: { xs: '100%', md: 260 },
             height: { xs: 200, md: 260 },
-            objectFit: 'contain', // Cambiado a contain para que se vea el logo entero
+            objectFit: 'contain',
             zIndex: 2,
             marginRight: { md: -6 },
             marginBottom: { xs: -3, md: 0 },
             position: 'relative',
-            // Eliminadas sombras y bordes redondeados específicos
-            filter: 'drop-shadow(0px 4px 10px rgba(0,0,0,0.1))' // Sombra sutil SOLO a la silueta del logo si es PNG
+            filter: 'drop-shadow(0px 4px 10px rgba(0,0,0,0.1))'
           }}
         />
 
-        {/* Contenido de la Card */}
         <Box
-          className='event-content' // Clase para el selector del hover
+          className='event-content'
           sx={{
             flex: 1,
             display: 'flex',
@@ -124,17 +116,16 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
             pt: { xs: 5, md: 4 },
             pl: { md: 10 },
             borderRadius: '25px',
-            // Default State restaurado
             backgroundColor: 'var(--White)',
             backgroundImage: 'var(--Background-events-2)',
-            boxShadow: 'var(--shadow-drop)', // Sombra original por defecto
+            boxShadow: 'var(--shadow-drop)',
             color: 'var(--event-2)',
             fontFamily: 'var(--Heading-Font-Family)',
             minHeight: { md: '220px' },
             zIndex: 1,
             width: '100%',
             transition: 'all 0.3s ease',
-            position: 'relative' // Para posicionar el icono de bookmark
+            position: 'relative'
           }}
         >
           <Box sx={{ position: 'absolute', top: 16, right: 16, zIndex: 10 }}>
@@ -180,7 +171,9 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
               <Typography variant='body2'>
                 {event.is_online
                   ? 'Online'
-                  : `${event.venue_city}, ${event.venue_community}`}
+                  : `${event.venue_city || ''}${
+                      event.venue_country ? ', ' + event.venue_country : ''
+                    }`}
               </Typography>
             </Grid>
             <Grid
@@ -195,17 +188,18 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
           </Grid>
 
           <Box sx={{ mt: 2, display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-            {event.tags.slice(0, 4).map((tag) => (
-              <Chip
-                key={tag}
-                label={tag}
-                size='small'
-                sx={{
-                  backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                  color: 'var(--White)'
-                }}
-              />
-            ))}
+            {event.tags &&
+              event.tags.slice(0, 4).map((tag) => (
+                <Chip
+                  key={tag}
+                  label={tag}
+                  size='small'
+                  sx={{
+                    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                    color: 'var(--White)'
+                  }}
+                />
+              ))}
           </Box>
         </Box>
       </Box>

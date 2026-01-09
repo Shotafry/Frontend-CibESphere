@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useState } from 'react'
+import React, { FunctionComponent, useState, useEffect } from 'react'
 import {
   Box,
   Typography,
@@ -12,7 +12,6 @@ import {
   Stack,
   Avatar,
   TextField,
-  InputAdornment,
   Alert,
   Fade,
   Switch,
@@ -22,11 +21,18 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
-  Rating
+  Rating,
+  InputAdornment
 } from '@mui/material'
 import StarHalfIcon from '@mui/icons-material/StarHalf'
-import FormatQuoteIcon from '@mui/icons-material/FormatQuote'
-import { useLoaderData, useNavigate, useNavigation } from 'react-router-dom'
+import PersonIcon from '@mui/icons-material/Person'
+import LocationOnIcon from '@mui/icons-material/LocationOn'
+import SettingsIcon from '@mui/icons-material/Settings'
+import MailOutlineIcon from '@mui/icons-material/MailOutline'
+import TwitterIcon from '@mui/icons-material/Twitter'
+import LinkedInIcon from '@mui/icons-material/LinkedIn'
+import LanguageIcon from '@mui/icons-material/Language'
+import { useNavigation } from 'react-router-dom'
 import { Button } from '../components/Button'
 import { useAuth } from '../context/AuthContext'
 import { Event, User } from '../types'
@@ -34,33 +40,63 @@ import {
   createReview,
   getEventReviews,
   unsubscribeFromEvent,
-  updateUser
+  updateUser,
+  getMe,
+  getEvents
 } from '../services/apiService'
-import CalendarTodayIcon from '@mui/icons-material/CalendarToday'
-import MailOutlineIcon from '@mui/icons-material/MailOutline'
-import PersonIcon from '@mui/icons-material/Person'
-import LocationOnIcon from '@mui/icons-material/LocationOn'
-import TwitterIcon from '@mui/icons-material/Twitter'
-import LinkedInIcon from '@mui/icons-material/LinkedIn'
-import GitHubIcon from '@mui/icons-material/GitHub'
-import LanguageIcon from '@mui/icons-material/Language'
-import SaveIcon from '@mui/icons-material/Save'
-import ImageIcon from '@mui/icons-material/Image'
-import SettingsIcon from '@mui/icons-material/Settings'
 import { useForm, Controller, useWatch } from 'react-hook-form'
 import { EventCard } from '../components/EventCard'
 
 const PanelDeUsuario: FunctionComponent = () => {
   const { user, refreshUserData } = useAuth()
-  const initialEvents = useLoaderData() as Event[]
   const navigation = useNavigation()
-  const [subscribedEvents, setSubscribedEvents] = useState(initialEvents)
+  const [subscribedEvents, setSubscribedEvents] = useState<Event[]>([])
   const [tabValue, setTabValue] = useState(0)
   const [isSaving, setIsSaving] = useState(false)
+  const [loadingConfig, setLoadingConfig] = useState(true)
   const [saveMessage, setSaveMessage] = useState<{
     type: 'success' | 'error'
     text: string
   } | null>(null)
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoadingConfig(true)
+      try {
+        if (user) {
+          try {
+            const fullUser = await getMe()
+            refreshUserData(fullUser)
+          } catch (e) {
+            console.warn(
+              'Could not fetch full user profile, using context user',
+              e
+            )
+          }
+
+          try {
+            // Pass empty filters with required fields if needed, or cast defined structure
+            const allEvents = await getEvents({
+              startDate: null,
+              endDate: null,
+              tags: [],
+              locations: [],
+              levels: [],
+              languages: []
+            })
+            setSubscribedEvents(allEvents.slice(0, 3) || [])
+          } catch (e) {
+            console.warn('Could not fetch events', e)
+          }
+        }
+      } catch (error) {
+        console.error('Error loading user data', error)
+      } finally {
+        setLoadingConfig(false)
+      }
+    }
+    fetchData()
+  }, [])
 
   const {
     control,
@@ -77,12 +113,9 @@ const PanelDeUsuario: FunctionComponent = () => {
       banner_url: user?.banner_url || '',
       company: user?.company || '',
       position: user?.position || '',
-      social_links: {
-        twitter: user?.social_links?.twitter || '',
-        linkedin: user?.social_links?.linkedin || '',
-        github: user?.social_links?.github || '',
-        website: user?.social_links?.website || ''
-      }
+      twitter: user?.twitter || '',
+      linkedin: user?.linkedin || '',
+      website: user?.website || ''
     }
   })
 
@@ -93,13 +126,11 @@ const PanelDeUsuario: FunctionComponent = () => {
   const handleCancelSubscription = async (eventId: string) => {
     if (!user) return
     try {
-      await unsubscribeFromEvent(user.id, eventId)
+      await unsubscribeFromEvent(eventId)
       const newSubscribedEvents = subscribedEvents.filter(
         (e) => e.id !== eventId
       )
       setSubscribedEvents(newSubscribedEvents)
-      const updatedUser = { ...user, FavoriteEvents: newSubscribedEvents }
-      refreshUserData(updatedUser)
     } catch (error) {
       console.error('Error al cancelar la inscripción:', error)
     }
@@ -124,7 +155,6 @@ const PanelDeUsuario: FunctionComponent = () => {
     }
   }
 
-  // Review Modal Logic
   const [reviewModalOpen, setReviewModalOpen] = useState(false)
   const [selectedEventToReview, setSelectedEventToReview] =
     useState<Event | null>(null)
@@ -132,7 +162,6 @@ const PanelDeUsuario: FunctionComponent = () => {
   const [reviewComment, setReviewComment] = useState('')
 
   const handleOpenReviewModal = async (event: Event) => {
-    // Check if user has already reviewed this event
     try {
       const existingReviews = await getEventReviews(event.id)
       const userReview = existingReviews.find((r) => r.userId === user?.id)
@@ -182,7 +211,7 @@ const PanelDeUsuario: FunctionComponent = () => {
     }
   }
 
-  if (navigation.state === 'loading') {
+  if (loadingConfig || navigation.state === 'loading') {
     return (
       <Box
         sx={{
@@ -197,7 +226,6 @@ const PanelDeUsuario: FunctionComponent = () => {
     )
   }
 
-  // Filtrar eventos
   const upcomingEvents = subscribedEvents.filter(
     (e) => new Date(e.start_date) > new Date()
   )
@@ -207,7 +235,6 @@ const PanelDeUsuario: FunctionComponent = () => {
 
   return (
     <Box sx={{ minHeight: '100vh', bgcolor: '#F8FAFC', pb: 8 }}>
-      {/* HEADER */}
       <Box
         sx={{
           bgcolor: 'white',
@@ -235,7 +262,7 @@ const PanelDeUsuario: FunctionComponent = () => {
                   bgcolor: 'var(--color-cadetblue)'
                 }}
               >
-                {user?.first_name[0]}
+                {user?.first_name?.[0]}
               </Avatar>
               <Box>
                 <Typography
@@ -251,9 +278,9 @@ const PanelDeUsuario: FunctionComponent = () => {
               </Box>
             </Box>
             <Button
-              variant="primary"
+              variant='primary'
               href={`/usuario/${user?.id}`}
-              target="_blank"
+              target='_blank'
               startIcon={<PersonIcon />}
             >
               Ver mi Perfil Público
@@ -283,7 +310,6 @@ const PanelDeUsuario: FunctionComponent = () => {
       </Box>
 
       <Container maxWidth='xl' sx={{ mt: 6 }}>
-        {/* TAB 0: EVENTOS */}
         {tabValue === 0 && (
           <Fade in={tabValue === 0} timeout={500}>
             <Box>
@@ -303,8 +329,8 @@ const PanelDeUsuario: FunctionComponent = () => {
                         <Box key={event.id} sx={{ position: 'relative' }}>
                           <EventCard event={event} />
                           <Button
-                            variant="secondary"
-                            size="small"
+                            variant='secondary'
+                            size='small'
                             onClick={() => handleCancelSubscription(event.id)}
                             sx={{
                               position: 'absolute',
@@ -329,10 +355,7 @@ const PanelDeUsuario: FunctionComponent = () => {
                         <Typography color='text.secondary'>
                           No tienes eventos próximos.
                         </Typography>
-                        <Button
-                          variant="primary"
-                          href="/"
-                        >
+                        <Button variant='primary' href='/'>
                           Explorar Eventos
                         </Button>
                       </Paper>
@@ -367,11 +390,6 @@ const PanelDeUsuario: FunctionComponent = () => {
                               }
                             }}
                           >
-                            {/* We can reuse EventCard but we want to customize the footer. 
-                                Since EventCard has its own styles, we can wrap it or just use it. 
-                                To avoid layout issues, let's keep EventCard as is but add an action bar below it.
-                                Or better: Create a "Review Action" wrapper.
-                             */}
                             <EventCard event={event} />
                             <Box
                               sx={{
@@ -383,7 +401,7 @@ const PanelDeUsuario: FunctionComponent = () => {
                               }}
                             >
                               <Button
-                                variant="secondary"
+                                variant='secondary'
                                 startIcon={<StarHalfIcon />}
                                 onClick={() => handleOpenReviewModal(event)}
                               >
@@ -448,7 +466,6 @@ const PanelDeUsuario: FunctionComponent = () => {
           </Fade>
         )}
 
-        {/* TAB 1: GUARDADOS */}
         {tabValue === 1 && (
           <Fade in={tabValue === 1} timeout={500}>
             <Box>
@@ -458,11 +475,13 @@ const PanelDeUsuario: FunctionComponent = () => {
                 gutterBottom
                 sx={{ mb: 3 }}
               >
-                Eventos Guardados ({user?.BookmarkedEvents?.length || 0})
+                Eventos Guardados
               </Typography>
               <Stack spacing={3}>
-                {user?.BookmarkedEvents && user.BookmarkedEvents.length > 0 ? (
-                  user.BookmarkedEvents.map((event) => (
+                {user &&
+                (user as any).BookmarkedEvents &&
+                (user as any).BookmarkedEvents.length > 0 ? (
+                  (user as any).BookmarkedEvents.map((event: Event) => (
                     <EventCard key={event.id} event={event} />
                   ))
                 ) : (
@@ -477,10 +496,7 @@ const PanelDeUsuario: FunctionComponent = () => {
                     <Typography color='text.secondary'>
                       No tienes eventos guardados.
                     </Typography>
-                    <Button
-                      variant="primary"
-                      href="/"
-                    >
+                    <Button variant='primary' href='/'>
                       Explorar Eventos
                     </Button>
                   </Paper>
@@ -490,7 +506,6 @@ const PanelDeUsuario: FunctionComponent = () => {
           </Fade>
         )}
 
-        {/* TAB 2: EDITAR PERFIL */}
         {tabValue === 2 && (
           <Fade in={tabValue === 2} timeout={500}>
             <Box>
@@ -506,7 +521,6 @@ const PanelDeUsuario: FunctionComponent = () => {
           </Fade>
         )}
 
-        {/* TAB 3: CONFIGURACIÓN */}
         {tabValue === 3 && (
           <Fade in={tabValue === 3} timeout={500}>
             <Container maxWidth='md'>
@@ -555,26 +569,12 @@ const PanelDeUsuario: FunctionComponent = () => {
                     }
                     sx={{ mb: 3, alignItems: 'flex-start' }}
                   />
-                  <FormControlLabel
-                    control={<Switch />}
-                    label={
-                      <Box>
-                        <Typography fontWeight='500'>
-                          Boletín Semanal
-                        </Typography>
-                        <Typography variant='body2' color='text.secondary'>
-                          Un resumen de los mejores eventos de la semana.
-                        </Typography>
-                      </Box>
-                    }
-                    sx={{ alignItems: 'flex-start' }}
-                  />
                 </FormGroup>
                 <Box
                   sx={{ mt: 4, display: 'flex', justifyContent: 'flex-end' }}
                 >
                   <Button
-                    variant="secondary"
+                    variant='secondary'
                     onClick={() =>
                       setSaveMessage({
                         type: 'success',
@@ -586,21 +586,11 @@ const PanelDeUsuario: FunctionComponent = () => {
                   </Button>
                 </Box>
               </Paper>
-              {saveMessage && tabValue === 3 && (
-                <Alert
-                  severity={saveMessage.type}
-                  sx={{ mb: 4, borderRadius: '12px' }}
-                  onClose={() => setSaveMessage(null)}
-                >
-                  {saveMessage.text}
-                </Alert>
-              )}
             </Container>
           </Fade>
         )}
       </Container>
 
-      {/* DIALOG DE RESEÑA */}
       <Dialog
         open={reviewModalOpen}
         onClose={handleCloseReviewModal}
@@ -615,21 +605,15 @@ const PanelDeUsuario: FunctionComponent = () => {
           <Box sx={{ my: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
             <Typography component='legend'>Valoración:</Typography>
             <Rating
-              name='simple-controlled'
               value={reviewRating}
-              onChange={(event, newValue) => {
-                setReviewRating(newValue)
-              }}
+              onChange={(e, n) => setReviewRating(n)}
             />
           </Box>
           <TextField
             autoFocus
             margin='dense'
-            id='comment'
             label='Tu comentario'
-            type='text'
             fullWidth
-            variant='outlined'
             multiline
             rows={4}
             value={reviewComment}
@@ -637,13 +621,10 @@ const PanelDeUsuario: FunctionComponent = () => {
           />
         </DialogContent>
         <DialogActions sx={{ p: 3 }}>
-          <Button onClick={handleCloseReviewModal} variant="secondary">
+          <Button onClick={handleCloseReviewModal} variant='secondary'>
             Cancelar
           </Button>
-          <Button
-            onClick={handleSubmitReview}
-            variant="primary"
-          >
+          <Button onClick={handleSubmitReview} variant='primary'>
             Enviar Reseña
           </Button>
         </DialogActions>
@@ -652,7 +633,6 @@ const PanelDeUsuario: FunctionComponent = () => {
   )
 }
 
-// Subcomponente para el formulario con vista previa
 const EditProfileForm: React.FC<{
   user: any
   control: any
@@ -668,426 +648,334 @@ const EditProfileForm: React.FC<{
   isSaving,
   saveMessage
 }) => {
-    const watchedBanner = useWatch({ control, name: 'banner_url' })
-    const watchedAvatar = useWatch({ control, name: 'avatar_url' })
-    const watchedFirstName = useWatch({ control, name: 'first_name' })
-    const watchedLastName = useWatch({ control, name: 'last_name' })
-    const watchedCity = useWatch({ control, name: 'city' })
-    const watchedCompany = useWatch({ control, name: 'company' })
-    const watchedPosition = useWatch({ control, name: 'position' })
+  const watchedBanner = useWatch({ control, name: 'banner_url' })
+  const watchedAvatar = useWatch({ control, name: 'avatar_url' })
+  const watchedFirstName = useWatch({ control, name: 'first_name' })
+  const watchedLastName = useWatch({ control, name: 'last_name' })
+  const watchedCity = useWatch({ control, name: 'city' })
+  const watchedCompany = useWatch({ control, name: 'company' })
+  const watchedPosition = useWatch({ control, name: 'position' })
 
-    const bannerUrl =
-      watchedBanner ||
-      user?.banner_url ||
-      'https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=1600&q=80'
-    const avatarUrl = watchedAvatar || user?.avatar_url
-    const fullName = `${watchedFirstName || user?.first_name || ''} ${watchedLastName || user?.last_name || ''
-      }`
+  const bannerUrl =
+    watchedBanner ||
+    user?.banner_url ||
+    'https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=1600&q=80'
+  const avatarUrl = watchedAvatar || user?.avatar_url
+  const fullName = `${watchedFirstName || user?.first_name || ''} ${
+    watchedLastName || user?.last_name || ''
+  }`
 
-    return (
-      <Box component='form' onSubmit={handleSubmit(onSaveProfile)}>
-        {/* PREVIEW SECTION */}
-        <Paper
-          elevation={0}
+  return (
+    <Box component='form' onSubmit={handleSubmit(onSaveProfile)}>
+      <Paper
+        elevation={0}
+        sx={{
+          borderRadius: '24px',
+          overflow: 'hidden',
+          mb: 4,
+          border: '1px solid #E2E8F0',
+          position: 'relative'
+        }}
+      >
+        <Box
           sx={{
-            borderRadius: '24px',
-            overflow: 'hidden',
-            mb: 4,
-            border: '1px solid #E2E8F0',
-            position: 'relative'
+            height: 200,
+            width: '100%',
+            backgroundImage: `url(${bannerUrl})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center'
+          }}
+        />
+        <Box
+          sx={{
+            position: 'absolute',
+            bottom: 0,
+            left: 0,
+            right: 0,
+            p: 3,
+            display: 'flex',
+            alignItems: 'flex-end',
+            gap: 3,
+            zIndex: 2
           }}
         >
-          <Box
+          <Avatar
+            src={avatarUrl}
             sx={{
-              height: 200,
-              width: '100%',
-              backgroundImage: `url(${bannerUrl})`,
-              backgroundSize: 'cover',
-              backgroundPosition: 'center',
-              position: 'relative',
-              '&::after': {
-                content: '""',
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                background:
-                  'linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.6))'
-              }
-            }}
-          />
-          <Box
-            sx={{
-              position: 'absolute',
-              bottom: 0,
-              left: 0,
-              right: 0,
-              p: 3,
-              display: 'flex',
-              alignItems: 'flex-end',
-              gap: 3,
-              zIndex: 2
+              width: 100,
+              height: 100,
+              border: '4px solid white',
+              bgcolor: 'var(--color-cadetblue)',
+              fontSize: '2.5rem'
             }}
           >
-            <Avatar
-              src={avatarUrl}
-              sx={{
-                width: 100,
-                height: 100,
-                border: '4px solid white',
-                boxShadow: '0 4px 20px rgba(0,0,0,0.2)',
-                bgcolor: 'var(--color-cadetblue)',
-                fontSize: '2.5rem'
-              }}
-            >
-              {watchedFirstName?.[0]}
-            </Avatar>
-            <Box sx={{ color: 'white', pb: 1 }}>
-              <Typography
-                variant='h4'
-                fontWeight='900'
-                sx={{ textShadow: '0 2px 4px rgba(0,0,0,0.5)' }}
-              >
-                {fullName}
-              </Typography>
-              <Box
-                sx={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 1,
-                  opacity: 0.9
-                }}
-              >
-                {watchedCity && (
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                    <LocationOnIcon fontSize='small' />
-                    <Typography variant='body1' fontWeight='500'>
-                      {watchedCity}
-                    </Typography>
-                  </Box>
-                )}
-                {watchedCompany && (
-                  <Typography variant='body1' fontWeight='500'>
-                    | {watchedPosition ? `${watchedPosition} at ` : ''}
-                    {watchedCompany}
-                  </Typography>
-                )}
-              </Box>
+            {watchedFirstName?.[0]}
+          </Avatar>
+          <Box
+            sx={{
+              color: 'white',
+              pb: 1,
+              textShadow: '0 2px 4px rgba(0,0,0,0.5)'
+            }}
+          >
+            <Typography variant='h4' fontWeight='900'>
+              {fullName}
+            </Typography>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              {watchedCity && <Typography>{watchedCity}</Typography>}
+              {watchedCompany && <Typography>| {watchedCompany}</Typography>}
             </Box>
           </Box>
-        </Paper>
+        </Box>
+      </Paper>
 
-        {saveMessage && (
-          <Alert severity={saveMessage.type} sx={{ mb: 4, borderRadius: '12px' }}>
-            {saveMessage.text}
-          </Alert>
-        )}
+      {saveMessage && (
+        <Alert severity={saveMessage.type} sx={{ mb: 4 }}>
+          {saveMessage.text}
+        </Alert>
+      )}
 
-        <Grid container spacing={4}>
-          {/* LEFT: PERSONAL INFO */}
-          <Grid size={{ xs: 12, md: 7 }}>
-            <Paper
-              elevation={0}
-              sx={{ p: 4, borderRadius: '24px', border: '1px solid #E2E8F0' }}
-            >
-              <Typography
-                variant='h6'
-                fontWeight='bold'
-                gutterBottom
-                sx={{ mb: 3 }}
-              >
-                Información Personal
-              </Typography>
-              <Grid container spacing={3}>
-                <Grid size={{ xs: 12, md: 6 }}>
-                  <Controller
-                    name='first_name'
-                    control={control}
-                    render={({ field }) => (
-                      <TextField {...field} label='Nombre' fullWidth />
-                    )}
-                  />
-                </Grid>
-                <Grid size={{ xs: 12, md: 6 }}>
-                  <Controller
-                    name='last_name'
-                    control={control}
-                    render={({ field }) => (
-                      <TextField {...field} label='Apellidos' fullWidth />
-                    )}
-                  />
-                </Grid>
-                <Grid size={{ xs: 12 }}>
-                  <Controller
-                    name='bio'
-                    control={control}
-                    render={({ field }) => (
-                      <TextField
-                        {...field}
-                        label='Bio / Sobre mí'
-                        fullWidth
-                        multiline
-                        rows={4}
-                        placeholder='Cuéntanos un poco sobre ti...'
-                      />
-                    )}
-                  />
-                </Grid>
-                <Grid size={{ xs: 12 }}>
-                  <Controller
-                    name='personal_quote'
-                    control={control}
-                    render={({ field }) => (
-                      <TextField
-                        {...field}
-                        label='Frase Personal / Cita'
-                        fullWidth
-                        placeholder='Ej: "Innovación es la clave del éxito"'
-                        helperText='Esta frase aparecerá al pasar el ratón sobre tu nombre en las reseñas.'
-                        InputProps={{
-                          startAdornment: (
-                            <InputAdornment position='start'>
-                              <FormatQuoteIcon color='action' />
-                            </InputAdornment>
-                          )
-                        }}
-                      />
-                    )}
-                  />
-                </Grid>
-                <Grid size={{ xs: 12, md: 6 }}>
-                  <Controller
-                    name='city'
-                    control={control}
-                    render={({ field }) => (
-                      <TextField
-                        {...field}
-                        label='Ciudad'
-                        fullWidth
-                        InputProps={{
-                          startAdornment: (
-                            <InputAdornment position='start'>
-                              <LocationOnIcon color='action' />
-                            </InputAdornment>
-                          )
-                        }}
-                      />
-                    )}
-                  />
-                </Grid>
-                <Grid size={{ xs: 12, md: 6 }}>
-                  <Controller
-                    name='company'
-                    control={control}
-                    render={({ field }) => (
-                      <TextField {...field} label='Empresa' fullWidth />
-                    )}
-                  />
-                </Grid>
-                <Grid size={{ xs: 12, md: 6 }}>
-                  <Controller
-                    name='position'
-                    control={control}
-                    render={({ field }) => (
-                      <TextField {...field} label='Cargo' fullWidth />
-                    )}
-                  />
-                </Grid>
+      <Grid container spacing={4}>
+        <Grid size={{ xs: 12, md: 7 }}>
+          <Paper sx={{ p: 4, borderRadius: '24px' }}>
+            <Typography variant='h6' fontWeight='bold' mb={3}>
+              Información Personal
+            </Typography>
+            <Grid container spacing={2}>
+              <Grid size={{ xs: 12, sm: 6 }}>
+                <Controller
+                  name='first_name'
+                  control={control}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      label='Nombre'
+                      fullWidth
+                      variant='outlined'
+                    />
+                  )}
+                />
               </Grid>
-            </Paper>
-          </Grid>
+              <Grid size={{ xs: 12, sm: 6 }}>
+                <Controller
+                  name='last_name'
+                  control={control}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      label='Apellido'
+                      fullWidth
+                      variant='outlined'
+                    />
+                  )}
+                />
+              </Grid>
+              <Grid size={{ xs: 12 }}>
+                <Controller
+                  name='email'
+                  control={control}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      label='Email'
+                      fullWidth
+                      variant='outlined'
+                      disabled
+                      InputProps={{
+                        startAdornment: (
+                          <InputAdornment position='start'>
+                            <MailOutlineIcon />
+                          </InputAdornment>
+                        )
+                      }}
+                    />
+                  )}
+                />
+              </Grid>
+              <Grid size={{ xs: 12 }}>
+                <Controller
+                  name='city'
+                  control={control}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      label='Ciudad'
+                      fullWidth
+                      variant='outlined'
+                      InputProps={{
+                        startAdornment: (
+                          <InputAdornment position='start'>
+                            <LocationOnIcon />
+                          </InputAdornment>
+                        )
+                      }}
+                    />
+                  )}
+                />
+              </Grid>
+              <Grid size={{ xs: 12 }}>
+                <Controller
+                  name='bio'
+                  control={control}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      label='Biografía'
+                      fullWidth
+                      multiline
+                      rows={4}
+                      variant='outlined'
+                      placeholder='Cuéntanos un poco sobre ti...'
+                    />
+                  )}
+                />
+              </Grid>
+            </Grid>
 
-          {/* RIGHT: ASSETS & SOCIAL */}
-          <Grid size={{ xs: 12, md: 5 }}>
-            <Stack spacing={4}>
-              <Paper
-                elevation={0}
-                sx={{ p: 4, borderRadius: '24px', border: '1px solid #E2E8F0' }}
-              >
-                <Typography
-                  variant='h6'
-                  fontWeight='bold'
-                  gutterBottom
-                  sx={{ mb: 3 }}
-                >
-                  Imágenes
-                </Typography>
-                <Stack spacing={3}>
-                  <Controller
-                    name='avatar_url'
-                    control={control}
-                    render={({ field }) => (
-                      <TextField
-                        {...field}
-                        label='URL del Avatar'
-                        fullWidth
-                        size='small'
-                        InputProps={{
-                          startAdornment: (
-                            <InputAdornment position='start'>
-                              <ImageIcon color='action' />
-                            </InputAdornment>
-                          )
-                        }}
-                      />
-                    )}
-                  />
-                  <Controller
-                    name='banner_url'
-                    control={control}
-                    render={({ field }) => (
-                      <TextField
-                        {...field}
-                        label='URL del Banner'
-                        fullWidth
-                        size='small'
-                        helperText='Recomendado: 1600x400px'
-                        InputProps={{
-                          startAdornment: (
-                            <InputAdornment position='start'>
-                              <ImageIcon color='action' />
-                            </InputAdornment>
-                          )
-                        }}
-                      />
-                    )}
-                  />
-                </Stack>
-              </Paper>
-
-              <Paper
-                elevation={0}
-                sx={{ p: 4, borderRadius: '24px', border: '1px solid #E2E8F0' }}
-              >
-                <Typography
-                  variant='h6'
-                  fontWeight='bold'
-                  gutterBottom
-                  sx={{ mb: 3 }}
-                >
-                  Redes Sociales
-                </Typography>
-                <Stack spacing={2}>
-                  <Controller
-                    name='social_links.twitter'
-                    control={control}
-                    render={({ field }) => (
-                      <TextField
-                        {...field}
-                        label='Twitter'
-                        fullWidth
-                        size='small'
-                        InputProps={{
-                          startAdornment: (
-                            <InputAdornment position='start'>
-                              <TwitterIcon
-                                fontSize='small'
-                                sx={{ color: '#1DA1F2' }}
-                              />
-                            </InputAdornment>
-                          )
-                        }}
-                      />
-                    )}
-                  />
-                  <Controller
-                    name='social_links.linkedin'
-                    control={control}
-                    render={({ field }) => (
-                      <TextField
-                        {...field}
-                        label='LinkedIn'
-                        fullWidth
-                        size='small'
-                        InputProps={{
-                          startAdornment: (
-                            <InputAdornment position='start'>
-                              <LinkedInIcon
-                                fontSize='small'
-                                sx={{ color: '#0A66C2' }}
-                              />
-                            </InputAdornment>
-                          )
-                        }}
-                      />
-                    )}
-                  />
-                  <Controller
-                    name='social_links.github'
-                    control={control}
-                    render={({ field }) => (
-                      <TextField
-                        {...field}
-                        label='GitHub'
-                        fullWidth
-                        size='small'
-                        InputProps={{
-                          startAdornment: (
-                            <InputAdornment position='start'>
-                              <GitHubIcon
-                                fontSize='small'
-                                sx={{ color: '#333' }}
-                              />
-                            </InputAdornment>
-                          )
-                        }}
-                      />
-                    )}
-                  />
-                  <Controller
-                    name='social_links.website'
-                    control={control}
-                    render={({ field }) => (
-                      <TextField
-                        {...field}
-                        label='Sitio Web'
-                        fullWidth
-                        size='small'
-                        InputProps={{
-                          startAdornment: (
-                            <InputAdornment position='start'>
-                              <LanguageIcon fontSize='small' />
-                            </InputAdornment>
-                          )
-                        }}
-                      />
-                    )}
-                  />
-                </Stack>
-              </Paper>
-
-              <Button
-                type="submit"
-                variant="primary"
-                fullWidth
-                disabled={isSaving}
-                startIcon={
-                  isSaving ? (
-                    <CircularProgress size={20} color='inherit' />
-                  ) : (
-                    <SaveIcon />
-                  )
-                }
-                sx={{
-                  py: 2,
-                  borderRadius: '16px',
-                  fontSize: '1.1rem',
-                  boxShadow: '0 8px 20px rgba(0, 217, 255, 0.25)',
-                  '&:hover': {
-                    boxShadow: '0 10px 25px rgba(0, 217, 255, 0.4)',
-                    transform: 'translateY(-2px)'
-                  },
-                  transition: 'all 0.2s ease'
-                }}
-              >
-                {isSaving ? 'Guardando...' : 'Guardar Cambios'}
-              </Button>
-            </Stack>
-          </Grid>
+            <Typography variant='h6' fontWeight='bold' sx={{ mt: 4, mb: 3 }}>
+              Información Profesional
+            </Typography>
+            <Grid container spacing={2}>
+              <Grid size={{ xs: 12, sm: 6 }}>
+                <Controller
+                  name='company'
+                  control={control}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      label='Empresa'
+                      fullWidth
+                      variant='outlined'
+                    />
+                  )}
+                />
+              </Grid>
+              <Grid size={{ xs: 12, sm: 6 }}>
+                <Controller
+                  name='position'
+                  control={control}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      label='Cargo / Puesto'
+                      fullWidth
+                      variant='outlined'
+                    />
+                  )}
+                />
+              </Grid>
+            </Grid>
+          </Paper>
         </Grid>
+
+        <Grid size={{ xs: 12, md: 5 }}>
+          <Paper sx={{ p: 4, borderRadius: '24px', mb: 3 }}>
+            <Typography variant='h6' fontWeight='bold' mb={3}>
+              Redes Sociales
+            </Typography>
+            <Stack spacing={2}>
+              <Controller
+                name='twitter'
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    label='Twitter / X'
+                    fullWidth
+                    variant='outlined'
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position='start'>
+                          <TwitterIcon />
+                        </InputAdornment>
+                      )
+                    }}
+                  />
+                )}
+              />
+              <Controller
+                name='linkedin'
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    label='LinkedIn'
+                    fullWidth
+                    variant='outlined'
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position='start'>
+                          <LinkedInIcon />
+                        </InputAdornment>
+                      )
+                    }}
+                  />
+                )}
+              />
+              <Controller
+                name='website'
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    label='Sitio Web Personal'
+                    fullWidth
+                    variant='outlined'
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position='start'>
+                          <LanguageIcon />
+                        </InputAdornment>
+                      )
+                    }}
+                  />
+                )}
+              />
+            </Stack>
+          </Paper>
+
+          <Paper sx={{ p: 4, borderRadius: '24px' }}>
+            <Typography variant='h6' fontWeight='bold' mb={3}>
+              Imágenes
+            </Typography>
+            <Stack spacing={2}>
+              <Controller
+                name='avatar_url'
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    label='URL del Avatar'
+                    fullWidth
+                    variant='outlined'
+                    helperText='Enlace directo a tu foto de perfil'
+                  />
+                )}
+              />
+              <Controller
+                name='banner_url'
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    label='URL del Banner'
+                    fullWidth
+                    variant='outlined'
+                    helperText='Enlace directo a tu imagen de portada'
+                  />
+                )}
+              />
+            </Stack>
+          </Paper>
+        </Grid>
+      </Grid>
+      <Box sx={{ mt: 4, display: 'flex', justifyContent: 'flex-end' }}>
+        <Button variant='primary' type='submit' disabled={isSaving}>
+          {isSaving ? 'Guardando...' : 'Guardar Cambios'}
+        </Button>
       </Box>
-    )
-  }
+    </Box>
+  )
+}
 
 export default PanelDeUsuario

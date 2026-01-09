@@ -10,7 +10,6 @@ import { User, Role, AuthResponse, RegisterDTO, Event } from '../types'
 import * as apiService from '../services/apiService'
 import { useNavigate } from 'react-router-dom'
 
-// Esta interfaz se define LOCALMENTE. No se exporta.
 interface AuthContextType {
   user: User | null
   token: string | null
@@ -34,27 +33,36 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   const navigate = useNavigate()
 
   useEffect(() => {
-    try {
-      const storedToken = localStorage.getItem('token')
+    const initializeAuth = async () => {
+      const storedToken = localStorage.getItem('access_token')
       const storedUser = localStorage.getItem('user')
-      if (storedToken && storedUser) {
+
+      if (storedToken) {
         setToken(storedToken)
-        setUser(JSON.parse(storedUser))
+        if (storedUser) {
+          try {
+            setUser(JSON.parse(storedUser))
+          } catch (e) {
+            console.error('Error parseando user de localstorage', e)
+            localStorage.removeItem('user')
+          }
+        }
       }
-    } catch (error) {
-      console.error('Error al cargar datos de auth:', error)
-      localStorage.removeItem('user')
-      localStorage.removeItem('token')
-    } finally {
       setIsLoading(false)
     }
+
+    initializeAuth()
   }, [])
 
-  const handleLoginSuccess = (data: AuthResponse) => {
+  const handleAuthSuccess = (data: AuthResponse) => {
     setUser(data.user)
     setToken(data.access_token)
+
+    localStorage.setItem('access_token', data.access_token)
+    if (data.refresh_token) {
+      localStorage.setItem('refresh_token', data.refresh_token)
+    }
     localStorage.setItem('user', JSON.stringify(data.user))
-    localStorage.setItem('token', data.access_token)
 
     if (data.user.role === Role.Admin) {
       navigate('/admin')
@@ -69,7 +77,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     setIsLoading(true)
     try {
       const data = await apiService.login({ email, password })
-      handleLoginSuccess(data)
+      handleAuthSuccess(data)
     } catch (error) {
       setIsLoading(false)
       throw error
@@ -81,8 +89,9 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   const logout = () => {
     setUser(null)
     setToken(null)
+    localStorage.removeItem('access_token')
+    localStorage.removeItem('refresh_token')
     localStorage.removeItem('user')
-    localStorage.removeItem('token')
     navigate('/')
   }
 
@@ -95,7 +104,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     setIsLoading(true)
     try {
       const authData = await apiService.register(data)
-      handleLoginSuccess(authData)
+      handleAuthSuccess(authData)
     } catch (error) {
       setIsLoading(false)
       throw error
@@ -104,33 +113,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     }
   }
 
-  // --- NUEVA FUNCIÓN DE INSCRIPCIÓN ---
   const subscribeToEvent = async (event: Event): Promise<void> => {
     if (!user) throw new Error('Usuario no autenticado')
-
-    const isAlreadySubscribed = user.FavoriteEvents?.some(
-      (favEvent) => favEvent.id === event.id
-    )
-    if (isAlreadySubscribed) {
-      console.log('El usuario ya está inscrito en este evento.')
-      return
-    }
-
-    const updatedFavoriteEvents = [...(user.FavoriteEvents || []), event]
-    const updatedUser = {
-      ...user,
-      FavoriteEvents: updatedFavoriteEvents
-    }
-
-    refreshUserData(updatedUser)
-
-    try {
-      await apiService.subscribeToEvent(event.id, user.email)
-    } catch (error) {
-      console.error('Error al llamar a la API de suscripción:', error)
-    }
+    await apiService.subscribeToEvent(event.id)
   }
-  // --- FIN NUEVA FUNCIÓN ---
 
   return (
     <AuthContext.Provider

@@ -34,13 +34,21 @@ const UserProfile: React.FC = () => {
     setTabValue(newValue)
   }
 
-  const attendedEvents = user.FavoriteEvents || []
+  // Use optional chaining or fallback
+  const attendedEvents =
+    (user as any).favorite_events || (user as any).FavoriteEvents || []
+
   const upcomingEvents = attendedEvents.filter(
-    (e) => new Date(e.start_date) > new Date()
+    (e: any) => new Date(e.start_date || e.startDate) > new Date()
   )
   const pastEvents = attendedEvents.filter(
-    (e) => new Date(e.start_date) <= new Date()
+    (e: any) => new Date(e.start_date || e.startDate) <= new Date()
   )
+
+  const fullName =
+    user.first_name && user.last_name
+      ? `${user.first_name} ${user.last_name}`
+      : 'Usuario'
 
   return (
     <Box sx={{ minHeight: '100vh', bgcolor: '#F8FAFC', pb: 8 }}>
@@ -48,9 +56,10 @@ const UserProfile: React.FC = () => {
       <Box
         sx={{
           height: 350,
-          backgroundImage: `url(${user.banner_url ||
+          backgroundImage: `url(${
+            user.banner_url ||
             'https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=1600&q=80'
-            })`,
+          })`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           position: 'relative',
@@ -82,7 +91,7 @@ const UserProfile: React.FC = () => {
           >
             <Avatar
               src={user.avatar_url}
-              alt={user.full_name}
+              alt={fullName}
               sx={{
                 width: 160,
                 height: 160,
@@ -92,7 +101,7 @@ const UserProfile: React.FC = () => {
                 fontSize: '3rem'
               }}
             >
-              {user.first_name[0]}
+              {user.first_name?.[0]}
             </Avatar>
             <Box
               sx={{
@@ -106,7 +115,7 @@ const UserProfile: React.FC = () => {
                 fontWeight='900'
                 sx={{ textShadow: '0 2px 4px rgba(0,0,0,0.3)' }}
               >
-                {user.full_name}
+                {fullName}
               </Typography>
               <Box
                 sx={{
@@ -171,13 +180,13 @@ const UserProfile: React.FC = () => {
                   Conectar
                 </Typography>
                 <Stack spacing={2}>
-                  {user.social_links?.twitter && (
+                  {user.twitter && (
                     <Button
                       startIcon={<TwitterIcon />}
                       fullWidth
-                      variant="primary"
-                      href={user.social_links.twitter}
-                      target="_blank"
+                      variant='primary'
+                      href={user.twitter}
+                      target='_blank'
                       sx={{
                         justifyContent: 'flex-start'
                       }}
@@ -185,13 +194,13 @@ const UserProfile: React.FC = () => {
                       Twitter
                     </Button>
                   )}
-                  {user.social_links?.linkedin && (
+                  {user.linkedin && (
                     <Button
                       startIcon={<LinkedInIcon />}
                       fullWidth
-                      variant="secondary"
-                      href={user.social_links.linkedin}
-                      target="_blank"
+                      variant='secondary'
+                      href={user.linkedin}
+                      target='_blank'
                       sx={{
                         justifyContent: 'flex-start'
                       }}
@@ -199,27 +208,13 @@ const UserProfile: React.FC = () => {
                       LinkedIn
                     </Button>
                   )}
-                  {user.social_links?.github && (
-                    <Button
-                      startIcon={<GitHubIcon />}
-                      fullWidth
-                      variant="primary"
-                      href={user.social_links.github}
-                      target="_blank"
-                      sx={{
-                        justifyContent: 'flex-start'
-                      }}
-                    >
-                      GitHub
-                    </Button>
-                  )}
-                  {user.social_links?.website && (
+                  {user.website && (
                     <Button
                       startIcon={<LanguageIcon />}
                       fullWidth
-                      variant="secondary"
-                      href={user.social_links.website}
-                      target="_blank"
+                      variant='secondary'
+                      href={user.website}
+                      target='_blank'
                       sx={{
                         justifyContent: 'flex-start'
                       }}
@@ -227,7 +222,7 @@ const UserProfile: React.FC = () => {
                       Sitio Web
                     </Button>
                   )}
-                  {!user.social_links && (
+                  {!user.twitter && !user.linkedin && !user.website && (
                     <Typography variant='body2' color='text.secondary'>
                       No hay redes sociales públicas.
                     </Typography>
@@ -254,10 +249,12 @@ const UserProfile: React.FC = () => {
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                   <CalendarTodayIcon fontSize='small' color='action' />
                   <Typography variant='body2' fontWeight='bold'>
-                    {new Date(user.created_at).toLocaleDateString('es-ES', {
-                      month: 'long',
-                      year: 'numeric'
-                    })}
+                    {user.created_at
+                      ? new Date(user.created_at).toLocaleDateString('es-ES', {
+                          month: 'long',
+                          year: 'numeric'
+                        })
+                      : 'N/A'}
                   </Typography>
                 </Box>
               </Paper>
@@ -301,7 +298,7 @@ const UserProfile: React.FC = () => {
                 {tabValue === 0 && (
                   <Stack spacing={3}>
                     {upcomingEvents.length > 0 ? (
-                      upcomingEvents.map((event) => (
+                      upcomingEvents.map((event: any) => (
                         <EventCard key={event.id} event={event} />
                       ))
                     ) : (
@@ -323,7 +320,7 @@ const UserProfile: React.FC = () => {
                 {tabValue === 1 && (
                   <Stack spacing={3}>
                     {pastEvents.length > 0 ? (
-                      pastEvents.map((event) => (
+                      pastEvents.map((event: any) => (
                         <EventCard key={event.id} event={event} />
                       ))
                     ) : (

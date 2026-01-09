@@ -1,47 +1,66 @@
 // src/pages/LandingPage.tsx
-import { FunctionComponent } from 'react'
+import { FunctionComponent, useEffect, useState } from 'react'
 import {
   Box,
   Typography,
   Container,
   Grid,
   CircularProgress,
-  Divider // <-- Añadido para separar
+  Divider
 } from '@mui/material'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
-import { useLoaderData, useNavigation } from 'react-router-dom'
-import { Hero } from '../components/Hero' // <-- 1. IMPORTAR EL HERO
+import { Hero } from '../components/Hero'
 import { EventMap } from '../components/EventMap'
 import { EventCard } from '../components/EventCard'
 import { Event, EventFilterParams } from '../types'
 import { EventFilters } from '../components/EventFilters'
 import ComunidadBox from '../components/AboutThis'
-
-interface LandingLoaderData {
-  events: Event[]
-  filters: EventFilterParams
-}
+import { getEvents } from '../services/apiService'
 
 const LandingPage: FunctionComponent = () => {
-  const { events, filters } = useLoaderData() as LandingLoaderData
-  const navigation = useNavigation()
+  const [events, setEvents] = useState<Event[]>([])
+  const [filters, setFilters] = useState<EventFilterParams>({
+    startDate: null,
+    endDate: null,
+    tags: [],
+    locations: [],
+    levels: [],
+    languages: [],
+    search: '',
+    type: ''
+  })
+  const [isLoading, setIsLoading] = useState(true)
 
-  const isLoading = navigation.state === 'loading'
+  useEffect(() => {
+    const fetchEvents = async () => {
+      setIsLoading(true)
+      try {
+        const response = await getEvents({})
+        if (Array.isArray(response)) {
+          setEvents(response)
+        } else if ((response as any).data) {
+          setEvents((response as any).data)
+        }
+      } catch (error) {
+        console.error('Error fetching events:', error)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    fetchEvents()
+  }, [])
 
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
-      {/* 2. AÑADIR EL HERO AQUÍ (fuera del Container) */}
       <Hero />
 
-      {/* El resto del contenido de la página */}
       <Container maxWidth='lg' sx={{ mt: 4, mb: 4 }}>
-        {/* Box de comunidad antes de Próximos Eventos */}
         <ComunidadBox />
 
-        {/* Título de la sección de eventos */}
         <Typography
-          variant='h3' // Un poco más pequeño que el del Hero
+          variant='h3'
           component='h2'
           gutterBottom
           align='center'
@@ -51,7 +70,6 @@ const LandingPage: FunctionComponent = () => {
           Próximos Eventos
         </Typography>
 
-        {/* Damos un ID a los filtros para que el botón del Hero pueda "saltar" aquí */}
         <Box id='filtros'>
           <EventFilters initialFilters={filters} />
         </Box>

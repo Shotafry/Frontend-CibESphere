@@ -34,24 +34,24 @@ export const EventFilters: React.FC<EventFiltersProps> = ({
   const [isOpen, setIsOpen] = useState(false)
   const submit = useSubmit()
 
-  const [levels, setLevels] = useState<string[]>(initialFilters.levels)
-  const [tags, setTags] = useState<string[]>(initialFilters.tags)
-  // Estado para idiomas
+  const [levels, setLevels] = useState<string[]>(initialFilters.levels || [])
+  const [tags, setTags] = useState<string[]>(initialFilters.tags || [])
   const [languages, setLanguages] = useState<string[]>(
     initialFilters.languages || []
   )
 
   const [dates, setDates] = useState({
-    startDate: initialFilters.startDate,
-    endDate: initialFilters.endDate
+    startDate: initialFilters.startDate || null,
+    endDate: initialFilters.endDate || null
   })
+
+  const initialLocations = initialFilters.locations || []
+
   const [selectedCommunities, setSelectedCommunities] = useState<string[]>(
-    initialFilters.locations.filter((loc) =>
-      AUTONOMOUS_COMMUNITIES.includes(loc)
-    )
+    initialLocations.filter((loc) => AUTONOMOUS_COMMUNITIES.includes(loc))
   )
   const [selectedCities, setSelectedCities] = useState<string[]>(
-    initialFilters.locations.filter((loc) => ALL_CITIES.includes(loc))
+    initialLocations.filter((loc) => ALL_CITIES.includes(loc))
   )
   const [availableCities, setAvailableCities] = useState<string[]>(ALL_CITIES)
 
@@ -100,9 +100,9 @@ export const EventFilters: React.FC<EventFiltersProps> = ({
 
   const handleMultiSelectChange =
     (setter: React.Dispatch<React.SetStateAction<string[]>>) =>
-      (event: React.SyntheticEvent, value: string[]) => {
-        setter(value)
-      }
+    (event: React.SyntheticEvent, value: string[]) => {
+      setter(value)
+    }
 
   const handleApplyFilters = () => {
     const allLocations = [
@@ -134,6 +134,23 @@ export const EventFilters: React.FC<EventFiltersProps> = ({
     setAvailableCities(ALL_CITIES)
 
     submit(null, { action: '/', method: 'get' })
+  }
+
+  // Common styles for filter inputs
+  const filterInputSx = {
+    '& .MuiFilledInput-root': {
+      backgroundColor: '#F3F6F9',
+      borderRadius: '12px',
+      border: '1px solid transparent',
+      transition: 'all 0.2s',
+      '&:hover': { backgroundColor: '#EBEEF2' },
+      '&.Mui-focused': {
+        backgroundColor: '#fff',
+        borderColor: 'var(--color-cadetblue)',
+        boxShadow: '0 0 0 4px rgba(79, 186, 200, 0.1)'
+      },
+      '&:before, &:after': { display: 'none' }
+    }
   }
 
   return (
@@ -193,21 +210,7 @@ export const EventFilters: React.FC<EventFiltersProps> = ({
                     variant: 'filled',
                     fullWidth: true,
                     hiddenLabel: false,
-                    sx: {
-                      '& .MuiFilledInput-root': {
-                        backgroundColor: '#F3F6F9',
-                        borderRadius: '12px',
-                        border: '1px solid transparent',
-                        transition: 'all 0.2s',
-                        '&:hover': { backgroundColor: '#EBEEF2' },
-                        '&.Mui-focused': {
-                          backgroundColor: '#fff',
-                          borderColor: 'var(--color-cadetblue)',
-                          boxShadow: '0 0 0 4px rgba(79, 186, 200, 0.1)'
-                        },
-                        '&:before, &:after': { display: 'none' }
-                      }
-                    }
+                    sx: filterInputSx
                   }
                 }}
               />
@@ -222,21 +225,7 @@ export const EventFilters: React.FC<EventFiltersProps> = ({
                   textField: {
                     variant: 'filled',
                     fullWidth: true,
-                    sx: {
-                      '& .MuiFilledInput-root': {
-                        backgroundColor: '#F3F6F9',
-                        borderRadius: '12px',
-                        border: '1px solid transparent',
-                        transition: 'all 0.2s',
-                        '&:hover': { backgroundColor: '#EBEEF2' },
-                        '&.Mui-focused': {
-                          backgroundColor: '#fff',
-                          borderColor: 'var(--color-cadetblue)',
-                          boxShadow: '0 0 0 4px rgba(79, 186, 200, 0.1)'
-                        },
-                        '&:before, &:after': { display: 'none' }
-                      }
-                    }
+                    sx: filterInputSx
                   }
                 }}
               />
@@ -254,20 +243,7 @@ export const EventFilters: React.FC<EventFiltersProps> = ({
                     {...params}
                     label='Comunidad Autónoma'
                     variant='filled'
-                    sx={{
-                      '& .MuiFilledInput-root': {
-                        backgroundColor: '#F3F6F9',
-                        borderRadius: '12px',
-                        border: '1px solid transparent',
-                        '&:hover': { backgroundColor: '#EBEEF2' },
-                        '&.Mui-focused': {
-                          backgroundColor: '#fff',
-                          borderColor: 'var(--color-cadetblue)',
-                          boxShadow: '0 0 0 4px rgba(79, 186, 200, 0.1)'
-                        },
-                        '&:before, &:after': { display: 'none' }
-                      }
-                    }}
+                    sx={filterInputSx}
                   />
                 )}
               />
@@ -283,20 +259,7 @@ export const EventFilters: React.FC<EventFiltersProps> = ({
                     {...params}
                     label='Ciudad'
                     variant='filled'
-                    sx={{
-                      '& .MuiFilledInput-root': {
-                        backgroundColor: '#F3F6F9',
-                        borderRadius: '12px',
-                        border: '1px solid transparent',
-                        '&:hover': { backgroundColor: '#EBEEF2' },
-                        '&.Mui-focused': {
-                          backgroundColor: '#fff',
-                          borderColor: 'var(--color-cadetblue)',
-                          boxShadow: '0 0 0 4px rgba(79, 186, 200, 0.1)'
-                        },
-                        '&:before, &:after': { display: 'none' }
-                      }
-                    }}
+                    sx={filterInputSx}
                   />
                 )}
               />
@@ -314,20 +277,7 @@ export const EventFilters: React.FC<EventFiltersProps> = ({
                     {...params}
                     label='Categorías / Tags'
                     variant='filled'
-                    sx={{
-                      '& .MuiFilledInput-root': {
-                        backgroundColor: '#F3F6F9',
-                        borderRadius: '12px',
-                        border: '1px solid transparent',
-                        '&:hover': { backgroundColor: '#EBEEF2' },
-                        '&.Mui-focused': {
-                          backgroundColor: '#fff',
-                          borderColor: 'var(--color-cadetblue)',
-                          boxShadow: '0 0 0 4px rgba(79, 186, 200, 0.1)'
-                        },
-                        '&:before, &:after': { display: 'none' }
-                      }
-                    }}
+                    sx={filterInputSx}
                   />
                 )}
               />
@@ -345,20 +295,7 @@ export const EventFilters: React.FC<EventFiltersProps> = ({
                     {...params}
                     label='Nivel del Evento'
                     variant='filled'
-                    sx={{
-                      '& .MuiFilledInput-root': {
-                        backgroundColor: '#F3F6F9',
-                        borderRadius: '12px',
-                        border: '1px solid transparent',
-                        '&:hover': { backgroundColor: '#EBEEF2' },
-                        '&.Mui-focused': {
-                          backgroundColor: '#fff',
-                          borderColor: 'var(--color-cadetblue)',
-                          boxShadow: '0 0 0 4px rgba(79, 186, 200, 0.1)'
-                        },
-                        '&:before, &:after': { display: 'none' }
-                      }
-                    }}
+                    sx={filterInputSx}
                   />
                 )}
               />
@@ -382,20 +319,7 @@ export const EventFilters: React.FC<EventFiltersProps> = ({
                     {...params}
                     label='Idioma'
                     variant='filled'
-                    sx={{
-                      '& .MuiFilledInput-root': {
-                        backgroundColor: '#F3F6F9',
-                        borderRadius: '12px',
-                        border: '1px solid transparent',
-                        '&:hover': { backgroundColor: '#EBEEF2' },
-                        '&.Mui-focused': {
-                          backgroundColor: '#fff',
-                          borderColor: 'var(--color-cadetblue)',
-                          boxShadow: '0 0 0 4px rgba(79, 186, 200, 0.1)'
-                        },
-                        '&:before, &:after': { display: 'none' }
-                      }
-                    }}
+                    sx={filterInputSx}
                   />
                 )}
               />
@@ -411,16 +335,10 @@ export const EventFilters: React.FC<EventFiltersProps> = ({
                 mt: 2
               }}
             >
-              <Button
-                variant="primary"
-                onClick={handleClearFilters}
-              >
+              <Button variant='primary' onClick={handleClearFilters}>
                 Limpiar
               </Button>
-              <Button
-                variant="secondary"
-                onClick={handleApplyFilters}
-              >
+              <Button variant='secondary' onClick={handleApplyFilters}>
                 Aplicar Filtros
               </Button>
             </Grid>

@@ -1,4 +1,5 @@
 // src/services/apiService.ts
+import { httpClient } from './httpClient'
 import {
   Event,
   EventFilterParams,
@@ -6,704 +7,264 @@ import {
   LoginDTO,
   RegisterDTO,
   AuthResponse,
-  Role,
   DashboardStats,
   OrganizationSummary,
   CreateEventDTO,
   Notification,
   Review
 } from '../types'
-import { mockEvents, mockUsers } from '../mocks/db'
 
-const SIMULATED_DELAY = 800
+// --- AUTH ---
 
-// --- LOCAL STORAGE PERSISTENCE HELPERS ---
-const DBS_KEYS = {
-  USERS: 'cibesphere_users_v1',
-  EVENTS: 'cibesphere_events_v1'
+export const login = async (data: LoginDTO): Promise<AuthResponse> => {
+  const response = await httpClient.post<AuthResponse>('/auth/login', data)
+  return response.data
 }
 
-// Initialize local state from LocalStorage or fallback to mocks
-let localUsers: User[] = (() => {
-  try {
-    const stored = localStorage.getItem(DBS_KEYS.USERS)
-    return stored ? JSON.parse(stored) : [...mockUsers]
-  } catch (e) {
-    console.error('Error loading users from LS:', e)
-    return [...mockUsers]
-  }
-})()
-
-let localEvents: Event[] = (() => {
-  try {
-    const stored = localStorage.getItem(DBS_KEYS.EVENTS)
-    return stored ? JSON.parse(stored) : [...mockEvents]
-  } catch (e) {
-    console.error('Error loading events from LS:', e)
-    return [...mockEvents]
-  }
-})()
-
-const saveUsers = () => {
-  try {
-    localStorage.setItem(DBS_KEYS.USERS, JSON.stringify(localUsers))
-  } catch (e) {
-    console.error('Error saving users to LS:', e)
-  }
+export const register = async (data: RegisterDTO): Promise<AuthResponse> => {
+  const response = await httpClient.post<AuthResponse>('/auth/register', data)
+  return response.data
 }
 
-const saveEvents = () => {
-  try {
-    localStorage.setItem(DBS_KEYS.EVENTS, JSON.stringify(localEvents))
-  } catch (e) {
-    console.error('Error saving events to LS:', e)
-  }
+export const getMe = async (): Promise<User> => {
+  // Asumimos que hay un endpoint /auth/me o /users/profile
+  // Si no existe, podría ser /users/me
+  const response = await httpClient.get<User>('/auth/me')
+  return response.data
 }
 
-const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
-
-// --- login ---
-export const login = (data: LoginDTO): Promise<AuthResponse> => {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      const user = localUsers.find(
-        (u) => u.email === data.email && u.password === data.password
-      )
-      if (user) {
-        const authResponse: AuthResponse = {
-          user,
-          access_token: 'fake-access-token-' + Math.random(),
-          refresh_token: 'fake-refresh-token-' + Math.random(),
-          token_type: 'Bearer',
-          expires_in: 3600
-        }
-        resolve(authResponse)
-      } else {
-        reject(new Error('Credenciales inválidas'))
-      }
-    }, SIMULATED_DELAY)
-  })
-}
-
-// --- register ---
-export const register = (data: RegisterDTO): Promise<AuthResponse> => {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      if (localUsers.find((u) => u.email === data.email)) {
-        reject(new Error('El email ya está registrado'))
-        return
-      }
-
-      let newUserOrg: OrganizationSummary | undefined = undefined
-      if (data.role === Role.Organizer && data.organization_name) {
-        newUserOrg = {
-          id: `org-00${localUsers.length + 1}`,
-          slug: data.organization_name.toLowerCase().replace(/\s+/g, '-'),
-          name: data.organization_name,
-          logo_url: '',
-          is_verified: false,
-          city: 'Desconocida'
-        }
-      }
-
-      const newUser: User = {
-        id: `a1b2c3d4-${Math.floor(Math.random() * 9000) + 1000}`,
-        email: data.email,
-        password: data.password,
-        first_name: data.first_name,
-        last_name: data.last_name,
-        full_name: `${data.first_name} ${data.last_name}`,
-        role: data.role,
-        is_active: true,
-        is_verified: false,
-        created_at: new Date().toISOString(),
-        organization: newUserOrg
-      }
-
-      localUsers.push(newUser)
-      saveUsers()
-
-      const authResponse: AuthResponse = {
-        user: newUser,
-        access_token: 'fake-access-token-' + Math.random(),
-        refresh_token: 'fake-refresh-token-' + Math.random(),
-        token_type: 'Bearer',
-        expires_in: 3600
-      }
-      resolve(authResponse)
-    }, SIMULATED_DELAY)
-  })
-}
-
-// --- getEvents ---
-export const getEvents = (filters: EventFilterParams): Promise<Event[]> => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      let filteredEvents = [
-        ...localEvents.filter((e) => e.status === 'published')
-      ]
-      if (filters.startDate) {
-        filteredEvents = filteredEvents.filter(
-          (e) => new Date(e.start_date) >= filters.startDate!
-        )
-      }
-      if (filters.endDate) {
-        filteredEvents = filteredEvents.filter(
-          (e) => new Date(e.start_date) <= filters.endDate!
-        )
-      }
-      if (filters.tags.length > 0) {
-        filteredEvents = filteredEvents.filter((e) =>
-          e.tags.some((tag) => filters.tags.includes(tag))
-        )
-      }
-      if (filters.locations.length > 0) {
-        filteredEvents = filteredEvents.filter(
-          (e) =>
-            (e.venue_city && filters.locations.includes(e.venue_city)) ||
-            (e.venue_community && filters.locations.includes(e.venue_community))
-        )
-      }
-      if (filters.levels.length > 0) {
-        filteredEvents = filteredEvents.filter(
-          (e) => e.level && filters.levels.includes(e.level)
-        )
-      }
-      if (filters.languages.length > 0) {
-        filteredEvents = filteredEvents.filter(
-          (e) => e.language && filters.languages.includes(e.language)
-        )
-      }
-      resolve(filteredEvents)
-    }, SIMULATED_DELAY / 2)
-  })
-}
-
-// --- getEventBySlug ---
-export const getEventBySlug = (slug: string): Promise<Event> => {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      const event = localEvents.find((e) => e.slug === slug)
-      if (event) {
-        resolve(event)
-      } else {
-        reject(new Error('Evento no encontrado'))
-      }
-    }, SIMULATED_DELAY / 3)
-  })
-}
-
-// --- subscribeToEvent ---
-export const subscribeToEvent = (
-  eventId: string,
-  email: string
-): Promise<{ message: string }> => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      const eventIndex = localEvents.findIndex((e) => e.id === eventId)
-      if (eventIndex !== -1) {
-        localEvents[eventIndex].current_attendees += 1
-        saveEvents()
-      }
-
-      console.log(`Email ${email} suscrito al evento ${eventId}`)
-      resolve({ message: '¡Suscripción confirmada!' })
-    }, SIMULATED_DELAY)
-  })
-}
-
-// --- getMe ---
-export const getMe = (userId: string): Promise<User> => {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      const user = localUsers.find((u) => u.id === userId)
-      if (user) {
-        resolve(user)
-      } else {
-        reject(new Error('Usuario no encontrado'))
-      }
-    }, SIMULATED_DELAY / 2)
-  })
-}
-
-// --- unsubscribeFromEvent ---
-export const unsubscribeFromEvent = (
-  userId: string,
-  eventId: string
-): Promise<void> => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      // 1. Modificamos la lista de favoritos del usuario (simulado)
-      // En un caso real, esto sería una llamada a la API
-      // 1. Modificamos la lista de favoritos del usuario (simulado)
-      // En un caso real, esto sería una llamada a la API
-      const userIndex = localUsers.findIndex((u) => u.id === userId)
-      if (userIndex !== -1) {
-        localUsers[userIndex].FavoriteEvents = localUsers[
-          userIndex
-        ].FavoriteEvents?.filter((event) => event.id !== eventId)
-        saveUsers()
-      }
-
-      // Decrementar el contador de asistentes del evento
-      const eventIndex = localEvents.findIndex((e) => e.id === eventId)
-      if (eventIndex !== -1 && localEvents[eventIndex].current_attendees > 0) {
-        localEvents[eventIndex].current_attendees -= 1
-        saveEvents()
-      }
-
-      console.log(
-        `Usuario ${userId} ha cancelado suscripción al evento ${eventId}`
-      )
-      resolve()
-    }, SIMULATED_DELAY / 2)
-  })
-}
-
-// --- ADMIN PANELS HELPERS ---
-
-export const getAdminDashboard = (): Promise<DashboardStats> => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      const totalEvents = localEvents.length
-      const totalAttendees = localEvents.reduce(
-        (acc, curr) => acc + curr.current_attendees,
-        0
-      )
-      // Contar ciudades únicas
-      const cities = new Set(
-        localEvents
-          .map((e) => e.venue_city || e.venue_community)
-          .filter(Boolean)
-      )
-      const publishedEvents = localEvents.filter(
-        (e) => e.status === 'published'
-      ).length
-
-      resolve({
-        total_events: totalEvents,
-        total_attendees: totalAttendees,
-        total_cities: cities.size,
-        published_events: publishedEvents
-      })
-    }, SIMULATED_DELAY)
-  })
-}
-
-export const getAllUsers = (): Promise<User[]> => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve([...localUsers])
-    }, SIMULATED_DELAY)
-  })
-}
-
-export const getAllOrganizations = (): Promise<OrganizationSummary[]> => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      // Extraemos organizaciones de los usuarios que tienen rol organizador y objeto organization
-      const orgs: OrganizationSummary[] = []
-      localUsers.forEach((u) => {
-        if (u.role === Role.Organizer && u.organization) {
-          orgs.push(u.organization)
-        }
-      })
-      resolve(orgs)
-    }, SIMULATED_DELAY)
-  })
-}
-
-export const verifyOrganization = (
-  orgId: string
-): Promise<OrganizationSummary> => {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      let updatedOrg: OrganizationSummary | undefined
-
-      // 1. Actualizar en usuarios
-      localUsers.forEach((u) => {
-        if (u.organization && u.organization.id === orgId) {
-          u.organization.is_verified = true
-          updatedOrg = u.organization
-        }
-      })
-
-      // 2. Actualizar en eventos
-      localEvents.forEach((e) => {
-        if (e.organization && e.organization.id === orgId) {
-          e.organization.is_verified = true
-        }
-      })
-
-      if (updatedOrg) {
-        saveUsers()
-        saveEvents()
-        resolve(updatedOrg)
-      } else {
-        reject(new Error('Organización no encontrada'))
-      }
-    }, SIMULATED_DELAY)
-  })
-}
-
-export const deleteUser = (userId: string): Promise<void> => {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      const index = localUsers.findIndex((u) => u.id === userId)
-      if (index !== -1) {
-        localUsers.splice(index, 1)
-        saveUsers()
-        resolve()
-      } else {
-        reject(new Error('Usuario no encontrado'))
-      }
-    }, SIMULATED_DELAY)
-  })
-}
-
-// --- getOrganizerDashboard ---
-export const getOrganizerDashboard = (
-  orgId: string
-): Promise<DashboardStats> => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      const orgEvents = localEvents.filter((e) => e.organization.id === orgId)
-      const totalAttendees = orgEvents.reduce(
-        (sum, e) => sum + e.current_attendees,
-        0
-      )
-      const cities = new Set(orgEvents.map((e) => e.venue_city))
-      resolve({
-        total_events: orgEvents.length,
-        total_attendees: totalAttendees,
-        total_cities: cities.size,
-        published_events: orgEvents.filter((e) => e.status === 'published')
-          .length
-      })
-    }, SIMULATED_DELAY / 2)
-  })
-}
-
-// --- getOrganizationEvents ---
-export const getOrganizationEvents = (orgId: string): Promise<Event[]> => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      const orgEvents = localEvents.filter((e) => e.organization.id === orgId)
-      resolve(orgEvents)
-    }, SIMULATED_DELAY / 2)
-  })
-}
-
-// --- getOrganizationBySlug ---
-export const getOrganizationBySlug = (
-  slug: string
-): Promise<OrganizationSummary> => {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      // Buscamos la organización en los eventos existentes
-      const eventWithOrg = localEvents.find((e) => e.organization.slug === slug)
-      if (eventWithOrg) {
-        resolve(eventWithOrg.organization)
-      } else {
-        reject(new Error('Organización no encontrada'))
-      }
-    }, SIMULATED_DELAY / 2)
-  })
-}
-
-// --- createEvent ---
-export const createEvent = (
-  eventData: CreateEventDTO,
-  organization: OrganizationSummary
-): Promise<Event> => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      const newEvent: Event = {
-        id: `evt-00${localEvents.length + 1}`,
-        slug: eventData.title.toLowerCase().replace(/\s+/g, '-'),
-        status: 'published',
-        current_attendees: 0,
-        is_upcoming: true,
-        is_past: false,
-        is_ongoing: false,
-        organization: organization,
-        ...eventData,
-        category: eventData.category || eventData.tags[0] || 'General',
-        type: eventData.type || 'conference'
-      }
-      localEvents.push(newEvent)
-      saveEvents()
-      resolve(newEvent)
-    }, SIMULATED_DELAY)
-  })
-}
-
-// --- updateEvent ---
-export const updateEvent = (
-  eventId: string,
-  eventData: Partial<CreateEventDTO>
-): Promise<Event> => {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      const eventIndex = localEvents.findIndex((e) => e.id === eventId)
-      if (eventIndex === -1) {
-        return reject(new Error('Evento no encontrado para actualizar'))
-      }
-
-      const originalEvent = localEvents[eventIndex]
-      const updatedEvent: Event = {
-        ...originalEvent,
-        ...eventData,
-        slug: eventData.title
-          ? eventData.title.toLowerCase().replace(/\s+/g, '-')
-          : originalEvent.slug,
-        id: originalEvent.id,
-        organization: originalEvent.organization
-      }
-
-      localEvents[eventIndex] = updatedEvent
-      saveEvents()
-      resolve(updatedEvent)
-    }, SIMULATED_DELAY)
-  })
-}
-
-// --- deleteEvent ---
-export const deleteEvent = (eventId: string): Promise<void> => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      const index = localEvents.findIndex((e) => e.id === eventId)
-      if (index !== -1) {
-        localEvents.splice(index, 1)
-        saveEvents()
-      }
-      resolve()
-    }, SIMULATED_DELAY / 2)
-  })
-}
-
-// --- updateOrganization (NUEVO) ---
-export const updateOrganization = async (
-  orgId: string,
-  data: Partial<OrganizationSummary>
-): Promise<OrganizationSummary> => {
-  await delay(500)
-  // En un backend real, esto actualizaría la DB.
-  // Aquí actualizamos los eventos asociados para reflejar cambios (mock)
-  let updatedOrg: OrganizationSummary | undefined
-
-  localEvents.forEach((e) => {
-    if (e.organization.id === orgId) {
-      e.organization = { ...e.organization, ...data }
-      updatedOrg = e.organization
-    }
-  })
-  if (updatedOrg) saveEvents()
-
-  // También actualizar en mockUsers si el usuario tiene esa org
-  localUsers.forEach((u) => {
-    if (u.organization && u.organization.id === orgId) {
-      u.organization = { ...u.organization, ...data }
-      updatedOrg = u.organization
-    }
-  })
-  saveUsers()
-
-  if (!updatedOrg) {
-    // Si no se encontró en eventos ni usuarios, buscar en eventos de nuevo por si acaso
-    const event = localEvents.find((e) => e.organization.id === orgId)
-    if (event) updatedOrg = event.organization
-  }
-
-  if (!updatedOrg) throw new Error('Organización no encontrada')
-  return updatedOrg
-}
-
-// --- getUserById (NUEVO) ---
 export const getUserById = async (userId: string): Promise<User> => {
-  await delay(500)
-  const user = mockUsers.find((u) => u.id === userId)
-  if (!user) throw new Error('Usuario no encontrado')
-  return user
+  const response = await httpClient.get<User>(`/users/${userId}`)
+  return response.data
 }
 
-// --- updateUser (NUEVO) ---
 export const updateUser = async (
   userId: string,
   data: Partial<User>
 ): Promise<User> => {
-  await delay(500)
-  const userIndex = localUsers.findIndex((u) => u.id === userId)
-  if (userIndex === -1) throw new Error('Usuario no encontrado')
-
-  const updatedUser = { ...localUsers[userIndex], ...data }
-  localUsers[userIndex] = updatedUser
-  saveUsers()
-  return updatedUser
+  const response = await httpClient.put<User>(`/users/${userId}`, data)
+  return response.data
 }
 
-// --- BOOKMARKS (MOCK) ---
+// --- EVENTS ---
+
+export const getEvents = async (
+  filters: EventFilterParams
+): Promise<Event[]> => {
+  const params = new URLSearchParams()
+
+  if (filters.startDate) {
+    params.append('start_date', filters.startDate.toISOString())
+  }
+  if (filters.endDate) {
+    params.append('end_date', filters.endDate.toISOString())
+  }
+
+  if (filters.locations && filters.locations.length > 0) {
+    // Si el backend soporta múltiple selección, se podría enviar múltiple 'city'
+    // O una lista separada por comas. Asumimos repetición de clave 'city'
+    filters.locations.forEach((loc) => params.append('city', loc))
+  }
+
+  if (filters.tags && filters.tags.length > 0) {
+    filters.tags.forEach((tag) => params.append('tags', tag))
+  }
+
+  if (filters.levels && filters.levels.length > 0) {
+    filters.levels.forEach((level) => params.append('level', level))
+  }
+
+  if (filters.languages && filters.languages.length > 0) {
+    filters.languages.forEach((lang) => params.append('language', lang))
+  }
+
+  // Si el backend devuelve { data: events[], ... } ajustar aquí.
+  // Asumimos que httpClient ya devuelve `response` y data es el body.
+  // Muchos backends devuelven un wrapper { success: true, data: [...] }
+  // Aquí asumimos que response.data es el wrapper o el array.
+  // Si backend devuelve ApiResponse<Event[]>, retornamos response.data.data
+
+  // Como definimos ApiResponse<T>, el get genérico devuelve la respuesta completa.
+  // Vamos a asumir que el backend devuelve { data: Event[], ... }
+  // Pero axios devuelve { data: Body, status: ... }
+  // Entonces response.data es el cuerpo JSON.
+
+  // Ajuste según standard Go echo/gin response:
+  const response = await httpClient.get<any>(
+    `/public/events?${params.toString()}`
+  )
+
+  // Verificamos si la respuesta viene envuelta en 'data'
+  if (response.data.data && Array.isArray(response.data.data)) {
+    return response.data.data
+  } else if (Array.isArray(response.data)) {
+    return response.data
+  } else if (response.data.events && Array.isArray(response.data.events)) {
+    // UserListResponse / EventListResponse suele tener campo 'events'
+    return response.data.events
+  }
+  return []
+}
+
+export const getEventBySlug = async (slug: string): Promise<Event> => {
+  // Intentamos buscar por slug directo
+  try {
+    const response = await httpClient.get<Event>(`/public/events/${slug}`)
+    return response.data
+  } catch (error) {
+    // Si falla, quizás el backend espera filtro ?slug=...
+    // O es /events/slug/:slug
+    throw error
+  }
+}
+
+export const createEvent = async (
+  eventData: CreateEventDTO
+): Promise<Event> => {
+  const response = await httpClient.post<Event>('/events', eventData)
+  return response.data
+}
+
+export const updateEvent = async (
+  eventId: string,
+  eventData: Partial<CreateEventDTO>
+): Promise<Event> => {
+  const response = await httpClient.put<Event>(`/events/${eventId}`, eventData)
+  return response.data
+}
+
+export const deleteEvent = async (eventId: string): Promise<void> => {
+  await httpClient.delete(`/events/${eventId}`)
+}
+
+export const subscribeToEvent = async (
+  eventId: string
+): Promise<{ message: string }> => {
+  const response = await httpClient.post<{ message: string }>(
+    `/events/${eventId}/subscribe`
+  )
+  return response.data
+}
+
+export const unsubscribeFromEvent = async (eventId: string): Promise<void> => {
+  await httpClient.delete(`/events/${eventId}/subscribe`)
+}
 
 export const toggleBookmark = async (
   userId: string,
   eventId: string
 ): Promise<{ isBookmarked: boolean; message: string }> => {
-  await delay(300)
-  const userIndex = localUsers.findIndex((u) => u.id === userId)
-  if (userIndex === -1) throw new Error('Usuario no encontrado')
-
-  const user = localUsers[userIndex]
-  const event = localEvents.find((e) => e.id === eventId)
-  if (!event) throw new Error('Evento no encontrado')
-
-  if (!user.BookmarkedEvents) {
-    user.BookmarkedEvents = []
-  }
-
-  const alreadyBookmarked = user.BookmarkedEvents.some((e) => e.id === eventId)
-  let isBookmarked = false
-
-  if (alreadyBookmarked) {
-    user.BookmarkedEvents = user.BookmarkedEvents.filter(
-      (e) => e.id !== eventId
-    )
-    isBookmarked = false
-  } else {
-    user.BookmarkedEvents.push(event)
-    isBookmarked = true
-  }
-
-  localUsers[userIndex] = user
-  saveUsers()
-
-  return {
-    isBookmarked,
-    message: isBookmarked ? 'Evento guardado' : 'Evento eliminado de guardados'
-  }
+  // Asumimos endpoint de favoritos
+  const response = await httpClient.post<{
+    isBookmarked: boolean
+    message: string
+  }>(`/users/${userId}/favorites/${eventId}`)
+  return response.data
 }
 
-// --- NOTIFICACIONES (MOCK) ---
+// --- ADMIN / ORGANIZER ---
 
-const mockNotifications: Notification[] = [
-  {
-    id: 'notif-1',
-    title: 'Evento Próximo',
-    message: 'Tu evento "CyberSec 2024" comienza mañana.',
-    date: new Date().toISOString(),
-    is_read: false,
-    type: 'info',
-    link: '/eventos/cybersec-2024'
-  },
-  {
-    id: 'notif-2',
-    title: 'Registro Exitoso',
-    message: 'Te has registrado correctamente en "Workshop Hacking Ético".',
-    date: new Date(Date.now() - 86400000).toISOString(),
-    is_read: true,
-    type: 'success',
-    link: '/eventos/workshop-hacking-etico'
-  },
-  {
-    id: 'notif-3',
-    title: 'Nueva Organización',
-    message: 'Una nueva organización "SecOps Madrid" se ha unido.',
-    date: new Date(Date.now() - 172800000).toISOString(),
-    is_read: false,
-    type: 'info'
-  }
-]
-
-export const getNotifications = (userId: string): Promise<Notification[]> => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve([...mockNotifications])
-    }, 500)
-  })
+export const getAdminDashboard = async (): Promise<DashboardStats> => {
+  const response = await httpClient.get<DashboardStats>('/admin/dashboard')
+  return response.data
 }
 
-export const markNotificationAsRead = (id: string): Promise<void> => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      const notif = mockNotifications.find((n) => n.id === id)
-      if (notif) {
-        notif.is_read = true
-      }
-      resolve()
-    }, 300)
-  })
+export const getAllUsers = async (): Promise<User[]> => {
+  const response = await httpClient.get<any>('/users')
+  // Manejo de paginación o wrapper
+  return response.data.users || response.data.data || response.data
 }
 
-// --- RESEÑAS (MOCK) ---
+export const getAllOrganizations = async (): Promise<OrganizationSummary[]> => {
+  const response = await httpClient.get<any>('/public/organizations')
+  return response.data.organizations || response.data.data || response.data
+}
 
-const saveReviews = () => {
+export const verifyOrganization = async (
+  orgId: string
+): Promise<OrganizationSummary> => {
+  const response = await httpClient.post<OrganizationSummary>(
+    `/admin/organizations/${orgId}/verify`
+  )
+  return response.data
+}
+
+export const deleteUser = async (userId: string): Promise<void> => {
+  await httpClient.delete(`/users/${userId}`)
+}
+
+export const getOrganizerDashboard = async (
+  orgId: string
+): Promise<DashboardStats> => {
+  const response = await httpClient.get<DashboardStats>(
+    `/organizations/${orgId}/dashboard`
+  )
+  return response.data
+}
+
+export const getOrganizationEvents = async (
+  orgId: string
+): Promise<Event[]> => {
+  const response = await httpClient.get<any>(`/organizations/${orgId}/events`)
+  return response.data.events || response.data.data || response.data
+}
+
+export const getOrganizationBySlug = async (
+  slug: string
+): Promise<OrganizationSummary> => {
+  const response = await httpClient.get<OrganizationSummary>(
+    `/public/organizations/${slug}`
+  )
+  return response.data
+}
+
+export const updateOrganization = async (
+  orgId: string,
+  data: Partial<OrganizationSummary>
+): Promise<OrganizationSummary> => {
+  const response = await httpClient.put<OrganizationSummary>(
+    `/organizations/${orgId}`,
+    data
+  )
+  return response.data
+}
+
+// --- NOTIFICATIONS & REVIEWS (MOCK/PLACEHOLDERS SI NO HAY BACKEND) ---
+// Si el backend aún no tiene implementado esto, podemos dejar placeholders o intentar endpoints estándar.
+// Como el user pidió "Adiós Mock", lo intentaré conectar.
+
+export const getNotifications = async (
+  userId: string
+): Promise<Notification[]> => {
   try {
-    localStorage.setItem('cibesphere_reviews_v1', JSON.stringify(localReviews))
+    const response = await httpClient.get<any>(`/users/${userId}/notifications`)
+    return response.data.notifications || response.data.data || []
   } catch (e) {
-    console.error('Error saving reviews to LS:', e)
-  }
-}
-
-let localReviews: Review[] = (() => {
-  try {
-    const stored = localStorage.getItem('cibesphere_reviews_v1')
-    return stored
-      ? JSON.parse(stored)
-      : [
-          {
-            id: 'rev-1',
-            eventId: 'evt-001',
-            userId: 'u-002',
-            userName: 'María García',
-            userAvatar: '',
-            userCompany: 'TechSoft',
-            userPosition: 'Analista de Seguridad',
-            userQuote: 'Protegiendo el futuro digital, bit a bit.',
-            rating: 5,
-            comment:
-              '¡Increíble evento! Aprendí muchísimo sobre ciberseguridad.',
-            date: new Date(Date.now() - 864000000).toISOString()
-          },
-          {
-            id: 'rev-2',
-            eventId: 'evt-001',
-            userId: 'u-003',
-            userName: 'Carlos Ruiz',
-            userAvatar: '',
-            userCompany: 'CyberCorp',
-            userPosition: 'Director de Tecnología',
-            userQuote: 'Innovación es la clave del éxito.',
-            rating: 4,
-            comment:
-              'Muy buena organización, aunque el catering podría mejorar.',
-            date: new Date(Date.now() - 432000000).toISOString()
-          }
-        ]
-  } catch (e) {
+    console.warn('Notifications endpoint not ready', e)
     return []
   }
-})()
-
-export const getEventReviews = (eventId: string): Promise<Review[]> => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(localReviews.filter((r) => r.eventId === eventId))
-    }, 300)
-  })
 }
 
-export const createReview = (
+export const markNotificationAsRead = async (id: string): Promise<void> => {
+  await httpClient.put(`/notifications/${id}/read`)
+}
+
+export const getEventReviews = async (eventId: string): Promise<Review[]> => {
+  try {
+    const response = await httpClient.get<any>(`/events/${eventId}/reviews`)
+    return response.data.reviews || response.data.data || []
+  } catch (e) {
+    console.warn('Reviews endpoint not ready', e)
+    return []
+  }
+}
+
+export const createReview = async (
   review: Omit<Review, 'id' | 'date'>
 ): Promise<Review> => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      const newReview: Review = {
-        ...review,
-        id: `rev-${Date.now()}`,
-        date: new Date().toISOString()
-      }
-      localReviews.push(newReview)
-      saveReviews()
-      resolve(newReview)
-    }, 500)
-  })
+  const response = await httpClient.post<Review>(
+    `/events/${review.eventId}/reviews`,
+    review
+  )
+  return response.data
 }
