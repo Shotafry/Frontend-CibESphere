@@ -152,3 +152,34 @@ export const toggleBookmark = async (
   }>(`/users/${userId}/favorites/${eventId}`)
   return response.data
 }
+
+/**
+ * Add event to favorites
+ */
+export const addToFavorites = async (eventId: string): Promise<void> => {
+  await httpClient.post(`/events/${eventId}/favorite`, {})
+}
+
+/**
+ * Remove event from favorites
+ */
+export const removeFromFavorites = async (eventId: string): Promise<void> => {
+  await httpClient.delete(`/events/${eventId}/favorite`)
+}
+
+/**
+ * Toggle bookmark helper with status tracking
+ */
+export const toggleBookmarkWithStatus = async (
+  userId: string,
+  eventId: string,
+  currentStatus: boolean
+): Promise<{ isBookmarked: boolean; message: string }> => {
+  if (currentStatus) {
+    await removeFromFavorites(eventId)
+    return { isBookmarked: false, message: 'Removed from favorites' }
+  } else {
+    await addToFavorites(eventId)
+    return { isBookmarked: true, message: 'Added to favorites' }
+  }
+}

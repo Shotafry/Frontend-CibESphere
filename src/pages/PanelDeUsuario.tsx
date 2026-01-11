@@ -153,7 +153,9 @@ const PanelDeUsuario: FunctionComponent = () => {
       'company',
       'position',
       'personal_quote',
-      'slug'
+      'slug',
+      'avatar_url',
+      'banner_url'
     ]
 
     optionalFields.forEach((field) => {
@@ -161,6 +163,9 @@ const PanelDeUsuario: FunctionComponent = () => {
         ;(sanitizedData as any)[field] = undefined
       }
     })
+
+    // Remove email field as it cannot be updated
+    delete (sanitizedData as any).email
 
     try {
       const updatedUser = await updateUser(user.id, sanitizedData)
@@ -507,11 +512,9 @@ const PanelDeUsuario: FunctionComponent = () => {
                 Eventos Guardados
               </Typography>
               <Stack spacing={3}>
-                {user &&
-                (user as any).BookmarkedEvents &&
-                (user as any).BookmarkedEvents.length > 0 ? (
-                  (user as any).BookmarkedEvents.map((event: Event) => (
-                    <EventCard key={event.id} event={event} />
+                {user?.favorite_events && user.favorite_events.length > 0 ? (
+                  user.favorite_events.map((event) => (
+                    <EventCard key={event.id} event={event as any} />
                   ))
                 ) : (
                   <Paper

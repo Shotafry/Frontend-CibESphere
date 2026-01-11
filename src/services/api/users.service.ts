@@ -47,10 +47,10 @@ export const updateUser = async (
 }
 
 export const getPublicUserProfile = async (
-  id: string
+  idOrSlug: string
 ): Promise<PublicUserProfile> => {
   const response = await httpClient.get<PublicUserProfile>(
-    `/public/users/${id}/profile`
+    `/public/users/${idOrSlug}/profile`
   )
   return response.data
 }

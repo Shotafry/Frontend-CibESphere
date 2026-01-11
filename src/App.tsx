@@ -167,7 +167,7 @@ const routes: RouteObject[] = [
           if (!params.slug) {
             throw new Response('Not Found', { status: 404 })
           }
-          const user = await apiService.getUserPublicProfile(params.slug)
+          const user = await apiService.getPublicUserProfile(params.slug)
           return { user }
         }
       },
@@ -178,10 +178,7 @@ const routes: RouteObject[] = [
           if (!params.userId) {
             throw new Response('Not Found', { status: 404 })
           }
-          // Intenta obtener usuario de la API simulada mock
-          // Si no existe método específico, se puede usar getUserById
-          // Nota: apiService debe tener getUserById
-          const user = await apiService.getUserById(params.userId)
+          const user = await apiService.getPublicUserProfile(params.userId)
           return { user }
         }
       },
@@ -277,7 +274,7 @@ const routes: RouteObject[] = [
 ]
 
 // Creación del router
-export const router = createBrowserRouter(routes)
+const router = createBrowserRouter(routes)
 
 // Componente App
 const theme = createTheme({

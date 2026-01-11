@@ -29,7 +29,8 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
 
     setIsLoading(true)
     try {
-      const url = await uploadImage(file)
+      const type = isBanner ? 'banner' : 'avatar'
+      const url = await uploadImage(file, type)
       onUpload(url)
     } catch (error) {
       console.error('Error uploading image:', error)
