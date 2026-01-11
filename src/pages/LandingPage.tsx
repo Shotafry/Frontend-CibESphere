@@ -8,6 +8,7 @@ import {
   CircularProgress,
   Divider
 } from '@mui/material'
+import { useLoaderData } from 'react-router-dom'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 import { Hero } from '../components/Hero'
@@ -17,40 +18,54 @@ import { Event, EventFilterParams } from '../types'
 import { EventFilters } from '../components/EventFilters'
 import ComunidadBox from '../components/AboutThis'
 import { getEvents } from '../services/apiService'
+import { Button } from '../components/Button'
+
+// ... imports
 
 const LandingPage: FunctionComponent = () => {
-  const [events, setEvents] = useState<Event[]>([])
-  const [filters, setFilters] = useState<EventFilterParams>({
-    startDate: null,
-    endDate: null,
-    tags: [],
-    locations: [],
-    levels: [],
-    languages: [],
-    search: '',
-    type: ''
-  })
-  const [isLoading, setIsLoading] = useState(true)
+  const { events: initialEvents, filters: loaderFilters } = useLoaderData() as {
+    events: Event[]
+    filters: EventFilterParams
+  }
 
+  const [events, setEvents] = useState<Event[]>(initialEvents)
+  const [filters, setFilters] = useState<EventFilterParams>(loaderFilters)
+  const [page, setPage] = useState(1)
+  const [hasMore, setHasMore] = useState(true)
+  const [isLoadingMore, setIsLoadingMore] = useState(false)
+  const LIMIT = 15
+
+  // Reset state when filters (URL) change
   useEffect(() => {
-    const fetchEvents = async () => {
-      setIsLoading(true)
-      try {
-        const response = await getEvents({})
-        if (Array.isArray(response)) {
-          setEvents(response)
-        } else if ((response as any).data) {
-          setEvents((response as any).data)
-        }
-      } catch (error) {
-        console.error('Error fetching events:', error)
-      } finally {
-        setIsLoading(false)
-      }
-    }
+    setEvents(initialEvents)
+    setFilters(loaderFilters)
+    setPage(1)
+    // If we received fewer than LIMIT events, we probably reached the end
+    setHasMore(initialEvents.length >= LIMIT)
+  }, [initialEvents, loaderFilters])
 
-    fetchEvents()
-  }, [])
+  const handleLoadMore = async () => {
+    setIsLoadingMore(true)
+    const nextPage = page + 1
+    try {
+      const newEvents = await getEvents({
+        ...filters,
+        page: nextPage,
+        limit: LIMIT
+      })
+
+      if (newEvents.length < LIMIT) {
+        setHasMore(false)
+      }
+
+      setEvents((prev) => [...prev, ...newEvents])
+      setPage(nextPage)
+    } catch (error) {
+      console.error('Failed to load more events', error)
+    } finally {
+      setIsLoadingMore(false)
+    }
+  }
 
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -78,23 +93,44 @@ const LandingPage: FunctionComponent = () => {
           <EventMap events={events} />
         </Box>
 
-        {isLoading ? (
-          <Box sx={{ display: 'flex', justifyContent: 'center', my: 5 }}>
-            <CircularProgress />
+        <Grid container spacing={4} justifyContent='center'>
+          {events.length > 0 ? (
+            events.map((event) => <EventCard key={event.id} event={event} />)
+          ) : (
+            <Grid size={{ xs: 12 }}>
+              <Typography align='center' sx={{ mt: 5 }}>
+                No se encontraron eventos que coincidan con los filtros
+                seleccionados.
+              </Typography>
+            </Grid>
+          )}
+        </Grid>
+
+        {/* Load More Button */}
+        {hasMore && events.length > 0 && (
+          <Box sx={{ display: 'flex', justifyContent: 'center', mt: 6 }}>
+            <Button
+              onClick={handleLoadMore}
+              disabled={isLoadingMore}
+              variant='secondary'
+              sx={{
+                px: 4,
+                py: 1.5,
+                fontSize: '1rem',
+                boxShadow: '0 4px 14px 0 rgba(0,118,255,0.15)',
+                '&:hover': {
+                  transform: 'translateY(-2px)',
+                  boxShadow: '0 6px 20px rgba(0,118,255,0.23)'
+                }
+              }}
+            >
+              {isLoadingMore ? (
+                <CircularProgress size={24} color='inherit' />
+              ) : (
+                'Cargar Más Eventos'
+              )}
+            </Button>
           </Box>
-        ) : (
-          <Grid container spacing={4} justifyContent='center'>
-            {events.length > 0 ? (
-              events.map((event) => <EventCard key={event.id} event={event} />)
-            ) : (
-              <Grid size={{ xs: 12 }}>
-                <Typography align='center' sx={{ mt: 5 }}>
-                  No se encontraron eventos que coincidan con los filtros
-                  seleccionados.
-                </Typography>
-              </Grid>
-            )}
-          </Grid>
         )}
       </Container>
     </LocalizationProvider>

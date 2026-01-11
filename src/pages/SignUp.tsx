@@ -13,7 +13,8 @@ import {
   ToggleButton,
   Collapse,
   Grid,
-  Alert
+  Alert,
+  useTheme
 } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
@@ -29,9 +30,11 @@ import { Button } from '../components/Button'
 const SignUp: FunctionComponent = () => {
   const navigate = useNavigate()
   const { login, register } = useAuth()
+  const theme = useTheme() // Added useTheme hook
   const [isLogin, setIsLogin] = useState(true)
 
   const [showPassword, setShowPassword] = useState(false)
+  const [isPasswordFocused, setIsPasswordFocused] = useState(false) // Added new state
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -185,6 +188,8 @@ const SignUp: FunctionComponent = () => {
                   message: 'La contraseña debe tener al menos 8 caracteres'
                 }
               })}
+              onFocus={() => setIsPasswordFocused(true)}
+              onBlur={() => setIsPasswordFocused(false)}
               error={!!errors.password}
               helperText={errors.password?.message}
               InputProps={{
@@ -209,6 +214,79 @@ const SignUp: FunctionComponent = () => {
                 )
               }}
             />
+
+            {/* Mostrar panel solo si se está escribiendo o está enfocado */}
+            <Collapse
+              in={
+                !isLogin &&
+                (isPasswordFocused ||
+                  !!(watch('password') && watch('password').length > 0))
+              }
+            >
+              <Box
+                sx={{
+                  mt: 1,
+                  mb: 2,
+                  p: 2,
+                  bgcolor: 'background.paper',
+                  borderRadius: 1,
+                  border: '1px solid #e0e0e0'
+                }}
+              >
+                <Typography
+                  variant='caption'
+                  color='textSecondary'
+                  gutterBottom
+                >
+                  Requisitos de seguridad:
+                </Typography>
+                {[
+                  {
+                    pass: watch('password')?.length >= 8,
+                    text: 'Mínimo 8 caracteres'
+                  },
+                  {
+                    pass: /[a-zA-Z]/.test(watch('password') || ''),
+                    text: 'Al menos una letra'
+                  },
+                  {
+                    pass: /\d/.test(watch('password') || ''),
+                    text: 'Al menos un número'
+                  },
+                  {
+                    pass: /[!@#$%^&*(),.?":{}|<>]/.test(
+                      watch('password') || ''
+                    ),
+                    text: 'Al menos un carácter especial (!@#$%...)'
+                  }
+                ].map((req, index) => (
+                  <Box
+                    key={index}
+                    sx={{ display: 'flex', alignItems: 'center', mt: 0.5 }}
+                  >
+                    <Box
+                      sx={{
+                        width: 8,
+                        height: 8,
+                        borderRadius: '50%',
+                        bgcolor: req.pass ? 'success.main' : 'error.main',
+                        mr: 1
+                      }}
+                    />
+                    <Typography
+                      variant='caption'
+                      color={req.pass ? 'text.primary' : 'text.secondary'}
+                      sx={{
+                        textDecoration: req.pass ? 'line-through' : 'none',
+                        opacity: req.pass ? 0.7 : 1
+                      }}
+                    >
+                      {req.text}
+                    </Typography>
+                  </Box>
+                ))}
+              </Box>
+            </Collapse>
 
             <Collapse in={!isLogin}>
               <Grid container spacing={2}>

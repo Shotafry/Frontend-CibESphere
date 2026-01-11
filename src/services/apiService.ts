@@ -38,12 +38,32 @@ export const getUserById = async (userId: string): Promise<User> => {
   return response.data
 }
 
+export const getUserPublicProfile = async (slug: string): Promise<User> => {
+  const response = await httpClient.get<User>(`/public/users/${slug}`)
+  return response.data
+}
+
 export const updateUser = async (
   userId: string,
   data: Partial<User>
 ): Promise<User> => {
   const response = await httpClient.put<User>(`/users/${userId}`, data)
   return response.data
+}
+
+export const uploadImage = async (file: File): Promise<string> => {
+  const formData = new FormData()
+  formData.append('file', file)
+  const response = await httpClient.post<{ url: string }>(
+    '/auth/upload',
+    formData,
+    {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    }
+  )
+  return response.data.url
 }
 
 // --- EVENTS ---
@@ -54,16 +74,18 @@ export const getEvents = async (
   const params = new URLSearchParams()
 
   if (filters.startDate) {
-    params.append('start_date', filters.startDate.toISOString())
+    // Formato YYYY-MM-DD
+    const dateStr = filters.startDate.toISOString().split('T')[0]
+    params.append('start_date', dateStr)
   }
   if (filters.endDate) {
-    params.append('end_date', filters.endDate.toISOString())
+    const dateStr = filters.endDate.toISOString().split('T')[0]
+    params.append('end_date', dateStr)
   }
 
   if (filters.locations && filters.locations.length > 0) {
-    // Si el backend soporta múltiple selección, se podría enviar múltiple 'city'
-    // O una lista separada por comas. Asumimos repetición de clave 'city'
-    filters.locations.forEach((loc) => params.append('city', loc))
+    // Envio de múltiples ubicaciones para que el backend filtre por ciudad O comunidad
+    filters.locations.forEach((loc) => params.append('locations', loc))
   }
 
   if (filters.tags && filters.tags.length > 0) {
@@ -71,11 +93,18 @@ export const getEvents = async (
   }
 
   if (filters.levels && filters.levels.length > 0) {
-    filters.levels.forEach((level) => params.append('level', level))
+    filters.levels.forEach((level) => params.append('levels', level))
   }
 
   if (filters.languages && filters.languages.length > 0) {
-    filters.languages.forEach((lang) => params.append('language', lang))
+    filters.languages.forEach((lang) => params.append('languages', lang))
+  }
+
+  if (filters.page) {
+    params.append('page', filters.page.toString())
+  }
+  if (filters.limit) {
+    params.append('limit', filters.limit.toString())
   }
 
   // Si el backend devuelve { data: events[], ... } ajustar aquí.
@@ -141,7 +170,8 @@ export const subscribeToEvent = async (
   eventId: string
 ): Promise<{ message: string }> => {
   const response = await httpClient.post<{ message: string }>(
-    `/events/${eventId}/subscribe`
+    `/events/${eventId}/subscribe`,
+    {}
   )
   return response.data
 }
@@ -150,16 +180,27 @@ export const unsubscribeFromEvent = async (eventId: string): Promise<void> => {
   await httpClient.delete(`/events/${eventId}/subscribe`)
 }
 
+export const addToFavorites = async (eventId: string): Promise<void> => {
+  await httpClient.post(`/events/${eventId}/favorite`, {})
+}
+
+export const removeFromFavorites = async (eventId: string): Promise<void> => {
+  await httpClient.delete(`/events/${eventId}/favorite`)
+}
+
 export const toggleBookmark = async (
   userId: string,
-  eventId: string
+  eventId: string,
+  currentStatus: boolean
 ): Promise<{ isBookmarked: boolean; message: string }> => {
-  // Asumimos endpoint de favoritos
-  const response = await httpClient.post<{
-    isBookmarked: boolean
-    message: string
-  }>(`/users/${userId}/favorites/${eventId}`)
-  return response.data
+  // Helper for backward compatibility or cleaner UI logic
+  if (currentStatus) {
+    await removeFromFavorites(eventId)
+    return { isBookmarked: false, message: 'Removed from favorites' }
+  } else {
+    await addToFavorites(eventId)
+    return { isBookmarked: true, message: 'Added to favorites' }
+  }
 }
 
 // --- ADMIN / ORGANIZER ---
@@ -252,9 +293,26 @@ export const markNotificationAsRead = async (id: string): Promise<void> => {
 export const getEventReviews = async (eventId: string): Promise<Review[]> => {
   try {
     const response = await httpClient.get<any>(`/events/${eventId}/reviews`)
-    return response.data.reviews || response.data.data || []
+    const rawReviews = response.data.data || response.data || []
+
+    // Map backend snake_case to frontend camelCase and flatten user
+    return rawReviews.map((r: any) => ({
+      id: r.id,
+      eventId: r.event_id,
+      userId: r.user_id,
+      userName: r.user
+        ? r.user.full_name || `${r.user.first_name} ${r.user.last_name}`.trim()
+        : 'Usuario',
+      rating: r.rating,
+      comment: r.comment,
+      date: r.created_at,
+      userAvatar: r.user?.avatar_url,
+      userCompany: r.user?.company,
+      userPosition: r.user?.position,
+      userQuote: r.user?.personal_quote
+    }))
   } catch (e) {
-    console.warn('Reviews endpoint not ready', e)
+    console.warn('Reviews endpoint error', e)
     return []
   }
 }
@@ -262,9 +320,13 @@ export const getEventReviews = async (eventId: string): Promise<Review[]> => {
 export const createReview = async (
   review: Omit<Review, 'id' | 'date'>
 ): Promise<Review> => {
+  const payload = {
+    rating: review.rating,
+    comment: review.comment
+  }
   const response = await httpClient.post<Review>(
     `/events/${review.eventId}/reviews`,
-    review
+    payload
   )
   return response.data
 }

@@ -59,8 +59,8 @@ const Eventos: FunctionComponent = () => {
   const [isSubscribing, setIsSubscribing] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  const isAlreadySubscribed = user?.FavoriteEvents?.some(
-    (favEvent) => favEvent.id === event.id
+  const isAlreadySubscribed = user?.registered_events?.some(
+    (regEvent) => regEvent.id === event.id
   )
 
   const [reviews, setReviews] = useState<Review[]>([])

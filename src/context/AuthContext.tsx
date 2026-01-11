@@ -39,12 +39,19 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
 
       if (storedToken) {
         setToken(storedToken)
-        if (storedUser) {
-          try {
+        try {
+          // Fetch fresh user data from backend to ensure favorites are up to date
+          const freshUser = await apiService.getMe()
+          setUser(freshUser)
+          localStorage.setItem('user', JSON.stringify(freshUser))
+        } catch (e) {
+          console.error('Error fetching fresh user data', e)
+          // Fallback to stored user if network fails, but try to use it
+          if (storedUser) {
             setUser(JSON.parse(storedUser))
-          } catch (e) {
-            console.error('Error parseando user de localstorage', e)
-            localStorage.removeItem('user')
+          } else {
+            localStorage.removeItem('access_token')
+            setToken(null)
           }
         }
       }

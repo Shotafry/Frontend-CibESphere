@@ -62,6 +62,7 @@ export interface User {
   country?: string
   latitude?: number
   longitude?: number
+  slug?: string
 
   // Configuración (Optional for mocks/legacy)
   timezone?: string
@@ -163,8 +164,8 @@ export interface Event {
   venue_name?: string
   venue_address?: string
   venue_city?: string
+  venue_state?: string
   venue_country?: string
-  venue_community?: string // Legacy?
   online_url?: string
   latitude?: number
   longitude?: number
@@ -257,6 +258,8 @@ export interface EventFilterParams {
   languages?: string[]
   search?: string
   type?: string
+  page?: number
+  limit?: number
 }
 
 // --- TIPOS DE CREACIÓN ---

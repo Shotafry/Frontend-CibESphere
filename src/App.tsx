@@ -114,7 +114,8 @@ const routes: RouteObject[] = [
             tags: searchParams.getAll('tags') || [],
             locations: searchParams.getAll('locations') || [],
             levels: searchParams.getAll('levels') || [],
-            languages: searchParams.getAll('languages') || []
+            languages: searchParams.getAll('languages') || [],
+            limit: 15
           }
 
           const events = await apiService.getEvents(filters)
@@ -157,6 +158,17 @@ const routes: RouteObject[] = [
           const org = await apiService.getOrganizationBySlug(params.slug)
           const events = await apiService.getOrganizationEvents(org.id)
           return { organization: org, events }
+        }
+      },
+      {
+        path: 'u/:slug',
+        element: <UserProfile />,
+        loader: async ({ params }) => {
+          if (!params.slug) {
+            throw new Response('Not Found', { status: 404 })
+          }
+          const user = await apiService.getUserPublicProfile(params.slug)
+          return { user }
         }
       },
       {

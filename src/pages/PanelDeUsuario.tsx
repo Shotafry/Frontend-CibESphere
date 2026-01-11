@@ -46,6 +46,7 @@ import {
 } from '../services/apiService'
 import { useForm, Controller, useWatch } from 'react-hook-form'
 import { EventCard } from '../components/EventCard'
+import { ImageUpload } from '../components/ImageUpload'
 
 const PanelDeUsuario: FunctionComponent = () => {
   const { user, refreshUserData } = useAuth()
@@ -115,7 +116,9 @@ const PanelDeUsuario: FunctionComponent = () => {
       position: user?.position || '',
       twitter: user?.twitter || '',
       linkedin: user?.linkedin || '',
-      website: user?.website || ''
+
+      website: user?.website || '',
+      personal_quote: (user as any)?.personal_quote || ''
     }
   })
 
@@ -140,8 +143,27 @@ const PanelDeUsuario: FunctionComponent = () => {
     if (!user) return
     setIsSaving(true)
     setSaveMessage(null)
+
+    // Sanitize data: convert empty strings to undefined to avoid validation errors
+    const sanitizedData = { ...data }
+    const optionalFields: (keyof User)[] = [
+      'website',
+      'linkedin',
+      'twitter',
+      'company',
+      'position',
+      'personal_quote',
+      'slug'
+    ]
+
+    optionalFields.forEach((field) => {
+      if (sanitizedData[field] === '') {
+        ;(sanitizedData as any)[field] = undefined
+      }
+    })
+
     try {
-      const updatedUser = await updateUser(user.id, data)
+      const updatedUser = await updateUser(user.id, sanitizedData)
       refreshUserData(updatedUser)
       setSaveMessage({
         type: 'success',
@@ -205,9 +227,16 @@ const PanelDeUsuario: FunctionComponent = () => {
       })
       setReviewModalOpen(false)
       setSaveMessage({ type: 'success', text: 'Reseña enviada correctamente' })
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error submitting review:', error)
-      setSaveMessage({ type: 'error', text: 'Error al enviar la reseña' })
+      if (error.response?.status === 409) {
+        setSaveMessage({
+          type: 'error',
+          text: 'Ya has enviado una reseña para este evento.'
+        })
+      } else {
+        setSaveMessage({ type: 'error', text: 'Error al enviar la reseña' })
+      }
     }
   }
 
@@ -279,7 +308,7 @@ const PanelDeUsuario: FunctionComponent = () => {
             </Box>
             <Button
               variant='primary'
-              href={`/usuario/${user?.id}`}
+              href={`/u/${user?.slug || user?.id}`}
               target='_blank'
               startIcon={<PersonIcon />}
             >
@@ -602,6 +631,13 @@ const PanelDeUsuario: FunctionComponent = () => {
           <Typography variant='body2' color='text.secondary' gutterBottom>
             Comparte tu experiencia en {selectedEventToReview?.title}
           </Typography>
+
+          {saveMessage && (
+            <Alert severity={saveMessage.type} sx={{ mb: 2 }}>
+              {saveMessage.text}
+            </Alert>
+          )}
+
           <Box sx={{ my: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
             <Typography component='legend'>Valoración:</Typography>
             <Rating
@@ -794,6 +830,50 @@ const EditProfileForm: React.FC<{
               </Grid>
               <Grid size={{ xs: 12 }}>
                 <Controller
+                  name='slug'
+                  control={control}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      label='Identificador de URL Pública (Slug)'
+                      fullWidth
+                      variant='outlined'
+                      helperText='Define tu URL: cybesphere.com/u/tu-slug. Solo letras, números y guiones.'
+                      InputProps={{
+                        startAdornment: (
+                          <InputAdornment position='start'>
+                            <LanguageIcon />
+                          </InputAdornment>
+                        )
+                      }}
+                    />
+                  )}
+                />
+              </Grid>
+              <Grid size={{ xs: 12 }}>
+                <Controller
+                  name='personal_quote'
+                  control={control}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      label='Frase Personal / Cita'
+                      fullWidth
+                      placeholder='Ej: "Innovación es la clave del éxito"'
+                      helperText='Esta frase aparecerá al pasar el ratón sobre tu nombre en las reseñas.'
+                      // InputProps={{
+                      //   startAdornment: (
+                      //     <InputAdornment position='start'>
+                      //       <FormatQuoteIcon color='action' />
+                      //     </InputAdornment>
+                      //   )
+                      // }}
+                    />
+                  )}
+                />
+              </Grid>
+              <Grid size={{ xs: 12 }}>
+                <Controller
                   name='city'
                   control={control}
                   render={({ field }) => (
@@ -938,30 +1018,30 @@ const EditProfileForm: React.FC<{
             <Typography variant='h6' fontWeight='bold' mb={3}>
               Imágenes
             </Typography>
-            <Stack spacing={2}>
+            <Stack spacing={4}>
               <Controller
                 name='avatar_url'
                 control={control}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    label='URL del Avatar'
-                    fullWidth
-                    variant='outlined'
-                    helperText='Enlace directo a tu foto de perfil'
+                render={({ field: { value, onChange } }) => (
+                  <ImageUpload
+                    label='Foto de Perfil'
+                    currentUrl={value}
+                    onUpload={onChange}
+                    altText='Avatar'
                   />
                 )}
               />
+              <Divider />
               <Controller
                 name='banner_url'
                 control={control}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    label='URL del Banner'
-                    fullWidth
-                    variant='outlined'
-                    helperText='Enlace directo a tu imagen de portada'
+                render={({ field: { value, onChange } }) => (
+                  <ImageUpload
+                    label='Banner de Perfil'
+                    currentUrl={value}
+                    onUpload={onChange}
+                    altText='Banner'
+                    isBanner
                   />
                 )}
               />

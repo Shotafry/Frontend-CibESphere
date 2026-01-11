@@ -22,7 +22,7 @@ import { EventCard } from '../components/EventCard'
 import { Button } from '../components/Button'
 
 interface LoaderData {
-  user: User
+  user: any // Ajustar a UserPublicProfile cuando esté disponible en types
 }
 
 const UserProfile: React.FC = () => {
@@ -30,13 +30,22 @@ const UserProfile: React.FC = () => {
   const [tabValue, setTabValue] = React.useState(0)
   const navigate = useNavigate()
 
+  // Detectar usuario logueado
+  const loggedUserStr = localStorage.getItem('user')
+  const loggedUser = loggedUserStr ? JSON.parse(loggedUserStr) : null
+  const isOwner =
+    loggedUser && (loggedUser.id === user.id || loggedUser.slug === user.slug)
+
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue)
   }
 
-  // Use optional chaining or fallback
+  // Use registered_events if available (new backend), fallback to favorite_events (legacy)
   const attendedEvents =
-    (user as any).favorite_events || (user as any).FavoriteEvents || []
+    (user as any).registered_events ||
+    (user as any).favorite_events ||
+    (user as any).FavoriteEvents ||
+    []
 
   const upcomingEvents = attendedEvents.filter(
     (e: any) => new Date(e.start_date || e.startDate) > new Date()
@@ -144,6 +153,17 @@ const UserProfile: React.FC = () => {
           </Box>
         </Container>
       </Box>
+
+      {isOwner && (
+        <Container maxWidth='lg' sx={{ mb: 4, textAlign: 'right' }}>
+          <Button
+            variant='primary'
+            onClick={() => navigate('/panel-de-usuario')}
+          >
+            Editar Perfil
+          </Button>
+        </Container>
+      )}
 
       <Container maxWidth='lg'>
         <Grid container spacing={4}>
