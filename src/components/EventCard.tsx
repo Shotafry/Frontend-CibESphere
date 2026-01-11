@@ -9,7 +9,7 @@ import GroupIcon from '@mui/icons-material/Group'
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder'
 import BookmarkIcon from '@mui/icons-material/Bookmark'
 import { useAuth } from '../context/AuthContext'
-import { toggleBookmark, getMe } from '../services/apiService'
+import { toggleBookmarkWithStatus, getMe } from '../services/apiService'
 import { motion } from 'framer-motion'
 
 interface EventCardProps {
@@ -56,7 +56,11 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
       return
     }
     try {
-      const result = await toggleBookmark(user.id, event.id, isBookmarked)
+      const result = await toggleBookmarkWithStatus(
+        user.id,
+        event.id,
+        isBookmarked
+      )
       setIsBookmarked(result.isBookmarked)
 
       // Update global user context to reflect changes in "Guardados" immediately
@@ -187,7 +191,9 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
                   {event.is_online
                     ? 'Online'
                     : `${event.venue_city || ''}${
-                        event.venue_state ? ', ' + event.venue_state : ''
+                        event.venue_community
+                          ? ', ' + event.venue_community
+                          : ''
                       }`}
                 </Typography>
               </Grid>

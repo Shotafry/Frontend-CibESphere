@@ -112,12 +112,13 @@ class HttpClient {
               }
             )
 
-            const { access_token, refresh_token } = response.data
+            const { access_token, refresh_token: new_refresh_token } =
+              response.data
 
             // Actualizar tokens
             localStorage.setItem('access_token', access_token)
-            if (refresh_token) {
-              localStorage.setItem('refresh_token', refresh_token)
+            if (new_refresh_token) {
+              localStorage.setItem('refresh_token', new_refresh_token)
             }
 
             // Procesar la cola de peticiones fallidas
@@ -163,7 +164,10 @@ class HttpClient {
     localStorage.removeItem('access_token')
     localStorage.removeItem('refresh_token')
     localStorage.removeItem('user')
-    window.location.href = '/login'
+    // Validar si estamos en navegador
+    if (typeof window !== 'undefined') {
+      window.location.href = '/login'
+    }
   }
 }
 
