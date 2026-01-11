@@ -512,11 +512,9 @@ const PanelDeUsuario: FunctionComponent = () => {
                 Eventos Guardados
               </Typography>
               <Stack spacing={3}>
-                {user &&
-                (user as any).BookmarkedEvents &&
-                (user as any).BookmarkedEvents.length > 0 ? (
-                  (user as any).BookmarkedEvents.map((event: Event) => (
-                    <EventCard key={event.id} event={event} />
+                {user?.favorite_events && user.favorite_events.length > 0 ? (
+                  user.favorite_events.map((event) => (
+                    <EventCard key={event.id} event={event as any} />
                   ))
                 ) : (
                   <Paper
