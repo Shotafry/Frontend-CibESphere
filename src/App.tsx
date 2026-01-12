@@ -29,6 +29,7 @@ import OrganizationProfile from './pages/OrganizationProfile'
 import AboutUs from './pages/AboutUs'
 import UserProfile from './pages/UserProfile'
 import TerminosYCondiciones from './pages/TerminosYCondiciones'
+import PoliticaCookies from './pages/PoliticaCookies'
 
 import {
   CssBaseline,
@@ -141,6 +142,10 @@ const routes: RouteObject[] = [
       {
         path: 'terminos',
         element: <TerminosYCondiciones />
+      },
+      {
+        path: 'cookies',
+        element: <PoliticaCookies />
       },
       {
         path: 'loginsign-up', // Mantener por compatibilidad si se usa en algún link
