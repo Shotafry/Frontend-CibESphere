@@ -102,6 +102,15 @@ export const Footer: FunctionComponent = () => {
           >
             Cookies
           </MuiLink>
+          <MuiLink
+            component={RouterLink}
+            to='/contacto'
+            color='inherit'
+            underline='hover'
+            sx={{ fontWeight: 500 }}
+          >
+            Contacto
+          </MuiLink>
         </Box>
 
         {/* 3. Copyright (sin cambios) */}

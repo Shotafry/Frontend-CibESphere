@@ -71,7 +71,7 @@ const TerminosYCondiciones: React.FC = () => {
               paragraph
               sx={{ fontSize: '1.1rem', color: '#475569' }}
             >
-              Bienvenido a CibESphere. Al acceder y utilizar nuestro sitio web,
+              Bienvenido a CybESphere. Al acceder y utilizar nuestro sitio web,
               aceptas cumplir con los siguientes términos y condiciones. Por
               favor, léelos detenidamente.
             </Typography>
@@ -106,7 +106,7 @@ const TerminosYCondiciones: React.FC = () => {
                 2. Uso de la Plataforma
               </Typography>
               <Typography variant='body1' color='text.secondary' paragraph>
-                CibESphere es una comunidad dedicada a la ciberseguridad. Te
+                CybESphere es una comunidad dedicada a la ciberseguridad. Te
                 comprometes a utilizar la plataforma de manera ética y legal.
                 Está estrictamente prohibido:
               </Typography>
@@ -137,10 +137,10 @@ const TerminosYCondiciones: React.FC = () => {
                 3. Propiedad Intelectual
               </Typography>
               <Typography variant='body1' color='text.secondary' paragraph>
-                Todo el contenido, diseño, logotipos y código de CibESphere son
-                propiedad exclusiva de CibESphere o de sus licenciantes. Los
+                Todo el contenido, diseño, logotipos y código de CybESphere son
+                propiedad exclusiva de CybESphere o de sus licenciantes. Los
                 usuarios conservan los derechos sobre el contenido que publican,
-                pero otorgan a CibESphere una licencia para mostrarlo y
+                pero otorgan a CybESphere una licencia para mostrarlo y
                 distribuirlo en la plataforma.
               </Typography>
             </Box>
@@ -157,7 +157,7 @@ const TerminosYCondiciones: React.FC = () => {
               <Typography variant='body1' color='text.secondary' paragraph>
                 Eres responsable de mantener la confidencialidad de tu
                 contraseña y de todas las actividades que ocurran bajo tu
-                cuenta. CibESphere no será responsable por cualquier pérdida
+                cuenta. CybESphere no será responsable por cualquier pérdida
                 derivada del incumplimiento de esta obligación.
               </Typography>
             </Box>

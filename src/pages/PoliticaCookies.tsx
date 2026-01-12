@@ -82,7 +82,7 @@ const PoliticaCookies: React.FC = () => {
               paragraph
               sx={{ fontSize: '1.1rem', color: '#475569', mb: 4 }}
             >
-              En CibESphere utilizamos cookies para mejorar tu experiencia,
+              En CybESphere utilizamos cookies para mejorar tu experiencia,
               analizar el tráfico y personalizar el contenido. Esta política
               explica qué son las cookies, cómo las usamos y cómo puedes
               controlarlas.
