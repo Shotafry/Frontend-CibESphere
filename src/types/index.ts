@@ -444,6 +444,9 @@ export interface RolesResponse {
 
 export interface PublicUserProfile {
   id: string
+  slug?: string
+  first_name?: string
+  last_name?: string
   full_name: string
   company?: string
   position?: string
@@ -453,11 +456,9 @@ export interface PublicUserProfile {
   avatar_url?: string
   banner_url?: string
   website?: string
-  social_links?: {
-    linkedin?: string
-    twitter?: string
-    github?: string
-  }
+  linkedin?: string
+  twitter?: string
+  social_links?: string
   joined_at: string
   events_attended?: number
   events_organized?: number
@@ -466,6 +467,8 @@ export interface PublicUserProfile {
     name: string
     logo_url?: string
   }
+  // Eventos registrados del usuario
+  registered_events?: Event[]
 }
 
 // --- EVENTOS ESPECIALES ---
