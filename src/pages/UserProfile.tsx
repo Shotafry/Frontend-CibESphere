@@ -158,7 +158,7 @@ const UserProfile: React.FC = () => {
         <Container maxWidth='lg' sx={{ mb: 4, textAlign: 'right' }}>
           <Button
             variant='primary'
-            onClick={() => navigate('/panel-de-usuario')}
+            onClick={() => navigate('/panel-de-usuario?tab=2')}
           >
             Editar Perfil
           </Button>

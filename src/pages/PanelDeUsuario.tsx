@@ -32,7 +32,7 @@ import MailOutlineIcon from '@mui/icons-material/MailOutline'
 import TwitterIcon from '@mui/icons-material/Twitter'
 import LinkedInIcon from '@mui/icons-material/LinkedIn'
 import LanguageIcon from '@mui/icons-material/Language'
-import { useNavigation } from 'react-router-dom'
+import { useNavigation, useSearchParams } from 'react-router-dom'
 import { Button } from '../components/Button'
 import { useAuth } from '../context/AuthContext'
 import { Event, User } from '../types'
@@ -51,8 +51,11 @@ import { ImageUpload } from '../components/ImageUpload'
 const PanelDeUsuario: FunctionComponent = () => {
   const { user, refreshUserData } = useAuth()
   const navigation = useNavigation()
+  const [searchParams] = useSearchParams()
   const [subscribedEvents, setSubscribedEvents] = useState<Event[]>([])
-  const [tabValue, setTabValue] = useState(0)
+  // Leer tab inicial desde query params (ej: ?tab=2 para Editar Perfil)
+  const initialTab = parseInt(searchParams.get('tab') || '0', 10)
+  const [tabValue, setTabValue] = useState(initialTab)
   const [isSaving, setIsSaving] = useState(false)
   const [loadingConfig, setLoadingConfig] = useState(true)
   const [saveMessage, setSaveMessage] = useState<{
