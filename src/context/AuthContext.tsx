@@ -123,6 +123,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   const subscribeToEvent = async (event: Event): Promise<void> => {
     if (!user) throw new Error('Usuario no autenticado')
     await apiService.subscribeToEvent(event.id)
+    // Refrescar datos del usuario para que isAlreadySubscribed se actualice inmediatamente
+    const freshUser = await apiService.getMe()
+    setUser(freshUser)
+    localStorage.setItem('user', JSON.stringify(freshUser))
   }
 
   return (

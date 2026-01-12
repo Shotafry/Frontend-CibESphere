@@ -68,26 +68,24 @@ const PanelDeUsuario: FunctionComponent = () => {
           try {
             const fullUser = await getMe()
             refreshUserData(fullUser)
+            // Usar registered_events del usuario (eventos inscritos)
+            if (
+              fullUser.registered_events &&
+              fullUser.registered_events.length > 0
+            ) {
+              setSubscribedEvents(fullUser.registered_events as Event[])
+            } else {
+              setSubscribedEvents([])
+            }
           } catch (e) {
             console.warn(
               'Could not fetch full user profile, using context user',
               e
             )
-          }
-
-          try {
-            // Pass empty filters with required fields if needed, or cast defined structure
-            const allEvents = await getEvents({
-              startDate: null,
-              endDate: null,
-              tags: [],
-              locations: [],
-              levels: [],
-              languages: []
-            })
-            setSubscribedEvents(allEvents.slice(0, 3) || [])
-          } catch (e) {
-            console.warn('Could not fetch events', e)
+            // Fallback: usar datos del contexto
+            if (user.registered_events && user.registered_events.length > 0) {
+              setSubscribedEvents(user.registered_events as Event[])
+            }
           }
         }
       } catch (error) {
