@@ -216,7 +216,7 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
 
             <Box sx={{ mt: 2, display: 'flex', flexWrap: 'wrap', gap: 1 }}>
               {event.tags &&
-                event.tags.map((tag) => (
+                event.tags.slice(0, 5).map((tag) => (
                   <Chip
                     key={tag}
                     label={capitalizeTag(tag)}
