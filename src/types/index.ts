@@ -259,6 +259,7 @@ export interface EventFilterParams {
   languages?: string[]
   search?: string
   type?: string
+  is_online?: boolean // Added for modality filtering
   page?: number // Added pagination
   limit?: number // Added pagination
 }

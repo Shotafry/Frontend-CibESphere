@@ -40,6 +40,11 @@ export const getEvents = async (
     filters.languages.forEach((lang) => params.append('languages', lang))
   }
 
+  // Modality filter
+  if (filters.is_online !== undefined) {
+    params.append('is_online', filters.is_online.toString())
+  }
+
   // Pagination support
   if (filters.page) {
     params.append('page', filters.page.toString())

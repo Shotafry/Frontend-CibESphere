@@ -678,16 +678,22 @@ const Page: FunctionComponent = () => {
               </Grid>
 
               <Grid size={{ xs: 12 }}>
-                <FormControlLabel
-                  control={
-                    <Switch
-                      checked={formData.is_online}
-                      onChange={handleChange}
-                      name='is_online'
-                    />
-                  }
-                  label='Evento Online'
-                />
+                <TextField
+                  name='is_online'
+                  label='Modalidad'
+                  select
+                  fullWidth
+                  variant='filled'
+                  value={formData.is_online ? 'online' : 'presencial'}
+                  onChange={(e) => {
+                    const value = e.target.value === 'online'
+                    setFormData((prev: any) => ({ ...prev, is_online: value }))
+                  }}
+                  sx={commonInputSx}
+                >
+                  <MenuItem value='presencial'>Presencial</MenuItem>
+                  <MenuItem value='online'>Online</MenuItem>
+                </TextField>
               </Grid>
 
               <Collapse in={!formData.is_online} sx={{ width: '100%' }}>

@@ -39,6 +39,13 @@ export const EventFilters: React.FC<EventFiltersProps> = ({
   const [languages, setLanguages] = useState<string[]>(
     initialFilters.languages || []
   )
+  const [modality, setModality] = useState<string | null>(
+    initialFilters.is_online === true
+      ? 'Online'
+      : initialFilters.is_online === false
+      ? 'Presencial'
+      : null
+  )
 
   const [dates, setDates] = useState({
     startDate: initialFilters.startDate || null,
@@ -98,6 +105,13 @@ export const EventFilters: React.FC<EventFiltersProps> = ({
     setSelectedCities(value)
   }
 
+  const handleModalityChange = (
+    event: React.SyntheticEvent,
+    value: string | null
+  ) => {
+    setModality(value)
+  }
+
   const handleMultiSelectChange =
     (setter: React.Dispatch<React.SetStateAction<string[]>>) =>
     (event: React.SyntheticEvent, value: string[]) => {
@@ -119,7 +133,14 @@ export const EventFilters: React.FC<EventFiltersProps> = ({
     tags.forEach((tag) => searchParams.append('tags', tag))
     allLocations.forEach((loc) => searchParams.append('locations', loc))
     levels.forEach((level) => searchParams.append('levels', level))
+    levels.forEach((level) => searchParams.append('levels', level))
     languages.forEach((lang) => searchParams.append('languages', lang))
+
+    if (modality === 'Online') {
+      searchParams.set('is_online', 'true')
+    } else if (modality === 'Presencial') {
+      searchParams.set('is_online', 'false')
+    }
 
     submit(searchParams)
   }
@@ -128,7 +149,10 @@ export const EventFilters: React.FC<EventFiltersProps> = ({
     setDates({ startDate: null, endDate: null })
     setTags([])
     setLevels([])
+    setTags([])
+    setLevels([])
     setLanguages([])
+    setModality(null)
     setSelectedCommunities([])
     setSelectedCities([])
     setAvailableCities(ALL_CITIES)
@@ -283,8 +307,24 @@ export const EventFilters: React.FC<EventFiltersProps> = ({
               />
             </Grid>
 
-            {/* FILA 4: NIVEL E IDIOMA */}
-            <Grid size={{ xs: 12, md: 6 }}>
+            {/* FILA 4: MODALIDAD, NIVEL E IDIOMA */}
+            <Grid size={{ xs: 12, md: 4 }}>
+              <Autocomplete
+                options={['Online', 'Presencial']}
+                value={modality}
+                onChange={handleModalityChange}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label='Modalidad'
+                    variant='filled'
+                    sx={filterInputSx}
+                  />
+                )}
+              />
+            </Grid>
+
+            <Grid size={{ xs: 12, md: 4 }}>
               <Autocomplete
                 multiple
                 options={EVENT_LEVELS}
@@ -301,7 +341,7 @@ export const EventFilters: React.FC<EventFiltersProps> = ({
               />
             </Grid>
 
-            <Grid size={{ xs: 12, md: 6 }}>
+            <Grid size={{ xs: 12, md: 4 }}>
               <Autocomplete
                 multiple
                 options={[
