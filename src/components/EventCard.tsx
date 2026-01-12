@@ -36,11 +36,13 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
   const [isBookmarked, setIsBookmarked] = useState(false)
 
   useEffect(() => {
-    if (user && (user as any).FavoriteEvents) {
-      const userDetail = user as any
-      const favorites = userDetail.favorite_events || userDetail.FavoriteEvents
+    if (user) {
+      // El backend devuelve 'favorite_events' en snake_case
+      const favorites = user.favorite_events || (user as any).FavoriteEvents
       if (favorites && Array.isArray(favorites)) {
         setIsBookmarked(favorites.some((e: any) => e.id === event.id))
+      } else {
+        setIsBookmarked(false)
       }
     }
   }, [user, event.id])
