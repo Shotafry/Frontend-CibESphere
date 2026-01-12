@@ -205,7 +205,11 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
               >
                 <GroupIcon sx={{ mr: 1, color: 'var(--Logo-2)' }} />
                 <Typography variant='body2'>
-                  {event.current_attendees} asistentes
+                  {event.max_attendees
+                    ? `${event.current_attendees || 0}/${
+                        event.max_attendees
+                      } asistentes`
+                    : `${event.current_attendees || 0} asistentes`}
                 </Typography>
               </Grid>
             </Grid>
