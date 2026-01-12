@@ -28,6 +28,7 @@ import TestFont from './pages/test-font'
 import OrganizationProfile from './pages/OrganizationProfile'
 import AboutUs from './pages/AboutUs'
 import UserProfile from './pages/UserProfile'
+import TerminosYCondiciones from './pages/TerminosYCondiciones'
 
 import {
   CssBaseline,
@@ -115,6 +116,9 @@ const routes: RouteObject[] = [
             locations: searchParams.getAll('locations') || [],
             levels: searchParams.getAll('levels') || [],
             languages: searchParams.getAll('languages') || [],
+            is_online: searchParams.has('is_online')
+              ? searchParams.get('is_online') === 'true'
+              : undefined,
             limit: 15
           }
 
@@ -133,6 +137,10 @@ const routes: RouteObject[] = [
       {
         path: 'sobre-nosotros',
         element: <AboutUs />
+      },
+      {
+        path: 'terminos',
+        element: <TerminosYCondiciones />
       },
       {
         path: 'loginsign-up', // Mantener por compatibilidad si se usa en algún link

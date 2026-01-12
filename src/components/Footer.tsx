@@ -34,17 +34,23 @@ export const Footer: FunctionComponent = () => {
           alignItems: { xs: 'flex-start', md: 'center' },
           gap: { xs: 2, md: 3 },
           px: { xs: 0.5, md: 0 }
-
         }}
       >
         {/* 1. Logo (Nuevo) */}
         {/* 1. Logo (Nuevo) - Ahora con Link */}
-        <Box sx={{ width: '100%', display: 'flex', justifyContent: { xs: 'flex-start', md: 'center' }, mb: { xs: 2, md: 0 } }}>
+        <Box
+          sx={{
+            width: '100%',
+            display: 'flex',
+            justifyContent: { xs: 'flex-start', md: 'center' },
+            mb: { xs: 2, md: 0 }
+          }}
+        >
           <RouterLink to='/'>
             <img
               style={{
                 height: '40px',
-                objectFit: 'contain',
+                objectFit: 'contain'
               }}
               alt='CibESphere Logo'
               src='/Logo-Solo-Letras.png'
@@ -77,6 +83,15 @@ export const Footer: FunctionComponent = () => {
             sx={{ fontWeight: 500 }}
           >
             Eventos
+          </MuiLink>
+          <MuiLink
+            component={RouterLink}
+            to='/terminos'
+            color='inherit'
+            underline='hover'
+            sx={{ fontWeight: 500 }}
+          >
+            Términos
           </MuiLink>
         </Box>
 

@@ -133,7 +133,6 @@ export const EventFilters: React.FC<EventFiltersProps> = ({
     tags.forEach((tag) => searchParams.append('tags', tag))
     allLocations.forEach((loc) => searchParams.append('locations', loc))
     levels.forEach((level) => searchParams.append('levels', level))
-    levels.forEach((level) => searchParams.append('levels', level))
     languages.forEach((lang) => searchParams.append('languages', lang))
 
     if (modality === 'Online') {
