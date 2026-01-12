@@ -164,8 +164,9 @@ export interface Event {
   venue_name?: string
   venue_address?: string
   venue_city?: string
+  venue_state?: string // Comunidad Autónoma (para mostrar en tarjetas)
   venue_country?: string
-  venue_community?: string // Legacy?
+  venue_community?: string // Legacy alias for venue_state
   online_url?: string
   latitude?: number
   longitude?: number

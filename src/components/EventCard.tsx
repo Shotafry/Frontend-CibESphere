@@ -193,8 +193,8 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
                   {event.is_online
                     ? 'Online'
                     : `${event.venue_city || ''}${
-                        event.venue_community
-                          ? ', ' + event.venue_community
+                        event.venue_state || event.venue_community
+                          ? ', ' + (event.venue_state || event.venue_community)
                           : ''
                       }`}
                 </Typography>
