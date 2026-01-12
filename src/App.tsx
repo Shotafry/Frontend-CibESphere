@@ -31,6 +31,7 @@ import UserProfile from './pages/UserProfile'
 import TerminosYCondiciones from './pages/TerminosYCondiciones'
 import PoliticaCookies from './pages/PoliticaCookies'
 import Contacto from './pages/Contacto'
+import ProgramaVulnerabilidades from './pages/ProgramaVulnerabilidades'
 
 import {
   CssBaseline,
@@ -151,6 +152,10 @@ const routes: RouteObject[] = [
       {
         path: 'contacto',
         element: <Contacto />
+      },
+      {
+        path: 'vdp',
+        element: <ProgramaVulnerabilidades />
       },
       {
         path: 'loginsign-up', // Mantener por compatibilidad si se usa en algún link

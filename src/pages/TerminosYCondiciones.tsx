@@ -125,6 +125,23 @@ const TerminosYCondiciones: React.FC = () => {
                 </li>
                 <li>Suplantar la identidad de otras personas o entidades.</li>
               </Box>
+              <Typography
+                variant='body2'
+                sx={{
+                  mt: 2,
+                  fontStyle: 'italic',
+                  color: 'var(--color-cadetblue)'
+                }}
+              >
+                Excepción: Las actividades de investigación de seguridad y
+                pentesting están permitidas ÚNICAMENTE si se realizan bajo los
+                términos de nuestro{' '}
+                <a href='/vdp' style={{ color: 'inherit' }}>
+                  Programa de Divulgación de Vulnerabilidades (VDP)
+                </a>{' '}
+                y con registro previo. Cualquier actividad fuera de este marco
+                será considerada un ataque malintencionado.
+              </Typography>
             </Box>
 
             <Box component='section' sx={{ mb: 4 }}>

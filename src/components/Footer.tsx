@@ -111,6 +111,15 @@ export const Footer: FunctionComponent = () => {
           >
             Contacto
           </MuiLink>
+          <MuiLink
+            component={RouterLink}
+            to='/vdp'
+            color='inherit'
+            underline='hover'
+            sx={{ fontWeight: 500 }}
+          >
+            VDP
+          </MuiLink>
         </Box>
 
         {/* 3. Copyright (sin cambios) */}
