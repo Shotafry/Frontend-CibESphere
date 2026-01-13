@@ -121,7 +121,8 @@ const PanelDeUsuario: FunctionComponent = () => {
       linkedin: user?.linkedin || '',
 
       website: user?.website || '',
-      personal_quote: (user as any)?.personal_quote || ''
+      personal_quote: (user as any)?.personal_quote || '',
+      badges: (user as any)?.badges || ''
     }
   })
 
@@ -370,7 +371,7 @@ const PanelDeUsuario: FunctionComponent = () => {
             }}
           >
             <Tab label='Eventos' />
-            <Tab label='Guardados' />
+            <Tab label='Favoritos' />
             <Tab label='Perfil' />
             <Tab label='Ajustes' />
           </Tabs>
@@ -753,13 +754,44 @@ const EditProfileForm: React.FC<{
           position: 'relative'
         }}
       >
+        {/* Ver Perfil Público Button */}
+        <Button
+          variant='primary'
+          href={`/u/${user?.slug || user?.id}`}
+          target='_blank'
+          size='small'
+          sx={{
+            position: 'absolute',
+            top: 12,
+            right: 12,
+            zIndex: 10,
+            fontSize: '0.75rem',
+            py: 0.75,
+            px: 1.5,
+            boxShadow: '0 2px 8px rgba(0,0,0,0.3)'
+          }}
+        >
+          Ver Perfil
+        </Button>
         <Box
           sx={{
-            height: 200,
+            height: { xs: 160, sm: 180, md: 200 },
             width: '100%',
             backgroundImage: `url(${bannerUrl})`,
             backgroundSize: 'cover',
-            backgroundPosition: 'center'
+            backgroundPosition: 'center',
+            position: 'relative',
+            '&::after': {
+              content: '""',
+              position: 'absolute',
+              bottom: 0,
+              left: 0,
+              right: 0,
+              height: '70%',
+              background:
+                'linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 50%, transparent 100%)',
+              pointerEvents: 'none'
+            }
           }}
         />
         <Box
@@ -768,21 +800,23 @@ const EditProfileForm: React.FC<{
             bottom: 0,
             left: 0,
             right: 0,
-            p: 3,
+            p: { xs: 2, sm: 2.5, md: 3 },
             display: 'flex',
-            alignItems: 'flex-end',
-            gap: 3,
+            flexDirection: { xs: 'column', sm: 'row' },
+            alignItems: { xs: 'center', sm: 'flex-end' },
+            gap: { xs: 1.5, sm: 2, md: 3 },
             zIndex: 2
           }}
         >
           <Avatar
             src={avatarUrl}
             sx={{
-              width: 100,
-              height: 100,
-              border: '4px solid white',
+              width: { xs: 70, sm: 85, md: 100 },
+              height: { xs: 70, sm: 85, md: 100 },
+              border: '3px solid white',
               bgcolor: 'var(--color-cadetblue)',
-              fontSize: '2.5rem'
+              fontSize: { xs: '1.75rem', sm: '2rem', md: '2.5rem' },
+              boxShadow: '0 4px 12px rgba(0,0,0,0.3)'
             }}
           >
             {watchedFirstName?.[0]}
@@ -790,16 +824,46 @@ const EditProfileForm: React.FC<{
           <Box
             sx={{
               color: 'white',
-              pb: 1,
-              textShadow: '0 2px 4px rgba(0,0,0,0.5)'
+              pb: { xs: 0, sm: 0.5 },
+              textAlign: { xs: 'center', sm: 'left' },
+              textShadow: '0 2px 8px rgba(0,0,0,0.8), 0 1px 3px rgba(0,0,0,0.9)'
             }}
           >
-            <Typography variant='h4' fontWeight='900'>
+            <Typography
+              variant='h4'
+              fontWeight='900'
+              sx={{
+                fontSize: { xs: '1.25rem', sm: '1.5rem', md: '2rem' },
+                lineHeight: 1.2
+              }}
+            >
               {fullName}
             </Typography>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-              {watchedCity && <Typography>{watchedCity}</Typography>}
-              {watchedCompany && <Typography>| {watchedCompany}</Typography>}
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: { xs: 'column', sm: 'row' },
+                alignItems: 'center',
+                gap: { xs: 0, sm: 1 },
+                mt: 0.5
+              }}
+            >
+              {watchedCity && (
+                <Typography sx={{ fontSize: { xs: '0.8rem', sm: '0.9rem' } }}>
+                  {watchedCity}
+                </Typography>
+              )}
+              {watchedCompany && (
+                <Typography sx={{ fontSize: { xs: '0.8rem', sm: '0.9rem' } }}>
+                  <Box
+                    component='span'
+                    sx={{ display: { xs: 'none', sm: 'inline' } }}
+                  >
+                    |{' '}
+                  </Box>
+                  {watchedCompany}
+                </Typography>
+              )}
             </Box>
           </Box>
         </Box>
@@ -1101,7 +1165,6 @@ const EditProfileForm: React.FC<{
             <Controller
               name='badges'
               control={control}
-              defaultValue=''
               render={({ field: { value, onChange } }) => {
                 // Parse badges JSON
                 let badgeList: Array<{
