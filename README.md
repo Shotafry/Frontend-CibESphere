@@ -62,6 +62,24 @@ Sistema de control de acceso basado en roles gestionado por el backend.
 
 ---
 
+### 🆕 Novedades Beta v0.1.0 (Enero 2026)
+
+#### Perfil de Usuario Mejorado
+
+- **Rediseño completo** del perfil público (layout tipo LinkedIn)
+- **Badges de Certificaciones**: Subir hasta 10 imágenes circulares
+- **Redes Sociales**: GitHub, LinkedIn y Website con iconos interactivos
+- **URL Personalizada (Slug)**: `/u/tu-nombre-unico`
+- **Frase Personal**: Cita visible en el perfil
+
+#### Landing Page
+
+- **Modales Rediseñados**: Organizador y Participante con animaciones suaves
+- **Auth-Aware**: Mensajes diferentes para usuarios logueados
+- **UX Mejorada**: Click fuera para cerrar, botón X, backdrop blur
+
+---
+
 ## 📂 Estructura del Proyecto
 
 ```text
