@@ -20,20 +20,20 @@ export const SingleEventMap: React.FC<SingleEventMapProps> = ({ event }) => {
   return (
     <Box
       sx={{
-        height: { xs: '200px', md: '400px' }, // 200px en móvil, 400px en desktop
+        height: '100%',
         width: '100%',
-        borderRadius: '25px',
+        borderRadius: 'inherit',
         overflow: 'hidden',
-        position: 'relative',
-        boxShadow: 'var(--shadow-drop)',
-        mt: 4 // Margen superior
+        position: 'relative'
       }}
     >
       <MapContainer
         center={position}
-        zoom={14} // Zoom más cercano
+        zoom={14}
         style={{ height: '100%', width: '100%' }}
-        scrollWheelZoom={true} // Permitimos zoom en esta vista
+        scrollWheelZoom={false}
+        dragging={true}
+        touchZoom={true}
       >
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'

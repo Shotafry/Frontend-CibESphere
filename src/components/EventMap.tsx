@@ -130,11 +130,7 @@ const EventPopupContent: React.FC<{ event: Event }> = ({ event }) => {
       </Box>
 
       {/* 6. Botón de Acción */}
-      <Button
-        variant="primary"
-        fullWidth
-        onClick={handleNavigate}
-      >
+      <Button variant='primary' fullWidth onClick={handleNavigate}>
         Ver Detalles
       </Button>
     </Box>
@@ -149,7 +145,7 @@ export const EventMap: React.FC<EventMapProps> = ({ events }) => {
   return (
     <Box
       sx={{
-        height: '836px',
+        height: { xs: '350px', sm: '500px', md: '700px', lg: '836px' },
         width: '100%',
         maxWidth: '1340px',
         borderRadius: '25px',
@@ -160,9 +156,11 @@ export const EventMap: React.FC<EventMapProps> = ({ events }) => {
     >
       <MapContainer
         center={mapCenter}
-        zoom={7}
+        zoom={6}
         style={{ height: '100%', width: '100%' }}
         scrollWheelZoom={false}
+        dragging={true}
+        touchZoom={true}
       >
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -177,7 +175,7 @@ export const EventMap: React.FC<EventMapProps> = ({ events }) => {
               <Marker
                 key={event.id}
                 position={[event.latitude, event.longitude]}
-              // No hay prop "icon", por lo que usará el default
+                // No hay prop "icon", por lo que usará el default
               >
                 <Popup>
                   {/* USAMOS EL COMPONENTE PERSONALIZADO */}
