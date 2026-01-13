@@ -251,7 +251,7 @@ const ComunidadBox: React.FC = () => {
                     color: '#1E293B'
                   }}
                 >
-                  ¡Ya estás a bordo! 🚀
+                  ¡Ya estás a bordo!
                 </Typography>
                 <Typography
                   sx={{
