@@ -4,6 +4,15 @@ import { Box, Typography, Link as MuiLink, Container } from '@mui/material'
 import { Link as RouterLink } from 'react-router-dom'
 
 export const Footer: FunctionComponent = () => {
+  const footerLinks = [
+    { to: '/sobre-nosotros', label: 'Sobre nosotros' },
+    { to: '/', label: 'Eventos' },
+    { to: '/terminos', label: 'Términos' },
+    { to: '/cookies', label: 'Cookies' },
+    { to: '/contacto', label: 'Contacto' },
+    { to: '/vdp', label: 'VDP' }
+  ]
+
   return (
     <Box
       component='footer'
@@ -13,126 +22,96 @@ export const Footer: FunctionComponent = () => {
         color: 'var(--Gray-700)',
         fontFamily: 'Inter, sans-serif',
         mt: 'auto',
-        // --- NUEVA FORMA ---
-        // Esto crea una curva hacia ARRIBA en el borde superior
         clipPath: 'ellipse(150% 85% at 50% 100%)',
-        // Damos padding para que el contenido no se corte
-        pt: { xs: 8, md: 10 },
-        pb: 6,
-        position: 'relative', // Asegurar contexto
-        zIndex: 1 // Por encima del fondo
-        // --- FIN NUEVA FORMA ---
+        pt: { xs: 6, md: 10 },
+        pb: { xs: 4, md: 6 },
+        position: 'relative',
+        zIndex: 1
       }}
     >
       <Container
         maxWidth='lg'
         sx={{
           display: 'flex',
-          flexDirection: { xs: 'column', md: 'row' },
-          justifyContent: { md: 'center', xs: 'space-between' },
-          margin: '8px',
-          alignItems: { xs: 'flex-start', md: 'center' },
-          gap: { xs: 2, md: 3 },
-          px: { xs: 0.5, md: 0 }
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: { xs: 3, md: 4 },
+          px: { xs: 2, md: 3 }
         }}
       >
-        {/* 1. Logo (Nuevo) */}
-        {/* 1. Logo (Nuevo) - Ahora con Link */}
+        {/* Logo - Centrado y controlado */}
         <Box
           sx={{
-            width: '100%',
             display: 'flex',
-            justifyContent: { xs: 'flex-start', md: 'center' },
-            mb: { xs: 2, md: 0 }
+            justifyContent: 'center',
+            width: '100%'
           }}
         >
           <RouterLink to='/'>
             <img
               style={{
-                height: '40px',
+                height: '36px',
+                maxWidth: '180px',
                 objectFit: 'contain'
               }}
-              alt='CibESphere Logo'
+              alt='CybESphere Logo'
               src='/Logo-Solo-Letras.png'
             />
           </RouterLink>
         </Box>
 
-        {/* 2. Enlaces (sin cambios) */}
+        {/* Enlaces - Grid responsive */}
         <Box
           sx={{
-            display: 'contents',
-            gap: 2,
-            textAlign: { xs: 'left', md: 'center' }
+            display: 'grid',
+            gridTemplateColumns: {
+              xs: 'repeat(2, 1fr)', // 2 columnas en móvil
+              sm: 'repeat(3, 1fr)', // 3 columnas en tablet
+              md: 'repeat(6, auto)' // 6 en línea en desktop
+            },
+            gap: { xs: 1.5, sm: 2, md: 3 },
+            width: '100%',
+            maxWidth: '600px',
+            justifyItems: 'center',
+            textAlign: 'center'
           }}
         >
-          <MuiLink
-            component={RouterLink}
-            to='/sobre-nosotros' // Cambiado a una ruta real (aunque no exista aún)
-            color='inherit'
-            underline='hover'
-            sx={{ fontWeight: 500 }}
-          >
-            Sobre nosotros
-          </MuiLink>
-          <MuiLink
-            component={RouterLink}
-            to='/'
-            color='inherit'
-            underline='hover'
-            sx={{ fontWeight: 500 }}
-          >
-            Eventos
-          </MuiLink>
-          <MuiLink
-            component={RouterLink}
-            to='/terminos'
-            color='inherit'
-            underline='hover'
-            sx={{ fontWeight: 500 }}
-          >
-            Términos
-          </MuiLink>
-          <MuiLink
-            component={RouterLink}
-            to='/cookies'
-            color='inherit'
-            underline='hover'
-            sx={{ fontWeight: 500 }}
-          >
-            Cookies
-          </MuiLink>
-          <MuiLink
-            component={RouterLink}
-            to='/contacto'
-            color='inherit'
-            underline='hover'
-            sx={{ fontWeight: 500 }}
-          >
-            Contacto
-          </MuiLink>
-          <MuiLink
-            component={RouterLink}
-            to='/vdp'
-            color='inherit'
-            underline='hover'
-            sx={{ fontWeight: 500 }}
-          >
-            VDP
-          </MuiLink>
+          {footerLinks.map((link) => (
+            <MuiLink
+              key={link.to}
+              component={RouterLink}
+              to={link.to}
+              color='inherit'
+              underline='hover'
+              sx={{
+                fontWeight: 500,
+                fontSize: { xs: '0.875rem', md: '0.95rem' },
+                py: 0.5,
+                px: 1,
+                borderRadius: 1,
+                transition: 'all 0.2s',
+                '&:hover': {
+                  color: 'var(--color-cadetblue)',
+                  transform: 'translateY(-1px)'
+                }
+              }}
+            >
+              {link.label}
+            </MuiLink>
+          ))}
         </Box>
 
-        {/* 3. Copyright (sin cambios) */}
+        {/* Copyright */}
         <Typography
           variant='body2'
           color='var(--Gray-700)'
           sx={{
-            width: '100%',
-            textAlign: { xs: 'left', md: 'center' },
-            mt: { xs: 2, md: 0 }
+            textAlign: 'center',
+            fontSize: { xs: '0.75rem', md: '0.875rem' },
+            opacity: 0.8
           }}
         >
-          © {new Date().getFullYear()} CibESphere. Todos los derechos
+          © {new Date().getFullYear()} CybESphere. Todos los derechos
           reservados.
         </Typography>
       </Container>
