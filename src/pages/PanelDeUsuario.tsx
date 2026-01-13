@@ -276,19 +276,19 @@ const PanelDeUsuario: FunctionComponent = () => {
         sx={{
           bgcolor: 'white',
           borderBottom: '1px solid #E2E8F0',
-          pt: 4,
+          pt: { xs: 2, sm: 4 },
           pb: 0
         }}
       >
-        <Container maxWidth='xl'>
+        <Container maxWidth='xl' sx={{ px: { xs: 2, sm: 3, md: 4 } }}>
           <Box
             sx={{
               display: 'flex',
               flexDirection: { xs: 'column', sm: 'row' },
-              alignItems: { xs: 'flex-start', sm: 'center' },
+              alignItems: { xs: 'center', sm: 'center' },
               justifyContent: 'space-between',
-              gap: { xs: 2, sm: 0 },
-              mb: 4
+              gap: { xs: 1.5, sm: 2 },
+              mb: { xs: 2, sm: 4 }
             }}
           >
             <Box
@@ -301,9 +301,9 @@ const PanelDeUsuario: FunctionComponent = () => {
               <Avatar
                 src={user?.avatar_url}
                 sx={{
-                  width: { xs: 60, sm: 80 },
-                  height: { xs: 60, sm: 80 },
-                  fontSize: { xs: '1.5rem', sm: '2rem' },
+                  width: { xs: 48, sm: 64, md: 80 },
+                  height: { xs: 48, sm: 64, md: 80 },
+                  fontSize: { xs: '1.25rem', sm: '1.5rem', md: '2rem' },
                   bgcolor: 'var(--color-cadetblue)'
                 }}
               >
@@ -315,17 +315,20 @@ const PanelDeUsuario: FunctionComponent = () => {
                   fontWeight='bold'
                   sx={{
                     color: 'var(--Gray-900)',
-                    fontSize: { xs: '1.5rem', sm: '2rem', md: '2.125rem' }
+                    fontSize: { xs: '1.125rem', sm: '1.5rem', md: '2rem' }
                   }}
                 >
                   Hola, {user?.first_name}
                 </Typography>
                 <Typography
-                  variant='body1'
+                  variant='body2'
                   color='text.secondary'
-                  sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}
+                  sx={{
+                    fontSize: { xs: '0.75rem', sm: '0.875rem' },
+                    display: { xs: 'none', sm: 'block' }
+                  }}
                 >
-                  Gestiona tus eventos y tu perfil público
+                  Gestiona tus eventos y tu perfil
                 </Typography>
               </Box>
             </Box>
@@ -334,12 +337,15 @@ const PanelDeUsuario: FunctionComponent = () => {
               href={`/u/${user?.slug || user?.id}`}
               target='_blank'
               startIcon={<PersonIcon />}
+              size='small'
               sx={{
-                width: { xs: '100%', sm: 'auto' },
-                justifyContent: 'center'
+                display: { xs: 'none', sm: 'flex' },
+                width: 'auto',
+                justifyContent: 'center',
+                fontSize: { sm: '0.85rem' }
               }}
             >
-              Ver mi Perfil Público
+              Ver Perfil
             </Button>
           </Box>
 
@@ -354,27 +360,31 @@ const PanelDeUsuario: FunctionComponent = () => {
             sx={{
               '& .MuiTab-root': {
                 textTransform: 'none',
-                fontSize: { xs: '0.875rem', sm: '1rem' },
+                fontSize: { xs: '0.75rem', sm: '0.875rem', md: '1rem' },
                 fontWeight: 600,
-                minWidth: { xs: 'auto', sm: 120 },
-                mr: { xs: 1, sm: 4 },
-                px: { xs: 1.5, sm: 2 }
+                minWidth: { xs: 'auto', sm: 90 },
+                mr: { xs: 0.5, sm: 2 },
+                px: { xs: 1, sm: 1.5 },
+                py: { xs: 1, sm: 1.5 }
               }
             }}
           >
-            <Tab label='Mis Eventos' />
+            <Tab label='Eventos' />
             <Tab label='Guardados' />
-            <Tab label='Editar Perfil' />
-            <Tab label='Configuración' />
+            <Tab label='Perfil' />
+            <Tab label='Ajustes' />
           </Tabs>
         </Container>
       </Box>
 
-      <Container maxWidth='xl' sx={{ mt: 6 }}>
+      <Container
+        maxWidth='xl'
+        sx={{ mt: { xs: 3, sm: 6 }, px: { xs: 2, sm: 3, md: 4 } }}
+      >
         {tabValue === 0 && (
           <Fade in={tabValue === 0} timeout={500}>
             <Box>
-              <Grid container spacing={4}>
+              <Grid container spacing={{ xs: 2, sm: 3, md: 4 }}>
                 <Grid size={{ xs: 12, md: 8 }}>
                   <Typography
                     variant='h6'
