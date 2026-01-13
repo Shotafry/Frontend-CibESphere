@@ -92,7 +92,7 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
             position: 'relative',
             overflow: 'visible',
             mt: { xs: 0, md: 2 },
-            mb: { xs: 4, md: 2 },
+            mb: { xs: 2, sm: 3, md: 2 },
             transition: 'all 0.3s ease-out',
             '&:hover': {
               transform: 'translateY(-8px)',
@@ -112,11 +112,11 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
             alt={`Imagen de ${event.title}`}
             sx={{
               width: { xs: '100%', md: 260 },
-              height: { xs: 200, md: 260 },
+              height: { xs: 140, sm: 180, md: 260 },
               objectFit: 'contain',
               zIndex: 2,
               marginRight: { md: -6 },
-              marginBottom: { xs: -3, md: 0 },
+              marginBottom: { xs: -2, md: 0 },
               position: 'relative',
               filter: 'drop-shadow(0px 4px 10px rgba(0,0,0,0.1))'
             }}
@@ -129,8 +129,8 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
               display: 'flex',
               flexDirection: 'column',
               justifyContent: 'space-between',
-              p: { xs: 3, md: 4 },
-              pt: { xs: 5, md: 4 },
+              p: { xs: 2, sm: 3, md: 4 },
+              pt: { xs: 4, sm: 5, md: 4 },
               pl: { md: 10 },
               borderRadius: '25px',
               backgroundColor: 'var(--White)',

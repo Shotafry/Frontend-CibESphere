@@ -180,7 +180,7 @@ export const EventFilters: React.FC<EventFiltersProps> = ({
     <Paper
       elevation={3}
       sx={{
-        p: 1,
+        p: { xs: 1.5, sm: 2 },
         mb: 2,
         borderRadius: '15px',
         background: 'var(--White)',
@@ -219,8 +219,8 @@ export const EventFilters: React.FC<EventFiltersProps> = ({
       </Box>
 
       <Collapse in={isOpen}>
-        <Box component='div' sx={{ pt: 4 }}>
-          <Grid container spacing={3}>
+        <Box component='div' sx={{ pt: { xs: 2, sm: 4 } }}>
+          <Grid container spacing={{ xs: 1.5, sm: 2, md: 3 }}>
             {/* FILA 1: FECHAS */}
             <Grid size={{ xs: 12, md: 6 }}>
               <DatePicker
@@ -369,15 +369,24 @@ export const EventFilters: React.FC<EventFiltersProps> = ({
               size={{ xs: 12 }}
               sx={{
                 display: 'flex',
-                justifyContent: 'flex-end',
-                gap: 2,
-                mt: 2
+                flexDirection: { xs: 'column', sm: 'row' },
+                justifyContent: { xs: 'stretch', sm: 'flex-end' },
+                gap: { xs: 1, sm: 2 },
+                mt: { xs: 1, sm: 2 }
               }}
             >
-              <Button variant='primary' onClick={handleClearFilters}>
+              <Button
+                variant='primary'
+                onClick={handleClearFilters}
+                sx={{ width: { xs: '100%', sm: 'auto' } }}
+              >
                 Limpiar
               </Button>
-              <Button variant='secondary' onClick={handleApplyFilters}>
+              <Button
+                variant='secondary'
+                onClick={handleApplyFilters}
+                sx={{ width: { xs: '100%', sm: 'auto' } }}
+              >
                 Aplicar Filtros
               </Button>
             </Grid>
