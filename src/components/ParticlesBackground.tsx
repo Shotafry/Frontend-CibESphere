@@ -29,7 +29,7 @@ export const ParticlesBackground: React.FC = () => {
 
     // Configuración - reducir partículas en móvil
     const isMobile = window.innerWidth < 768
-    const particleCount = isMobile ? 40 : 80
+    const particleCount = isMobile ? 25 : 80
     const connectionDistance = isMobile ? 100 : 150
     const mouseDistance = 250
     const particleColor = '#4fbac8'
@@ -44,7 +44,7 @@ export const ParticlesBackground: React.FC = () => {
       particles = []
       // Recalcular cantidad en resize
       const currentIsMobile = window.innerWidth < 768
-      const count = currentIsMobile ? 40 : 80
+      const count = currentIsMobile ? 25 : 80
       for (let i = 0; i < count; i++) {
         const size = Math.random() * 2 + 1
         particles.push({
