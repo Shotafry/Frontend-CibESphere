@@ -27,10 +27,11 @@ export const ParticlesBackground: React.FC = () => {
     const mouseRef = { x: -1000, y: -1000 }
     const isMouseDownRef = { current: false }
 
-    // Configuración
-    const particleCount = 80
-    const connectionDistance = 150
-    const mouseDistance = 250 // Aumentado para facilitar la interacción
+    // Configuración - reducir partículas en móvil
+    const isMobile = window.innerWidth < 768
+    const particleCount = isMobile ? 40 : 80
+    const connectionDistance = isMobile ? 100 : 150
+    const mouseDistance = 250
     const particleColor = '#4fbac8'
     const particleSpeed = 0.5
 
@@ -41,7 +42,10 @@ export const ParticlesBackground: React.FC = () => {
 
     const createParticles = () => {
       particles = []
-      for (let i = 0; i < particleCount; i++) {
+      // Recalcular cantidad en resize
+      const currentIsMobile = window.innerWidth < 768
+      const count = currentIsMobile ? 40 : 80
+      for (let i = 0; i < count; i++) {
         const size = Math.random() * 2 + 1
         particles.push({
           x: Math.random() * canvas.width,
@@ -168,11 +172,34 @@ export const ParticlesBackground: React.FC = () => {
       isMouseDownRef.current = false
     }
 
+    // Touch events for mobile interactivity
+    const handleTouchStart = (e: TouchEvent) => {
+      if (e.touches.length > 0) {
+        mouseRef.x = e.touches[0].clientX
+        mouseRef.y = e.touches[0].clientY
+        isMouseDownRef.current = true
+      }
+    }
+    const handleTouchMove = (e: TouchEvent) => {
+      if (e.touches.length > 0) {
+        mouseRef.x = e.touches[0].clientX
+        mouseRef.y = e.touches[0].clientY
+      }
+    }
+    const handleTouchEnd = () => {
+      isMouseDownRef.current = false
+      mouseRef.x = -1000
+      mouseRef.y = -1000
+    }
+
     window.addEventListener('resize', handleResize)
     window.addEventListener('mousemove', handleMouseMove)
     window.addEventListener('mouseout', handleMouseLeave)
     window.addEventListener('mousedown', handleMouseDown)
     window.addEventListener('mouseup', handleMouseUp)
+    window.addEventListener('touchstart', handleTouchStart, { passive: true })
+    window.addEventListener('touchmove', handleTouchMove, { passive: true })
+    window.addEventListener('touchend', handleTouchEnd)
 
     return () => {
       window.removeEventListener('resize', handleResize)
@@ -180,6 +207,9 @@ export const ParticlesBackground: React.FC = () => {
       window.removeEventListener('mouseout', handleMouseLeave)
       window.removeEventListener('mousedown', handleMouseDown)
       window.removeEventListener('mouseup', handleMouseUp)
+      window.removeEventListener('touchstart', handleTouchStart)
+      window.removeEventListener('touchmove', handleTouchMove)
+      window.removeEventListener('touchend', handleTouchEnd)
       cancelAnimationFrame(animationFrameId)
     }
   }, [])
