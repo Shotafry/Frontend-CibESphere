@@ -148,8 +148,8 @@ export const Header: FunctionComponent = () => {
               >
                 <img
                   style={{
-                    height: '32px',
-                    width: '32px',
+                    height: '36px',
+                    width: '36px',
                     objectFit: 'contain'
                   }}
                   alt='CibESphere'
@@ -170,8 +170,8 @@ export const Header: FunctionComponent = () => {
               >
                 <img
                   style={{
-                    height: '24px',
-                    maxWidth: '140px',
+                    height: '32px',
+                    maxWidth: '160px',
                     objectFit: 'contain'
                   }}
                   alt='CybESphere'

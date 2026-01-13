@@ -25,6 +25,7 @@ import InfoIcon from '@mui/icons-material/Info'
 import ContactMailIcon from '@mui/icons-material/ContactMail'
 import GavelIcon from '@mui/icons-material/Gavel'
 import CookieIcon from '@mui/icons-material/Cookie'
+import PersonIcon from '@mui/icons-material/Person'
 import { useAuth } from '../context/AuthContext'
 import { Role, Notification } from '../types'
 
@@ -176,6 +177,17 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({
                   <DashboardIcon sx={{ color: 'var(--color-cadetblue)' }} />
                 </ListItemIcon>
                 <ListItemText primary={getPanelLabel()} />
+              </ListItemButton>
+            </ListItem>
+
+            <ListItem disablePadding>
+              <ListItemButton
+                onClick={() => handleNavigation(`/u/${user?.slug || user?.id}`)}
+              >
+                <ListItemIcon>
+                  <PersonIcon sx={{ color: 'var(--color-cadetblue)' }} />
+                </ListItemIcon>
+                <ListItemText primary='Ver mi Perfil' />
               </ListItemButton>
             </ListItem>
 
