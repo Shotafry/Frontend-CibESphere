@@ -78,6 +78,15 @@ Sistema de control de acceso basado en roles gestionado por el backend.
 - **Auth-Aware**: Mensajes diferentes para usuarios logueados
 - **UX Mejorada**: Click fuera para cerrar, botón X, backdrop blur
 
+#### 📱 Diseño Responsive Mobile (Enero 2026)
+
+- **Header con Menú Hamburguesa**: Drawer lateral con navegación completa
+- **Breakpoint mínimo**: 360px con soporte completo
+- **Paneles Optimizados**: Usuario, Organizador y Admin con layouts adaptados
+- **Mapas Touch-friendly**: Zoom con dos dedos, altura responsive
+- **Partículas Interactivas**: Touch events para repulsión en móvil (25 partículas vs 80 desktop)
+- **Componentes Globales**: EventCard, EventFilters, Eventos con estilos adaptativos
+
 ---
 
 ## 📂 Estructura del Proyecto
