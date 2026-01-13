@@ -188,11 +188,10 @@ const Eventos: FunctionComponent = () => {
               alt={`Banner de ${event.title}`}
               sx={{
                 width: '100%',
-                height: 400,
+                height: { xs: 200, sm: 280, md: 400 },
                 objectFit: 'cover',
                 borderRadius: '15px',
-                mb: 4
-                // boxShadow eliminado
+                mb: { xs: 2, md: 4 }
               }}
             />
             <Typography
@@ -200,7 +199,10 @@ const Eventos: FunctionComponent = () => {
               component='h1'
               fontWeight='900'
               gutterBottom
-              sx={{ color: 'var(--Gray-700)' }}
+              sx={{
+                color: 'var(--Gray-700)',
+                fontSize: { xs: '1.5rem', sm: '2rem', md: '2.5rem' }
+              }}
             >
               {event.title}
             </Typography>
