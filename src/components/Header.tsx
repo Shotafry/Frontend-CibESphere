@@ -5,25 +5,33 @@ import {
   CircularProgress,
   Typography,
   IconButton,
-  Badge
+  Badge,
+  useTheme,
+  useMediaQuery
 } from '@mui/material'
 import NotificationsIcon from '@mui/icons-material/Notifications'
+import MenuIcon from '@mui/icons-material/Menu'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { Role, Notification } from '../types'
 import { getNotifications } from '../services/apiService'
 import { NotificationMenu } from './NotificationMenu'
+import { MobileMenu } from './MobileMenu'
 import { Button } from './Button'
 
 export const Header: FunctionComponent = () => {
   const navigate = useNavigate()
   const location = useLocation()
+  const theme = useTheme()
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'))
   const { isAuthenticated, user, logout, isLoading } = useAuth()
 
   const [isScrolled, setIsScrolled] = useState(false)
   const [notifications, setNotifications] = useState<Notification[]>([])
   const [unreadCount, setUnreadCount] = useState(0)
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+
   const isLandingPage = location.pathname === '/'
   const openNotifications = Boolean(anchorEl)
 
@@ -78,8 +86,6 @@ export const Header: FunctionComponent = () => {
 
   // Color oscuro para que se lea sobre el fondo claro del Hero
   const textColor = 'var(--Gray-700)'
-  const buttonColor = 'var(--gradient-button-primary)'
-  const buttonBorderColor = 'var(--color-cadetblue)'
 
   const onLogoClick = useCallback(() => {
     navigate('/')
@@ -100,87 +106,156 @@ export const Header: FunctionComponent = () => {
   }, [navigate, user])
 
   return (
-    <Box
-      component='header'
-      sx={{
-        width: '100%',
-        backgroundColor: headerBackground, // Fondo dinámico (blanco o trans)
-        boxShadow: headerShadow, // Sombra dinámica
-        position: 'fixed',
-        top: 0,
-        zIndex: 1100,
-        display: 'flex',
-        justifyContent: 'center',
-        transition: 'background-color 0.3s ease, box-shadow 0.3s ease' // Transición simple
-      }}
-    >
+    <>
       <Box
+        component='header'
         sx={{
           width: '100%',
-          maxWidth: 1440,
+          backgroundColor: headerBackground,
+          boxShadow: headerShadow,
+          position: 'fixed',
+          top: 0,
+          zIndex: 1100,
           display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          padding: { xs: '10px 8px', sm: '12px 16px', md: '16px 32px' },
-          boxSizing: 'border-box',
-          gap: { xs: 1, sm: 2 }
+          justifyContent: 'center',
+          transition: 'background-color 0.3s ease, box-shadow 0.3s ease'
         }}
       >
-        <img
-          style={{
-            height: '36px',
-            width: '120px',
-            objectFit: 'contain',
-            cursor: 'pointer'
+        <Box
+          sx={{
+            width: '100%',
+            maxWidth: 1440,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            padding: { xs: '10px 16px', sm: '12px 16px', md: '16px 32px' },
+            boxSizing: 'border-box',
+            gap: { xs: 1, sm: 2 }
           }}
-          alt='CibESphere Logo'
-          src='/cyberLogo-1@2x.png' // <-- Tu logo
-          onClick={onLogoClick}
-        />
-
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-          {isLoading ? (
-            <CircularProgress size={24} />
-          ) : isAuthenticated ? (
+        >
+          {/* MOBILE LAYOUT: Icon Left | Text Center | Hamburger Right */}
+          {isMobile ? (
             <>
-              <IconButton onClick={handleOpenNotifications} sx={{ mr: 1 }}>
-                <Badge badgeContent={unreadCount} color='error'>
-                  <NotificationsIcon sx={{ color: textColor }} />
-                </Badge>
+              {/* Left: Logo Icon */}
+              <Box
+                onClick={onLogoClick}
+                sx={{
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  flex: '0 0 auto'
+                }}
+              >
+                <img
+                  style={{
+                    height: '32px',
+                    width: '32px',
+                    objectFit: 'contain'
+                  }}
+                  alt='CibESphere'
+                  src='/Logo-Icon.png'
+                />
+              </Box>
+
+              {/* Center: Text Logo */}
+              <Box
+                onClick={onLogoClick}
+                sx={{
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  flex: 1
+                }}
+              >
+                <img
+                  style={{
+                    height: '24px',
+                    maxWidth: '140px',
+                    objectFit: 'contain'
+                  }}
+                  alt='CybESphere'
+                  src='/Logo-Solo-Letras.png'
+                />
+              </Box>
+
+              {/* Right: Hamburger Menu */}
+              <IconButton
+                onClick={() => setMobileMenuOpen(true)}
+                sx={{
+                  color: textColor,
+                  p: 1,
+                  '&:hover': {
+                    bgcolor: 'rgba(0, 192, 250, 0.1)'
+                  }
+                }}
+              >
+                <MenuIcon sx={{ fontSize: 28 }} />
               </IconButton>
-              <NotificationMenu
-                anchorEl={anchorEl}
-                open={openNotifications}
-                onClose={handleCloseNotifications}
-                notifications={notifications}
-                onMarkAsRead={handleMarkAsRead}
-              />
-              <Typography sx={{ color: textColor, fontWeight: 500 }}>
-                Hola, {user?.first_name || user?.email}
-              </Typography>
-              <Button
-                variant="primary"
-                onClick={onPanelClick}
-              >
-                Mi Panel
-              </Button>
-              <Button
-                variant="secondary"
-                onClick={logout}
-              >
-                Cerrar Sesión
-              </Button>
             </>
           ) : (
-            <Button
-              variant="primary"
-              onClick={onLoginClick}
-            >
-              Login / Sign Up
-            </Button>
+            /* DESKTOP LAYOUT: Logo | Buttons */
+            <>
+              <img
+                style={{
+                  height: '36px',
+                  width: '120px',
+                  objectFit: 'contain',
+                  cursor: 'pointer'
+                }}
+                alt='CibESphere Logo'
+                src='/cyberLogo-1@2x.png'
+                onClick={onLogoClick}
+              />
+
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                {isLoading ? (
+                  <CircularProgress size={24} />
+                ) : isAuthenticated ? (
+                  <>
+                    <IconButton
+                      onClick={handleOpenNotifications}
+                      sx={{ mr: 1 }}
+                    >
+                      <Badge badgeContent={unreadCount} color='error'>
+                        <NotificationsIcon sx={{ color: textColor }} />
+                      </Badge>
+                    </IconButton>
+                    <NotificationMenu
+                      anchorEl={anchorEl}
+                      open={openNotifications}
+                      onClose={handleCloseNotifications}
+                      notifications={notifications}
+                      onMarkAsRead={handleMarkAsRead}
+                    />
+                    <Typography sx={{ color: textColor, fontWeight: 500 }}>
+                      Hola, {user?.first_name || user?.email}
+                    </Typography>
+                    <Button variant='primary' onClick={onPanelClick}>
+                      Mi Panel
+                    </Button>
+                    <Button variant='secondary' onClick={logout}>
+                      Cerrar Sesión
+                    </Button>
+                  </>
+                ) : (
+                  <Button variant='primary' onClick={onLoginClick}>
+                    Login / Sign Up
+                  </Button>
+                )}
+              </Box>
+            </>
           )}
         </Box>
       </Box>
-    </Box>
+
+      {/* Mobile Menu Drawer */}
+      <MobileMenu
+        open={mobileMenuOpen}
+        onClose={() => setMobileMenuOpen(false)}
+        notifications={notifications}
+        unreadCount={unreadCount}
+      />
+    </>
   )
 }
