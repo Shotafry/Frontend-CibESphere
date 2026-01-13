@@ -57,7 +57,7 @@ const StatCard: React.FC<{
   <Paper
     elevation={0}
     sx={{
-      p: 3,
+      p: { xs: 2, sm: 3 },
       borderRadius: '20px',
       background: 'white',
       border: '1px solid',
@@ -65,7 +65,7 @@ const StatCard: React.FC<{
       transition: 'all 0.3s ease',
       display: 'flex',
       alignItems: 'center',
-      gap: 2,
+      gap: { xs: 1.5, sm: 2 },
       '&:hover': {
         transform: 'translateY(-5px)',
         boxShadow: `0 10px 30px -10px ${color}40`,
@@ -75,7 +75,7 @@ const StatCard: React.FC<{
   >
     <Box
       sx={{
-        p: 1.5,
+        p: { xs: 1, sm: 1.5 },
         borderRadius: '16px',
         bgcolor: `${color}15`,
         color: color,
@@ -87,7 +87,11 @@ const StatCard: React.FC<{
       })}
     </Box>
     <Box>
-      <Typography variant='h4' fontWeight='800' sx={{ color: '#1e293b' }}>
+      <Typography
+        variant='h4'
+        fontWeight='800'
+        sx={{ color: '#1e293b', fontSize: { xs: '1.5rem', sm: '2rem' } }}
+      >
         {value}
       </Typography>
       <Typography variant='body2' fontWeight='600' color='text.secondary'>
@@ -189,10 +193,10 @@ const OrganizationsTab: React.FC = () => {
           sx={{
             borderRadius: 3,
             border: '1px solid #e2e8f0',
-            overflow: 'hidden'
+            overflow: 'auto'
           }}
         >
-          <Table>
+          <Table sx={{ minWidth: 600 }}>
             <TableHead sx={{ bgcolor: '#f8fafc' }}>
               <TableRow>
                 <TableCell sx={{ fontWeight: 'bold' }}>Organización</TableCell>
@@ -268,8 +272,8 @@ const OrganizationsTab: React.FC = () => {
                   <TableCell align='right'>
                     {!org.is_verified && (
                       <Button
-                        variant="primary"
-                        size="small"
+                        variant='primary'
+                        size='small'
                         startIcon={<CheckCircleIcon />}
                         onClick={() => handleVerify(org.id)}
                       >
@@ -348,10 +352,10 @@ const UsersTab: React.FC = () => {
           sx={{
             borderRadius: 3,
             border: '1px solid #e2e8f0',
-            overflow: 'hidden'
+            overflow: 'auto'
           }}
         >
-          <Table>
+          <Table sx={{ minWidth: 550 }}>
             <TableHead sx={{ bgcolor: '#f8fafc' }}>
               <TableRow>
                 <TableCell sx={{ fontWeight: 'bold' }}>Usuario</TableCell>
@@ -398,8 +402,8 @@ const UsersTab: React.FC = () => {
                         user.role === Role.Admin
                           ? 'Administrador'
                           : user.role === Role.Organizer
-                            ? 'Organizador'
-                            : 'Asistente'
+                          ? 'Organizador'
+                          : 'Asistente'
                       }
                       size='small'
                       sx={{
@@ -407,14 +411,14 @@ const UsersTab: React.FC = () => {
                           user.role === Role.Admin
                             ? '#fce7f3'
                             : user.role === Role.Organizer
-                              ? '#dbeafe'
-                              : '#f1f5f9',
+                            ? '#dbeafe'
+                            : '#f1f5f9',
                         color:
                           user.role === Role.Admin
                             ? '#be185d'
                             : user.role === Role.Organizer
-                              ? '#1d4ed8'
-                              : '#475569',
+                            ? '#1d4ed8'
+                            : '#475569',
                         fontWeight: 600,
                         border: 'none'
                       }}
@@ -463,25 +467,41 @@ const PanelDeAdministrador: React.FC = () => {
           color: 'white',
           pt: { xs: 8, md: 10 },
           pb: { xs: 10, md: 12 },
-          clipPath: 'polygon(0 0, 100% 0, 100% 85%, 0% 100%)',
-          mb: 6,
+          clipPath: {
+            xs: 'none',
+            md: 'polygon(0 0, 100% 0, 100% 85%, 0% 100%)'
+          },
+          mb: { xs: 2, md: 6 },
           position: 'relative'
         }}
       >
-        <Container maxWidth='xl'>
-          <Stack direction='row' alignItems='center' spacing={2} mb={2}>
-            <VerifiedIcon sx={{ fontSize: 40, opacity: 0.8 }} />
+        <Container maxWidth='xl' sx={{ px: { xs: 2, sm: 3, md: 4 } }}>
+          <Stack
+            direction={{ xs: 'column', sm: 'row' }}
+            alignItems={{ xs: 'flex-start', sm: 'center' }}
+            spacing={2}
+            mb={2}
+          >
+            <VerifiedIcon sx={{ fontSize: { xs: 30, md: 40 }, opacity: 0.8 }} />
             <Typography
               variant='h3'
               fontWeight='900'
-              sx={{ textShadow: '0 4px 20px rgba(0,0,0,0.2)' }}
+              sx={{
+                textShadow: '0 4px 20px rgba(0,0,0,0.2)',
+                fontSize: { xs: '1.75rem', sm: '2.5rem', md: '3rem' }
+              }}
             >
               Panel de Control
             </Typography>
           </Stack>
           <Typography
             variant='h6'
-            sx={{ opacity: 0.9, maxWidth: '600px', fontWeight: 400 }}
+            sx={{
+              opacity: 0.9,
+              maxWidth: '600px',
+              fontWeight: 400,
+              fontSize: { xs: '0.9rem', sm: '1rem', md: '1.25rem' }
+            }}
           >
             Bienvenido, Administrador. Aquí tienes el control total sobre
             usuarios, organizaciones y eventos de CibESphere.
