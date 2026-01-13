@@ -284,18 +284,26 @@ const PanelDeUsuario: FunctionComponent = () => {
           <Box
             sx={{
               display: 'flex',
-              alignItems: 'center',
+              flexDirection: { xs: 'column', sm: 'row' },
+              alignItems: { xs: 'flex-start', sm: 'center' },
               justifyContent: 'space-between',
+              gap: { xs: 2, sm: 0 },
               mb: 4
             }}
           >
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 3 }}>
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: { xs: 2, sm: 3 }
+              }}
+            >
               <Avatar
                 src={user?.avatar_url}
                 sx={{
-                  width: 80,
-                  height: 80,
-                  fontSize: '2rem',
+                  width: { xs: 60, sm: 80 },
+                  height: { xs: 60, sm: 80 },
+                  fontSize: { xs: '1.5rem', sm: '2rem' },
                   bgcolor: 'var(--color-cadetblue)'
                 }}
               >
@@ -305,11 +313,18 @@ const PanelDeUsuario: FunctionComponent = () => {
                 <Typography
                   variant='h4'
                   fontWeight='bold'
-                  sx={{ color: 'var(--Gray-900)' }}
+                  sx={{
+                    color: 'var(--Gray-900)',
+                    fontSize: { xs: '1.5rem', sm: '2rem', md: '2.125rem' }
+                  }}
                 >
                   Hola, {user?.first_name}
                 </Typography>
-                <Typography variant='body1' color='text.secondary'>
+                <Typography
+                  variant='body1'
+                  color='text.secondary'
+                  sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}
+                >
                   Gestiona tus eventos y tu perfil público
                 </Typography>
               </Box>
@@ -319,6 +334,10 @@ const PanelDeUsuario: FunctionComponent = () => {
               href={`/u/${user?.slug || user?.id}`}
               target='_blank'
               startIcon={<PersonIcon />}
+              sx={{
+                width: { xs: '100%', sm: 'auto' },
+                justifyContent: 'center'
+              }}
             >
               Ver mi Perfil Público
             </Button>
@@ -329,12 +348,17 @@ const PanelDeUsuario: FunctionComponent = () => {
             onChange={handleTabChange}
             textColor='primary'
             indicatorColor='primary'
+            variant='scrollable'
+            scrollButtons='auto'
+            allowScrollButtonsMobile
             sx={{
               '& .MuiTab-root': {
                 textTransform: 'none',
-                fontSize: '1rem',
+                fontSize: { xs: '0.875rem', sm: '1rem' },
                 fontWeight: 600,
-                mr: 4
+                minWidth: { xs: 'auto', sm: 120 },
+                mr: { xs: 1, sm: 4 },
+                px: { xs: 1.5, sm: 2 }
               }
             }}
           >
