@@ -183,7 +183,7 @@ export const Header: FunctionComponent = () => {
               <IconButton
                 onClick={() => setMobileMenuOpen(true)}
                 sx={{
-                  color: textColor,
+                  color: 'var(--color-cadetblue)',
                   p: 1,
                   '&:hover': {
                     bgcolor: 'rgba(0, 192, 250, 0.1)'
