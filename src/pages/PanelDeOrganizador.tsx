@@ -169,7 +169,7 @@ const ProfileTabContent: React.FC<{
         {/* Banner Background */}
         <Box
           sx={{
-            height: 200,
+            height: { xs: 160, sm: 180, md: 200 },
             width: '100%',
             backgroundImage: `url(${bannerUrl})`,
             backgroundSize: 'cover',
@@ -178,12 +178,13 @@ const ProfileTabContent: React.FC<{
             '&::after': {
               content: '""',
               position: 'absolute',
-              top: 0,
+              bottom: 0,
               left: 0,
               right: 0,
-              bottom: 0,
+              height: '70%',
               background:
-                'linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.6))'
+                'linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 50%, transparent 100%)',
+              pointerEvents: 'none'
             }
           }}
         />
@@ -195,27 +196,38 @@ const ProfileTabContent: React.FC<{
             bottom: 0,
             left: 0,
             right: 0,
-            p: 3,
+            p: { xs: 2, sm: 2.5, md: 3 },
             display: 'flex',
-            alignItems: 'flex-end',
-            gap: 3,
+            flexDirection: { xs: 'column', sm: 'row' },
+            alignItems: { xs: 'center', sm: 'flex-end' },
+            gap: { xs: 1.5, sm: 2, md: 3 },
             zIndex: 2
           }}
         >
           <Avatar
             src={logoUrl}
             sx={{
-              width: 100,
-              height: 100,
-              border: '4px solid white',
+              width: { xs: 70, sm: 85, md: 100 },
+              height: { xs: 70, sm: 85, md: 100 },
+              border: '3px solid white',
               boxShadow: '0 4px 20px rgba(0,0,0,0.2)'
             }}
           />
-          <Box sx={{ color: 'white', pb: 1 }}>
+          <Box
+            sx={{
+              color: 'white',
+              pb: { xs: 0, sm: 0.5 },
+              textAlign: { xs: 'center', sm: 'left' },
+              textShadow: '0 2px 8px rgba(0,0,0,0.8), 0 1px 3px rgba(0,0,0,0.9)'
+            }}
+          >
             <Typography
               variant='h4'
               fontWeight='900'
-              sx={{ textShadow: '0 2px 4px rgba(0,0,0,0.5)' }}
+              sx={{
+                fontSize: { xs: '1.25rem', sm: '1.5rem', md: '2rem' },
+                lineHeight: 1.2
+              }}
             >
               {watchedName || 'Tu Organización'}
             </Typography>
@@ -223,12 +235,17 @@ const ProfileTabContent: React.FC<{
               sx={{
                 display: 'flex',
                 alignItems: 'center',
+                justifyContent: { xs: 'center', sm: 'flex-start' },
                 gap: 1,
-                opacity: 0.9
+                mt: 0.5
               }}
             >
-              <LocationCityIcon fontSize='small' />
-              <Typography variant='body1' fontWeight='500'>
+              <LocationCityIcon sx={{ fontSize: { xs: 16, sm: 20 } }} />
+              <Typography
+                variant='body1'
+                fontWeight='500'
+                sx={{ fontSize: { xs: '0.85rem', sm: '1rem' } }}
+              >
                 {watchedCity || 'Ciudad'}
               </Typography>
             </Box>
