@@ -20,9 +20,8 @@ import { useLoaderData, useNavigate } from 'react-router-dom'
 import { PublicUserProfile as PublicUserProfileType, Event } from '../types'
 import LocationOnIcon from '@mui/icons-material/LocationOn'
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday'
-import TwitterIcon from '@mui/icons-material/Twitter'
-import LinkedInIcon from '@mui/icons-material/LinkedIn'
 import GitHubIcon from '@mui/icons-material/GitHub'
+import LinkedInIcon from '@mui/icons-material/LinkedIn'
 import LanguageIcon from '@mui/icons-material/Language'
 import WorkIcon from '@mui/icons-material/Work'
 import VerifiedIcon from '@mui/icons-material/Verified'
@@ -54,10 +53,10 @@ const UserProfile: React.FC = () => {
   const allEvents = user.registered_events || []
   const now = new Date()
   const upcomingEvents = allEvents.filter(
-    (e: Event) => new Date(e.start_date || e.startDate) > now
+    (e: Event) => new Date(e.start_date) > now
   )
   const pastEvents = allEvents.filter(
-    (e: Event) => new Date(e.start_date || e.startDate) <= now
+    (e: Event) => new Date(e.start_date) <= now
   )
 
   const fullName =
@@ -263,19 +262,19 @@ const UserProfile: React.FC = () => {
                         </IconButton>
                       </Tooltip>
                     )}
-                    {user.twitter && (
-                      <Tooltip title='Twitter / X'>
+                    {(user as any).github && (
+                      <Tooltip title='GitHub'>
                         <IconButton
                           component='a'
-                          href={user.twitter}
+                          href={(user as any).github}
                           target='_blank'
                           sx={{
-                            bgcolor: '#1DA1F2',
+                            bgcolor: '#181717',
                             color: 'white',
-                            '&:hover': { bgcolor: '#0d8ddb' }
+                            '&:hover': { bgcolor: '#333' }
                           }}
                         >
-                          <TwitterIcon />
+                          <GitHubIcon />
                         </IconButton>
                       </Tooltip>
                     )}
@@ -295,11 +294,13 @@ const UserProfile: React.FC = () => {
                         </IconButton>
                       </Tooltip>
                     )}
-                    {!user.linkedin && !user.twitter && !user.website && (
-                      <Typography variant='body2' color='text.secondary'>
-                        No hay redes sociales públicas.
-                      </Typography>
-                    )}
+                    {!user.linkedin &&
+                      !(user as any).github &&
+                      !user.website && (
+                        <Typography variant='body2' color='text.secondary'>
+                          No hay redes sociales públicas.
+                        </Typography>
+                      )}
                   </Stack>
                 </Paper>
               </motion.div>

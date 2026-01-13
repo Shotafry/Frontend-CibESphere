@@ -51,6 +51,7 @@ export interface User {
   website?: string
   linkedin?: string
   twitter?: string
+  github?: string
 
   // Roles y estado
   role: Role
@@ -458,6 +459,7 @@ export interface PublicUserProfile {
   website?: string
   linkedin?: string
   twitter?: string
+  github?: string
   social_links?: string
   joined_at: string
   events_attended?: number

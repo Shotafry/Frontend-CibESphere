@@ -29,7 +29,7 @@ import PersonIcon from '@mui/icons-material/Person'
 import LocationOnIcon from '@mui/icons-material/LocationOn'
 import SettingsIcon from '@mui/icons-material/Settings'
 import MailOutlineIcon from '@mui/icons-material/MailOutline'
-import TwitterIcon from '@mui/icons-material/Twitter'
+import GitHubIcon from '@mui/icons-material/GitHub'
 import LinkedInIcon from '@mui/icons-material/LinkedIn'
 import LanguageIcon from '@mui/icons-material/Language'
 import { useNavigation, useSearchParams } from 'react-router-dom'
@@ -116,7 +116,7 @@ const PanelDeUsuario: FunctionComponent = () => {
       banner_url: user?.banner_url || '',
       company: user?.company || '',
       position: user?.position || '',
-      twitter: user?.twitter || '',
+      github: user?.github || '',
       linkedin: user?.linkedin || '',
 
       website: user?.website || '',
@@ -151,7 +151,7 @@ const PanelDeUsuario: FunctionComponent = () => {
     const optionalFields: (keyof User)[] = [
       'website',
       'linkedin',
-      'twitter',
+      'github',
       'company',
       'position',
       'personal_quote',
@@ -960,18 +960,19 @@ const EditProfileForm: React.FC<{
             </Typography>
             <Stack spacing={2}>
               <Controller
-                name='twitter'
+                name='github'
                 control={control}
                 render={({ field }) => (
                   <TextField
                     {...field}
-                    label='Twitter / X'
+                    label='GitHub'
                     fullWidth
                     variant='outlined'
+                    placeholder='https://github.com/tu-usuario'
                     InputProps={{
                       startAdornment: (
                         <InputAdornment position='start'>
-                          <TwitterIcon />
+                          <GitHubIcon />
                         </InputAdornment>
                       )
                     }}
