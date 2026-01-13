@@ -406,9 +406,16 @@ const PanelDeUsuario: FunctionComponent = () => {
                             onClick={() => handleCancelSubscription(event.id)}
                             sx={{
                               position: 'absolute',
-                              top: 16,
-                              right: 16,
-                              zIndex: 10
+                              // Mobile: top-right corner over the image, above info box
+                              // Desktop: inside card, bottom-right with more spacing
+                              top: { xs: 8, md: 'auto' },
+                              bottom: { xs: 'auto', md: 26 },
+                              right: { xs: 8, md: 14 },
+                              zIndex: 20,
+                              fontSize: { xs: '0.7rem', md: '0.875rem' },
+                              py: { xs: 0.5, md: 0.75 },
+                              px: { xs: 1.5, md: 2 },
+                              boxShadow: '0 2px 8px rgba(0,0,0,0.15)'
                             }}
                           >
                             Cancelar
