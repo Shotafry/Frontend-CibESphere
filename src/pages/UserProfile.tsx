@@ -357,6 +357,7 @@ const UserProfile: React.FC = () => {
               </motion.div>
 
               {/* CERTIFICATIONS PLACEHOLDER */}
+              {/* Certificaciones/Badges Section */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -367,25 +368,76 @@ const UserProfile: React.FC = () => {
                   sx={{
                     p: 4,
                     borderRadius: '24px',
-                    border: '1px dashed #CBD5E1',
-                    bgcolor: '#F8FAFC',
-                    textAlign: 'center'
+                    border: '1px solid #E2E8F0',
+                    bgcolor: '#F8FAFC'
                   }}
                 >
-                  <EmojiEventsIcon
-                    sx={{ fontSize: 40, color: '#94A3B8', mb: 1 }}
-                  />
                   <Typography
                     variant='subtitle2'
-                    color='text.secondary'
                     fontWeight='bold'
+                    mb={2}
+                    sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
                   >
+                    <EmojiEventsIcon sx={{ color: 'var(--color-cadetblue)' }} />
                     Certificaciones
                   </Typography>
-                  <Typography variant='caption' color='text.secondary'>
-                    Próximamente podrás ver las certificaciones y badges de este
-                    usuario.
-                  </Typography>
+                  {(() => {
+                    let badgeList: Array<{
+                      id: string
+                      url: string
+                      name: string
+                    }> = []
+                    try {
+                      if ((user as any).badges) {
+                        badgeList = JSON.parse((user as any).badges)
+                      }
+                    } catch {
+                      badgeList = []
+                    }
+
+                    if (badgeList.length === 0) {
+                      return (
+                        <Typography
+                          variant='caption'
+                          color='text.secondary'
+                          textAlign='center'
+                          display='block'
+                        >
+                          Este usuario aún no tiene certificaciones.
+                        </Typography>
+                      )
+                    }
+
+                    return (
+                      <Box
+                        sx={{
+                          display: 'flex',
+                          flexWrap: 'wrap',
+                          gap: 2,
+                          justifyContent: 'center'
+                        }}
+                      >
+                        {badgeList.map((badge) => (
+                          <Tooltip key={badge.id} title={badge.name}>
+                            <Avatar
+                              src={badge.url}
+                              alt={badge.name}
+                              sx={{
+                                width: 60,
+                                height: 60,
+                                border: '3px solid var(--color-cadetblue)',
+                                cursor: 'pointer',
+                                transition: 'transform 0.2s',
+                                '&:hover': {
+                                  transform: 'scale(1.1)'
+                                }
+                              }}
+                            />
+                          </Tooltip>
+                        ))}
+                      </Box>
+                    )
+                  })()}
                 </Paper>
               </motion.div>
             </Stack>

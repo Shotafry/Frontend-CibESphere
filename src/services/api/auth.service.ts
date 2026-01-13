@@ -23,12 +23,12 @@ export const logoutAll = async (): Promise<void> => {
 /**
  * Uploads an image to the server
  * @param file The file to upload
- * @param type The type of image: 'avatar' or 'banner' (default: 'avatar')
+ * @param type The type of image: 'avatar', 'banner', or 'badge' (default: 'avatar')
  * @returns The public URL of the uploaded image
  */
 export const uploadImage = async (
   file: File,
-  type: 'avatar' | 'banner' = 'avatar'
+  type: 'avatar' | 'banner' | 'badge' = 'avatar'
 ): Promise<string> => {
   const formData = new FormData()
   formData.append('file', file)

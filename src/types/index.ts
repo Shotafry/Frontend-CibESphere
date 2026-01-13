@@ -74,6 +74,7 @@ export interface User {
   banner_url?: string
   personal_quote?: string
   slug?: string // Added slug support
+  badges?: string // JSON array of badge objects
 
   // Organización (si aplica)
   organization?: OrganizationSummaryResponse
@@ -461,6 +462,7 @@ export interface PublicUserProfile {
   twitter?: string
   github?: string
   social_links?: string
+  badges?: string // JSON array of badge objects
   joined_at: string
   events_attended?: number
   events_organized?: number
