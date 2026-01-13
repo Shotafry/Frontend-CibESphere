@@ -243,7 +243,7 @@ const UserProfile: React.FC = () => {
                   }}
                 >
                   <Typography variant='h6' fontWeight='bold' gutterBottom>
-                    Conectar
+                    Redes Sociales
                   </Typography>
                   <Stack direction='row' spacing={2} sx={{ mt: 2 }}>
                     {user.linkedin && (
