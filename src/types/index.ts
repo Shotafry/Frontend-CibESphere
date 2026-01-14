@@ -100,25 +100,69 @@ export interface UserDetail extends User {
 
 // --- TIPOS DE ORGANIZACIÓN ---
 
-export interface OrganizationSummaryResponse {
+// --- TIPOS DE ORGANIZACIÓN ---
+
+export interface SocialMediaLinks {
+  linkedin?: string
+  twitter?: string
+  facebook?: string
+  instagram?: string
+  youtube?: string
+}
+
+export interface OrganizationResponse {
   id: string
   slug: string
   name: string
-  logo_url: string
-  is_verified: boolean
-  city: string
-
-  // Frontend legacy support
+  description: string
   website?: string
-  description?: string
-  banner_url?: string
+
+  // Contact Info
   email?: string
-  social_links?: {
-    twitter?: string
-    linkedin?: string
-    github?: string
-    website?: string
-  }
+  phone?: string
+  address?: string
+  city?: string
+  country?: string
+  postal_code?: string
+
+  // Location
+  latitude?: number
+  longitude?: number
+
+  // Branding
+  logo_url?: string
+  banner_url?: string
+  primary_color?: string
+  secondary_color?: string
+
+  // Social
+  social_media?: SocialMediaLinks
+
+  // Status
+  status: string
+  is_verified: boolean
+  verified_at?: string
+
+  // Stats
+  events_count: number
+
+  // Config
+  can_create_events?: boolean
+  max_events?: number
+
+  // Timestamps
+  created_at: string
+  updated_at: string
+}
+
+export interface OrganizationSummaryResponse
+  extends Partial<OrganizationResponse> {
+  id: string
+  slug: string
+  name: string
+  // Mantener compatibilidad con usos anteriores si es necesario
+  // pero idealmente usar OrganizationResponse donde sea el objeto completo
+  social_links?: SocialMediaLinks // Legacy support if needed, but social_media is preferred
 }
 
 // --- TIPOS DE EVENTO ---

@@ -29,7 +29,7 @@ import {
 } from '@mui/material'
 import { useLoaderData, useNavigate, useNavigation } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
-import { DashboardStats, Event, OrganizationSummary } from '../types'
+import { DashboardStats, Event, OrganizationResponse } from '../types'
 import * as apiService from '../services/apiService'
 import EventIcon from '@mui/icons-material/Event'
 import { Button } from '../components/Button'
@@ -50,13 +50,20 @@ import BusinessIcon from '@mui/icons-material/Business'
 import LinkIcon from '@mui/icons-material/Link'
 import DescriptionIcon from '@mui/icons-material/Description'
 import VisibilityIcon from '@mui/icons-material/Visibility'
+import PhoneIcon from '@mui/icons-material/Phone'
+import EmailIcon from '@mui/icons-material/Email'
+import PaletteIcon from '@mui/icons-material/Palette'
+import YouTubeIcon from '@mui/icons-material/YouTube'
+import FacebookIcon from '@mui/icons-material/Facebook'
+import InstagramIcon from '@mui/icons-material/Instagram'
+import MapIcon from '@mui/icons-material/Map'
 import { ImageUpload } from '../components/ImageUpload'
 import { useForm, Controller, useWatch } from 'react-hook-form'
 
 interface LoaderData {
   stats: DashboardStats
   events: Event[]
-  organization: OrganizationSummary | null
+  organization: OrganizationResponse | null
 }
 
 // --- COMPONENTE STAT CARD PREMIUM ---
@@ -414,6 +421,108 @@ const ProfileTabContent: React.FC<{
                   />
                 </Grid>
               </Grid>
+
+              {/* Contact Info Fields */}
+              <Divider sx={{ my: 4 }} />
+
+              <Box
+                sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 3 }}
+              >
+                <PhoneIcon sx={{ color: 'var(--color-cadetblue)' }} />
+                <Typography variant='h6' fontWeight='bold'>
+                  Información de Contacto
+                </Typography>
+              </Box>
+
+              <Grid container spacing={2}>
+                <Grid size={{ xs: 12, sm: 6 }}>
+                  <Controller
+                    name='email'
+                    control={control}
+                    rules={{
+                      required: 'El email es obligatorio',
+                      pattern: {
+                        value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                        message: 'Email inválido'
+                      }
+                    }}
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        label='Email Público'
+                        fullWidth
+                        InputProps={{
+                          startAdornment: (
+                            <InputAdornment position='start'>
+                              <EmailIcon color='action' />
+                            </InputAdornment>
+                          )
+                        }}
+                        error={!!errors.email}
+                        helperText={errors.email?.message}
+                      />
+                    )}
+                  />
+                </Grid>
+                <Grid size={{ xs: 12, sm: 6 }}>
+                  <Controller
+                    name='phone'
+                    control={control}
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        label='Teléfono'
+                        fullWidth
+                        InputProps={{
+                          startAdornment: (
+                            <InputAdornment position='start'>
+                              <PhoneIcon color='action' />
+                            </InputAdornment>
+                          )
+                        }}
+                      />
+                    )}
+                  />
+                </Grid>
+                <Grid size={{ xs: 12 }}>
+                  <Controller
+                    name='address'
+                    control={control}
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        label='Dirección'
+                        fullWidth
+                        InputProps={{
+                          startAdornment: (
+                            <InputAdornment position='start'>
+                              <MapIcon color='action' />
+                            </InputAdornment>
+                          )
+                        }}
+                      />
+                    )}
+                  />
+                </Grid>
+                <Grid size={{ xs: 12, sm: 6 }}>
+                  <Controller
+                    name='postal_code'
+                    control={control}
+                    render={({ field }) => (
+                      <TextField {...field} label='Código Postal' fullWidth />
+                    )}
+                  />
+                </Grid>
+                <Grid size={{ xs: 12, sm: 6 }}>
+                  <Controller
+                    name='country'
+                    control={control}
+                    render={({ field }) => (
+                      <TextField {...field} label='País' fullWidth />
+                    )}
+                  />
+                </Grid>
+              </Grid>
             </Stack>
           </Paper>
         </Grid>
@@ -479,7 +588,7 @@ const ProfileTabContent: React.FC<{
               </Box>
               <Stack spacing={2}>
                 <Controller
-                  name='social_links.twitter'
+                  name='social_media.twitter'
                   control={control}
                   render={({ field }) => (
                     <TextField
@@ -487,6 +596,7 @@ const ProfileTabContent: React.FC<{
                       label='X (Twitter)'
                       fullWidth
                       size='small'
+                      placeholder='https://x.com/...'
                       InputProps={{
                         startAdornment: (
                           <InputAdornment position='start'>
@@ -498,7 +608,7 @@ const ProfileTabContent: React.FC<{
                   )}
                 />
                 <Controller
-                  name='social_links.linkedin'
+                  name='social_media.linkedin'
                   control={control}
                   render={({ field }) => (
                     <TextField
@@ -506,6 +616,7 @@ const ProfileTabContent: React.FC<{
                       label='LinkedIn'
                       fullWidth
                       size='small'
+                      placeholder='https://linkedin.com/...'
                       InputProps={{
                         startAdornment: (
                           <InputAdornment position='start'>
@@ -520,7 +631,7 @@ const ProfileTabContent: React.FC<{
                   )}
                 />
                 <Controller
-                  name='social_links.github'
+                  name='social_media.github'
                   control={control}
                   render={({ field }) => (
                     <TextField
@@ -528,12 +639,82 @@ const ProfileTabContent: React.FC<{
                       label='GitHub'
                       fullWidth
                       size='small'
+                      placeholder='https://github.com/...'
                       InputProps={{
                         startAdornment: (
                           <InputAdornment position='start'>
                             <GitHubIcon
                               fontSize='small'
                               sx={{ color: '#333' }}
+                            />
+                          </InputAdornment>
+                        )
+                      }}
+                    />
+                  )}
+                />
+                <Controller
+                  name='social_media.facebook'
+                  control={control}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      label='Facebook'
+                      fullWidth
+                      size='small'
+                      placeholder='https://facebook.com/...'
+                      InputProps={{
+                        startAdornment: (
+                          <InputAdornment position='start'>
+                            <FacebookIcon
+                              fontSize='small'
+                              sx={{ color: '#1877F2' }}
+                            />
+                          </InputAdornment>
+                        )
+                      }}
+                    />
+                  )}
+                />
+                <Controller
+                  name='social_media.instagram'
+                  control={control}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      label='Instagram'
+                      fullWidth
+                      size='small'
+                      placeholder='https://instagram.com/...'
+                      InputProps={{
+                        startAdornment: (
+                          <InputAdornment position='start'>
+                            <InstagramIcon
+                              fontSize='small'
+                              sx={{ color: '#C13584' }}
+                            />
+                          </InputAdornment>
+                        )
+                      }}
+                    />
+                  )}
+                />
+                <Controller
+                  name='social_media.youtube'
+                  control={control}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      label='YouTube'
+                      fullWidth
+                      size='small'
+                      placeholder='https://youtube.com/...'
+                      InputProps={{
+                        startAdornment: (
+                          <InputAdornment position='start'>
+                            <YouTubeIcon
+                              fontSize='small'
+                              sx={{ color: '#FF0000' }}
                             />
                           </InputAdornment>
                         )
@@ -584,7 +765,7 @@ const PanelDeOrganizador: FunctionComponent = () => {
     handleSubmit,
     reset,
     formState: { errors }
-  } = useForm<OrganizationSummary>({
+  } = useForm<OrganizationResponse>({
     defaultValues: organization || user?.organization || {}
   })
 
@@ -621,7 +802,7 @@ const PanelDeOrganizador: FunctionComponent = () => {
     }
   }
 
-  const onSaveProfile = async (data: OrganizationSummary) => {
+  const onSaveProfile = async (data: OrganizationResponse) => {
     if (!user?.organization?.id) return
     setIsSaving(true)
     setSaveMessage(null)
