@@ -1,5 +1,10 @@
 // src/pages/PanelDeOrganizador.tsx
-import React, { FunctionComponent, useCallback, useState } from 'react'
+import React, {
+  FunctionComponent,
+  useCallback,
+  useState,
+  useEffect
+} from 'react'
 import {
   Box,
   Typography,
@@ -37,18 +42,21 @@ import EditIcon from '@mui/icons-material/Edit'
 import SaveIcon from '@mui/icons-material/Save'
 import TrendingUpIcon from '@mui/icons-material/TrendingUp'
 import LanguageIcon from '@mui/icons-material/Language'
-import TwitterIcon from '@mui/icons-material/Twitter'
+import XIcon from '@mui/icons-material/X'
 import LinkedInIcon from '@mui/icons-material/LinkedIn'
 import GitHubIcon from '@mui/icons-material/GitHub'
 import ImageIcon from '@mui/icons-material/Image'
 import BusinessIcon from '@mui/icons-material/Business'
 import LinkIcon from '@mui/icons-material/Link'
 import DescriptionIcon from '@mui/icons-material/Description'
+import VisibilityIcon from '@mui/icons-material/Visibility'
+import { ImageUpload } from '../components/ImageUpload'
 import { useForm, Controller, useWatch } from 'react-hook-form'
 
 interface LoaderData {
   stats: DashboardStats
   events: Event[]
+  organization: OrganizationSummary | null
 }
 
 // --- COMPONENTE STAT CARD PREMIUM ---
@@ -296,6 +304,50 @@ const ProfileTabContent: React.FC<{
                 )}
               />
               <Controller
+                name='slug'
+                control={control}
+                rules={{
+                  required: 'El slug es obligatorio',
+                  pattern: {
+                    value: /^[a-z0-9-]+$/,
+                    message: 'Solo letras minúsculas, números y guiones'
+                  },
+                  validate: async (value) => {
+                    if (!value || value === user?.organization?.slug)
+                      return true
+                    try {
+                      const available = await apiService.checkSlugAvailability(
+                        value
+                      )
+                      return available || 'Este URL ya está en uso'
+                    } catch (e) {
+                      console.error(e)
+                      return 'Error al validar disponibilidad'
+                    }
+                  }
+                }}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    label='URL Personalizada (Slug)'
+                    fullWidth
+                    variant='outlined'
+                    error={!!errors.slug}
+                    helperText={
+                      errors.slug?.message ||
+                      `cibesphere.com/organizacion/${field.value}`
+                    }
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position='start'>
+                          <LinkIcon color='action' />
+                        </InputAdornment>
+                      )
+                    }}
+                  />
+                )}
+              />
+              <Controller
                 name='description'
                 control={control}
                 render={({ field }) => (
@@ -387,19 +439,12 @@ const ProfileTabContent: React.FC<{
                   name='logo_url'
                   control={control}
                   render={({ field }) => (
-                    <TextField
-                      {...field}
-                      label='URL del Logo'
-                      fullWidth
-                      size='small'
-                      helperText='Recomendado: 400x400px'
-                      InputProps={{
-                        startAdornment: (
-                          <InputAdornment position='start'>
-                            <LinkIcon fontSize='small' />
-                          </InputAdornment>
-                        )
-                      }}
+                    <ImageUpload
+                      currentUrl={field.value}
+                      onUpload={field.onChange}
+                      label='Logo'
+                      altText='Organization Logo'
+                      isBanner={false}
                     />
                   )}
                 />
@@ -407,19 +452,12 @@ const ProfileTabContent: React.FC<{
                   name='banner_url'
                   control={control}
                   render={({ field }) => (
-                    <TextField
-                      {...field}
-                      label='URL del Banner'
-                      fullWidth
-                      size='small'
-                      helperText='Recomendado: 1200x400px'
-                      InputProps={{
-                        startAdornment: (
-                          <InputAdornment position='start'>
-                            <LinkIcon fontSize='small' />
-                          </InputAdornment>
-                        )
-                      }}
+                    <ImageUpload
+                      currentUrl={field.value}
+                      onUpload={field.onChange}
+                      label='Banner'
+                      altText='Organization Banner'
+                      isBanner={true}
                     />
                   )}
                 />
@@ -446,16 +484,13 @@ const ProfileTabContent: React.FC<{
                   render={({ field }) => (
                     <TextField
                       {...field}
-                      label='Twitter'
+                      label='X (Twitter)'
                       fullWidth
                       size='small'
                       InputProps={{
                         startAdornment: (
                           <InputAdornment position='start'>
-                            <TwitterIcon
-                              fontSize='small'
-                              sx={{ color: '#1DA1F2' }}
-                            />
+                            <XIcon fontSize='small' sx={{ color: '#000' }} />
                           </InputAdornment>
                         )
                       }}
@@ -533,7 +568,7 @@ const ProfileTabContent: React.FC<{
 }
 
 const PanelDeOrganizador: FunctionComponent = () => {
-  const { stats, events } = useLoaderData() as LoaderData
+  const { stats, events, organization } = useLoaderData() as LoaderData
   const navigation = useNavigation()
   const navigate = useNavigate()
   const { user, refreshUserData } = useAuth()
@@ -547,10 +582,17 @@ const PanelDeOrganizador: FunctionComponent = () => {
   const {
     control,
     handleSubmit,
+    reset,
     formState: { errors }
   } = useForm<OrganizationSummary>({
-    defaultValues: user?.organization || {}
+    defaultValues: organization || user?.organization || {}
   })
+
+  useEffect(() => {
+    if (organization) {
+      reset(organization)
+    }
+  }, [organization, reset])
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue)
@@ -591,6 +633,7 @@ const PanelDeOrganizador: FunctionComponent = () => {
       if (user) {
         refreshUserData({ ...user, organization: updatedOrg })
       }
+      reset(updatedOrg)
       setSaveMessage({
         type: 'success',
         text: 'Perfil actualizado correctamente.'
@@ -681,6 +724,18 @@ const PanelDeOrganizador: FunctionComponent = () => {
                 sx={{ width: { xs: '100%', sm: 'auto' } }}
               >
                 Crear Evento
+              </Button>
+            )}
+            {user?.organization?.slug && (
+              <Button
+                variant='secondary'
+                startIcon={<VisibilityIcon />}
+                onClick={() =>
+                  navigate(`/organizacion/${user.organization?.slug}`)
+                }
+                sx={{ width: { xs: '100%', sm: 'auto' } }}
+              >
+                Ver Perfil Público
               </Button>
             )}
           </Box>

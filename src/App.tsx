@@ -236,25 +236,37 @@ const routes: RouteObject[] = [
               const userStr = localStorage.getItem('user')
               if (!userStr) return redirect('/loginsign-up')
               const user = JSON.parse(userStr) as User
-              if (!user.organization) {
-                return {
-                  stats: {
-                    total_events: 0,
-                    total_attendees: 0,
-                    total_cities: 0,
-                    published_events: 0
-                  },
-                  events: []
-                }
+              const orgPromise = apiService.getMyOrganization()
+              let organization = null
+              let stats = {
+                total_events: 0,
+                total_attendees: 0,
+                total_cities: 0,
+                published_events: 0
               }
-              const orgId = user.organization.id
-              const statsPromise = apiService.getOrganizerDashboard(orgId)
-              const eventsPromise = apiService.getOrganizationEvents(orgId)
-              const [stats, events] = await Promise.all([
-                statsPromise,
-                eventsPromise
-              ])
-              return { stats, events }
+              let events: any[] = []
+
+              try {
+                // Primero intentamos obtener la organización fresca
+                organization = await orgPromise
+
+                if (organization && organization.id) {
+                  const orgId = organization.id
+                  const statsPromise = apiService.getOrganizerDashboard(orgId)
+                  const eventsPromise = apiService.getOrganizationEvents(orgId)
+
+                  const [fetchedStats, fetchedEvents] = await Promise.all([
+                    statsPromise,
+                    eventsPromise
+                  ])
+                  stats = fetchedStats
+                  events = fetchedEvents
+                }
+              } catch (error) {
+                console.error('Error loading organizer data:', error)
+              }
+
+              return { stats, events, organization }
             }
           },
           {

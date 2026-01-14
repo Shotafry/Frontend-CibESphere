@@ -105,6 +105,13 @@ export const Header: FunctionComponent = () => {
     }
   }, [navigate, user])
 
+  const getProfilePath = () => {
+    if (user?.role === Role.Organizer && user?.organization?.slug) {
+      return `/organizacion/${user.organization.slug}`
+    }
+    return `/u/${user?.slug || user?.id}`
+  }
+
   return (
     <>
       <Box

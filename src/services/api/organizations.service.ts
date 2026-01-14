@@ -17,6 +17,13 @@ export const getAllOrganizations = async (): Promise<OrganizationSummary[]> => {
   return response.data.organizations || response.data.data || response.data
 }
 
+export const getMyOrganization = async (): Promise<OrganizationSummary> => {
+  const response = await httpClient.get<OrganizationSummary>(
+    '/organizations/me'
+  )
+  return response.data
+}
+
 export const getOrganizationBySlug = async (
   slug: string
 ): Promise<OrganizationSummary> => {
@@ -24,6 +31,18 @@ export const getOrganizationBySlug = async (
     `/public/organizations/${slug}`
   )
   return response.data
+}
+
+export const checkSlugAvailability = async (slug: string): Promise<boolean> => {
+  try {
+    await getOrganizationBySlug(slug)
+    return false // Exists -> Not available
+  } catch (error: any) {
+    if (error.response?.status === 404) {
+      return true // Not found -> Available
+    }
+    throw error
+  }
 }
 
 export const getOrganizationEvents = async (

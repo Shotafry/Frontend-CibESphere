@@ -18,7 +18,7 @@ import {
   Email as EmailIcon,
   LinkedIn as LinkedInIcon,
   GitHub as GitHubIcon,
-  Twitter as XIcon,
+  X as XIcon,
   LocationOn as LocationIcon,
   Event as EventIcon,
   Add as FollowIcon,
@@ -190,7 +190,7 @@ const OrganizationProfile: FunctionComponent = () => {
                 <IconButton
                   href={organization.social_links.twitter}
                   target='_blank'
-                  sx={{ color: '#1DA1F2', bgcolor: '#E8F5FE' }}
+                  sx={{ color: '#000000', bgcolor: '#F0F0F0' }}
                 >
                   <XIcon />
                 </IconButton>

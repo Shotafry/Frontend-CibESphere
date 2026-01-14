@@ -68,6 +68,13 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({
     return 'Mi Panel'
   }
 
+  const getProfilePath = () => {
+    if (user?.role === Role.Organizer && user?.organization?.slug) {
+      return `/organizacion/${user.organization.slug}`
+    }
+    return `/u/${user?.slug || user?.id}`
+  }
+
   return (
     <Drawer
       anchor='right'
@@ -182,7 +189,7 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({
 
             <ListItem disablePadding>
               <ListItemButton
-                onClick={() => handleNavigation(`/u/${user?.slug || user?.id}`)}
+                onClick={() => handleNavigation(getProfilePath())}
               >
                 <ListItemIcon>
                   <PersonIcon sx={{ color: 'var(--color-cadetblue)' }} />
