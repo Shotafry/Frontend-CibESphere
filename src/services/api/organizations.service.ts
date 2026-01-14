@@ -45,11 +45,14 @@ export const checkSlugAvailability = async (slug: string): Promise<boolean> => {
   }
 }
 
+// Import getEvents lazily to avoid circular dependency if needed, or better, assume typical usage
+import { getEvents } from './events.service'
+
 export const getOrganizationEvents = async (
   orgId: string
 ): Promise<Event[]> => {
-  const response = await httpClient.get<any>(`/organizations/${orgId}/events`)
-  return response.data.events || response.data.data || response.data
+  // Use public events endpoint with organization filter
+  return getEvents({ organization_id: orgId })
 }
 
 // --- CRUD ---

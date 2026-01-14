@@ -45,6 +45,11 @@ export const getEvents = async (
     params.append('is_online', filters.is_online.toString())
   }
 
+  // Organization filter
+  if (filters.organization_id) {
+    params.append('organization_id', filters.organization_id)
+  }
+
   // Pagination support
   if (filters.page) {
     params.append('page', filters.page.toString())
