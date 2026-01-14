@@ -115,12 +115,12 @@ const PanelDeUsuario: FunctionComponent = () => {
       bio: user?.bio || '',
       avatar_url: user?.avatar_url || '',
       banner_url: user?.banner_url || '',
-      company: user?.company || '',
+      employer: user?.employer || '',
       position: user?.position || '',
       github: user?.github || '',
       linkedin: user?.linkedin || '',
 
-      website: user?.website || '',
+      personal_website: user?.personal_website || '',
       personal_quote: (user as any)?.personal_quote || '',
       badges: (user as any)?.badges || ''
     }
@@ -151,10 +151,10 @@ const PanelDeUsuario: FunctionComponent = () => {
     // Sanitize data: convert empty strings to undefined to avoid validation errors
     const sanitizedData = { ...data }
     const optionalFields: (keyof User)[] = [
-      'website',
+      'personal_website',
       'linkedin',
       'github',
-      'company',
+      'employer',
       'position',
       'personal_quote',
       'slug',
@@ -228,7 +228,7 @@ const PanelDeUsuario: FunctionComponent = () => {
         userId: user.id,
         userName: user.first_name + ' ' + user.last_name,
         userAvatar: user.avatar_url,
-        userCompany: user.company,
+        userCompany: user.employer,
         userPosition: user.position,
         userQuote: user.personal_quote,
         rating: reviewRating || 5,
@@ -737,7 +737,7 @@ const EditProfileForm: React.FC<{
   const watchedFirstName = useWatch({ control, name: 'first_name' })
   const watchedLastName = useWatch({ control, name: 'last_name' })
   const watchedCity = useWatch({ control, name: 'city' })
-  const watchedCompany = useWatch({ control, name: 'company' })
+  const watchedEmployer = useWatch({ control, name: 'employer' })
   const watchedPosition = useWatch({ control, name: 'position' })
 
   const bannerUrl =
@@ -860,7 +860,7 @@ const EditProfileForm: React.FC<{
                   {watchedCity}
                 </Typography>
               )}
-              {watchedCompany && (
+              {watchedEmployer && (
                 <Typography sx={{ fontSize: { xs: '0.8rem', sm: '0.9rem' } }}>
                   <Box
                     component='span'
@@ -868,7 +868,7 @@ const EditProfileForm: React.FC<{
                   >
                     |{' '}
                   </Box>
-                  {watchedCompany}
+                  {watchedEmployer}
                 </Typography>
               )}
             </Box>
@@ -1029,12 +1029,12 @@ const EditProfileForm: React.FC<{
             <Grid container spacing={2}>
               <Grid size={{ xs: 12, sm: 6 }}>
                 <Controller
-                  name='company'
+                  name='employer'
                   control={control}
                   render={({ field }) => (
                     <TextField
                       {...field}
-                      label='Empresa'
+                      label='Empresa (Donde trabajas)'
                       fullWidth
                       variant='outlined'
                     />
@@ -1105,7 +1105,7 @@ const EditProfileForm: React.FC<{
                 )}
               />
               <Controller
-                name='website'
+                name='personal_website'
                 control={control}
                 render={({ field }) => (
                   <TextField

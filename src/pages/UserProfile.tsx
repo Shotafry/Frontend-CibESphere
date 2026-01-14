@@ -149,10 +149,10 @@ const UserProfile: React.FC = () => {
                   flexWrap: 'wrap'
                 }}
               >
-                {user.position && user.company && (
+                {user.position && user.employer && (
                   <Chip
                     icon={<WorkIcon />}
-                    label={`${user.position} @ ${user.company}`}
+                    label={`${user.position} @ ${user.employer}`}
                     size='small'
                     sx={{
                       bgcolor: 'rgba(255,255,255,0.15)',
@@ -278,11 +278,11 @@ const UserProfile: React.FC = () => {
                         </IconButton>
                       </Tooltip>
                     )}
-                    {user.website && (
+                    {user.personal_website && (
                       <Tooltip title='Website'>
                         <IconButton
                           component='a'
-                          href={user.website}
+                          href={user.personal_website}
                           target='_blank'
                           sx={{
                             bgcolor: 'var(--color-cadetblue)',
@@ -296,7 +296,7 @@ const UserProfile: React.FC = () => {
                     )}
                     {!user.linkedin &&
                       !(user as any).github &&
-                      !user.website && (
+                      !user.personal_website && (
                         <Typography variant='body2' color='text.secondary'>
                           No hay redes sociales públicas.
                         </Typography>

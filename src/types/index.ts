@@ -45,10 +45,10 @@ export interface User {
   full_name: string
 
   // Perfil profesional
-  company?: string
+  employer?: string
   position?: string
   bio?: string
-  website?: string
+  personal_website?: string
   linkedin?: string
   twitter?: string
   github?: string
@@ -451,14 +451,14 @@ export interface PublicUserProfile {
   first_name?: string
   last_name?: string
   full_name: string
-  company?: string
+  employer?: string
   position?: string
   city?: string
   country?: string
   bio?: string
   avatar_url?: string
   banner_url?: string
-  website?: string
+  personal_website?: string
   linkedin?: string
   twitter?: string
   github?: string
@@ -570,10 +570,10 @@ export interface BulkVerifyResponse {
 export interface UpdateUserDTO {
   first_name?: string
   last_name?: string
-  company?: string
+  employer?: string
   position?: string
   bio?: string
-  website?: string
+  personal_website?: string
   city?: string
   country?: string
   latitude?: number
