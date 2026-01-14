@@ -18,7 +18,7 @@ import {
   Email as EmailIcon,
   LinkedIn as LinkedInIcon,
   GitHub as GitHubIcon,
-  Twitter as TwitterIcon,
+  Twitter as XIcon,
   LocationOn as LocationIcon,
   Event as EventIcon,
   Add as FollowIcon,
@@ -64,8 +64,9 @@ const OrganizationProfile: FunctionComponent = () => {
         sx={{
           height: { xs: 200, md: 350 },
           width: '100%',
-          backgroundImage: `url(${organization.banner_url || '/default-banner.jpg'
-            })`,
+          backgroundImage: `url(${
+            organization.banner_url || '/default-banner.jpg'
+          })`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           position: 'relative',
@@ -191,7 +192,7 @@ const OrganizationProfile: FunctionComponent = () => {
                   target='_blank'
                   sx={{ color: '#1DA1F2', bgcolor: '#E8F5FE' }}
                 >
-                  <TwitterIcon />
+                  <XIcon />
                 </IconButton>
               )}
               {organization.social_links?.linkedin && (
