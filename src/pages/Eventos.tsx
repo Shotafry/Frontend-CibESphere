@@ -16,7 +16,7 @@ import {
   Popover
 } from '@mui/material'
 import { useLoaderData, useNavigation, Link } from 'react-router-dom'
-import { Event } from '../types'
+import { Event, Role } from '../types'
 import { SingleEventMap } from '../components/SingleEventMap'
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday'
 import LocationOnIcon from '@mui/icons-material/LocationOn'
@@ -709,84 +709,88 @@ const Eventos: FunctionComponent = () => {
                 </Box>
               </Box>
 
-              <Button
-                variant='contained'
-                fullWidth
-                size='large'
-                disabled={
-                  !isAuthenticated ||
-                  isAlreadySubscribed ||
-                  isSubscribing ||
-                  !!(
-                    event.max_attendees &&
-                    event.max_attendees > 0 &&
-                    event.current_attendees >= event.max_attendees
-                  )
-                }
-                onClick={handleSubscribe}
-                sx={{
-                  borderRadius: '12px',
-                  py: 1.5,
-                  fontSize: '1rem',
-                  fontWeight: 'bold',
-                  textTransform: 'none',
-                  background: isAlreadySubscribed
-                    ? 'var(--Gray-300)'
-                    : event.max_attendees &&
-                      event.max_attendees > 0 &&
-                      event.current_attendees >= event.max_attendees
-                    ? 'var(--Gray-300)'
-                    : 'var(--gradient-button-primary)',
-                  color:
-                    isAlreadySubscribed ||
-                    (event.max_attendees &&
-                      event.max_attendees > 0 &&
-                      event.current_attendees >= event.max_attendees)
-                      ? 'var(--Gray-500)'
-                      : 'var(--White)',
-                  boxShadow:
-                    isAlreadySubscribed ||
-                    (event.max_attendees &&
-                      event.max_attendees > 0 &&
-                      event.current_attendees >= event.max_attendees)
-                      ? 'none'
-                      : '0 4px 14px rgba(0, 217, 255, 0.4)',
-                  '&:hover': {
-                    background:
+              {user?.role !== Role.Organizer && (
+                <>
+                  <Button
+                    variant='contained'
+                    fullWidth
+                    size='large'
+                    disabled={
+                      !isAuthenticated ||
                       isAlreadySubscribed ||
-                      (event.max_attendees &&
+                      isSubscribing ||
+                      !!(
+                        event.max_attendees &&
                         event.max_attendees > 0 &&
-                        event.current_attendees >= event.max_attendees)
+                        event.current_attendees >= event.max_attendees
+                      )
+                    }
+                    onClick={handleSubscribe}
+                    sx={{
+                      borderRadius: '12px',
+                      py: 1.5,
+                      fontSize: '1rem',
+                      fontWeight: 'bold',
+                      textTransform: 'none',
+                      background: isAlreadySubscribed
                         ? 'var(--Gray-300)'
-                        : 'var(--gradient-button-primary-hover)',
-                    boxShadow:
-                      isAlreadySubscribed ||
-                      (event.max_attendees &&
-                        event.max_attendees > 0 &&
-                        event.current_attendees >= event.max_attendees)
-                        ? 'none'
-                        : '0 6px 20px rgba(0, 217, 255, 0.6)'
-                  }
-                }}
-              >
-                {isSubscribing ? (
-                  <CircularProgress size={26} color='inherit' />
-                ) : !isAuthenticated ? (
-                  'Inicia sesión para inscribirte'
-                ) : isAlreadySubscribed ? (
-                  'Ya estás inscrito'
-                ) : event.max_attendees &&
-                  event.max_attendees > 0 &&
-                  event.current_attendees >= event.max_attendees ? (
-                  'Aforo Completo'
-                ) : (
-                  'Inscribirse Ahora'
-                )}
-              </Button>
-              {error && (
-                <Alert severity='error' sx={{ mt: 2 }}>
-                  {error}
-                </Alert>
+                        : event.max_attendees &&
+                          event.max_attendees > 0 &&
+                          event.current_attendees >= event.max_attendees
+                        ? 'var(--Gray-300)'
+                        : 'var(--gradient-button-primary)',
+                      color:
+                        isAlreadySubscribed ||
+                        (event.max_attendees &&
+                          event.max_attendees > 0 &&
+                          event.current_attendees >= event.max_attendees)
+                          ? 'var(--Gray-500)'
+                          : 'var(--White)',
+                      boxShadow:
+                        isAlreadySubscribed ||
+                        (event.max_attendees &&
+                          event.max_attendees > 0 &&
+                          event.current_attendees >= event.max_attendees)
+                          ? 'none'
+                          : '0 4px 14px rgba(0, 217, 255, 0.4)',
+                      '&:hover': {
+                        background:
+                          isAlreadySubscribed ||
+                          (event.max_attendees &&
+                            event.max_attendees > 0 &&
+                            event.current_attendees >= event.max_attendees)
+                            ? 'var(--Gray-300)'
+                            : 'var(--gradient-button-primary-hover)',
+                        boxShadow:
+                          isAlreadySubscribed ||
+                          (event.max_attendees &&
+                            event.max_attendees > 0 &&
+                            event.current_attendees >= event.max_attendees)
+                            ? 'none'
+                            : '0 6px 20px rgba(0, 217, 255, 0.6)'
+                      }
+                    }}
+                  >
+                    {isSubscribing ? (
+                      <CircularProgress size={26} color='inherit' />
+                    ) : !isAuthenticated ? (
+                      'Inicia sesión para inscribirte'
+                    ) : isAlreadySubscribed ? (
+                      'Ya estás inscrito'
+                    ) : event.max_attendees &&
+                      event.max_attendees > 0 &&
+                      event.current_attendees >= event.max_attendees ? (
+                      'Aforo Completo'
+                    ) : (
+                      'Inscribirse Ahora'
+                    )}
+                  </Button>
+                  {error && (
+                    <Alert severity='error' sx={{ mt: 2 }}>
+                      {error}
+                    </Alert>
+                  )}
+                </>
               )}
             </Box>
 
