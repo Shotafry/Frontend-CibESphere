@@ -108,6 +108,7 @@ export interface SocialMediaLinks {
   facebook?: string
   instagram?: string
   youtube?: string
+  github?: string
 }
 
 export interface OrganizationResponse {
