@@ -223,7 +223,7 @@ const Eventos: FunctionComponent = () => {
                     variant='subtitle1'
                     fontWeight='bold'
                     sx={{
-                      color: 'var(--color-cadetblue)',
+                      color: '#01c0fa',
                       '&:hover': { textDecoration: 'underline' }
                     }}
                   >
