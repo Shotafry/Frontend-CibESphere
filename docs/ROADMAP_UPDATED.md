@@ -45,29 +45,35 @@ La fase más crítica. Se conectó el frontend con el Backend en Go (Gin Framewo
 
 ### 2.2 Gestión de Roles (RBAC Real)
 
-- [x] **Panel de Asistente:**
-  - Historial de eventos e inscripciones.
-  - CRUD de perfil de usuario (Avatar, Bio, Redes Sociales).
-  - Sistema de "Guardados" (Bookmarks) y Reseñas verificadas.
+- [x] **Panel de Asistente (Rediseño "LinkedIn Style"):**
+  - Layout premium con Hero Section, Avatar Overlay y Tabs de navegación.
+  - Historial de eventos e inscripciones precargados.
+  - **Sistema de Badges:** Subida y visualización de certificaciones (JSON array, max 10).
+  - **Social:** Integración de GitHub y cambio de marca Twitter -> X.
+  - Solución a persistencia de campos complejos (`slug`, `personal_quote`).
 - [x] **Panel de Organizador:**
   - **Dashboard:** Métricas reales (Asistentes, Visitas) corregidas en backend.
   - **Gestión de Eventos:** Creación con formulario dinámico (Agenda, Ponentes ilimitados).
-  - **Perfil Corporativo:** Edición de slug, logo y banner con previsualización real.
+  - **Perfil Corporativo:** Edición de slug con validación en tiempo real, logo y banner.
+  - Enlace directo a perfil público (`/organizacion/:slug`) desde el header.
 - [x] **Panel de Administrador:**
   - Verificación de organizaciones y KPIs globales.
 
 ### 2.3 UX/UI & "Cyber Aesthetic"
 
+- [x] **Landing Page:**
+  - **Modales Diferenciados:** Popups específicos para Organizador vs Participante con animaciones "Fade + Scale".
+  - **Mapa Interactivo:** Zoom táctil y altura adaptable.
 - [x] **Diseño Visual:**
   - Implementación de "Glow" effects y sombras cian (`#01c0fa`) en tarjetas.
-  - Fondos de partículas interactivas (`ParticlesBackground`).
+  - Fondos de partículas interactivas (`ParticlesBackground`) optimizadas para móvil (densidad reducida).
 - [x] **Mapas:**
   - Integración de **React Leaflet 5**.
   - Popups personalizados y filtrado geoespacial.
 - [x] **Responsive Mobile:**
   - Adaptación total a pantallas de 360px.
-  - Menú lateral (Drawer) para navegación móvil.
-  - Tablas scrolleables en dashboards.
+  - Menú lateral (Drawer) con navegación condicional por rol.
+  - Tablas scrolleables y banners con overlay de texto legible.
 
 ---
 

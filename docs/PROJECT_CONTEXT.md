@@ -66,7 +66,10 @@ El sistema soporta tres roles distintos, gestionados por el backend y aplicados 
 ### B. Perfiles Públicos
 
 - **Organización (`/organizacion/:slug`):** Landing page para cada organizador. Muestra su banner, logo, info de contacto y portfolio de eventos (pasados y futuros).
-- **Usuario (`/u/:slug`):** Perfil tipo LinkedIn para asistentes. Muestra insignias (badges), eventos asistidos y frase personal.
+- **Usuario (`/u/:slug`):** Perfil tipo LinkedIn para asistentes.
+  - **Badges:** Sistema de certificaciones visuales (iconos circulares de 60px).
+  - **Stats:** Historial de eventos asistidos y próximos eventos.
+  - **Persistencia:** Soporte para frase personal y redes sociales (GitHub/LinkedIn).
 
 ### C. Navegación y Filtros
 
@@ -86,6 +89,11 @@ El proyecto sigue una línea visual estricta para evocar tecnología y modernida
   - **Tarjetas con Glow:** `EventCard` y `StatCard` se elevan y proyectan una sombra de color al hacer hover (`transform: translateY(-8px)`).
   - **Glassmorphism:** Headers de perfiles con fondos semitransparentes y desenfoque (`backdrop-filter: blur`).
   - **Botones:** Gradientes lineales definidos en `global.css`.
+  - **Responsive Mobile (Mobile First):**
+    - **Header:** Menú hamburguesa (`MobileMenu.tsx`) con navegación condicional (Drawer lateral).
+    - **Mapas:** Altura dinámica (`350px - 836px`) y optimización táctil (`touchZoom`).
+    - **Paneles:** Layouts flexibles (`flex-direction: column` en móvil) y overlays de texto para legibilidad sobre imágenes.
+    - **Breakpoints:** xs (0px), sm (600px), md (900px), lg (1200px).
 
 ---
 
