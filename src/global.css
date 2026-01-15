@@ -42,42 +42,31 @@ body {
 }
 
 /* --- Fuente Satoshi --- */
+/* --- Fuente Satoshi --- */
 @font-face {
   font-family: 'Satoshi';
-  src: url('/fonts/WEB/fonts/Satoshi-Regular.woff2') format('woff2'),
-       url('/fonts/WEB/fonts/Satoshi-Regular.woff') format('woff'),
-       url('/fonts/WEB/fonts/Satoshi-Regular.ttf') format('truetype'),
-       url('/fonts/WEB/fonts/Satoshi-Regular.otf') format('opentype');
+  src: url('/fonts/Satoshi-Regular.woff2') format('woff2');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
   font-family: 'Satoshi';
-  src: url('/fonts/WEB/fonts/Satoshi-Bold.woff2') format('woff2'),
-       url('/fonts/WEB/fonts/Satoshi-Bold.woff') format('woff'),
-       url('/fonts/WEB/fonts/Satoshi-Bold.ttf') format('truetype'),
-       url('/fonts/WEB/fonts/Satoshi-Bold.otf') format('opentype');
+  src: url('/fonts/Satoshi-Bold.woff2') format('woff2');
   font-weight: 700;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
   font-family: 'Satoshi';
-  src: url('/fonts/WEB/fonts/Satoshi-Medium.woff2') format('woff2'),
-       url('/fonts/WEB/fonts/Satoshi-Medium.woff') format('woff'),
-       url('/fonts/WEB/fonts/Satoshi-Medium.ttf') format('truetype'),
-       url('/fonts/WEB/fonts/Satoshi-Medium.otf') format('opentype');
+  src: url('/fonts/Satoshi-Medium.woff2') format('woff2');
   font-weight: 500;
   font-style: normal;
   font-display: swap;
 }
 @font-face {
   font-family: 'Satoshi';
-  src: url('/fonts/WEB/fonts/Satoshi-Black.woff2') format('woff2'),
-       url('/fonts/WEB/fonts/Satoshi-Black.woff') format('woff'),
-       url('/fonts/WEB/fonts/Satoshi-Black.ttf') format('truetype'),
-       url('/fonts/WEB/fonts/Satoshi-Black.otf') format('opentype');
+  src: url('/fonts/Satoshi-Black.woff2') format('woff2');
   font-weight: 900;
   font-style: normal;
   font-display: swap;
@@ -107,13 +96,12 @@ html,
   margin: 0 auto;
 }
 
-
 /* Color de letra #282828 cuando el fondo es var(--Background-events-2) */
-[style*="var(--Background-events-2)"] {
+[style*='var(--Background-events-2)'] {
   color: #282828 !important;
 }
-[style*="background: var(--Background-events-2)"] *,
-[style*="background: var(--Background-events-2)"] {
+[style*='background: var(--Background-events-2)'] *,
+[style*='background: var(--Background-events-2)'] {
   color: #282828 !important;
 }
 
@@ -148,7 +136,7 @@ html,
   margin-bottom: 3rem;
   position: relative;
   overflow: hidden;
-  animation: fadeInHero 1.2s cubic-bezier(.4,0,.2,1);
+  animation: fadeInHero 1.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .comunidad-hero h1,
@@ -162,7 +150,7 @@ html,
 .comunidad-hero p,
 .comunidad-hero span,
 .comunidad-hero em {
-  color: #004F6A;
+  color: #004f6a;
   text-shadow: #01c0fa;
   font-family: 'Satoshi', Arial, Helvetica, sans-serif;
 }
@@ -176,4 +164,3 @@ html,
     padding: 2rem 0.5rem;
   }
 }
-
