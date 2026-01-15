@@ -14,6 +14,9 @@ import {
 import LinkedInIcon from '@mui/icons-material/LinkedIn'
 import GitHubIcon from '@mui/icons-material/GitHub'
 import TwitterIcon from '@mui/icons-material/Twitter'
+import angelImg from '/img/team/angel.jpg'
+import brayImg from '/img/team/bray.jpg'
+import carolinaImg from '/img/team/carolina.jpg'
 import { motion } from 'framer-motion'
 
 // Datos del equipo

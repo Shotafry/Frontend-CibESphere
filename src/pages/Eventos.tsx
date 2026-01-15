@@ -30,6 +30,7 @@ import StarIcon from '@mui/icons-material/Star'
 import StarHalfIcon from '@mui/icons-material/StarHalf'
 import StarOutlineIcon from '@mui/icons-material/StarOutline'
 import { useEffect } from 'react'
+import defaultLogo from '/img/brand/logo-main-full.png'
 
 const formatDateRange = (start: string, end: string) => {
   const startDate = new Date(start)
@@ -180,11 +181,7 @@ const Eventos: FunctionComponent = () => {
           >
             <Box
               component='img'
-              src={
-                event.banner_url ||
-                event.image_url ||
-                '/cyberLogo-gigapixel-art-scale-2-00x-godpix-1@2x.png'
-              }
+              src={event.banner_url || event.image_url || defaultLogo}
               alt={`Banner de ${event.title}`}
               sx={{
                 width: '100%',

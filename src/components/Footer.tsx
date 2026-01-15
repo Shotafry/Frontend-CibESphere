@@ -1,6 +1,7 @@
 // src/components/Footer.tsx
 import { FunctionComponent } from 'react'
 import { Box, Typography, Link as MuiLink, Container } from '@mui/material'
+import logoUrl from '/img/brand/logo-onlytext.png'
 import { Link as RouterLink } from 'react-router-dom'
 
 export const Footer: FunctionComponent = () => {
@@ -55,7 +56,7 @@ export const Footer: FunctionComponent = () => {
                 objectFit: 'contain'
               }}
               alt='CybESphere Logo'
-              src='/Logo-Solo-Letras.png'
+              src={logoUrl}
             />
           </RouterLink>
         </Box>

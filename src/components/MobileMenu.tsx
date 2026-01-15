@@ -15,6 +15,7 @@ import {
   IconButton
 } from '@mui/material'
 import { useNavigate, Link as RouterLink } from 'react-router-dom'
+import logoIconUrl from '/img/brand/logo-icon.png'
 import CloseIcon from '@mui/icons-material/Close'
 import HomeIcon from '@mui/icons-material/Home'
 import DashboardIcon from '@mui/icons-material/Dashboard'
@@ -102,11 +103,7 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({
         }}
       >
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-          <img
-            src='/Logo-Icon.png'
-            alt='CybESphere'
-            style={{ height: 36, width: 36, objectFit: 'contain' }}
-          />
+          {/* Logo removed as requested */}
           <Typography variant='h6' fontWeight='bold'>
             Menú
           </Typography>

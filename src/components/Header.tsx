@@ -18,6 +18,10 @@ import { getNotifications } from '../services/apiService'
 import { NotificationMenu } from './NotificationMenu'
 import { MobileMenu } from './MobileMenu'
 import { Button } from './Button'
+import logoAndTextUrl from '/img/brand/logo-and-text.png'
+import logoOnlyTextUrl from '/img/brand/logo-onlytext.png'
+import logoIconUrl from '/img/brand/logo-icon.png'
+import viteLogo from '/img/brand/vite-logo.svg'
 
 export const Header: FunctionComponent = () => {
   const navigate = useNavigate()
@@ -159,8 +163,8 @@ export const Header: FunctionComponent = () => {
                     width: '36px',
                     objectFit: 'contain'
                   }}
-                  alt='CybESphere Logo'
-                  src='/Logo-Icon.png'
+                  alt='CybESphere'
+                  src={logoIconUrl}
                 />
               </Box>
 
@@ -182,7 +186,7 @@ export const Header: FunctionComponent = () => {
                     objectFit: 'contain'
                   }}
                   alt='CybESphere'
-                  src='/Logo-Solo-Letras.png'
+                  src={logoOnlyTextUrl}
                 />
               </Box>
 
@@ -211,7 +215,7 @@ export const Header: FunctionComponent = () => {
                   cursor: 'pointer'
                 }}
                 alt='CibESphere Logo'
-                src='/cyberLogo-1@2x.png'
+                src={logoAndTextUrl}
                 onClick={onLogoClick}
               />
 

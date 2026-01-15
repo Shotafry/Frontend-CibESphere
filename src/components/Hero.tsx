@@ -60,8 +60,9 @@ export const Hero: FunctionComponent = () => {
             </style>
             <Box
               component='img'
-              src={logoVertical} // <-- Logo nuevo
-              alt='CybESphere Logo'
+              src='/img/brand/logo-vertical.png'
+              alt='CybESphere'
+              className='hero-logo'
               sx={{
                 width: '100%',
                 maxWidth: { xs: 160, sm: 220, md: 350 },

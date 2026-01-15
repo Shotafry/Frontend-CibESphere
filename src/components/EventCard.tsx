@@ -105,10 +105,7 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
           <Box
             component='img'
             className='event-logo'
-            src={
-              event.image_url ||
-              '/cyberLogo-gigapixel-art-scale-2-00x-godpix-1@2x.png'
-            }
+            src={event.image_url || '/img/brand/logo-main-full.png'}
             alt={`Imagen de ${event.title}`}
             sx={{
               width: { xs: '100%', md: 260 },
