@@ -55,24 +55,24 @@ const AppWrapper: React.FC = () => {
   }, [action, pathname])
 
   useEffect(() => {
-    let title = 'CibESphere'
+    let title = 'CybESphere'
     let metaDescription =
       'Plataforma central de eventos de ciberseguridad en España.'
 
     if (pathname.startsWith('/eventos/')) {
-      title = 'Detalle del Evento - CibESphere'
+      title = 'Detalle del Evento - CybESphere'
     } else if (pathname === '/panel-de-usuario') {
-      title = 'Mi Panel - CibESphere'
+      title = 'Mi Panel - CybESphere'
     } else if (pathname === '/panel-de-organizador') {
-      title = 'Panel de Organizador - CibESphere'
+      title = 'Panel de Organizador - CybESphere'
     } else if (pathname === '/crear-evento') {
-      title = 'Crear Evento - CibESphere'
+      title = 'Crear Evento - CybESphere'
     } else if (pathname.endsWith('/editar')) {
-      title = 'Editar Evento - CibESphere'
+      title = 'Editar Evento - CybESphere'
     } else if (pathname === '/loginsign-up') {
-      title = 'Acceso / Registro - CibESphere'
+      title = 'Acceso / Registro - CybESphere'
     } else if (pathname.startsWith('/organizacion/')) {
-      title = 'Perfil de Organización - CibESphere'
+      title = 'Perfil de Organización - CybESphere'
     }
 
     document.title = title

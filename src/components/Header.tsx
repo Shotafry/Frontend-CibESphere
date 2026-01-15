@@ -159,7 +159,7 @@ export const Header: FunctionComponent = () => {
                     width: '36px',
                     objectFit: 'contain'
                   }}
-                  alt='CibESphere'
+                  alt='CybESphere Logo'
                   src='/Logo-Icon.png'
                 />
               </Box>

@@ -1,4 +1,4 @@
-# 🛡️ CibESphere (Frontend)
+# 🛡️ CybESphere (Frontend)
 
 <div align="center">
 
@@ -15,7 +15,7 @@
 
 ## 📝 Introducción
 
-Este repositorio contiene el frontend del proyecto **CibESphere**, una plataforma sin ánimo de lucro diseñada para unificar y centralizar todos los eventos de ciberseguridad en España, fomentando la comunidad y la visibilidad.
+Este repositorio contiene el frontend del proyecto **CybESphere**, una plataforma sin ánimo de lucro diseñada para unificar y centralizar todos los eventos de ciberseguridad en España, fomentando la comunidad y la visibilidad.
 
 Esta aplicación ha sido modernizada para utilizar las últimas tecnologías del ecosistema React y se conecta a un **Backend en Go (Gin Framework)** totalmente funcional.
 
@@ -87,12 +87,21 @@ Sistema de control de acceso basado en roles gestionado por el backend.
 - **Partículas Interactivas**: Touch events para repulsión en móvil (25 partículas vs 80 desktop)
 - **Componentes Globales**: EventCard, EventFilters, Eventos con estilos adaptativos
 
+#### ⚡ Mejoras UX/UI Organizador
+
+- **Dashboard Responsive**: Tarjetas de estadísticas adaptables y tablas optimizadas
+- **Gestión de Perfil**: Layout unificado (Info + Contacto) para mejor usabilidad móvil
+- **Visualización de Eventos**:
+  - Enlace destacado en color Cian al perfil público del organizador
+  - Ocultación inteligente de controles (Suscribirse/Favoritos) para el propio organizador
+  - Feedback visual de estado (Borrador/Publicado)
+
 ---
 
 ## 📂 Estructura del Proyecto
 
 ```text
-Frontend-CibESphere/
+Frontend-CybESphere/
 ├── public/                 # Assets estáticos públicos
 │   ├── fonts/              # Tipografías locales (Satoshi, etc.)
 │   └── team/               # Imágenes estáticas del equipo
@@ -134,7 +143,7 @@ Frontend-CibESphere/
 ### Prerrequisitos
 
 - Node.js v20+
-- Backend de CibESphere corriendo en `http://localhost:8080`
+- Backend de CybESphere corriendo en `http://localhost:8080`
 
 ---
 

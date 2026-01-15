@@ -504,7 +504,7 @@ const PanelDeAdministrador: React.FC = () => {
             }}
           >
             Bienvenido, Administrador. Aquí tienes el control total sobre
-            usuarios, organizaciones y eventos de CibESphere.
+            usuarios, organizaciones y eventos de CybESphere.
           </Typography>
         </Container>
       </Box>

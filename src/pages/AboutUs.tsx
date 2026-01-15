@@ -89,7 +89,7 @@ const AboutUs: React.FC = () => {
               lineHeight: 1.6
             }}
           >
-            Las mentes detrás de CibESphere. Un grupo de profesionales
+            Las mentes detrás de CybESphere. Un grupo de profesionales
             apasionados por la ciberseguridad y el desarrollo tecnológico,
             unidos para fortalecer la comunidad.
           </Typography>

@@ -23,7 +23,13 @@ export const Hero: FunctionComponent = () => {
       }}
     >
       <Container maxWidth='lg'>
-        <Grid container spacing={{ xs: 2, md: 4 }} alignItems='center' justifyContent='center' direction={{ xs: 'column', md: 'row' }}>
+        <Grid
+          container
+          spacing={{ xs: 2, md: 4 }}
+          alignItems='center'
+          justifyContent='center'
+          direction={{ xs: 'column', md: 'row' }}
+        >
           {/* Columna Izquierda: Logo */}
           <Grid
             size={{ xs: 12, md: 5 }}
@@ -55,7 +61,7 @@ export const Hero: FunctionComponent = () => {
             <Box
               component='img'
               src={logoVertical} // <-- Logo nuevo
-              alt='CibESphere Logo'
+              alt='CybESphere Logo'
               sx={{
                 width: '100%',
                 maxWidth: { xs: 160, sm: 220, md: 350 },
@@ -101,8 +107,8 @@ export const Hero: FunctionComponent = () => {
               nuevos contactos e incluso amigos y mantente actualizado.
             </Typography>
             <Button
-              variant="primary"
-              size="large"
+              variant='primary'
+              size='large'
               onClick={() =>
                 document
                   .getElementById('filtros')

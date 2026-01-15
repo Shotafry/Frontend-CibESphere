@@ -342,7 +342,7 @@ const ProfileTabContent: React.FC<{
                     error={!!errors.slug}
                     helperText={
                       errors.slug?.message ||
-                      `cibesphere.com/organizacion/${field.value}`
+                      `cybesphere.com/organizacion/${field.value}`
                     }
                     InputProps={{
                       startAdornment: (
