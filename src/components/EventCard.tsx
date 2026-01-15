@@ -2,7 +2,7 @@
 import React, { useCallback, useState, useEffect } from 'react'
 import { Box, Typography, Grid, Chip, IconButton } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
-import { Event } from '../types'
+import { Event, Role } from '../types'
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday'
 import LocationOnIcon from '@mui/icons-material/LocationOn'
 import GroupIcon from '@mui/icons-material/Group'
@@ -145,21 +145,25 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
               position: 'relative'
             }}
           >
-            <Box sx={{ position: 'absolute', top: 16, right: 16, zIndex: 10 }}>
-              <IconButton
-                onClick={handleBookmarkClick}
-                sx={{
-                  bgcolor: 'rgba(255,255,255,0.8)',
-                  '&:hover': { bgcolor: 'white' }
-                }}
+            {user?.role !== Role.Organizer && (
+              <Box
+                sx={{ position: 'absolute', top: 16, right: 16, zIndex: 10 }}
               >
-                {isBookmarked ? (
-                  <BookmarkIcon sx={{ color: 'var(--color-cadetblue)' }} />
-                ) : (
-                  <BookmarkBorderIcon sx={{ color: 'var(--Gray-500)' }} />
-                )}
-              </IconButton>
-            </Box>
+                <IconButton
+                  onClick={handleBookmarkClick}
+                  sx={{
+                    bgcolor: 'rgba(255,255,255,0.8)',
+                    '&:hover': { bgcolor: 'white' }
+                  }}
+                >
+                  {isBookmarked ? (
+                    <BookmarkIcon sx={{ color: 'var(--color-cadetblue)' }} />
+                  ) : (
+                    <BookmarkBorderIcon sx={{ color: 'var(--Gray-500)' }} />
+                  )}
+                </IconButton>
+              </Box>
+            )}
 
             <Box>
               <Typography variant='h5' component='h3' fontWeight='bold' mb={1}>
