@@ -99,15 +99,6 @@ const Eventos: FunctionComponent = () => {
           >
             <EventHero event={event} />
 
-            <Typography
-              variant='h5'
-              fontWeight='bold'
-              gutterBottom
-              sx={{ color: 'var(--Gray-700)' }}
-            >
-              Detalles del Evento
-            </Typography>
-
             <EventDetails event={event} />
 
             <EventItinerary event={event} />

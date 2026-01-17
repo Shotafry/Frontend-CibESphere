@@ -61,39 +61,25 @@ La fase más crítica. Se conectó el frontend con el Backend en Go (Gin Framewo
   - `CrearEvento.tsx` (antes Page.tsx) modularizado con hooks personalizados (`useEventForm`).
 - [x] **Diseño Visual:** Implementación de Glow, Glassmorphism y Responsive Mobile.
 
-### 2.4 Próximas Refactorizaciones (En Curso)
+### 2.4 Refactorización "Monolitos" (COMPLETADO)
 
-- [ ] **UserProfile.tsx:** Desglose de componentes (Hero, Bio, Stats).
-- [ ] **OrganizationProfile.tsx:** Modularización de la vista pública.
-- [ ] **PanelDeAdministrador.tsx:** Separación de lógica de Dashboard, Usuarios y Organizaciones.
-
-### 2.3 UX/UI & "Cyber Aesthetic"
-
-- [x] **Landing Page:**
-  - **Modales Diferenciados:** Popups específicos para Organizador vs Participante con animaciones "Fade + Scale".
-  - **Mapa Interactivo:** Zoom táctil y altura adaptable.
-- [x] **Diseño Visual:**
-  - Implementación de "Glow" effects y sombras cian (`#01c0fa`) en tarjetas.
-  - Fondos de partículas interactivas (`ParticlesBackground`) optimizadas para móvil (densidad reducida).
-- [x] **Mapas:**
-  - Integración de **React Leaflet 5**.
-  - Popups personalizados y filtrado geoespacial.
-- [x] **Responsive Mobile:**
-  - Adaptación total a pantallas de 360px.
-  - Menú lateral (Drawer) con navegación condicional por rol.
-  - Tablas scrolleables y banners con overlay de texto legible.
+- [x] **UserProfile.tsx:** Desglose de componentes (Hero, Bio, Stats, Tabs).
+- [x] **OrganizationProfile.tsx:** Modularización completa (Hero, Header, Events).
+- [x] **PanelDeAdministrador.tsx:** Separación de lógica de Dashboard, Usuarios y Organizaciones.
 
 ---
 
-## 🚀 Fase 3: Próximos Pasos (En Planificación)
+## 🚀 Fase 3: Comunidad y Monetización (EN PROGRESO)
 
-### Q1 2026 - Comunidad
+Esta fase se centra en transformar la plataforma en una red social activa y sostenible.
+
+### 3.1 Funcionalidades Sociales (Q1 2026)
 
 - [ ] **Networking:** Chat entre asistentes y sistema de "Conectar" (LinkedIn integration).
-- [ ] **Feed Social:** Tablón de anuncios para organizaciones.
+- [ ] **Feed Social:** Tablón de anuncios para organizaciones y usuarios.
 - [ ] **Soporte I18n:** Traducción completa (Español/Inglés).
 
-### Q2 2026 - Monetización
+### 3.2 Monetización y Pagos (Q2 2026)
 
 - [ ] **Ticketing:** Generación de entradas PDF con QR.
 - [ ] **Pagos:** Integración con Stripe para entradas de pago.
@@ -102,8 +88,8 @@ La fase más crítica. Se conectó el frontend con el Backend en Go (Gin Framewo
 
 ## 📜 Historial de Versiones
 
-| Versión    | Estado   | Descripción                                            |
-| ---------- | -------- | ------------------------------------------------------ |
-| **v0.0.1** | Alpha    | Prototipo estático generado por IA.                    |
-| **v0.1.0** | Alpha    | Mockup funcional con backend simulado en localStorage. |
-| **v0.1.0** | **Beta** | **Versión Actual.** Conectada a backend Go. Full RBAC. |
+| Versión    | Estado   | Descripción                                                                  |
+| ---------- | -------- | ---------------------------------------------------------------------------- |
+| **v0.0.1** | Alpha    | Prototipo estático generado por IA.                                          |
+| **v0.1.0** | Alpha    | Mockup funcional con backend simulado en localStorage.                       |
+| **v0.2.0** | **Beta** | **Versión Actual.** Refactorización modular completa, backend Go real, RBAC. |
