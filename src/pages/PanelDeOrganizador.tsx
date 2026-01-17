@@ -1,5 +1,5 @@
 // src/pages/PanelDeOrganizador.tsx
-import React, { FunctionComponent, useCallback, useState } from 'react'
+import React, { FunctionComponent, useCallback } from 'react'
 import {
   Box,
   Typography,
@@ -9,7 +9,12 @@ import {
   Tab,
   Fade
 } from '@mui/material'
-import { useLoaderData, useNavigate, useNavigation } from 'react-router-dom'
+import {
+  useLoaderData,
+  useNavigate,
+  useNavigation,
+  useSearchParams
+} from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { DashboardStats, Event, OrganizationResponse } from '../types'
 import * as apiService from '../services/apiService'
@@ -31,10 +36,26 @@ const PanelDeOrganizador: FunctionComponent = () => {
   const navigation = useNavigation()
   const navigate = useNavigate()
   const { user } = useAuth()
-  const [tabValue, setTabValue] = useState(0)
+
+  // Tab State Management via URL
+  const [searchParams, setSearchParams] = useSearchParams()
+  const currentTab = searchParams.get('tab') || 'dashboard'
+
+  const tabMap: { [key: string]: number } = {
+    dashboard: 0,
+    events: 1,
+    profile: 2
+  }
+  const indexToTab: { [key: number]: string } = {
+    0: 'dashboard',
+    1: 'events',
+    2: 'profile'
+  }
+
+  const tabValue = tabMap[currentTab] ?? 0
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
-    setTabValue(newValue)
+    setSearchParams({ tab: indexToTab[newValue] })
   }
 
   const onCrearEventoClick = useCallback(() => {
@@ -79,7 +100,7 @@ const PanelDeOrganizador: FunctionComponent = () => {
           px: { xs: 2, md: 8 }
         }}
       >
-        <Container maxWidth='xl'>
+        <Container maxWidth='lg'>
           <Box
             sx={{
               display: 'flex',
@@ -112,10 +133,7 @@ const PanelDeOrganizador: FunctionComponent = () => {
                 Gestiona tus eventos y tu perfil de organización
               </Typography>
             </Box>
-            {tabValue !== 2 && ( // Show 'Crear Evento' on Dashboard (0) and Events (1) tabs? Or just Dashboard?
-              // Original code showed on tabValue === 0.
-              // Let's decide: Dashboard is stats. Events List is now tab X.
-              // Let's split tabs: 0=Dashboard, 1=Events, 2=Profile.
+            {tabValue !== 2 && (
               <Box
                 sx={{
                   display: 'flex',
@@ -189,22 +207,12 @@ const PanelDeOrganizador: FunctionComponent = () => {
         </Container>
       </Box>
 
-      <Container maxWidth='xl' sx={{ mt: 5 }}>
+      <Container maxWidth='lg' sx={{ mt: 5 }}>
         {/* TAB DASHBOARD */}
         {tabValue === 0 && (
           <Fade in={tabValue === 0} timeout={500}>
             <Box>
               <DashboardTab stats={stats} events={events} />
-              {/* Also show recent events summary or link to events tab? */}
-              {/* Original showed stats AND events list in same tab. 
-                    The plan said: DashboardTab (Stats + KPIs + Gráficos) and EventsListTab (CRUD).
-                    However, often dashboards show "Recent Events".
-                    Let's replicate original behavior for now by including EventsListTab here OR 
-                    just stick to the plan of separating them. 
-                    The plan said "Extract EventsListTab".
-                    Let's KEEP them separate for cleanliness, but maybe show a "Recent Events" snippet?
-                    Actually, let's just show EventsListTab in tab 1.
-                */}
             </Box>
           </Fade>
         )}
