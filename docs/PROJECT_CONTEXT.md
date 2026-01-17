@@ -1,7 +1,7 @@
 # 🧠 Contexto del Proyecto: CybESphere Frontend
 
 > **Documento Maestro**: Este archivo contiene toda la información necesaria para que una IA o un desarrollador entienda la arquitectura, flujos y diseño de CybESphere sin necesidad de leer todo el código.
-> **Versión**: Beta v0.2.0 (Enero 2026)
+> **Versión**: Beta v0.2.0 (Enero 2026) - Verificado contra código
 
 ---
 
@@ -13,124 +13,153 @@
 
 - **Frontend:** React 19, React Router 7 (Data API), Material UI (MUI) 7, Vite.
 - **Backend:** Go (Gin), PostgreSQL (Arquitectura hexagonal).
-- **Mapas:** React Leaflet 5.
+- **Mapas:** React Leaflet 5 (con Lazy Loading).
+- **Animaciones:** Framer Motion (uso selectivo en páginas estáticas).
 
 ---
 
-## 2. Arquitectura Frontend
+## 2. Arquitectura Frontend (Verificada)
 
 ### Estructura de Rutas y Datos
 
 El proyecto utiliza la moderna **Data API** de React Router 7 (`createBrowserRouter`).
 
-- **Loaders:** La carga de datos NO se hace en `useEffect` dentro de los componentes. Se realiza en los `loaders` definidos en `src/App.tsx`. Esto asegura que cuando el componente se renderiza, los datos ya están disponibles.
-- **Axios Singleton:** Todas las peticiones HTTP pasan por `src/services/httpClient.ts`, que maneja automáticamente la inyección de JWT y la lógica de refresh token.
-- **Manejo de Errores:** Un interceptor global captura errores 401 (redirección a login) y 500.
+- **Loaders:** La carga de datos se realiza en los `loaders` definidos en `src/App.tsx`.
+- **Axios Singleton:** Todas las peticiones HTTP pasan por `src/services/httpClient.ts`.
+- **Manejo de Errores:** Interceptor global para errores 401/500 + `ErrorBoundary.tsx`.
 
-### Jerarquía de Directorios (`src/`)
+### Inventario Real de Directorios (`src/`)
 
-- **`/components`**: UI pura y reutilizable (15 componentes).
-  - `Button.tsx`: Wrapper unificado sobre MUI, usa CSS vars.
-  - `EventCard.tsx`, `Header.tsx`, `Footer.tsx`, `EventFilters.tsx`, etc.
-- **`/pages`**: Vistas principales conectadas a rutas.
-  - **Refactorizadas y Modularizadas:**
-    - `Eventos.tsx` (Detalle) → `src/pages/evento-detalle/`
-    - `PanelDeOrganizador.tsx` → `src/pages/panel-organizador/`
-    - `CrearEvento.tsx` (antes Page.tsx) → `src/pages/crear-evento/`
-  - **Pendientes de Refactorizar:** `UserProfile.tsx`, `OrganizationProfile.tsx`, `PanelDeAdministrador.tsx`.
-- **`/services`**: Lógica de negocio y conexión API. 8 módulos separados.
-- **`/context`**: Estado global crítico (`AuthContext` para sesión).
-- **`/types`**: Definiciones TypeScript compartidas.
-- **`/hooks`**: 4 hooks reutilizables.
-
-### Sistema de Diseño (Enfoque Híbrido)
-
-El proyecto usa un **enfoque híbrido** (CSS vars + MUI):
-
-1. **`global.css`**: Variables CSS para colores, gradientes, fuentes.
-2. **MUI Theme** (`App.tsx`): Configuración de paleta y componentes.
-3. **Wrappers personalizados** (`Button.tsx`): Combinan MUI + CSS vars.
+```
+src/
+├── App.tsx (12KB - Router + Layout)
+├── global.css (4KB - Variables CSS)
+├── index.tsx
+│
+├── components/ (17 archivos + skeletons/)
+│   ├── Button.tsx, EventCard.tsx, Header.tsx, Footer.tsx
+│   ├── EventFilters.tsx, EventMap.tsx, SingleEventMap.tsx
+│   ├── Hero.tsx, ImageUpload.tsx, Layout.tsx, LazyMap.tsx
+│   ├── MobileMenu.tsx, NotificationMenu.tsx, ProtectedRoute.tsx
+│   ├── ParticlesBackground.tsx, AboutThis.tsx
+│   ├── ErrorBoundary.tsx ✅ (Implementado)
+│   └── skeletons/
+│       ├── EventCardSkeleton.tsx
+│       ├── EventDetailSkeleton.tsx
+│       ├── PanelSkeleton.tsx
+│       ├── TableSkeleton.tsx
+│       └── index.ts
+│
+├── pages/ (16 archivos + 7 subdirectorios)
+│   ├── LandingPage.tsx, Eventos.tsx, CrearEvento.tsx
+│   ├── PanelDeOrganizador.tsx, PanelDeUsuario.tsx, PanelDeAdministrador.tsx
+│   ├── UserProfile.tsx, OrganizationProfile.tsx
+│   ├── SignUp.tsx, AboutUs.tsx, Contacto.tsx
+│   ├── TerminosYCondiciones.tsx, PoliticaCookies.tsx, ProgramaVulnerabilidades.tsx
+│   ├── ErrorPage.tsx, test-font.tsx
+│   │
+│   ├── evento-detalle/components/ (5 archivos)
+│   │   ├── EventHero.tsx, EventDetails.tsx, EventItinerary.tsx
+│   │   ├── EventReviews.tsx, EventSidebar.tsx
+│   │
+│   ├── crear-evento/ (hooks/, sections/, styles.ts, index.ts)
+│   │   ├── hooks/useEventForm.ts
+│   │   └── sections/ (5 archivos: BasicInfo, DateLocation, CapacityPrice, Agenda, Speakers)
+│   │
+│   ├── panel-organizador/ (components/, tabs/, index.ts)
+│   │   ├── components/StatCard.tsx, OrgProfileForm.tsx
+│   │   ├── components/form-sections/ (5 archivos: ProfileHeaderPreview, GeneralInfo, ContactInfo, VisualAssets, SocialMedia)
+│   │   └── tabs/ (3 archivos: Dashboard, EventsList, Profile)
+│   │
+│   ├── panel-usuario/ (components/, tabs/, index.ts)
+│   │   ├── components/BadgeUploader.tsx, ReviewModal.tsx
+│   │   └── tabs/ (4 archivos: Profile, Events, Bookmarks, Notifications)
+│   │
+│   ├── panel-administrador/ (components/, tabs/, index.ts)
+│   │   ├── components/ (1 archivo)
+│   │   └── tabs/ (3 archivos: Dashboard, Organizations, Users)
+│   │
+│   ├── user-profile/components/ (6 archivos)
+│   │   ├── UserHero.tsx, UserBio.tsx, UserStats.tsx
+│   │   ├── UserSocials.tsx, UserEventsTab.tsx, UserBadges.tsx
+│   │
+│   └── organization-profile/components/ (3 archivos)
+│       ├── OrgHero.tsx, OrgHeader.tsx, OrgEvents.tsx
+│
+├── services/
+│   ├── httpClient.ts (5.6KB - Axios singleton)
+│   ├── apiService.ts (legacy)
+│   └── api/ (8 archivos)
+│       ├── auth.service.ts, events.service.ts, users.service.ts
+│       ├── organizations.service.ts, reviews.service.ts
+│       ├── admin.service.ts, notifications.service.ts, index.ts
+│
+├── hooks/ (4 archivos)
+│   ├── useApi.ts, useEvents.ts, useOrganizations.ts, index.ts
+│
+├── context/AuthContext.tsx
+├── types/index.ts (12.6KB)
+├── constants/filters.ts
+└── mocks/
+```
 
 ---
 
 ## 3. Sistema de Autenticación y Roles (RBAC)
 
-El sistema soporta tres roles distintos, gestionados por el backend y aplicados en el frontend:
-
-1.  **Attend (Usuario Normal):**
-    - Acceso: `/panel-de-usuario`
-    - Capacidades: Inscribirse a eventos, guardar favoritos, dejar reseñas, gestionar su perfil personal (badges, redes sociales).
-2.  **Organizer (Organizador):**
-    - Acceso: `/panel-de-organizador`
-    - Capacidades: Crear/Editar eventos, gestionar perfil de organización, ver dashboard de métricas.
-    - _Nota:_ Un organizador NO ve botones de suscripción en sus propios eventos.
-3.  **Admin (Administrador):**
-    - Acceso: `/admin`
-    - Capacidades: Verificar organizaciones, gestión de usuarios global.
+1. **Attend (Usuario Normal):** `/panel-de-usuario` - Inscribirse, favoritos, reseñas, badges.
+2. **Organizer (Organizador):** `/panel-de-organizador` - CRUD eventos, perfil org, dashboard.
+3. **Admin (Administrador):** `/admin` - Verificar organizaciones, gestión global.
 
 ---
 
 ## 4. Flujos Clave
 
-### A. Gestión de Eventos (Refactorizado)
+### A. Gestión de Eventos
 
-- **Creación (`/crear-evento`):** Utiliza un orquestador `CrearEvento.tsx` que carga el hook `useEventForm` y renderiza secciones modulares (`BasicInfo`, `DateLocation`, `Agenda`, `Speakers`). Soporta edición y creación.
-- **Visualización (`/eventos/:slug`):** Orquestador `Eventos.tsx` que compone la vista usando sub-componentes: `EventHero`, `EventDetails`, `EventItinerary`, `EventReviews` y `EventSidebar`.
-- **Inscripción:** Lógica de negocio encapsulada en `EventSidebar`, que maneja estados (Inscribirse, Ya inscrito, Aforo completo).
+- **Creación:** `CrearEvento.tsx` → `useEventForm` hook + 5 secciones modulares.
+- **Visualización:** `Eventos.tsx` → 5 sub-componentes (Hero, Details, Itinerary, Reviews, Sidebar).
 
 ### B. Perfiles Públicos
 
-- **Organización (`/organizacion/:slug`):** Landing page para cada organizador. Muestra su banner, logo, info de contacto y portfolio de eventos (pasados y futuros).
-- **Usuario (`/u/:slug`):** Perfil tipo LinkedIn para asistentes.
-  - **Badges:** Sistema de certificaciones visuales (iconos circulares de 60px).
-  - **Stats:** Historial de eventos asistidos y próximos eventos.
-  - **Persistencia:** Soporte para frase personal y redes sociales (GitHub/LinkedIn).
+- **Organización:** `OrganizationProfile.tsx` → 3 componentes (OrgHero, OrgHeader, OrgEvents).
+- **Usuario:** `UserProfile.tsx` → 6 componentes (Hero, Bio, Stats, Socials, EventsTab, Badges).
 
-### C. Navegación y Filtros
+### C. Optimizaciones Implementadas
 
-- **Sincronización URL:** Los filtros de la Landing Page (fecha, ubicación, tipo) se sincronizan bidireccionalmente con los parámetros URL (`?city=Madrid&type=workshop`). Esto permite compartir búsquedas.
-- **Persistencia en Tabs:** Los paneles (como `PanelDeOrganizador`) utilizan `useSearchParams` para mantener la pestaña activa tras un refresco (ej. `?tab=events`).
+- **Lazy Loading:** `LazyMap.tsx` para mapas Leaflet.
+- **Skeletons:** 4 skeletons (EventCard, EventDetail, Panel, Table).
+- **Error Handling:** `ErrorBoundary.tsx` implementado.
+- **Scroll Fix:** `shouldRevalidate` en App.tsx para evitar scroll en cambios de query.
 
 ---
 
 ## 5. Sistema de Diseño ("Cyber Aesthetic")
 
-El proyecto sigue una línea visual estricta para evocar tecnología y modernidad sin ser "oscuro/hacker" cliché.
-
-- **Paleta de Colores:**
-  - **Primario (Brand):** Cian/Turquesa (`#01c0fa` o `var(--color-cadetblue)`).
-  - **Fondo:** Blancos y Grises muy claros (`#F8FAFC`) para limpieza.
-  - **Acentos:** Sombras de colores ("Glow") al interactuar.
-- **Componentes Clave:**
-  - **Tarjetas con Glow:** `EventCard` y `StatCard` se elevan y proyectan una sombra de color al hacer hover (`transform: translateY(-8px)`).
-  - **Glassmorphism:** Headers de perfiles con fondos semitransparentes y desenfoque (`backdrop-filter: blur`).
-  - **Botones:** Gradientes lineales definidos en `global.css`.
-  - **Responsive Mobile (Mobile First):**
-    - **Header:** Menú hamburguesa (`MobileMenu.tsx`) con navegación condicional (Drawer lateral).
-    - **Mapas:** Altura dinámica (`350px - 836px`) y optimización táctil (`touchZoom`).
-    - **Paneles:** Layouts flexibles (`flex-direction: column` en móvil) y overlays de texto para legibilidad sobre imágenes.
-    - **Breakpoints:** xs (0px), sm (600px), md (900px), lg (1200px).
+- **Paleta:** Cian/Turquesa (`var(--color-cadetblue)`), Fondos claros (`#F8FAFC`).
+- **Efectos:** Glow en hover, Glassmorphism en headers.
+- **Animaciones:** `framer-motion` en páginas estáticas (Contacto, Legal, VDP).
 
 ---
 
-## 6. Integración API (Backend)
+## 6. Integración API
 
-La comunicación es RESTful. Los servicios principales son:
+Servicios en `src/services/api/`:
 
-- `auth.service.ts`: Login, Registro, Refresh Token, Upload de imágenes.
-- `events.service.ts`: CRUD de eventos, búsqueda pública.
-- `organizations.service.ts`: Gestión de perfiles y dashboard stats.
-- `users.service.ts`: Gestión de perfil de usuario e historial.
-
-_Nota:_ Las respuestas del backend suelen venir envueltas en un objeto `{ data: ... }`, que los servicios del frontend desempaquetan antes de entregar a los componentes.
+- `auth.service.ts` - Login, Registro, Refresh Token, Upload.
+- `events.service.ts` - CRUD eventos, búsqueda.
+- `organizations.service.ts` - Perfil org, dashboard stats.
+- `users.service.ts` - Perfil usuario, historial.
+- `reviews.service.ts` - Sistema de reseñas.
+- `notifications.service.ts` - Notificaciones.
+- `admin.service.ts` - Endpoints admin.
 
 ---
 
 ## 7. Instrucciones para Colaboradores (IAs)
 
-1.  **Nueva Funcionalidad:** Revisa `ROADMAP_UPDATED.md` primero.
-2.  **Estilos:** NO uses estilos inline si es posible. Usa `sx={{...}}` de MUI o clases definidas. Mantén los colores corporativos.
-3.  **Modularización:**
-    - Si editas componentes complejos como `UserProfile` o `OrganizationProfile`, busca oportunidades para extraer sub-componentes a carpetas dedicadas (ej. `src/pages/user-profile/`).
-    - Mantén la lógica de negocio separada en Custom Hooks (ej. `useEventForm`).
-4.  **Estado:** Prefiere `react-router` loaders para datos de página y `react-hook-form` para formularios complejos. Evita `useEffect` para cargas de datos simples.
+1. **Modularización:** Todo está modularizado. Mantén el patrón orquestador + sub-componentes.
+2. **Estilos:** Usa `sx={{}}` de MUI con CSS vars de `global.css`.
+3. **Estado:** Prefiere loaders de React Router para datos, `react-hook-form` para formularios.
+4. **Errores:** `ErrorBoundary` ya existe, úsalo para envolver componentes riesgosos.
+5. **Animaciones:** Evita transiciones globales de ruta (conflictos con tabs).

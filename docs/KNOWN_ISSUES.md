@@ -1,115 +1,69 @@
 # 🐛 Errores Conocidos y Deuda Técnica
 
-> **Última Auditoría:** Enero 2026 (Validado contra código real)
-
-Este documento recopila los problemas técnicos identificados, áreas de mejora y funcionalidades pendientes de implementación.
+> **Última Auditoría:** Enero 2026 (Verificado contra código real)
 
 ---
 
-## 🛑 Críticos / Alta Prioridad
+## ✅ Items Completados (Fases 1-3)
 
-### 1. Monolitos de Componentes ("God Objects")
+### Refactorización Modular ✅ VERIFICADO
 
-Componentes que superan la longitud recomendada y mezclan responsabilidades.
+| Componente Original    | Líneas Antes | Ahora (Orquestador) | Subdirectorio                |
+| ---------------------- | ------------ | ------------------- | ---------------------------- |
+| `PanelDeOrganizador`   | ~1200        | 7.3KB               | `panel-organizador/`         |
+| `PanelDeUsuario`       | ~1300        | 11.2KB              | `panel-usuario/`             |
+| `PanelDeAdministrador` | ~600         | 5.6KB               | `panel-administrador/tabs/`  |
+| `Eventos`              | ~870         | 3.5KB               | `evento-detalle/components/` |
+| `CrearEvento`          | ~850         | 6.5KB               | `crear-evento/`              |
+| `UserProfile`          | ~550         | 2.1KB               | `user-profile/components/`   |
+| `OrganizationProfile`  | ~420         | 1.2KB               | `organization-profile/`      |
 
-**Estado de Refactorización:**
+### Optimizaciones de Rendimiento ✅ VERIFICADO
 
-- ✅ `PanelDeUsuario.tsx` (Refactorizado)
-- ✅ `PanelDeOrganizador.tsx` (Refactorizado)
-- ✅ `Eventos.tsx` (Refactorizado)
-- ✅ `Page.tsx` -> `CrearEvento.tsx` (Refactorizado)
-
-**Pendientes (Próxima Fase):**
-| Archivo | Líneas | Problema |
-| ------- | ------ | -------- |
-| `PanelDeAdministrador.tsx` | ~600 | Dashboard + Gestión de usuarios/orgs |
-| `UserProfile.tsx` | ~550 | Perfil público monolítico |
-| `OrganizationProfile.tsx` | ~450 | Perfil de organización monolítico |
-
-**Acción recomendada:** Ver plan detallado en `IMPLEMENTATION_PLAN.md`.
-
-### 2. Accesibilidad (a11y) ❌ NO IMPLEMENTADA
-
-- **Validado:** 0 resultados de `aria-label` en `src/components/`.
-- **Afectados:** IconButtons en Header, Footer (redes sociales), EventCard (bookmark).
-- **Impacto:** Usuarios con lectores de pantalla no pueden navegar correctamente.
-
-### 3. Error Boundaries ❌ NO IMPLEMENTADAS
-
-- **Validado:** No existe ningún componente ErrorBoundary.
-- **Riesgo:** Si un componente (ej. Mapa Leaflet) crashea, toda la app falla.
-- **Acción:** Crear `ErrorBoundary.tsx` y envolver componentes críticos.
+| Optimización      | Estado      | Archivos                                                                     |
+| ----------------- | ----------- | ---------------------------------------------------------------------------- |
+| Lazy Loading Maps | ✅ Completo | `components/LazyMap.tsx`                                                     |
+| Skeleton Loaders  | ✅ Completo | `EventCardSkeleton`, `EventDetailSkeleton`, `PanelSkeleton`, `TableSkeleton` |
+| Error Boundary    | ✅ Completo | `components/ErrorBoundary.tsx` (53 líneas)                                   |
+| Scroll Fix        | ✅ Completo | `App.tsx` (shouldRevalidate)                                                 |
 
 ---
 
-## 🛠️ Mejoras de Arquitectura y Código
+## 🛠️ Deuda Técnica Pendiente
 
-### 1. Sistema de Diseño (Estado Actual)
+### 1. Accesibilidad (a11y) ⚠️ PENDIENTE
 
-| Aspecto              | Estado               | Observación                                                    |
-| -------------------- | -------------------- | -------------------------------------------------------------- |
-| CSS Variables        | ✅ Centralizado      | `global.css` con `--color-cadetblue`, gradientes, etc.         |
-| MUI Theme            | ⚠️ Parcial           | `App.tsx` tiene tema, pero no usa todas las variables.         |
-| Componente Button    | ✅ Bien implementado | `Button.tsx` usa CSS vars correctamente, se usa en 9+ páginas. |
-| Colores hardcodeados | ⚠️ Existen           | Algunos `sx={{}}` tienen colores directos en vez de variables. |
+- Falta añadir `aria-label` a IconButtons en Header, Footer, EventCard.
+- Impacto: Usuarios con lectores de pantalla no pueden navegar correctamente.
 
-**Recomendación:** Mantener enfoque híbrido actual. Ver sección de decisiones técnicas.
+### 2. Sistema de Diseño
 
-### 2. Rendimiento
-
-| Problema                     | Estado           | Solución                                                  |
-| ---------------------------- | ---------------- | --------------------------------------------------------- |
-| Mapas cargados síncronamente | ❌ Sin lazy load | Implementar `React.lazy` para Leaflet (~200KB)            |
-| Carga visual                 | ❌ Solo spinners | Añadir Skeleton loaders para mejor UX                     |
-| Animaciones de ruta          | ❌ No usadas     | `framer-motion` instalado pero `AnimatePresence` no usado |
-
-### 3. ~~Repetición de Código (DRY) en Botones~~ ✅ RESUELTO
-
-El componente `Button.tsx` ya unifica estilos y se usa consistentemente:
-
-- Variantes: `primary` y `secondary`
-- Usa CSS vars (`--gradient-button-primary`)
-- Soporta: `to`, `href`, `startIcon`, `disabled`, `fullWidth`
+| Aspecto              | Estado          | Observación                                |
+| -------------------- | --------------- | ------------------------------------------ |
+| CSS Variables        | ✅ Centralizado | `global.css` (4KB)                         |
+| MUI Theme            | ⚠️ Parcial      | App.tsx tiene tema pero no usa todas vars. |
+| Colores hardcodeados | ⚠️ Algunos      | Algunos `sx={{}}` tienen hex directos.     |
 
 ---
 
-## 🧩 Funcionalidades Pendientes (Backlog)
+## 🧩 Funcionalidades Pendientes (Fase 4)
 
-### UX/UI
-
-- [ ] **Skeleton Loaders:** Para cards de eventos y paneles.
-- [ ] **Transiciones:** `AnimatePresence` de Framer Motion entre rutas.
-- [ ] **Error Boundaries:** Capturar errores por componente.
-
-### Internacionalización (i18n)
-
-- [ ] Configurar `react-i18next`.
-- [ ] Extraer textos hardcodeados a archivos JSON.
-
-### Testing ❌ NO CONFIGURADO
-
-- `@testing-library` está instalado, pero no hay tests ni runner (Vitest).
-- **Recomendación:** Configurar Vitest para lógica de negocio.
+- [ ] **Networking:** Chat entre asistentes, sistema "Seguir".
+- [ ] **Feed Social:** Tablón de anuncios.
+- [ ] **Ticketing:** Entradas PDF con QR.
+- [ ] **Pagos:** Integración Stripe.
+- [ ] **i18n:** Configurar `react-i18next`.
+- [ ] **Testing:** Configurar Vitest.
 
 ---
 
-## ✅ Lo que YA Funciona (No tocar)
+## 📊 Estado de Componentes
 
-| Sistema           | Estado      | Notas                                                        |
-| ----------------- | ----------- | ------------------------------------------------------------ |
-| Reviews           | ✅ Completo | Backend endpoints + Frontend service + UI en Eventos y Panel |
-| Badges de usuario | ✅ Completo | Upload + visualización + persistencia                        |
-| Sistema de Auth   | ✅ Completo | JWT + Refresh Token + RBAC                                   |
-| Componente Button | ✅ Completo | Wrapper unificado, bien diseñado                             |
-
----
-
-## 📊 Auditoría de Componentes
-
-| Componente     | Estado        | Notas                             |
-| -------------- | ------------- | --------------------------------- |
-| `EventCard`    | ✅ Bien       | Solo falta aria-label en bookmark |
-| `Button`       | ✅ Bien       | Wrapper limpio, usa CSS vars      |
-| `EventFilters` | ⚠️ Grande     | 11KB, considerar dividir          |
-| `Header`       | ⚠️ Falta a11y | Añadir aria-labels                |
-| `Footer`       | ⚠️ Falta a11y | Añadir aria-labels                |
+| Componente     | Tamaño | Estado        | Notas              |
+| -------------- | ------ | ------------- | ------------------ |
+| `EventCard`    | 8.4KB  | ✅ Bien       | Falta aria-label   |
+| `Button`       | 2.8KB  | ✅ Bien       | Wrapper limpio     |
+| `EventFilters` | 11.8KB | ⚠️ Grande     | Considerar dividir |
+| `Header`       | 8.9KB  | ⚠️ Falta a11y | Añadir aria-labels |
+| `Footer`       | 3.4KB  | ⚠️ Falta a11y | Añadir aria-labels |
+| `MobileMenu`   | 9.7KB  | ⚠️ Falta a11y | Añadir aria-labels |
