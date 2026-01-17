@@ -10,16 +10,23 @@ Este documento recopila los problemas técnicos identificados, áreas de mejora 
 
 ### 1. Monolitos de Componentes ("God Objects")
 
-Componentes que superan 800 líneas y violan el principio de responsabilidad única.
+Componentes que superan la longitud recomendada y mezclan responsabilidades.
 
-| Archivo                  | Líneas | Funciones Internas                 | Problema                                 |
-| ------------------------ | ------ | ---------------------------------- | ---------------------------------------- |
-| `PanelDeUsuario.tsx`     | 1328   | `EditProfileForm`, badges, reviews | Mezcla perfil + eventos + notificaciones |
-| `PanelDeOrganizador.tsx` | 1197   | `StatCard`, `ProfileTabContent`    | Dashboard + CRUD + formularios           |
-| `Eventos.tsx`            | 873    | `renderStars`, popovers            | Detalle + reseñas + mapa + inscripción   |
-| `Page.tsx`               | 844    | Agenda + Speakers                  | Formulario de creación de evento         |
+**Estado de Refactorización:**
 
-**Acción recomendada:** Ver plan de refactorización en `IMPLEMENTATION_PLAN.md`.
+- ✅ `PanelDeUsuario.tsx` (Refactorizado)
+- ✅ `PanelDeOrganizador.tsx` (Refactorizado)
+- ✅ `Eventos.tsx` (Refactorizado)
+- ✅ `Page.tsx` -> `CrearEvento.tsx` (Refactorizado)
+
+**Pendientes (Próxima Fase):**
+| Archivo | Líneas | Problema |
+| ------- | ------ | -------- |
+| `PanelDeAdministrador.tsx` | ~600 | Dashboard + Gestión de usuarios/orgs |
+| `UserProfile.tsx` | ~550 | Perfil público monolítico |
+| `OrganizationProfile.tsx` | ~450 | Perfil de organización monolítico |
+
+**Acción recomendada:** Ver plan detallado en `IMPLEMENTATION_PLAN.md`.
 
 ### 2. Accesibilidad (a11y) ❌ NO IMPLEMENTADA
 

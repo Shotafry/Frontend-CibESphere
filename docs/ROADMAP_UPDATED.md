@@ -45,19 +45,27 @@ La fase más crítica. Se conectó el frontend con el Backend en Go (Gin Framewo
 
 ### 2.2 Gestión de Roles (RBAC Real)
 
-- [x] **Panel de Asistente (Rediseño "LinkedIn Style"):**
-  - Layout premium con Hero Section, Avatar Overlay y Tabs de navegación.
-  - Historial de eventos e inscripciones precargados.
-  - **Sistema de Badges:** Subida y visualización de certificaciones (JSON array, max 10).
-  - **Social:** Integración de GitHub y cambio de marca Twitter -> X.
-  - Solución a persistencia de campos complejos (`slug`, `personal_quote`).
-- [x] **Panel de Organizador:**
-  - **Dashboard:** Métricas reales (Asistentes, Visitas) corregidas en backend.
-  - **Gestión de Eventos:** Creación con formulario dinámico (Agenda, Ponentes ilimitados).
-  - **Perfil Corporativo:** Edición de slug con validación en tiempo real, logo y banner.
-  - Enlace directo a perfil público (`/organizacion/:slug`) desde el header.
-- [x] **Panel de Administrador:**
-  - Verificación de organizaciones y KPIs globales.
+- [x] **Panel de Asistente:** Layout premium, historial, badges system.
+- [x] **Panel de Organizador (Refactorizado):**
+  - Modularizado en `src/pages/panel-organizador/`.
+  - Persistencia de tabs URL (`?tab=events`).
+  - Dashboard y gestión de perfil optimizados.
+- [x] **Panel de Administrador:** Verificación y métricas globales.
+
+### 2.3 UX/UI & "Cyber Aesthetic"
+
+- [x] **Refactorización de Eventos:**
+  - `Eventos.tsx` modularizado en `src/pages/evento-detalle/`.
+  - Componentes independientes para Hero, Sidebar, Reviews y Mapa.
+- [x] **Refactorización de Creación:**
+  - `CrearEvento.tsx` (antes Page.tsx) modularizado con hooks personalizados (`useEventForm`).
+- [x] **Diseño Visual:** Implementación de Glow, Glassmorphism y Responsive Mobile.
+
+### 2.4 Próximas Refactorizaciones (En Curso)
+
+- [ ] **UserProfile.tsx:** Desglose de componentes (Hero, Bio, Stats).
+- [ ] **OrganizationProfile.tsx:** Modularización de la vista pública.
+- [ ] **PanelDeAdministrador.tsx:** Separación de lógica de Dashboard, Usuarios y Organizaciones.
 
 ### 2.3 UX/UI & "Cyber Aesthetic"
 

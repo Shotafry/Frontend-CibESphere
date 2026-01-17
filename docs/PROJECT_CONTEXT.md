@@ -1,7 +1,7 @@
 # 🧠 Contexto del Proyecto: CybESphere Frontend
 
 > **Documento Maestro**: Este archivo contiene toda la información necesaria para que una IA o un desarrollador entienda la arquitectura, flujos y diseño de CybESphere sin necesidad de leer todo el código.
-> **Versión**: Beta v0.1.0 (Enero 2026)
+> **Versión**: Beta v0.2.0 (Enero 2026)
 
 ---
 
@@ -32,8 +32,12 @@ El proyecto utiliza la moderna **Data API** de React Router 7 (`createBrowserRou
 - **`/components`**: UI pura y reutilizable (15 componentes).
   - `Button.tsx`: Wrapper unificado sobre MUI, usa CSS vars.
   - `EventCard.tsx`, `Header.tsx`, `Footer.tsx`, `EventFilters.tsx`, etc.
-- **`/pages`**: Vistas principales conectadas a rutas (16 páginas).
-  - 4 componentes monolíticos pendientes de refactorizar (ver `IMPLEMENTATION_PLAN.md`).
+- **`/pages`**: Vistas principales conectadas a rutas.
+  - **Refactorizadas y Modularizadas:**
+    - `Eventos.tsx` (Detalle) → `src/pages/evento-detalle/`
+    - `PanelDeOrganizador.tsx` → `src/pages/panel-organizador/`
+    - `CrearEvento.tsx` (antes Page.tsx) → `src/pages/crear-evento/`
+  - **Pendientes de Refactorizar:** `UserProfile.tsx`, `OrganizationProfile.tsx`, `PanelDeAdministrador.tsx`.
 - **`/services`**: Lógica de negocio y conexión API. 8 módulos separados.
 - **`/context`**: Estado global crítico (`AuthContext` para sesión).
 - **`/types`**: Definiciones TypeScript compartidas.
@@ -68,11 +72,11 @@ El sistema soporta tres roles distintos, gestionados por el backend y aplicados 
 
 ## 4. Flujos Clave
 
-### A. Gestión de Eventos
+### A. Gestión de Eventos (Refactorizado)
 
-- **Creación (`/crear-evento`):** Formulario dinámico (`react-hook-form`) que permite añadir agenda y ponentes infinitos.
-- **Visualización (`/eventos/:slug`):** Página de detalle con estilos ricos. Muestra agenda, ponentes, mapa y reseñas.
-- **Inscripción:** Botón inteligente que cambia de estado (Inscribirse -> Ya inscrito -> Aforo completo).
+- **Creación (`/crear-evento`):** Utiliza un orquestador `CrearEvento.tsx` que carga el hook `useEventForm` y renderiza secciones modulares (`BasicInfo`, `DateLocation`, `Agenda`, `Speakers`). Soporta edición y creación.
+- **Visualización (`/eventos/:slug`):** Orquestador `Eventos.tsx` que compone la vista usando sub-componentes: `EventHero`, `EventDetails`, `EventItinerary`, `EventReviews` y `EventSidebar`.
+- **Inscripción:** Lógica de negocio encapsulada en `EventSidebar`, que maneja estados (Inscribirse, Ya inscrito, Aforo completo).
 
 ### B. Perfiles Públicos
 
@@ -85,6 +89,7 @@ El sistema soporta tres roles distintos, gestionados por el backend y aplicados 
 ### C. Navegación y Filtros
 
 - **Sincronización URL:** Los filtros de la Landing Page (fecha, ubicación, tipo) se sincronizan bidireccionalmente con los parámetros URL (`?city=Madrid&type=workshop`). Esto permite compartir búsquedas.
+- **Persistencia en Tabs:** Los paneles (como `PanelDeOrganizador`) utilizan `useSearchParams` para mantener la pestaña activa tras un refresco (ej. `?tab=events`).
 
 ---
 
@@ -125,5 +130,7 @@ _Nota:_ Las respuestas del backend suelen venir envueltas en un objeto `{ data: 
 
 1.  **Nueva Funcionalidad:** Revisa `ROADMAP_UPDATED.md` primero.
 2.  **Estilos:** NO uses estilos inline si es posible. Usa `sx={{...}}` de MUI o clases definidas. Mantén los colores corporativos.
-3.  **Componentes Grandes:** Si vas a editar `PanelDeOrganizador.tsx` o `Eventos.tsx`, considera primero si tu cambio puede extraerse a un subcomponente.
+3.  **Modularización:**
+    - Si editas componentes complejos como `UserProfile` o `OrganizationProfile`, busca oportunidades para extraer sub-componentes a carpetas dedicadas (ej. `src/pages/user-profile/`).
+    - Mantén la lógica de negocio separada en Custom Hooks (ej. `useEventForm`).
 4.  **Estado:** Prefiere `react-router` loaders para datos de página y `react-hook-form` para formularios complejos. Evita `useEffect` para cargas de datos simples.
