@@ -1,6 +1,8 @@
 # 🐛 Errores Conocidos y Deuda Técnica
 
-Este documento recopila los problemas técnicos identificados, áreas de mejora y funcionalidades pendientes de implementación. Sirve como backlog técnico para futuras iteraciones.
+> **Última Auditoría:** Enero 2026 (Validado contra código real)
+
+Este documento recopila los problemas técnicos identificados, áreas de mejora y funcionalidades pendientes de implementación.
 
 ---
 
@@ -8,39 +10,59 @@ Este documento recopila los problemas técnicos identificados, áreas de mejora 
 
 ### 1. Monolitos de Componentes ("God Objects")
 
-Algunos componentes han crecido desmesuradamente y violan el principio de responsabilidad única.
+Componentes que superan 800 líneas y violan el principio de responsabilidad única.
 
-- **`src/pages/PanelDeOrganizador.tsx`**: >1000 líneas. Mezcla lógica de dashboard, CRUD de eventos, gestión de formularios, estilos y renderizado de tabs.
-  - _Acción:_ Dividir en `DashboardTab.tsx`, `EventsList.tsx`, `ProfileEditor.tsx`.
-- **`src/pages/Eventos.tsx`**: >800 líneas. Maneja renderizado de detalle, lógica de inscripción, mapas y reseñas.
-  - _Acción:_ Extraer `SubscribeButton.tsx`, `EventHeader.tsx`, `EventItinerary.tsx`.
+| Archivo                  | Líneas | Funciones Internas                 | Problema                                 |
+| ------------------------ | ------ | ---------------------------------- | ---------------------------------------- |
+| `PanelDeUsuario.tsx`     | 1328   | `EditProfileForm`, badges, reviews | Mezcla perfil + eventos + notificaciones |
+| `PanelDeOrganizador.tsx` | 1197   | `StatCard`, `ProfileTabContent`    | Dashboard + CRUD + formularios           |
+| `Eventos.tsx`            | 873    | `renderStars`, popovers            | Detalle + reseñas + mapa + inscripción   |
+| `Page.tsx`               | 844    | Agenda + Speakers                  | Formulario de creación de evento         |
 
-### 2. Repetición de Código (DRY)
+**Acción recomendada:** Ver plan de refactorización en `IMPLEMENTATION_PLAN.md`.
 
-- **Modales:** La lógica de modales (ej. en `AboutThis.tsx`) contiene estilos inline repetidos.
-- **Botones:** Existen múltiples definiciones de estilos de botones que deberían unificarse en `src/components/Button.tsx`.
+### 2. Accesibilidad (a11y) ❌ NO IMPLEMENTADA
+
+- **Validado:** 0 resultados de `aria-label` en `src/components/`.
+- **Afectados:** IconButtons en Header, Footer (redes sociales), EventCard (bookmark).
+- **Impacto:** Usuarios con lectores de pantalla no pueden navegar correctamente.
+
+### 3. Error Boundaries ❌ NO IMPLEMENTADAS
+
+- **Validado:** No existe ningún componente ErrorBoundary.
+- **Riesgo:** Si un componente (ej. Mapa Leaflet) crashea, toda la app falla.
+- **Acción:** Crear `ErrorBoundary.tsx` y envolver componentes críticos.
 
 ---
 
 ## 🛠️ Mejoras de Arquitectura y Código
 
-### 1. Sistema de Diseño
+### 1. Sistema de Diseño (Estado Actual)
 
-Aunque se usa MUI 7, faltan tokens centralizados.
+| Aspecto              | Estado               | Observación                                                    |
+| -------------------- | -------------------- | -------------------------------------------------------------- |
+| CSS Variables        | ✅ Centralizado      | `global.css` con `--color-cadetblue`, gradientes, etc.         |
+| MUI Theme            | ⚠️ Parcial           | `App.tsx` tiene tema, pero no usa todas las variables.         |
+| Componente Button    | ✅ Bien implementado | `Button.tsx` usa CSS vars correctamente, se usa en 9+ páginas. |
+| Colores hardcodeados | ⚠️ Existen           | Algunos `sx={{}}` tienen colores directos en vez de variables. |
 
-- **Estado Actual:** Variables CSS en `global.css` (`--color-cadetblue`) mezcladas con `sx` props hardcodeados.
-- **Mejora:** Centralizar todo en `src/theme.ts` de MUI. Definir una paleta personalizada para eliminar "magic strings" de colores en los componentes.
+**Recomendación:** Mantener enfoque híbrido actual. Ver sección de decisiones técnicas.
 
 ### 2. Rendimiento
 
-- **Mapas:** `React Leaflet` se carga en el bundle principal.
-  - _Mejora:_ Implementar `React.lazy` para cargar los mapas solo cuando se necesitan.
-- **Re-renders:** Formularios grandes (como en `Page.tsx`) pueden causar re-renderizados excesivos. Optimizar `react-hook-form` con `memo` si es necesario.
+| Problema                     | Estado           | Solución                                                  |
+| ---------------------------- | ---------------- | --------------------------------------------------------- |
+| Mapas cargados síncronamente | ❌ Sin lazy load | Implementar `React.lazy` para Leaflet (~200KB)            |
+| Carga visual                 | ❌ Solo spinners | Añadir Skeleton loaders para mejor UX                     |
+| Animaciones de ruta          | ❌ No usadas     | `framer-motion` instalado pero `AnimatePresence` no usado |
 
-### 3. Accesibilidad (a11y)
+### 3. ~~Repetición de Código (DRY) en Botones~~ ✅ RESUELTO
 
-- Faltan atributos `aria-label` en botones de iconos (ej. redes sociales).
-- Contraste de texto en algunos gradientes (especialmente en modo oscuro o banners) debe ser verificado.
+El componente `Button.tsx` ya unifica estilos y se usa consistentemente:
+
+- Variantes: `primary` y `secondary`
+- Usa CSS vars (`--gradient-button-primary`)
+- Soporta: `to`, `href`, `startIcon`, `disabled`, `fullWidth`
 
 ---
 
@@ -48,29 +70,39 @@ Aunque se usa MUI 7, faltan tokens centralizados.
 
 ### UX/UI
 
-- [ ] **Feedback de Carga:** Mejorar los skeletons o spinners al cargar datos en los paneles.
-- [ ] **Transiciones:** Implementar animaciones de entrada (`Framer Motion`) en el cambio de rutas para una sensación más "app-like".
-- [ ] **Error Boundaries:** Crear pantallas de error específicas por componente para evitar que toda la app falle si un widget (ej. Mapa) crashea.
+- [ ] **Skeleton Loaders:** Para cards de eventos y paneles.
+- [ ] **Transiciones:** `AnimatePresence` de Framer Motion entre rutas.
+- [ ] **Error Boundaries:** Capturar errores por componente.
 
 ### Internacionalización (i18n)
 
-- Actualmente todos los textos están hardcodeados en español.
-- _Futuro:_ Implementar `react-i18next` para preparar la la plataforma a multi-idioma.
+- [ ] Configurar `react-i18next`.
+- [ ] Extraer textos hardcodeados a archivos JSON.
 
-### Testing
+### Testing ❌ NO CONFIGURADO
 
-- No existen tests E2E ni unitarios robustos.
-- _Recomendación:_ Configurar Vitest para lógica de negocio y Cypress/Playwright para flujos críticos (Login -> Crear Evento).
+- `@testing-library` está instalado, pero no hay tests ni runner (Vitest).
+- **Recomendación:** Configurar Vitest para lógica de negocio.
 
 ---
 
-## 🔍 Notas de Auditoría (Resumen)
+## ✅ Lo que YA Funciona (No tocar)
 
-_Basado en auditoría de Enero 2026_
+| Sistema           | Estado      | Notas                                                        |
+| ----------------- | ----------- | ------------------------------------------------------------ |
+| Reviews           | ✅ Completo | Backend endpoints + Frontend service + UI en Eventos y Panel |
+| Badges de usuario | ✅ Completo | Upload + visualización + persistencia                        |
+| Sistema de Auth   | ✅ Completo | JWT + Refresh Token + RBAC                                   |
+| Componente Button | ✅ Completo | Wrapper unificado, bien diseñado                             |
 
-| Componente     | Estado   | Problema Principal                 |
-| -------------- | -------- | ---------------------------------- |
-| `EventCard`    | ✅ Bien  | Grid size props a corregir         |
-| `EventFilters` | ⚠️ Medio | Muy extenso, difícil de mantener   |
-| `SignUp`       | ⚠️ Medio | Validaciones visuales mejorables   |
-| `Services`     | ✅ Bien  | Modularizados, listos para escalar |
+---
+
+## 📊 Auditoría de Componentes
+
+| Componente     | Estado        | Notas                             |
+| -------------- | ------------- | --------------------------------- |
+| `EventCard`    | ✅ Bien       | Solo falta aria-label en bookmark |
+| `Button`       | ✅ Bien       | Wrapper limpio, usa CSS vars      |
+| `EventFilters` | ⚠️ Grande     | 11KB, considerar dividir          |
+| `Header`       | ⚠️ Falta a11y | Añadir aria-labels                |
+| `Footer`       | ⚠️ Falta a11y | Añadir aria-labels                |

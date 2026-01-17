@@ -29,12 +29,23 @@ El proyecto utiliza la moderna **Data API** de React Router 7 (`createBrowserRou
 
 ### Jerarquía de Directorios (`src/`)
 
-- **`/components`**: UI pura y reutilizable (`EventCard`, `Header`, `EventFilters`).
-- **`/pages`**: Vistas principales conectadas a rutas (`LandingPage`, `PanelDeOrganizador`).
-- **`/services`**: Lógica de negocio y conexión API. Módulos separados (`auth`, `events`, `users`).
+- **`/components`**: UI pura y reutilizable (15 componentes).
+  - `Button.tsx`: Wrapper unificado sobre MUI, usa CSS vars.
+  - `EventCard.tsx`, `Header.tsx`, `Footer.tsx`, `EventFilters.tsx`, etc.
+- **`/pages`**: Vistas principales conectadas a rutas (16 páginas).
+  - 4 componentes monolíticos pendientes de refactorizar (ver `IMPLEMENTATION_PLAN.md`).
+- **`/services`**: Lógica de negocio y conexión API. 8 módulos separados.
 - **`/context`**: Estado global crítico (`AuthContext` para sesión).
-- **`/types`**: Definiciones TypeScript compartidas (DTOs, Interfaces).
-- **`/hooks`**: Lógica reactiva reutilizable.
+- **`/types`**: Definiciones TypeScript compartidas.
+- **`/hooks`**: 4 hooks reutilizables.
+
+### Sistema de Diseño (Enfoque Híbrido)
+
+El proyecto usa un **enfoque híbrido** (CSS vars + MUI):
+
+1. **`global.css`**: Variables CSS para colores, gradientes, fuentes.
+2. **MUI Theme** (`App.tsx`): Configuración de paleta y componentes.
+3. **Wrappers personalizados** (`Button.tsx`): Combinan MUI + CSS vars.
 
 ---
 
