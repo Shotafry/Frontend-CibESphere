@@ -1,5 +1,5 @@
 // src/pages/Eventos.tsx
-import { FunctionComponent, useState } from 'react'
+import { FunctionComponent, useState, useMemo, useEffect } from 'react'
 import {
   Box,
   Typography,
@@ -29,7 +29,6 @@ import { Review } from '../types'
 import StarIcon from '@mui/icons-material/Star'
 import StarHalfIcon from '@mui/icons-material/StarHalf'
 import StarOutlineIcon from '@mui/icons-material/StarOutline'
-import { useEffect } from 'react'
 import defaultLogo from '/img/brand/logo-main-full.png'
 import { ErrorBoundary } from '../components/ErrorBoundary'
 
@@ -64,6 +63,11 @@ const Eventos: FunctionComponent = () => {
   const isAlreadySubscribed = user?.registered_events?.some(
     (regEvent) => regEvent.id === event.id
   )
+
+  const isEventEnded = useMemo(() => {
+    if (!event?.end_date) return false
+    return new Date(event.end_date) < new Date()
+  }, [event?.end_date])
 
   const [reviews, setReviews] = useState<Review[]>([])
 
@@ -717,6 +721,7 @@ const Eventos: FunctionComponent = () => {
                       !isAuthenticated ||
                       isAlreadySubscribed ||
                       isSubscribing ||
+                      isEventEnded ||
                       !!(
                         event.max_attendees &&
                         event.max_attendees > 0 &&
@@ -730,15 +735,17 @@ const Eventos: FunctionComponent = () => {
                       fontSize: '1rem',
                       fontWeight: 'bold',
                       textTransform: 'none',
-                      background: isAlreadySubscribed
-                        ? 'var(--Gray-300)'
-                        : event.max_attendees &&
-                          event.max_attendees > 0 &&
-                          event.current_attendees >= event.max_attendees
-                        ? 'var(--Gray-300)'
-                        : 'var(--gradient-button-primary)',
+                      background:
+                        isAlreadySubscribed || isEventEnded
+                          ? 'var(--Gray-300)'
+                          : event.max_attendees &&
+                            event.max_attendees > 0 &&
+                            event.current_attendees >= event.max_attendees
+                          ? 'var(--Gray-300)'
+                          : 'var(--gradient-button-primary)',
                       color:
                         isAlreadySubscribed ||
+                        isEventEnded ||
                         (event.max_attendees &&
                           event.max_attendees > 0 &&
                           event.current_attendees >= event.max_attendees)
@@ -746,6 +753,7 @@ const Eventos: FunctionComponent = () => {
                           : 'var(--White)',
                       boxShadow:
                         isAlreadySubscribed ||
+                        isEventEnded ||
                         (event.max_attendees &&
                           event.max_attendees > 0 &&
                           event.current_attendees >= event.max_attendees)
@@ -754,6 +762,7 @@ const Eventos: FunctionComponent = () => {
                       '&:hover': {
                         background:
                           isAlreadySubscribed ||
+                          isEventEnded ||
                           (event.max_attendees &&
                             event.max_attendees > 0 &&
                             event.current_attendees >= event.max_attendees)
@@ -761,6 +770,7 @@ const Eventos: FunctionComponent = () => {
                             : 'var(--gradient-button-primary-hover)',
                         boxShadow:
                           isAlreadySubscribed ||
+                          isEventEnded ||
                           (event.max_attendees &&
                             event.max_attendees > 0 &&
                             event.current_attendees >= event.max_attendees)
@@ -775,6 +785,8 @@ const Eventos: FunctionComponent = () => {
                       'Inicia sesión para inscribirte'
                     ) : isAlreadySubscribed ? (
                       'Ya estás inscrito'
+                    ) : isEventEnded ? (
+                      'Evento Finalizado'
                     ) : event.max_attendees &&
                       event.max_attendees > 0 &&
                       event.current_attendees >= event.max_attendees ? (
