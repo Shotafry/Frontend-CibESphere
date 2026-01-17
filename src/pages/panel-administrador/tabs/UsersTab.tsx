@@ -19,6 +19,7 @@ import {
 import { Delete as DeleteIcon } from '@mui/icons-material'
 import { User, Role } from '../../../types'
 import * as apiService from '../../../services/apiService'
+import { TableSkeleton } from '../../../components/skeletons'
 
 export const UsersTab: React.FC = () => {
   const [users, setUsers] = useState<User[]>([])
@@ -48,7 +49,7 @@ export const UsersTab: React.FC = () => {
     }
   }
 
-  if (loading) return <CircularProgress />
+  if (loading) return <TableSkeleton />
 
   return (
     <Fade in timeout={500}>

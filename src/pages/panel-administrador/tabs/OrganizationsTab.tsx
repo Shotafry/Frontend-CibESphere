@@ -23,6 +23,7 @@ import {
 import { OrganizationSummary } from '../../../types'
 import * as apiService from '../../../services/apiService'
 import { Button } from '../../../components/Button'
+import { TableSkeleton } from '../../../components/skeletons'
 
 export const OrganizationsTab: React.FC = () => {
   const [orgs, setOrgs] = useState<OrganizationSummary[]>([])
@@ -48,7 +49,7 @@ export const OrganizationsTab: React.FC = () => {
     }
   }
 
-  if (loading) return <CircularProgress />
+  if (loading) return <TableSkeleton />
 
   return (
     <Fade in timeout={500}>

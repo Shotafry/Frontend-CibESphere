@@ -12,8 +12,9 @@ import { useLoaderData } from 'react-router-dom'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 import { Hero } from '../components/Hero'
-import { EventMap } from '../components/EventMap'
+import { LazyEventMap } from '../components/LazyMap'
 import { EventCard } from '../components/EventCard'
+import { EventCardSkeleton } from '../components/skeletons'
 import { Event, EventFilterParams } from '../types'
 import { EventFilters } from '../components/EventFilters'
 import ComunidadBox from '../components/AboutThis'
@@ -90,7 +91,7 @@ const LandingPage: FunctionComponent = () => {
         </Box>
 
         <Box sx={{ my: 5, display: 'flex', justifyContent: 'center' }}>
-          <EventMap events={events} />
+          <LazyEventMap events={events} />
         </Box>
 
         <Grid container spacing={4} justifyContent='center'>
@@ -103,6 +104,13 @@ const LandingPage: FunctionComponent = () => {
                 seleccionados.
               </Typography>
             </Grid>
+          )}
+          {isLoadingMore && (
+            <>
+              <EventCardSkeleton />
+              <EventCardSkeleton />
+              <EventCardSkeleton />
+            </>
           )}
         </Grid>
 

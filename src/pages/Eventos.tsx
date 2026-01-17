@@ -16,6 +16,7 @@ import { EventDetails } from './evento-detalle/components/EventDetails'
 import { EventItinerary } from './evento-detalle/components/EventItinerary'
 import { EventReviews } from './evento-detalle/components/EventReviews'
 import { EventSidebar } from './evento-detalle/components/EventSidebar'
+import { EventDetailSkeleton } from '../components/skeletons'
 
 const Eventos: FunctionComponent = () => {
   const event = useLoaderData() as Event
@@ -57,18 +58,7 @@ const Eventos: FunctionComponent = () => {
   }
 
   if (navigation.state === 'loading') {
-    return (
-      <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          minHeight: '80vh'
-        }}
-      >
-        <CircularProgress />
-      </Box>
-    )
+    return <EventDetailSkeleton />
   }
 
   if (!event) {
