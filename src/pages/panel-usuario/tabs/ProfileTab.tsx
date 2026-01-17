@@ -7,8 +7,7 @@ import {
   Typography,
   Alert,
   CircularProgress,
-  Stack,
-  Button
+  Stack
 } from '@mui/material'
 import {
   Control,
@@ -19,6 +18,7 @@ import {
 import { User } from '../../../types'
 import { ImageUpload } from '../../../components/ImageUpload'
 import { BadgeUploader } from '../components/BadgeUploader'
+import { Button } from '../../../components/Button'
 import PersonIcon from '@mui/icons-material/Person'
 import LocationOnIcon from '@mui/icons-material/LocationOn'
 import GitHubIcon from '@mui/icons-material/GitHub'
@@ -73,10 +73,10 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
         }}
       >
         <Button
-          variant='contained'
           href={`/u/${user?.slug || user?.id}`}
           target='_blank'
           size='small'
+          variant='secondary'
           sx={{
             position: 'absolute',
             top: 12,
@@ -416,9 +416,9 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
                     render={({ field: { onChange, value } }) => (
                       <ImageUpload
                         label='Foto de Perfil (Cuadrada)'
-                        currentImage={value}
-                        onImageUpload={onChange}
-                        folder='avatars'
+                        currentUrl={value}
+                        onUpload={onChange}
+                        altText='Avatar'
                       />
                     )}
                   />
@@ -430,10 +430,10 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
                     render={({ field: { onChange, value } }) => (
                       <ImageUpload
                         label='Banner de Perfil (Horizontal)'
-                        currentImage={value}
-                        onImageUpload={onChange}
-                        folder='banners'
-                        aspectRatio={3}
+                        currentUrl={value}
+                        onUpload={onChange}
+                        altText='Banner'
+                        isBanner={true}
                       />
                     )}
                   />
@@ -449,20 +449,13 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
             <Grid
               item
               xs={12}
-              sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}
+              sx={{ display: 'flex', justifyContent: 'flex-start', mt: 4 }}
             >
               <Button
                 type='submit'
-                variant='contained'
-                size='large'
+                variant='primary'
                 disabled={isSaving}
-                sx={{
-                  borderRadius: '12px',
-                  background:
-                    'linear-gradient(90deg, #00d9ff 0%, #0099ff 100%)',
-                  boxShadow: '0 4px 14px rgba(0, 217, 255, 0.4)',
-                  px: 4
-                }}
+                className='px-8 py-2.5 rounded-xl shadow-lg shadow-blue-500/20 hover:shadow-blue-500/40 transition-all duration-300'
               >
                 {isSaving ? (
                   <CircularProgress size={24} color='inherit' />

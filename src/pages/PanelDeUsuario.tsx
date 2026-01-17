@@ -30,7 +30,7 @@ import {
 const PanelDeUsuario: FunctionComponent = () => {
   const { user, refreshUserData } = useAuth()
   const navigation = useNavigation()
-  const [searchParams] = useSearchParams()
+  const [searchParams, setSearchParams] = useSearchParams()
 
   // Estado para eventos
   const [subscribedEvents, setSubscribedEvents] = useState<Event[]>([])
@@ -117,6 +117,7 @@ const PanelDeUsuario: FunctionComponent = () => {
   // Manejadores de eventos
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue)
+    setSearchParams({ tab: newValue.toString() })
   }
 
   const handleCancelSubscription = async (eventId: string) => {
@@ -212,7 +213,7 @@ const PanelDeUsuario: FunctionComponent = () => {
           pb: 0
         }}
       >
-        <Container maxWidth='xl' sx={{ px: { xs: 2, sm: 3, md: 4 } }}>
+        <Container maxWidth='lg' sx={{ px: { xs: 2, sm: 3, md: 4 } }}>
           <Box
             sx={{
               display: 'flex',
@@ -311,7 +312,7 @@ const PanelDeUsuario: FunctionComponent = () => {
 
       {/* Contenido de Tabs */}
       <Container
-        maxWidth='xl'
+        maxWidth='lg'
         sx={{ mt: { xs: 3, sm: 6 }, px: { xs: 2, sm: 3, md: 4 } }}
       >
         {tabValue === 0 && (
