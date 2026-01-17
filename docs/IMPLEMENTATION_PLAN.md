@@ -225,35 +225,155 @@ src/pages/
 5. Crear tabs restantes
 6. Refactorizar `PanelDeUsuario.tsx` como orquestador
 
-### 2.2 Refactorizar `PanelDeOrganizador.tsx`
+### 2.2 Refactorizar `PanelDeOrganizador.tsx` ✅
 
-**Situación actual:** 1197 líneas, 2 componentes internos (`StatCard`, `ProfileTabContent`)
+**Situación actual:** Refactorizado y modularizado.
+
+**Estructura implementada:**
+
+```
+src/pages/
+├── PanelDeOrganizador.tsx (orquestador)
+│
+└── panel-organizador/
+    ├── index.ts
+    ├── components/
+    │   ├── StatCard.tsx
+    │   └── OrgProfileForm.tsx (decomposed)
+    │       ├── components/
+    │       │   ├── ProfileHeaderPreview.tsx
+    │       │   ├── GeneralInfoSection.tsx
+    │       │   ├── ContactInfoSection.tsx
+    │       │   ├── VisualAssetsSection.tsx
+    │       │   └── SocialMediaSection.tsx
+    │
+    └── tabs/
+        ├── DashboardTab.tsx
+        ├── EventsListTab.tsx
+        └── ProfileTab.tsx
+```
+
+### 2.3 Refactorizar `Eventos.tsx` ✅
+
+**Situación actual:** Refactorizado y modularizado.
+
+**Estructura implementada:**
+
+```
+src/pages/
+├── Eventos.tsx (orquestador)
+│
+└── evento-detalle/
+    ├── index.ts
+    └── components/
+        ├── EventHero.tsx
+        ├── EventDetails.tsx
+        ├── EventItinerary.tsx
+        ├── EventReviews.tsx
+        └── EventSidebar.tsx
+```
+
+### 2.4 Refactorizar `Page.tsx` -> `CrearEvento.tsx` ✅
+
+**Situación actual:** Renombrado y refactorizado.
+
+**Estructura implementada:**
+
+```
+src/pages/
+├── CrearEvento.tsx (orquestador)
+│
+└── crear-evento/
+    ├── index.ts
+    ├── hooks/
+    │   └── useEventForm.ts
+    │
+    └── sections/
+        ├── BasicInfoSection.tsx
+        ├── DateLocationSection.tsx
+        ├── CapacityPriceSection.tsx
+        ├── AgendaSection.tsx
+        └── SpeakersSection.tsx
+```
+
+### 2.5 Refactorizar `UserProfile.tsx` (Nuevo)
+
+**Situación actual:** 548 líneas, monolítico.
 
 **Estructura propuesta:**
 
 ```
 src/pages/
+├── UserProfile.tsx (orquestador)
+│
+└── user-profile/
+    ├── index.ts
+    └── components/
+        ├── UserHero.tsx (Banner, Avatar, Badges)
+        ├── UserBio.tsx
+        ├── UserStats.tsx
+        ├── UserSocials.tsx
+        └── UserEventsTab.tsx (Lista de eventos pasados/futuros)
+```
+
+### 2.6 Refactorizar `OrganizationProfile.tsx` (Nuevo)
+
+**Situación actual:** 422 líneas.
+
+**Estructura propuesta:**
+
+```
+src/pages/
+├── OrganizationProfile.tsx (orquestador)
+│
+└── organization-profile/
+    ├── index.ts
+    └── components/
+        ├── OrgHero.tsx (Banner)
+        ├── OrgHeaderCard.tsx (Logo, info principal, acciones)
+        └── OrgEventsList.tsx (Tabs de eventos)
+```
+
+### 2.7 Refactorizar `PanelDeAdministrador.tsx` (Nuevo)
+
+**Situación actual:** 608 líneas, múltiples componentes internos (`DashboardTab`, `OrganizationsTab`, `UsersTab`).
+
+**Estructura propuesta:**
+
+```
+src/pages/
+├── PanelDeAdministrador.tsx (orquestador)
+│
+└── panel-administrador/
+    ├── index.ts
+    └── tabs/
+        ├── DashboardTab.tsx
+        ├── OrganizationsTab.tsx
+        └── UsersTab.tsx
+```
+
 ├── PanelDeOrganizador.tsx (orquestador, ~150 líneas)
 │
 └── panel-organizador/
-    ├── index.ts
-    │
-    ├── tabs/
-    │   ├── DashboardTab.tsx (~250 líneas)
-    │   │   └── Stats + KPIs + gráficos
-    │   │
-    │   ├── EventsListTab.tsx (~250 líneas)
-    │   │   └── CRUD de eventos
-    │   │
-    │   └── ProfileTab.tsx (~400 líneas)
-    │       └── Formulario de organización
-    │
-    └── components/
-        ├── StatCard.tsx (~80 líneas)
-        │   └── Tarjeta de estadística (ya existe inline)
-        │
-        └── OrgProfileForm.tsx (~300 líneas)
-            └── Formulario completo de org
+├── index.ts
+│
+├── tabs/
+│ ├── DashboardTab.tsx (~250 líneas)
+│ │ └── Stats + KPIs + gráficos
+│ │
+│ ├── EventsListTab.tsx (~250 líneas)
+│ │ └── CRUD de eventos
+│ │
+│ └── ProfileTab.tsx (~400 líneas)
+│ └── Formulario de organización
+│
+└── components/
+├── StatCard.tsx (~80 líneas)
+│ └── Tarjeta de estadística (ya existe inline)
+│
+└── OrgProfileForm.tsx (~300 líneas)
+└── Formulario completo de org
+
 ```
 
 ### 2.3 Refactorizar `Eventos.tsx`
@@ -263,27 +383,29 @@ src/pages/
 **Estructura propuesta:**
 
 ```
+
 src/pages/
 ├── Eventos.tsx (orquestador, ~150 líneas)
 │
 └── evento-detalle/
-    ├── index.ts
-    │
-    └── components/
-        ├── EventHero.tsx (~100 líneas)
-        │   └── Banner + título + organización
-        │
-        ├── EventDetails.tsx (~100 líneas)
-        │   └── Categoría + nivel + tags
-        │
-        ├── EventItinerary.tsx (~200 líneas)
-        │   └── Agenda + Ponentes
-        │
-        ├── EventReviews.tsx (~200 líneas)
-        │   └── Lista de reseñas + rating
-        │
-        └── EventSidebar.tsx (~150 líneas)
-            └── Precio + ubicación + botón inscripción
+├── index.ts
+│
+└── components/
+├── EventHero.tsx (~100 líneas)
+│ └── Banner + título + organización
+│
+├── EventDetails.tsx (~100 líneas)
+│ └── Categoría + nivel + tags
+│
+├── EventItinerary.tsx (~200 líneas)
+│ └── Agenda + Ponentes
+│
+├── EventReviews.tsx (~200 líneas)
+│ └── Lista de reseñas + rating
+│
+└── EventSidebar.tsx (~150 líneas)
+└── Precio + ubicación + botón inscripción
+
 ```
 
 ### 2.4 Refactorizar `Page.tsx`
@@ -293,31 +415,33 @@ src/pages/
 **Estructura propuesta:**
 
 ```
+
 src/pages/
 ├── Page.tsx → renombrar a CrearEvento.tsx (orquestador, ~200 líneas)
 │
 └── crear-evento/
-    ├── index.ts
-    │
-    ├── sections/
-    │   ├── BasicInfoSection.tsx (~150 líneas)
-    │   │   └── Título, descripción, tipo, nivel
-    │   │
-    │   ├── DateLocationSection.tsx (~200 líneas)
-    │   │   └── Fechas + ubicación + mapa
-    │   │
-    │   ├── CapacityPriceSection.tsx (~100 líneas)
-    │   │   └── Aforo + precio
-    │   │
-    │   ├── AgendaSection.tsx (~150 líneas)
-    │   │   └── Items de agenda dinámicos
-    │   │
-    │   └── SpeakersSection.tsx (~150 líneas)
-    │       └── Ponentes dinámicos
-    │
-    └── hooks/
-        └── useEventForm.ts (~100 líneas)
-            └── Lógica de react-hook-form extraída
+├── index.ts
+│
+├── sections/
+│ ├── BasicInfoSection.tsx (~150 líneas)
+│ │ └── Título, descripción, tipo, nivel
+│ │
+│ ├── DateLocationSection.tsx (~200 líneas)
+│ │ └── Fechas + ubicación + mapa
+│ │
+│ ├── CapacityPriceSection.tsx (~100 líneas)
+│ │ └── Aforo + precio
+│ │
+│ ├── AgendaSection.tsx (~150 líneas)
+│ │ └── Items de agenda dinámicos
+│ │
+│ └── SpeakersSection.tsx (~150 líneas)
+│ └── Ponentes dinámicos
+│
+└── hooks/
+└── useEventForm.ts (~100 líneas)
+└── Lógica de react-hook-form extraída
+
 ```
 
 ---
@@ -332,9 +456,11 @@ src/pages/
 **Archivos a modificar:**
 
 ```
+
 src/components/SingleEventMap.tsx
 src/components/EventMap.tsx
-```
+
+````
 
 **Implementación:**
 
@@ -361,7 +487,7 @@ export const LazyEventMap: React.FC<Props> = (props) => (
     <EventMap {...props} />
   </Suspense>
 )
-```
+````
 
 **Archivos a actualizar:**
 
