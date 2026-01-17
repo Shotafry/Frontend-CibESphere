@@ -165,6 +165,9 @@ export const Header: FunctionComponent = () => {
                   }}
                   alt='CybESphere'
                   src={logoIconUrl}
+                  role='button'
+                  aria-label='Ir a inicio'
+                  tabIndex={0}
                 />
               </Box>
 
@@ -187,6 +190,9 @@ export const Header: FunctionComponent = () => {
                   }}
                   alt='CybESphere'
                   src={logoOnlyTextUrl}
+                  role='button'
+                  aria-label='Ir a inicio'
+                  tabIndex={0}
                 />
               </Box>
 
@@ -200,6 +206,7 @@ export const Header: FunctionComponent = () => {
                     bgcolor: 'rgba(0, 192, 250, 0.1)'
                   }
                 }}
+                aria-label='Abrir menú'
               >
                 <MenuIcon sx={{ fontSize: 28 }} />
               </IconButton>
@@ -217,6 +224,9 @@ export const Header: FunctionComponent = () => {
                 alt='CibESphere Logo'
                 src={logoAndTextUrl}
                 onClick={onLogoClick}
+                role='button'
+                aria-label='Ir a inicio'
+                tabIndex={0}
               />
 
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
@@ -227,6 +237,7 @@ export const Header: FunctionComponent = () => {
                     <IconButton
                       onClick={handleOpenNotifications}
                       sx={{ mr: 1 }}
+                      aria-label='Notificaciones'
                     >
                       <Badge badgeContent={unreadCount} color='error'>
                         <NotificationsIcon sx={{ color: textColor }} />

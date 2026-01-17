@@ -148,6 +148,11 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
               >
                 <IconButton
                   onClick={handleBookmarkClick}
+                  aria-label={
+                    isBookmarked
+                      ? 'Eliminar de favoritos'
+                      : 'Guardar en favoritos'
+                  }
                   sx={{
                     bgcolor: 'rgba(255,255,255,0.8)',
                     '&:hover': { bgcolor: 'white' }

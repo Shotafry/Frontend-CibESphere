@@ -108,7 +108,11 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({
             Menú
           </Typography>
         </Box>
-        <IconButton onClick={onClose} sx={{ color: 'white' }}>
+        <IconButton
+          onClick={onClose}
+          sx={{ color: 'white' }}
+          aria-label='Cerrar menú'
+        >
           <CloseIcon />
         </IconButton>
       </Box>

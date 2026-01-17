@@ -48,7 +48,7 @@ export const Footer: FunctionComponent = () => {
             width: '100%'
           }}
         >
-          <RouterLink to='/'>
+          <RouterLink to='/' aria-label='Ir a inicio'>
             <img
               style={{
                 height: '36px',

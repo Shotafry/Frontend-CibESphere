@@ -3,6 +3,7 @@ import React from 'react'
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
 import { Box, Typography, Chip } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
+import { ErrorBoundary } from './ErrorBoundary'
 import { Event } from '../types'
 import { Button } from './Button'
 // No importamos L (Leaflet) ni el icono
@@ -154,39 +155,41 @@ export const EventMap: React.FC<EventMapProps> = ({ events }) => {
         boxShadow: 'var(--shadow-drop)'
       }}
     >
-      <MapContainer
-        center={mapCenter}
-        zoom={6}
-        style={{ height: '100%', width: '100%' }}
-        scrollWheelZoom={false}
-        dragging={true}
-        touchZoom={true}
-      >
-        <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
-        />
+      <ErrorBoundary>
+        <MapContainer
+          center={mapCenter}
+          zoom={6}
+          style={{ height: '100%', width: '100%' }}
+          scrollWheelZoom={false}
+          dragging={true}
+          touchZoom={true}
+        >
+          <TileLayer
+            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+          />
 
-        {/* Iteramos sobre los eventos y creamos un marcador para cada uno */}
-        {events.map((event) => {
-          // Solo mostramos eventos con coordenadas (no online)
-          if (event.latitude && event.longitude) {
-            return (
-              <Marker
-                key={event.id}
-                position={[event.latitude, event.longitude]}
-                // No hay prop "icon", por lo que usará el default
-              >
-                <Popup>
-                  {/* USAMOS EL COMPONENTE PERSONALIZADO */}
-                  <EventPopupContent event={event} />
-                </Popup>
-              </Marker>
-            )
-          }
-          return null // No renderizar marcador para eventos online
-        })}
-      </MapContainer>
+          {/* Iteramos sobre los eventos y creamos un marcador para cada uno */}
+          {events.map((event) => {
+            // Solo mostramos eventos con coordenadas (no online)
+            if (event.latitude && event.longitude) {
+              return (
+                <Marker
+                  key={event.id}
+                  position={[event.latitude, event.longitude]}
+                  // No hay prop "icon", por lo que usará el default
+                >
+                  <Popup>
+                    {/* USAMOS EL COMPONENTE PERSONALIZADO */}
+                    <EventPopupContent event={event} />
+                  </Popup>
+                </Marker>
+              )
+            }
+            return null // No renderizar marcador para eventos online
+          })}
+        </MapContainer>
+      </ErrorBoundary>
     </Box>
   )
 }

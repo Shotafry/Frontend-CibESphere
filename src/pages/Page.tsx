@@ -20,6 +20,7 @@ import {
   Card,
   CardContent
 } from '@mui/material'
+import { ErrorBoundary } from '../components/ErrorBoundary'
 import { Delete as DeleteIcon, Add as AddIcon } from '@mui/icons-material'
 import { LocalizationProvider, DateTimePicker } from '@mui/x-date-pickers'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
@@ -256,584 +257,591 @@ const Page: FunctionComponent = () => {
           >
             {isEditMode ? 'Editar Evento' : 'Crear Nuevo Evento'}
           </Typography>
-          <Box component='form' onSubmit={handleSubmit}>
-            <Grid container spacing={3}>
-              <Grid size={{ xs: 12 }}>
-                <TextField
-                  name='title'
-                  label='Título del Evento'
-                  fullWidth
-                  required
-                  variant='filled'
-                  value={formData.title}
-                  onChange={handleChange}
-                  sx={commonInputSx}
-                />
-              </Grid>
+          <ErrorBoundary>
+            <Box component='form' onSubmit={handleSubmit}>
+              <Grid container spacing={3}>
+                <Grid size={{ xs: 12 }}>
+                  <TextField
+                    name='title'
+                    label='Título del Evento'
+                    fullWidth
+                    required
+                    variant='filled'
+                    value={formData.title}
+                    onChange={handleChange}
+                    sx={commonInputSx}
+                  />
+                </Grid>
 
-              <Grid size={{ xs: 12 }}>
-                <TextField
-                  name='image_url'
-                  label='URL del Logo o Imagen Principal'
-                  fullWidth
-                  variant='filled'
-                  value={formData.image_url}
-                  onChange={handleChange}
-                  placeholder='https://ejemplo.com/imagen.jpg'
-                  sx={commonInputSx}
-                />
-              </Grid>
+                <Grid size={{ xs: 12 }}>
+                  <TextField
+                    name='image_url'
+                    label='URL del Logo o Imagen Principal'
+                    fullWidth
+                    variant='filled'
+                    value={formData.image_url}
+                    onChange={handleChange}
+                    placeholder='https://ejemplo.com/imagen.jpg'
+                    sx={commonInputSx}
+                  />
+                </Grid>
 
-              <Grid size={{ xs: 12 }}>
-                <TextField
-                  name='short_desc'
-                  label='Descripción Corta (máx 200 caracteres)'
-                  fullWidth
-                  required
-                  variant='filled'
-                  value={formData.short_desc}
-                  onChange={handleChange}
-                  inputProps={{ maxLength: 200 }}
-                  sx={commonInputSx}
-                />
-              </Grid>
-              <Grid size={{ xs: 12 }}>
-                <TextField
-                  name='description'
-                  label='Descripción Completa'
-                  fullWidth
-                  required
-                  multiline
-                  rows={4}
-                  variant='filled'
-                  value={formData.description}
-                  onChange={handleChange}
-                  sx={commonInputSx}
-                />
-              </Grid>
+                <Grid size={{ xs: 12 }}>
+                  <TextField
+                    name='short_desc'
+                    label='Descripción Corta (máx 200 caracteres)'
+                    fullWidth
+                    required
+                    variant='filled'
+                    value={formData.short_desc}
+                    onChange={handleChange}
+                    inputProps={{ maxLength: 200 }}
+                    sx={commonInputSx}
+                  />
+                </Grid>
+                <Grid size={{ xs: 12 }}>
+                  <TextField
+                    name='description'
+                    label='Descripción Completa'
+                    fullWidth
+                    required
+                    multiline
+                    rows={4}
+                    variant='filled'
+                    value={formData.description}
+                    onChange={handleChange}
+                    sx={commonInputSx}
+                  />
+                </Grid>
 
-              {/* --- SECCIÓN ITINERARIO --- */}
-              <Grid size={{ xs: 12 }}>
-                <Card
-                  variant='outlined'
-                  sx={{
-                    borderRadius: '16px',
-                    borderColor: 'var(--Gray-300)',
-                    mt: 2,
-                    backgroundColor: '#FAFAFA'
-                  }}
-                >
-                  <CardContent>
-                    <Typography
-                      variant='h6'
-                      fontWeight='bold'
-                      sx={{ color: 'var(--color-cadetblue)', mb: 2 }}
-                    >
-                      Itinerario / Agenda
-                    </Typography>
-                    <Typography
-                      variant='body2'
-                      color='text.secondary'
-                      sx={{ mb: 3 }}
-                    >
-                      Añade los detalles de la agenda y ponentes. Si dejas esto
-                      vacío, no se mostrará en la página del evento.
-                    </Typography>
-
-                    {/* AGENDA */}
-                    <Typography
-                      variant='subtitle1'
-                      fontWeight='bold'
-                      sx={{ mb: 1 }}
-                    >
-                      Agenda
-                    </Typography>
-                    {formData.agenda.map((item: AgendaItem, index: number) => (
-                      <Box
-                        key={item.id}
-                        sx={{
-                          display: 'flex',
-                          gap: 2,
-                          mb: 2,
-                          alignItems: 'flex-start'
-                        }}
+                {/* --- SECCIÓN ITINERARIO --- */}
+                <Grid size={{ xs: 12 }}>
+                  <Card
+                    variant='outlined'
+                    sx={{
+                      borderRadius: '16px',
+                      borderColor: 'var(--Gray-300)',
+                      mt: 2,
+                      backgroundColor: '#FAFAFA'
+                    }}
+                  >
+                    <CardContent>
+                      <Typography
+                        variant='h6'
+                        fontWeight='bold'
+                        sx={{ color: 'var(--color-cadetblue)', mb: 2 }}
                       >
-                        <TextField
-                          label='Hora'
-                          value={item.time}
-                          onChange={(e) =>
-                            handleAgendaItemChange(
-                              item.id,
-                              'time',
-                              e.target.value
-                            )
-                          }
-                          variant='filled'
-                          size='small'
-                          sx={{ ...commonInputSx, width: '120px' }}
-                          placeholder='09:00'
-                        />
-                        <TextField
-                          label='Título / Actividad'
-                          value={item.title}
-                          onChange={(e) =>
-                            handleAgendaItemChange(
-                              item.id,
-                              'title',
-                              e.target.value
-                            )
-                          }
-                          variant='filled'
-                          size='small'
-                          fullWidth
-                          sx={commonInputSx}
-                        />
-                        <TextField
-                          label='Descripción (Opcional)'
-                          value={item.description}
-                          onChange={(e) =>
-                            handleAgendaItemChange(
-                              item.id,
-                              'description',
-                              e.target.value
-                            )
-                          }
-                          variant='filled'
-                          size='small'
-                          fullWidth
-                          sx={commonInputSx}
-                        />
-                        <IconButton
-                          onClick={() => handleRemoveAgendaItem(item.id)}
-                          color='error'
-                        >
-                          <DeleteIcon />
-                        </IconButton>
-                      </Box>
-                    ))}
-                    <Button
-                      variant='primary'
-                      startIcon={<AddIcon />}
-                      onClick={handleAddAgendaItem}
-                      sx={{ mb: 4 }}
-                    >
-                      Añadir Actividad
-                    </Button>
+                        Itinerario / Agenda
+                      </Typography>
+                      <Typography
+                        variant='body2'
+                        color='text.secondary'
+                        sx={{ mb: 3 }}
+                      >
+                        Añade los detalles de la agenda y ponentes. Si dejas
+                        esto vacío, no se mostrará en la página del evento.
+                      </Typography>
 
-                    <Divider sx={{ my: 2 }} />
-
-                    {/* PONENTES */}
-                    <Typography
-                      variant='subtitle1'
-                      fontWeight='bold'
-                      sx={{ mb: 1 }}
-                    >
-                      Ponentes
-                    </Typography>
-                    {formData.speakers.map(
-                      (speaker: Speaker, index: number) => (
-                        <Box
-                          key={speaker.id}
-                          sx={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            gap: 2,
-                            mb: 3,
-                            p: 2,
-                            border: '1px dashed #ccc',
-                            borderRadius: '8px'
-                          }}
-                        >
+                      {/* AGENDA */}
+                      <Typography
+                        variant='subtitle1'
+                        fontWeight='bold'
+                        sx={{ mb: 1 }}
+                      >
+                        Agenda
+                      </Typography>
+                      {formData.agenda.map(
+                        (item: AgendaItem, index: number) => (
                           <Box
+                            key={item.id}
                             sx={{
                               display: 'flex',
-                              justifyContent: 'space-between'
+                              gap: 2,
+                              mb: 2,
+                              alignItems: 'flex-start'
                             }}
                           >
-                            <Typography
-                              variant='caption'
-                              color='text.secondary'
-                            >
-                              Ponente #{index + 1}
-                            </Typography>
-                            <IconButton
-                              onClick={() => handleRemoveSpeaker(speaker.id)}
-                              color='error'
-                              size='small'
-                            >
-                              <DeleteIcon />
-                            </IconButton>
-                          </Box>
-                          <Box sx={{ display: 'flex', gap: 2 }}>
                             <TextField
-                              label='Nombre'
-                              value={speaker.name}
+                              label='Hora'
+                              value={item.time}
                               onChange={(e) =>
-                                handleSpeakerChange(
-                                  speaker.id,
-                                  'name',
-                                  e.target.value
-                                )
-                              }
-                              variant='filled'
-                              size='small'
-                              fullWidth
-                              sx={commonInputSx}
-                            />
-                            <TextField
-                              label='Cargo / Rol'
-                              value={speaker.role}
-                              onChange={(e) =>
-                                handleSpeakerChange(
-                                  speaker.id,
-                                  'role',
-                                  e.target.value
-                                )
-                              }
-                              variant='filled'
-                              size='small'
-                              fullWidth
-                              sx={commonInputSx}
-                            />
-                          </Box>
-                          <Box sx={{ display: 'flex', gap: 2 }}>
-                            <TextField
-                              label='Tema / Título de la Charla'
-                              value={speaker.topic}
-                              onChange={(e) =>
-                                handleSpeakerChange(
-                                  speaker.id,
-                                  'topic',
-                                  e.target.value
-                                )
-                              }
-                              variant='filled'
-                              size='small'
-                              fullWidth
-                              sx={commonInputSx}
-                            />
-                            <TextField
-                              label='Hora Ligada'
-                              value={speaker.time}
-                              onChange={(e) =>
-                                handleSpeakerChange(
-                                  speaker.id,
+                                handleAgendaItemChange(
+                                  item.id,
                                   'time',
                                   e.target.value
                                 )
                               }
                               variant='filled'
                               size='small'
-                              sx={{ ...commonInputSx, width: '150px' }}
+                              sx={{ ...commonInputSx, width: '120px' }}
                               placeholder='09:00'
                             />
+                            <TextField
+                              label='Título / Actividad'
+                              value={item.title}
+                              onChange={(e) =>
+                                handleAgendaItemChange(
+                                  item.id,
+                                  'title',
+                                  e.target.value
+                                )
+                              }
+                              variant='filled'
+                              size='small'
+                              fullWidth
+                              sx={commonInputSx}
+                            />
+                            <TextField
+                              label='Descripción (Opcional)'
+                              value={item.description}
+                              onChange={(e) =>
+                                handleAgendaItemChange(
+                                  item.id,
+                                  'description',
+                                  e.target.value
+                                )
+                              }
+                              variant='filled'
+                              size='small'
+                              fullWidth
+                              sx={commonInputSx}
+                            />
+                            <IconButton
+                              onClick={() => handleRemoveAgendaItem(item.id)}
+                              color='error'
+                            >
+                              <DeleteIcon />
+                            </IconButton>
                           </Box>
-                        </Box>
-                      )
-                    )}
-                    <Button
-                      variant='secondary'
-                      startIcon={<AddIcon />}
-                      onClick={handleAddSpeaker}
-                    >
-                      Añadir Ponente
-                    </Button>
-                  </CardContent>
-                </Card>
-              </Grid>
-
-              <Grid size={{ xs: 12 }}>
-                <TextField
-                  name='requirements'
-                  label='Requisitos para Asistentes'
-                  fullWidth
-                  multiline
-                  rows={2}
-                  variant='filled'
-                  value={formData.requirements}
-                  onChange={handleChange}
-                  placeholder='Traer portátil, instalar X software...'
-                  sx={commonInputSx}
-                />
-              </Grid>
-
-              <Grid size={{ xs: 12, md: 4 }}>
-                <TextField
-                  name='type'
-                  label='Tipo de Evento'
-                  select
-                  fullWidth
-                  variant='filled'
-                  value={formData.type}
-                  onChange={handleChange}
-                  sx={commonInputSx}
-                >
-                  <MenuItem value='conference'>Conferencia</MenuItem>
-                  <MenuItem value='workshop'>Taller</MenuItem>
-                  <MenuItem value='meetup'>Meetup</MenuItem>
-                  <MenuItem value='webinar'>Webinar</MenuItem>
-                </TextField>
-              </Grid>
-              <Grid size={{ xs: 12, md: 4 }}>
-                <TextField
-                  name='level'
-                  label='Nivel'
-                  select
-                  fullWidth
-                  variant='filled'
-                  value={formData.level}
-                  onChange={handleChange}
-                  sx={commonInputSx}
-                >
-                  {EVENT_LEVELS.map((level) => (
-                    <MenuItem key={level} value={level.toLowerCase()}>
-                      {level}
-                    </MenuItem>
-                  ))}
-                </TextField>
-              </Grid>
-              <Grid size={{ xs: 12, md: 4 }}>
-                <Autocomplete
-                  options={[
-                    'Español',
-                    'Inglés',
-                    'Catalán',
-                    'Euskera',
-                    'Gallego',
-                    'Valenciano'
-                  ]}
-                  value={formData.language}
-                  onChange={handleLanguageChange}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      label='Idioma'
-                      variant='filled'
-                      required
-                      sx={commonInputSx}
-                    />
-                  )}
-                />
-              </Grid>
-
-              <Grid size={{ xs: 12 }}>
-                <Autocomplete
-                  multiple
-                  options={CYBERSECURITY_TAGS}
-                  value={formData.tags}
-                  onChange={handleAutocompleteChange('tags')}
-                  freeSolo
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      label='Tags'
-                      variant='filled'
-                      sx={commonInputSx}
-                    />
-                  )}
-                />
-              </Grid>
-
-              <Grid size={{ xs: 12, md: 6 }}>
-                <DateTimePicker
-                  label='Fecha y Hora de Inicio'
-                  value={formData.start_date}
-                  onChange={handleDateChange('start_date')}
-                  slotProps={{
-                    textField: {
-                      variant: 'filled',
-                      fullWidth: true,
-                      sx: commonInputSx
-                    }
-                  }}
-                />
-              </Grid>
-              <Grid size={{ xs: 12, md: 6 }}>
-                <DateTimePicker
-                  label='Fecha y Hora de Fin'
-                  value={formData.end_date}
-                  onChange={handleDateChange('end_date')}
-                  slotProps={{
-                    textField: {
-                      variant: 'filled',
-                      fullWidth: true,
-                      sx: commonInputSx
-                    }
-                  }}
-                />
-              </Grid>
-
-              <Grid size={{ xs: 12 }}>
-                <TextField
-                  name='max_attendees'
-                  label='Límite de Asistentes'
-                  type='number'
-                  fullWidth
-                  variant='filled'
-                  value={formData.max_attendees}
-                  onChange={handleChange}
-                  helperText='Dejar en 0 para aforo ilimitado'
-                  sx={commonInputSx}
-                />
-              </Grid>
-
-              <Grid size={{ xs: 12 }}>
-                <TextField
-                  name='is_online'
-                  label='Modalidad'
-                  select
-                  fullWidth
-                  variant='filled'
-                  value={formData.is_online ? 'online' : 'presencial'}
-                  onChange={(e) => {
-                    const value = e.target.value === 'online'
-                    setFormData((prev: any) => ({ ...prev, is_online: value }))
-                  }}
-                  sx={commonInputSx}
-                >
-                  <MenuItem value='presencial'>Presencial</MenuItem>
-                  <MenuItem value='online'>Online</MenuItem>
-                </TextField>
-              </Grid>
-
-              <Collapse in={!formData.is_online} sx={{ width: '100%' }}>
-                <Grid container spacing={3} sx={{ p: 2, pt: 0 }}>
-                  <Grid size={{ xs: 12 }}>
-                    <TextField
-                      name='venue_name'
-                      label='Nombre del Lugar'
-                      fullWidth
-                      variant='filled'
-                      value={formData.venue_name}
-                      onChange={handleChange}
-                      sx={commonInputSx}
-                    />
-                  </Grid>
-                  <Grid size={{ xs: 12 }}>
-                    <TextField
-                      name='venue_address'
-                      label='Dirección'
-                      fullWidth
-                      variant='filled'
-                      value={formData.venue_address}
-                      onChange={handleChange}
-                      sx={commonInputSx}
-                    />
-                  </Grid>
-
-                  <Grid size={{ xs: 12, md: 6 }}>
-                    <Autocomplete
-                      options={AUTONOMOUS_COMMUNITIES}
-                      value={formData.venue_community || null}
-                      onChange={handleSingleAutocompleteChange(
-                        'venue_community'
+                        )
                       )}
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          label='Comunidad Autónoma'
-                          variant='filled'
-                          required={!formData.is_online}
-                          sx={commonInputSx}
-                        />
-                      )}
-                    />
-                  </Grid>
+                      <Button
+                        variant='primary'
+                        startIcon={<AddIcon />}
+                        onClick={handleAddAgendaItem}
+                        sx={{ mb: 4 }}
+                      >
+                        Añadir Actividad
+                      </Button>
 
-                  <Grid size={{ xs: 12, md: 6 }}>
-                    <Autocomplete
-                      options={availableCities}
-                      value={formData.venue_city || null}
-                      onChange={handleSingleAutocompleteChange('venue_city')}
-                      disabled={!formData.venue_community}
-                      freeSolo
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          label='Ciudad'
-                          variant='filled'
-                          required={!formData.is_online}
-                          sx={commonInputSx}
-                        />
+                      <Divider sx={{ my: 2 }} />
+
+                      {/* PONENTES */}
+                      <Typography
+                        variant='subtitle1'
+                        fontWeight='bold'
+                        sx={{ mb: 1 }}
+                      >
+                        Ponentes
+                      </Typography>
+                      {formData.speakers.map(
+                        (speaker: Speaker, index: number) => (
+                          <Box
+                            key={speaker.id}
+                            sx={{
+                              display: 'flex',
+                              flexDirection: 'column',
+                              gap: 2,
+                              mb: 3,
+                              p: 2,
+                              border: '1px dashed #ccc',
+                              borderRadius: '8px'
+                            }}
+                          >
+                            <Box
+                              sx={{
+                                display: 'flex',
+                                justifyContent: 'space-between'
+                              }}
+                            >
+                              <Typography
+                                variant='caption'
+                                color='text.secondary'
+                              >
+                                Ponente #{index + 1}
+                              </Typography>
+                              <IconButton
+                                onClick={() => handleRemoveSpeaker(speaker.id)}
+                                color='error'
+                                size='small'
+                              >
+                                <DeleteIcon />
+                              </IconButton>
+                            </Box>
+                            <Box sx={{ display: 'flex', gap: 2 }}>
+                              <TextField
+                                label='Nombre'
+                                value={speaker.name}
+                                onChange={(e) =>
+                                  handleSpeakerChange(
+                                    speaker.id,
+                                    'name',
+                                    e.target.value
+                                  )
+                                }
+                                variant='filled'
+                                size='small'
+                                fullWidth
+                                sx={commonInputSx}
+                              />
+                              <TextField
+                                label='Cargo / Rol'
+                                value={speaker.role}
+                                onChange={(e) =>
+                                  handleSpeakerChange(
+                                    speaker.id,
+                                    'role',
+                                    e.target.value
+                                  )
+                                }
+                                variant='filled'
+                                size='small'
+                                fullWidth
+                                sx={commonInputSx}
+                              />
+                            </Box>
+                            <Box sx={{ display: 'flex', gap: 2 }}>
+                              <TextField
+                                label='Tema / Título de la Charla'
+                                value={speaker.topic}
+                                onChange={(e) =>
+                                  handleSpeakerChange(
+                                    speaker.id,
+                                    'topic',
+                                    e.target.value
+                                  )
+                                }
+                                variant='filled'
+                                size='small'
+                                fullWidth
+                                sx={commonInputSx}
+                              />
+                              <TextField
+                                label='Hora Ligada'
+                                value={speaker.time}
+                                onChange={(e) =>
+                                  handleSpeakerChange(
+                                    speaker.id,
+                                    'time',
+                                    e.target.value
+                                  )
+                                }
+                                variant='filled'
+                                size='small'
+                                sx={{ ...commonInputSx, width: '150px' }}
+                                placeholder='09:00'
+                              />
+                            </Box>
+                          </Box>
+                        )
                       )}
-                    />
-                  </Grid>
+                      <Button
+                        variant='secondary'
+                        startIcon={<AddIcon />}
+                        onClick={handleAddSpeaker}
+                      >
+                        Añadir Ponente
+                      </Button>
+                    </CardContent>
+                  </Card>
                 </Grid>
-              </Collapse>
 
-              <Collapse in={formData.is_online} sx={{ width: '100%', px: 2 }}>
-                <TextField
-                  name='online_url'
-                  label='URL del Evento Online'
-                  fullWidth
-                  variant='filled'
-                  value={formData.online_url}
-                  onChange={handleChange}
-                  sx={commonInputSx}
-                />
-              </Collapse>
-              <Grid size={{ xs: 12 }}>
-                <FormControlLabel
-                  control={
-                    <Switch
-                      checked={formData.is_free}
-                      onChange={handleChange}
-                      name='is_free'
-                    />
-                  }
-                  label='Evento Gratuito'
-                />
-              </Grid>
-              <Collapse in={!formData.is_free} sx={{ width: '100%', px: 2 }}>
-                <TextField
-                  name='price'
-                  label='Precio'
-                  type='number'
-                  fullWidth
-                  variant='filled'
-                  value={formData.price}
-                  onChange={handleChange}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position='start'>€</InputAdornment>
-                    )
-                  }}
-                  sx={commonInputSx}
-                />
-              </Collapse>
-              {error && (
                 <Grid size={{ xs: 12 }}>
-                  <Alert severity='error'>{error}</Alert>
+                  <TextField
+                    name='requirements'
+                    label='Requisitos para Asistentes'
+                    fullWidth
+                    multiline
+                    rows={2}
+                    variant='filled'
+                    value={formData.requirements}
+                    onChange={handleChange}
+                    placeholder='Traer portátil, instalar X software...'
+                    sx={commonInputSx}
+                  />
                 </Grid>
-              )}
-              <Grid
-                size={{ xs: 12 }}
-                sx={{ display: 'flex', justifyContent: 'flex-end', mt: 3 }}
-              >
-                <Button
-                  type='submit'
-                  variant='primary'
-                  size='large'
-                  disabled={isLoading}
-                  sx={{
-                    borderRadius: '25px',
-                    boxShadow: '0 4px 14px rgba(0, 217, 255, 0.3)',
-                    '&:hover': {
-                      boxShadow: '0 6px 20px rgba(0, 217, 255, 0.5)'
+
+                <Grid size={{ xs: 12, md: 4 }}>
+                  <TextField
+                    name='type'
+                    label='Tipo de Evento'
+                    select
+                    fullWidth
+                    variant='filled'
+                    value={formData.type}
+                    onChange={handleChange}
+                    sx={commonInputSx}
+                  >
+                    <MenuItem value='conference'>Conferencia</MenuItem>
+                    <MenuItem value='workshop'>Taller</MenuItem>
+                    <MenuItem value='meetup'>Meetup</MenuItem>
+                    <MenuItem value='webinar'>Webinar</MenuItem>
+                  </TextField>
+                </Grid>
+                <Grid size={{ xs: 12, md: 4 }}>
+                  <TextField
+                    name='level'
+                    label='Nivel'
+                    select
+                    fullWidth
+                    variant='filled'
+                    value={formData.level}
+                    onChange={handleChange}
+                    sx={commonInputSx}
+                  >
+                    {EVENT_LEVELS.map((level) => (
+                      <MenuItem key={level} value={level.toLowerCase()}>
+                        {level}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                </Grid>
+                <Grid size={{ xs: 12, md: 4 }}>
+                  <Autocomplete
+                    options={[
+                      'Español',
+                      'Inglés',
+                      'Catalán',
+                      'Euskera',
+                      'Gallego',
+                      'Valenciano'
+                    ]}
+                    value={formData.language}
+                    onChange={handleLanguageChange}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label='Idioma'
+                        variant='filled'
+                        required
+                        sx={commonInputSx}
+                      />
+                    )}
+                  />
+                </Grid>
+
+                <Grid size={{ xs: 12 }}>
+                  <Autocomplete
+                    multiple
+                    options={CYBERSECURITY_TAGS}
+                    value={formData.tags}
+                    onChange={handleAutocompleteChange('tags')}
+                    freeSolo
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label='Tags'
+                        variant='filled'
+                        sx={commonInputSx}
+                      />
+                    )}
+                  />
+                </Grid>
+
+                <Grid size={{ xs: 12, md: 6 }}>
+                  <DateTimePicker
+                    label='Fecha y Hora de Inicio'
+                    value={formData.start_date}
+                    onChange={handleDateChange('start_date')}
+                    slotProps={{
+                      textField: {
+                        variant: 'filled',
+                        fullWidth: true,
+                        sx: commonInputSx
+                      }
+                    }}
+                  />
+                </Grid>
+                <Grid size={{ xs: 12, md: 6 }}>
+                  <DateTimePicker
+                    label='Fecha y Hora de Fin'
+                    value={formData.end_date}
+                    onChange={handleDateChange('end_date')}
+                    slotProps={{
+                      textField: {
+                        variant: 'filled',
+                        fullWidth: true,
+                        sx: commonInputSx
+                      }
+                    }}
+                  />
+                </Grid>
+
+                <Grid size={{ xs: 12 }}>
+                  <TextField
+                    name='max_attendees'
+                    label='Límite de Asistentes'
+                    type='number'
+                    fullWidth
+                    variant='filled'
+                    value={formData.max_attendees}
+                    onChange={handleChange}
+                    helperText='Dejar en 0 para aforo ilimitado'
+                    sx={commonInputSx}
+                  />
+                </Grid>
+
+                <Grid size={{ xs: 12 }}>
+                  <TextField
+                    name='is_online'
+                    label='Modalidad'
+                    select
+                    fullWidth
+                    variant='filled'
+                    value={formData.is_online ? 'online' : 'presencial'}
+                    onChange={(e) => {
+                      const value = e.target.value === 'online'
+                      setFormData((prev: any) => ({
+                        ...prev,
+                        is_online: value
+                      }))
+                    }}
+                    sx={commonInputSx}
+                  >
+                    <MenuItem value='presencial'>Presencial</MenuItem>
+                    <MenuItem value='online'>Online</MenuItem>
+                  </TextField>
+                </Grid>
+
+                <Collapse in={!formData.is_online} sx={{ width: '100%' }}>
+                  <Grid container spacing={3} sx={{ p: 2, pt: 0 }}>
+                    <Grid size={{ xs: 12 }}>
+                      <TextField
+                        name='venue_name'
+                        label='Nombre del Lugar'
+                        fullWidth
+                        variant='filled'
+                        value={formData.venue_name}
+                        onChange={handleChange}
+                        sx={commonInputSx}
+                      />
+                    </Grid>
+                    <Grid size={{ xs: 12 }}>
+                      <TextField
+                        name='venue_address'
+                        label='Dirección'
+                        fullWidth
+                        variant='filled'
+                        value={formData.venue_address}
+                        onChange={handleChange}
+                        sx={commonInputSx}
+                      />
+                    </Grid>
+
+                    <Grid size={{ xs: 12, md: 6 }}>
+                      <Autocomplete
+                        options={AUTONOMOUS_COMMUNITIES}
+                        value={formData.venue_community || null}
+                        onChange={handleSingleAutocompleteChange(
+                          'venue_community'
+                        )}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            label='Comunidad Autónoma'
+                            variant='filled'
+                            required={!formData.is_online}
+                            sx={commonInputSx}
+                          />
+                        )}
+                      />
+                    </Grid>
+
+                    <Grid size={{ xs: 12, md: 6 }}>
+                      <Autocomplete
+                        options={availableCities}
+                        value={formData.venue_city || null}
+                        onChange={handleSingleAutocompleteChange('venue_city')}
+                        disabled={!formData.venue_community}
+                        freeSolo
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            label='Ciudad'
+                            variant='filled'
+                            required={!formData.is_online}
+                            sx={commonInputSx}
+                          />
+                        )}
+                      />
+                    </Grid>
+                  </Grid>
+                </Collapse>
+
+                <Collapse in={formData.is_online} sx={{ width: '100%', px: 2 }}>
+                  <TextField
+                    name='online_url'
+                    label='URL del Evento Online'
+                    fullWidth
+                    variant='filled'
+                    value={formData.online_url}
+                    onChange={handleChange}
+                    sx={commonInputSx}
+                  />
+                </Collapse>
+                <Grid size={{ xs: 12 }}>
+                  <FormControlLabel
+                    control={
+                      <Switch
+                        checked={formData.is_free}
+                        onChange={handleChange}
+                        name='is_free'
+                      />
                     }
-                  }}
+                    label='Evento Gratuito'
+                  />
+                </Grid>
+                <Collapse in={!formData.is_free} sx={{ width: '100%', px: 2 }}>
+                  <TextField
+                    name='price'
+                    label='Precio'
+                    type='number'
+                    fullWidth
+                    variant='filled'
+                    value={formData.price}
+                    onChange={handleChange}
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position='start'>€</InputAdornment>
+                      )
+                    }}
+                    sx={commonInputSx}
+                  />
+                </Collapse>
+                {error && (
+                  <Grid size={{ xs: 12 }}>
+                    <Alert severity='error'>{error}</Alert>
+                  </Grid>
+                )}
+                <Grid
+                  size={{ xs: 12 }}
+                  sx={{ display: 'flex', justifyContent: 'flex-end', mt: 3 }}
                 >
-                  {isLoading ? (
-                    <CircularProgress size={24} />
-                  ) : isEditMode ? (
-                    'Guardar Cambios'
-                  ) : (
-                    'Crear Evento'
-                  )}
-                </Button>
+                  <Button
+                    type='submit'
+                    variant='primary'
+                    size='large'
+                    disabled={isLoading}
+                    sx={{
+                      borderRadius: '25px',
+                      boxShadow: '0 4px 14px rgba(0, 217, 255, 0.3)',
+                      '&:hover': {
+                        boxShadow: '0 6px 20px rgba(0, 217, 255, 0.5)'
+                      }
+                    }}
+                  >
+                    {isLoading ? (
+                      <CircularProgress size={24} />
+                    ) : isEditMode ? (
+                      'Guardar Cambios'
+                    ) : (
+                      'Crear Evento'
+                    )}
+                  </Button>
+                </Grid>
               </Grid>
-            </Grid>
-          </Box>
+            </Box>
+          </ErrorBoundary>
         </Paper>
       </Container>
     </LocalizationProvider>

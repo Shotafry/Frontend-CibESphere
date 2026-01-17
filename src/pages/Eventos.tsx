@@ -31,6 +31,7 @@ import StarHalfIcon from '@mui/icons-material/StarHalf'
 import StarOutlineIcon from '@mui/icons-material/StarOutline'
 import { useEffect } from 'react'
 import defaultLogo from '/img/brand/logo-main-full.png'
+import { ErrorBoundary } from '../components/ErrorBoundary'
 
 const formatDateRange = (start: string, end: string) => {
   const startDate = new Date(start)
@@ -800,7 +801,9 @@ const Eventos: FunctionComponent = () => {
                   boxShadow: 'var(--shadow-drop)'
                 }}
               >
-                <SingleEventMap event={event} />
+                <ErrorBoundary>
+                  <SingleEventMap event={event} />
+                </ErrorBoundary>
               </Box>
             )}
           </Box>
