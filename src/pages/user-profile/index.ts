@@ -1,0 +1,6 @@
+export * from './components/UserHero'
+export * from './components/UserBio'
+export * from './components/UserSocials'
+export * from './components/UserStats'
+export * from './components/UserBadges'
+export * from './components/UserEventsTab'

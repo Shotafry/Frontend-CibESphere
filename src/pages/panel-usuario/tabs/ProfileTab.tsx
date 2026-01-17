@@ -183,13 +183,13 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
           )}
 
           <Grid container spacing={3}>
-            <Grid item xs={12} md={6}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <Typography variant='subtitle1' fontWeight='bold' gutterBottom>
                 Información Personal
               </Typography>
               <Stack spacing={2}>
                 <Grid container spacing={2}>
-                  <Grid item xs={6}>
+                  <Grid size={{ xs: 6 }}>
                     <Controller
                       name='first_name'
                       control={control}
@@ -203,7 +203,7 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
                       )}
                     />
                   </Grid>
-                  <Grid item xs={6}>
+                  <Grid size={{ xs: 6 }}>
                     <Controller
                       name='last_name'
                       control={control}
@@ -260,7 +260,7 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
               </Stack>
             </Grid>
 
-            <Grid item xs={12} md={6}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <Typography variant='subtitle1' fontWeight='bold' gutterBottom>
                 Detalles Profesionales
               </Typography>
@@ -311,7 +311,7 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
               </Stack>
             </Grid>
 
-            <Grid item xs={12}>
+            <Grid size={{ xs: 12 }}>
               <Typography
                 variant='subtitle1'
                 fontWeight='bold'
@@ -321,7 +321,7 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
                 Redes y Contacto
               </Typography>
               <Grid container spacing={2}>
-                <Grid item xs={12} md={6}>
+                <Grid size={{ xs: 12, md: 6 }}>
                   <Controller
                     name='linkedin'
                     control={control}
@@ -340,7 +340,7 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
                     )}
                   />
                 </Grid>
-                <Grid item xs={12} md={6}>
+                <Grid size={{ xs: 12, md: 6 }}>
                   <Controller
                     name='github'
                     control={control}
@@ -359,7 +359,7 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
                     )}
                   />
                 </Grid>
-                <Grid item xs={12} md={6}>
+                <Grid size={{ xs: 12, md: 6 }}>
                   <Controller
                     name='personal_website'
                     control={control}
@@ -380,7 +380,7 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
                     )}
                   />
                 </Grid>
-                <Grid item xs={12} md={6}>
+                <Grid size={{ xs: 12, md: 6 }}>
                   <TextField
                     value={user?.email || ''}
                     label='Email (No editable)'
@@ -399,7 +399,7 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
               </Grid>
             </Grid>
 
-            <Grid item xs={12}>
+            <Grid size={{ xs: 12 }}>
               <Typography
                 variant='subtitle1'
                 fontWeight='bold'
@@ -409,7 +409,7 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
                 Imágenes de Perfil
               </Typography>
               <Grid container spacing={3}>
-                <Grid item xs={12} md={6}>
+                <Grid size={{ xs: 12, md: 6 }}>
                   <Controller
                     name='avatar_url'
                     control={control}
@@ -423,7 +423,7 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
                     )}
                   />
                 </Grid>
-                <Grid item xs={12} md={6}>
+                <Grid size={{ xs: 12, md: 6 }}>
                   <Controller
                     name='banner_url'
                     control={control}
@@ -442,21 +442,15 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
             </Grid>
 
             {/* BADGES SECTION */}
-            <Grid item xs={12}>
+            <Grid size={{ xs: 12 }}>
               <BadgeUploader control={control} />
             </Grid>
 
             <Grid
-              item
-              xs={12}
+              size={{ xs: 12 }}
               sx={{ display: 'flex', justifyContent: 'flex-start', mt: 4 }}
             >
-              <Button
-                type='submit'
-                variant='primary'
-                disabled={isSaving}
-                className='px-8 py-2.5 rounded-xl shadow-lg shadow-blue-500/20 hover:shadow-blue-500/40 transition-all duration-300'
-              >
+              <Button type='submit' variant='primary' disabled={isSaving}>
                 {isSaving ? (
                   <CircularProgress size={24} color='inherit' />
                 ) : (
