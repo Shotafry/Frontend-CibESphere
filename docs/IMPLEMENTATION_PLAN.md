@@ -540,7 +540,9 @@ export const EventCardSkeleton = () => (
 )
 ```
 
-### 3.3 Transiciones de Ruta (COMPLETADO)
+### 3.3 Transiciones de Ruta (REVERTIDO)
+
+> **Nota:** Se revirtió debido a conflictos con la navegación interna de los paneles (tabs). Se mantiene la optimización de `shouldRevalidate` y `scrollTo`.
 
 **Archivo a modificar:** `src/App.tsx`
 

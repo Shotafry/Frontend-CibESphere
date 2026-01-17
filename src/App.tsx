@@ -6,7 +6,8 @@ import {
   useLocation,
   useNavigationType,
   redirect,
-  RouterProvider
+  RouterProvider,
+  ShouldRevalidateFunction
 } from 'react-router-dom'
 import React, { useEffect } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
@@ -49,10 +50,17 @@ const AppWrapper: React.FC = () => {
   const pathname = location.pathname
   const action = useNavigationType()
 
+  /* 
+     Fix: Track previous pathname to prevent scroll reset on query param changes 
+     (e.g., switching tabs in panels) 
+  */
+  const prevPathname = React.useRef(pathname)
+
   useEffect(() => {
-    if (action !== 'POP') {
+    if (action !== 'POP' && pathname !== prevPathname.current) {
       window.scrollTo(0, 0)
     }
+    prevPathname.current = pathname
   }, [action, pathname])
 
   useEffect(() => {
@@ -86,32 +94,29 @@ const AppWrapper: React.FC = () => {
     }
   }, [pathname])
 
-  const PageTransition = ({ children }: { children: React.ReactNode }) => {
-    const location = useLocation()
-    return (
-      <AnimatePresence mode='wait'>
-        <motion.div
-          key={location.pathname}
-          initial={{ opacity: 0, y: 15 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -15 }}
-          transition={{ duration: 0.3 }}
-        >
-          {children}
-        </motion.div>
-      </AnimatePresence>
-    )
-  }
-
   return (
     <AuthProvider>
       <Layout>
-        <PageTransition>
-          <Outlet />
-        </PageTransition>
+        <Outlet />
       </Layout>
     </AuthProvider>
   )
+}
+
+// Helper to prevent loader re-run on query param changes (tabs)
+const shouldRevalidatePanel: ShouldRevalidateFunction = ({
+  currentUrl,
+  nextUrl,
+  defaultShouldRevalidate
+}) => {
+  // If we are just changing query params (e.g. tabs), don't revalidate loader
+  if (
+    currentUrl.pathname === nextUrl.pathname &&
+    currentUrl.search !== nextUrl.search
+  ) {
+    return false
+  }
+  return defaultShouldRevalidate
 }
 
 // --- DEFINICIÓN DE RUTAS ---
@@ -240,7 +245,8 @@ const routes: RouteObject[] = [
               const favoriteEvents =
                 user?.favorite_events || user?.FavoriteEvents || []
               return favoriteEvents
-            }
+            },
+            shouldRevalidate: shouldRevalidatePanel
           }
         ]
       },
@@ -287,7 +293,8 @@ const routes: RouteObject[] = [
               }
 
               return { stats, events, organization }
-            }
+            },
+            shouldRevalidate: shouldRevalidatePanel
           },
           {
             path: 'crear-evento',
@@ -315,7 +322,8 @@ const routes: RouteObject[] = [
             loader: async () => {
               const stats = await apiService.getAdminDashboard()
               return { stats }
-            }
+            },
+            shouldRevalidate: shouldRevalidatePanel
           }
         ]
       },
