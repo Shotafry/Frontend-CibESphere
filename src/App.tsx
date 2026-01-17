@@ -22,7 +22,7 @@ import Eventos from './pages/Eventos'
 import PanelDeUsuario from './pages/PanelDeUsuario'
 import PanelDeOrganizador from './pages/PanelDeOrganizador'
 import PanelDeAdministrador from './pages/PanelDeAdministrador'
-import Page from './pages/Page'
+import CrearEvento from './pages/CrearEvento'
 import ErrorPage from './pages/ErrorPage'
 import TestFont from './pages/test-font'
 import OrganizationProfile from './pages/OrganizationProfile'
@@ -271,11 +271,11 @@ const routes: RouteObject[] = [
           },
           {
             path: 'crear-evento',
-            element: <Page />
+            element: <CrearEvento />
           },
           {
             path: 'eventos/:slug/editar',
-            element: <Page />,
+            element: <CrearEvento />,
             loader: async ({ params }) => {
               if (!params.slug) {
                 throw new Response('Not Found', { status: 404 })
