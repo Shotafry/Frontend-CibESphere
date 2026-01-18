@@ -311,6 +311,7 @@ export interface EventFilterParams {
   organization_id?: string // Added for organization filtering
   page?: number // Added pagination
   limit?: number // Added pagination
+  timeFilter?: 'upcoming' | 'past' | 'all' // Filter by event status
 }
 
 // --- TIPOS DE CREACIÓN ---

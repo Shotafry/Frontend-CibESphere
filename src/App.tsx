@@ -133,13 +133,28 @@ const routes: RouteObject[] = [
           const url = new URL(request.url)
           const searchParams = url.searchParams
 
+          // Parse dates
+          const startDate = searchParams.get('startDate')
+            ? new Date(searchParams.get('startDate')!)
+            : null
+          const endDate = searchParams.get('endDate')
+            ? new Date(searchParams.get('endDate')!)
+            : null
+
+          // Determine timeFilter (only apply if no dates are set)
+          const hasDateFilters = startDate || endDate
+          const timeFilterParam = searchParams.get('timeFilter') as
+            | 'upcoming'
+            | 'past'
+            | 'all'
+            | null
+          const timeFilter = hasDateFilters
+            ? undefined
+            : timeFilterParam || 'upcoming'
+
           const filters: EventFilterParams = {
-            startDate: searchParams.get('startDate')
-              ? new Date(searchParams.get('startDate')!)
-              : null,
-            endDate: searchParams.get('endDate')
-              ? new Date(searchParams.get('endDate')!)
-              : null,
+            startDate,
+            endDate,
             tags: searchParams.getAll('tags') || [],
             locations: searchParams.getAll('locations') || [],
             levels: searchParams.getAll('levels') || [],
@@ -147,6 +162,7 @@ const routes: RouteObject[] = [
             is_online: searchParams.has('is_online')
               ? searchParams.get('is_online') === 'true'
               : undefined,
+            timeFilter,
             limit: 15
           }
 

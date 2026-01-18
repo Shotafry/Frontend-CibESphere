@@ -58,6 +58,11 @@ export const getEvents = async (
     params.append('limit', filters.limit.toString())
   }
 
+  // Time filter (upcoming, past, all)
+  if (filters.timeFilter) {
+    params.append('time_filter', filters.timeFilter)
+  }
+
   const response = await httpClient.get<any>(
     `/public/events?${params.toString()}`
   )

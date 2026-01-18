@@ -46,6 +46,9 @@ export const EventFilters: React.FC<EventFiltersProps> = ({
       ? 'Presencial'
       : null
   )
+  const [timeFilter, setTimeFilter] = useState<string | null>(
+    initialFilters.timeFilter || 'upcoming'
+  )
 
   const [dates, setDates] = useState({
     startDate: initialFilters.startDate || null,
@@ -141,6 +144,11 @@ export const EventFilters: React.FC<EventFiltersProps> = ({
       searchParams.set('is_online', 'false')
     }
 
+    // Only send timeFilter if no dates are selected
+    if (!dates.startDate && !dates.endDate && timeFilter) {
+      searchParams.set('timeFilter', timeFilter)
+    }
+
     submit(searchParams)
   }
 
@@ -152,6 +160,7 @@ export const EventFilters: React.FC<EventFiltersProps> = ({
     setLevels([])
     setLanguages([])
     setModality(null)
+    setTimeFilter('upcoming')
     setSelectedCommunities([])
     setSelectedCities([])
     setAvailableCities(ALL_CITIES)
@@ -288,8 +297,8 @@ export const EventFilters: React.FC<EventFiltersProps> = ({
               />
             </Grid>
 
-            {/* FILA 3: CATEGORÍAS (Ancho completo) */}
-            <Grid size={{ xs: 12 }}>
+            {/* FILA 3: CATEGORÍAS Y ESTADO DE EVENTO */}
+            <Grid size={{ xs: 12, md: 8 }}>
               <Autocomplete
                 multiple
                 options={CYBERSECURITY_TAGS}
@@ -301,6 +310,40 @@ export const EventFilters: React.FC<EventFiltersProps> = ({
                     label='Categorías / Tags'
                     variant='filled'
                     sx={filterInputSx}
+                  />
+                )}
+              />
+            </Grid>
+            <Grid size={{ xs: 12, md: 4 }}>
+              <Autocomplete
+                options={['Próximos', 'Finalizados', 'Todos']}
+                value={
+                  timeFilter === 'upcoming'
+                    ? 'Próximos'
+                    : timeFilter === 'past'
+                    ? 'Finalizados'
+                    : timeFilter === 'all'
+                    ? 'Todos'
+                    : 'Próximos'
+                }
+                onChange={(_, value) => {
+                  if (value === 'Próximos') setTimeFilter('upcoming')
+                  else if (value === 'Finalizados') setTimeFilter('past')
+                  else if (value === 'Todos') setTimeFilter('all')
+                  else setTimeFilter('upcoming')
+                }}
+                disabled={!!(dates.startDate || dates.endDate)}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label='Estado del Evento'
+                    variant='filled'
+                    sx={filterInputSx}
+                    helperText={
+                      dates.startDate || dates.endDate
+                        ? 'Deshabilitado al usar filtro de fechas'
+                        : undefined
+                    }
                   />
                 )}
               />
