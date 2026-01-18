@@ -154,6 +154,10 @@ export interface OrganizationResponse {
   // Timestamps
   created_at: string
   updated_at: string
+
+  // Stripe
+  stripe_account_id?: string
+  stripe_onboarding_complete?: boolean
 }
 
 export interface OrganizationSummaryResponse
@@ -165,6 +169,8 @@ export interface OrganizationSummaryResponse
   // pero idealmente usar OrganizationResponse donde sea el objeto completo
   social_links?: SocialMediaLinks // Legacy support if needed
   social_media?: SocialMediaLinks // Backend field
+  stripe_account_id?: string
+  stripe_onboarding_complete?: boolean
 }
 
 // --- TIPOS DE EVENTO ---

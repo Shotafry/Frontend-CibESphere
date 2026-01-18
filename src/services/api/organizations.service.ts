@@ -127,3 +127,15 @@ export const getOrganizerDashboard = async (
   )
   return response.data
 }
+
+// --- PAYMENTS ---
+
+export const connectStripe = async (): Promise<{
+  url: string
+  account_id: string
+}> => {
+  const response = await httpClient.post<{ url: string; account_id: string }>(
+    '/organizations/stripe/connect'
+  )
+  return response.data
+}

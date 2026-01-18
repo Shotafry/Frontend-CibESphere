@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   Box,
   Typography,
@@ -6,16 +6,96 @@ import {
   Button,
   Grid,
   Chip,
-  Alert
+  Alert,
+  CircularProgress
 } from '@mui/material'
 import AccountBalanceIcon from '@mui/icons-material/AccountBalance'
 import TrendingUpIcon from '@mui/icons-material/TrendingUp'
 import ReceipLongIcon from '@mui/icons-material/ReceiptLong'
 import InfoIcon from '@mui/icons-material/Info'
+import { useSearchParams } from 'react-router-dom'
+import { OrganizationSummary } from '../../../types'
+import {
+  getMyOrganization,
+  connectStripe
+} from '../../../services/api/organizations.service'
 
 export const PaymentsTab: React.FC = () => {
-  // TODO: Fetch real status from backend
-  const isStripeConnected = false
+  const [organization, setOrganization] = useState<OrganizationSummary | null>(
+    null
+  )
+  const [loading, setLoading] = useState(true)
+  const [connecting, setConnecting] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [searchParams, setSearchParams] = useSearchParams()
+
+  const [successInfo, setSuccessInfo] = useState<string | null>(null)
+
+  const fetchOrganization = async () => {
+    try {
+      setLoading(true)
+      const data = await getMyOrganization()
+      setOrganization(data)
+    } catch (err) {
+      console.error(err)
+      setError('Error al cargar la información de la organización.')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    fetchOrganization()
+  }, [])
+
+  useEffect(() => {
+    if (searchParams.get('stripe_success') === 'true') {
+      setSuccessInfo(
+        '¡Cuenta conectada correctamente! Ahora puedes recibir pagos.'
+      )
+      // Limpiar params URL sin recargar
+      setSearchParams({})
+      fetchOrganization()
+    }
+    if (searchParams.get('stripe_refresh') === 'true') {
+      // Usuario canceló o recargó, no hacer nada especial, tal vez refetch
+      setSearchParams({})
+      fetchOrganization()
+    }
+  }, [searchParams, setSearchParams])
+
+  const handleConnect = async () => {
+    setConnecting(true)
+    setError(null)
+    try {
+      const response = await connectStripe()
+      if (response.url) {
+        window.location.href = response.url
+      } else {
+        setError('No se pudo obtener la URL de conexión.')
+      }
+    } catch (err: any) {
+      console.error(err)
+      setError(
+        err.response?.data?.message ||
+          'Error al conectar con Stripe. Inténtalo de nuevo.'
+      )
+      setConnecting(false)
+    }
+  }
+
+  if (loading && !organization) {
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}>
+        <CircularProgress />
+      </Box>
+    )
+  }
+
+  // TODO: Estos campos deben venir del backend.
+  // Por ahora si existe stripe_account_id, asumimos conectado/pendiente de verify
+  const isStripeConnected = !!organization?.stripe_account_id
+  const isOnboardingComplete = organization?.stripe_onboarding_complete
 
   return (
     <Box>
@@ -27,6 +107,22 @@ export const PaymentsTab: React.FC = () => {
           Gestiona tus métodos de cobro y visualiza tus ganancias.
         </Typography>
       </Box>
+
+      {error && (
+        <Alert severity='error' sx={{ mb: 3 }} onClose={() => setError(null)}>
+          {error}
+        </Alert>
+      )}
+
+      {successInfo && (
+        <Alert
+          severity='success'
+          sx={{ mb: 3 }}
+          onClose={() => setSuccessInfo(null)}
+        >
+          {successInfo}
+        </Alert>
+      )}
 
       {/* STRIPE CONNECT STATUS CARD */}
       <Paper
@@ -53,19 +149,25 @@ export const PaymentsTab: React.FC = () => {
               />
               <Typography variant='h6' fontWeight='bold'>
                 {isStripeConnected
-                  ? 'Cuenta Conectada con Stripe'
+                  ? 'Cuenta Vinculada con Stripe'
                   : 'Configura tus Pagos'}
               </Typography>
               <Chip
-                label={isStripeConnected ? 'Activo' : 'Pendiente'}
-                color={isStripeConnected ? 'success' : 'warning'}
+                label={
+                  isOnboardingComplete
+                    ? 'Activo'
+                    : isStripeConnected
+                    ? 'Pendiente Verificación'
+                    : 'Configuración Pendiente'
+                }
+                color={isOnboardingComplete ? 'success' : 'warning'}
                 size='small'
                 sx={{ ml: 2, fontWeight: 600 }}
               />
             </Box>
             <Typography variant='body1' sx={{ mb: 2, maxWidth: '600px' }}>
               {isStripeConnected
-                ? 'Tu cuenta está lista para recibir pagos. Las transferencias se realizan automáticamente según tu configuración en Stripe.'
+                ? 'Tu cuenta está vinculada. Stripe gestionará los pagos y transferencias automáticamente a tu cuenta bancaria.'
                 : 'Para vender entradas en CybESphere, necesitas conectar tu cuenta bancaria a través de Stripe. Es seguro, rápido y transparente.'}
             </Typography>
 
@@ -91,7 +193,7 @@ export const PaymentsTab: React.FC = () => {
             <Button
               variant='contained'
               size='large'
-              disabled={isStripeConnected}
+              disabled={connecting}
               sx={{
                 bgcolor: isStripeConnected ? '#0284C7' : '#635BFF',
                 '&:hover': {
@@ -106,16 +208,15 @@ export const PaymentsTab: React.FC = () => {
                 fontSize: '1rem',
                 boxShadow: '0 4px 12px rgba(99, 91, 255, 0.3)'
               }}
-              onClick={() => {
-                // TODO: Trigger Stripe Connect flow specific to Phase 7
-                alert(
-                  'La integración con Stripe estará disponible próximamente en la Fase 7.'
-                )
-              }}
+              onClick={handleConnect}
             >
-              {isStripeConnected
-                ? 'Gestionar en Stripe'
-                : 'Conectar con Stripe'}
+              {connecting ? (
+                <CircularProgress size={24} color='inherit' />
+              ) : isStripeConnected ? (
+                'Gestionar en Stripe'
+              ) : (
+                'Conectar con Stripe'
+              )}
             </Button>
           </Grid>
         </Grid>
