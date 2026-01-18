@@ -24,7 +24,7 @@ const TEAM_MEMBERS = [
   {
     name: 'Angel Caparros',
     role: 'Cloud Engineer',
-    image: '/team/angel.jpg',
+    image: angelImg,
     bio: 'Apasionado por la tecnología y la innovación. Mi objetivo es utilizar mis habilidades técnicas para ayudar a las empresas a adoptar la nube y optimizar su infraestructura. Experiencia en AWS y Azure, y proyectos de migración cloud.',
     skills: ['AWS', 'Azure', 'Infrastructure', 'Cloud Migration'],
     social: {
@@ -35,7 +35,7 @@ const TEAM_MEMBERS = [
   {
     name: 'Bray Lozano',
     role: 'Analista de Ciberseguridad Jr',
-    image: '/team/bray.jpg',
+    image: brayImg,
     bio: 'Analista con orientación a SOC y base técnica en sistemas, redes y pentesting. Cuento con Máster en Ciberseguridad y certificación eJPT. Experiencia desplegando SOC con Wazuh y realizando hardening de servidores.',
     skills: ['SOC', 'Pentesting', 'Wazuh', 'Linux/Windows', 'eJPT'],
     social: {
@@ -46,7 +46,7 @@ const TEAM_MEMBERS = [
   {
     name: 'Carolina Romero',
     role: 'Desarrolladora Full-Stack',
-    image: '/team/carolina.jpg',
+    image: carolinaImg,
     bio: 'Desarrolladora Web con enfoque Frontend, buscando la excelencia técnica y UX accesibles. Especializada en el ecosistema JavaScript/TypeScript (React, Next.js) y Spring Boot. Pasión por el código limpio y escalable.',
     skills: ['React', 'TypeScript', 'Next.js', 'Java', 'Spring Boot'],
     social: {

@@ -39,6 +39,10 @@ export const OrgHeader: React.FC<OrgHeaderProps> = ({
     setIsFollowing(!isFollowing)
   }
 
+  // Support both social_media (backend) and social_links (legacy) fields
+  const socialLinks =
+    organization.social_links || organization.social_media || {}
+
   return (
     <Paper
       elevation={3}
@@ -157,9 +161,9 @@ export const OrgHeader: React.FC<OrgHeaderProps> = ({
           useFlexGap
           sx={{ gap: 1 }}
         >
-          {organization.social_links?.twitter && (
+          {socialLinks?.twitter && (
             <IconButton
-              href={organization.social_links.twitter}
+              href={socialLinks.twitter}
               target='_blank'
               size='small'
               sx={{
@@ -172,9 +176,9 @@ export const OrgHeader: React.FC<OrgHeaderProps> = ({
               <XIcon fontSize='small' />
             </IconButton>
           )}
-          {organization.social_links?.linkedin && (
+          {socialLinks?.linkedin && (
             <IconButton
-              href={organization.social_links.linkedin}
+              href={socialLinks.linkedin}
               target='_blank'
               size='small'
               sx={{
@@ -187,9 +191,9 @@ export const OrgHeader: React.FC<OrgHeaderProps> = ({
               <LinkedInIcon fontSize='small' />
             </IconButton>
           )}
-          {organization.social_links?.github && (
+          {socialLinks?.github && (
             <IconButton
-              href={organization.social_links.github}
+              href={socialLinks.github}
               target='_blank'
               size='small'
               sx={{

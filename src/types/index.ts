@@ -163,7 +163,8 @@ export interface OrganizationSummaryResponse
   name: string
   // Mantener compatibilidad con usos anteriores si es necesario
   // pero idealmente usar OrganizationResponse donde sea el objeto completo
-  social_links?: SocialMediaLinks // Legacy support if needed, but social_media is preferred
+  social_links?: SocialMediaLinks // Legacy support if needed
+  social_media?: SocialMediaLinks // Backend field
 }
 
 // --- TIPOS DE EVENTO ---
