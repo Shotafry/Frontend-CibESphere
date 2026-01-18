@@ -90,7 +90,9 @@ const EventPopupContent: React.FC<{ event: Event }> = ({ event }) => {
             variant='body2'
             sx={{ color: 'var(--Gray-600)', fontWeight: 500 }}
           >
-            {event.is_online ? 'Online' : `${event.venue_city}`}
+            {event.is_online
+              ? 'Online'
+              : event.venue_city || event.venue_address || 'Presencial'}
           </Typography>
         </Box>
       </Box>
