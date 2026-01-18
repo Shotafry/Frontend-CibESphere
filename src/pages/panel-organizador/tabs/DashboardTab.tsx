@@ -16,24 +16,49 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
   stats,
   events
 }) => {
+  // Calculate advanced metrics
   const upcomingEventsCount = events.filter(
     (e) => new Date(e.start_date) >= new Date()
   ).length
+
   const avgAttendees =
     events.length > 0 ? Math.round(stats.total_attendees / events.length) : 0
 
+  const draftEventsCount = events.filter((e) => e.status === 'draft').length
+
+  // Calculate Occupancy Rate (Total Attendees / Total Capacity of events with capacity)
+  const eventsWithCapacity = events.filter(
+    (e) => e.max_attendees && e.max_attendees > 0
+  )
+  const totalCapacity = eventsWithCapacity.reduce(
+    (sum, e) => sum + (e.max_attendees || 0),
+    0
+  )
+  const totalAttendeesInCappedEvents = eventsWithCapacity.reduce(
+    (sum, e) => sum + (e.current_attendees || 0),
+    0
+  )
+
+  const occupancyRate =
+    totalCapacity > 0
+      ? Math.round((totalAttendeesInCappedEvents / totalCapacity) * 100)
+      : 0
+
   return (
     <Grid container spacing={3} sx={{ mb: 6 }}>
-      <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+      {/* 2x2 Grid Layout: xs=12 (1 col), sm=6 (2 cols) */}
+
+      <Grid size={{ xs: 12, sm: 6 }}>
         <StatCard
           title='Eventos Totales'
           value={stats.total_events}
           icon={<EventIcon />}
           color='#3B82F6'
-          trend={`${upcomingEventsCount} Próximos`}
+          trend={`${upcomingEventsCount} Próximos • ${draftEventsCount} Borradores`}
         />
       </Grid>
-      <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+
+      <Grid size={{ xs: 12, sm: 6 }}>
         <StatCard
           title='Asistentes Totales'
           value={stats.total_attendees}
@@ -42,20 +67,24 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({
           trend={`~${avgAttendees} por evento`}
         />
       </Grid>
-      <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+
+      <Grid size={{ xs: 12, sm: 6 }}>
         <StatCard
-          title='Ciudades'
-          value={stats.total_cities}
-          icon={<LocationCityIcon />}
+          title='Tasa de Ocupación'
+          value={`${occupancyRate}%`}
+          icon={<CheckCircleIcon />}
           color='#8B5CF6'
+          trend='En eventos con cupo'
         />
       </Grid>
-      <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+
+      <Grid size={{ xs: 12, sm: 6 }}>
         <StatCard
-          title='Publicados'
-          value={stats.published_events}
-          icon={<CheckCircleIcon />}
+          title='Cobertura Geográfica'
+          value={stats.total_cities}
+          icon={<LocationCityIcon />}
           color='#F59E0B'
+          trend='Ciudades alcanzadas'
         />
       </Grid>
     </Grid>

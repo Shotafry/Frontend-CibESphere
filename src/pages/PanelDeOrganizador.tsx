@@ -23,7 +23,12 @@ import VisibilityIcon from '@mui/icons-material/Visibility'
 import { Button } from '../components/Button'
 
 // Import new modular components
-import { DashboardTab, EventsListTab, ProfileTab } from './panel-organizador'
+import {
+  DashboardTab,
+  EventsListTab,
+  ProfileTab,
+  PaymentsTab
+} from './panel-organizador'
 
 interface LoaderData {
   stats: DashboardStats
@@ -44,12 +49,14 @@ const PanelDeOrganizador: FunctionComponent = () => {
   const tabMap: { [key: string]: number } = {
     dashboard: 0,
     events: 1,
-    profile: 2
+    profile: 2,
+    payments: 3
   }
   const indexToTab: { [key: number]: string } = {
     0: 'dashboard',
     1: 'events',
-    2: 'profile'
+    2: 'profile',
+    3: 'payments'
   }
 
   const tabValue = tabMap[currentTab] ?? 0
@@ -203,6 +210,7 @@ const PanelDeOrganizador: FunctionComponent = () => {
             <Tab label='Dashboard' />
             <Tab label='Mis Eventos' />
             <Tab label='Perfil de Organización' />
+            <Tab label='Pagos e Ingresos' />
           </Tabs>
         </Container>
       </Box>
@@ -235,6 +243,15 @@ const PanelDeOrganizador: FunctionComponent = () => {
           <Fade in={tabValue === 2} timeout={500}>
             <Box>
               <ProfileTab organization={organization} />
+            </Box>
+          </Fade>
+        )}
+
+        {/* TAB PAGOS */}
+        {tabValue === 3 && (
+          <Fade in={tabValue === 3} timeout={500}>
+            <Box>
+              <PaymentsTab />
             </Box>
           </Fade>
         )}
