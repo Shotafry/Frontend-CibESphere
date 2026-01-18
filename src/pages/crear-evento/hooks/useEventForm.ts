@@ -4,6 +4,7 @@ import { useAuth } from '../../../context/AuthContext'
 import * as apiService from '../../../services/apiService'
 import { CreateEventDTO, Event, AgendaItem, Speaker } from '../../../types'
 import { LOCATION_DATA } from '../../../constants/filters'
+import { LocationData } from '../../../components/LocationPicker'
 
 export const useEventForm = () => {
   const navigate = useNavigate()
@@ -37,7 +38,9 @@ export const useEventForm = () => {
     max_attendees: loadedEvent?.max_attendees || 0,
     agenda: loadedEvent?.agenda || [],
     speakers: loadedEvent?.speakers || [],
-    requirements: loadedEvent?.requirements || ''
+    requirements: loadedEvent?.requirements || '',
+    latitude: loadedEvent?.latitude || null,
+    longitude: loadedEvent?.longitude || null
   })
 
   // Location logic
@@ -90,6 +93,25 @@ export const useEventForm = () => {
         setFormData((prev: any) => ({ ...prev, [field]: value || '' }))
       }
     }
+
+  // Handler for LocationPicker
+  const handleLocationChange = (location: LocationData | null) => {
+    if (location) {
+      setFormData((prev: any) => ({
+        ...prev,
+        latitude: location.latitude,
+        longitude: location.longitude,
+        venue_address: location.address,
+        ...(location.city && { venue_city: location.city })
+      }))
+    } else {
+      setFormData((prev: any) => ({
+        ...prev,
+        latitude: null,
+        longitude: null
+      }))
+    }
+  }
 
   // --- AGENDA MANAGEMENT ---
   const handleAddAgendaItem = () => {
@@ -209,6 +231,7 @@ export const useEventForm = () => {
     handleAddSpeaker,
     handleRemoveSpeaker,
     handleSpeakerChange,
+    handleLocationChange,
     handleSubmit
   }
 }

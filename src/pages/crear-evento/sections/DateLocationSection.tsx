@@ -9,6 +9,10 @@ import {
 import { DateTimePicker } from '@mui/x-date-pickers'
 import { commonInputSx } from '../styles'
 import { AUTONOMOUS_COMMUNITIES } from '../../../constants/filters'
+import {
+  LocationPicker,
+  LocationData
+} from '../../../components/LocationPicker'
 
 interface DateLocationSectionProps {
   formData: any
@@ -20,6 +24,7 @@ interface DateLocationSectionProps {
   handleSingleAutocompleteChange: (
     field: 'venue_city' | 'venue_community'
   ) => (event: any, value: string | null) => void
+  handleLocationChange?: (location: LocationData | null) => void
 }
 
 export const DateLocationSection: React.FC<DateLocationSectionProps> = ({
@@ -27,8 +32,20 @@ export const DateLocationSection: React.FC<DateLocationSectionProps> = ({
   availableCities,
   handleChange,
   handleDateChange,
-  handleSingleAutocompleteChange
+  handleSingleAutocompleteChange,
+  handleLocationChange
 }) => {
+  // Build LocationData value from formData
+  const locationValue: LocationData | null =
+    formData.latitude && formData.longitude
+      ? {
+          latitude: formData.latitude,
+          longitude: formData.longitude,
+          address: formData.venue_address || '',
+          city: formData.venue_city
+        }
+      : null
+
   return (
     <Grid container spacing={3}>
       <Grid size={{ xs: 12, md: 6 }}>
@@ -69,49 +86,12 @@ export const DateLocationSection: React.FC<DateLocationSectionProps> = ({
           variant='filled'
           value={formData.is_online ? 'online' : 'presencial'}
           onChange={(e) => {
-            // Manual handling to match original logic which expects event but sets boolean
-            // We can delegate to parent's handleChange if it handles the boolean conversion there?
-            // Wait, the parent handleChange handles generic inputs.
-            // In original Page.tsx:
-            // onChange={(e) => { const value = e.target.value === 'online'; ... }}
-            // So we should do the same here or pass a custom handler?
-            // Let's assume parent passed a generic handleChange and we adapt here:
-            // Actually, let's keep the logic consistent.
-            const customEvent = {
-              target: {
-                name: 'is_online',
-                value: e.target.value === 'online' // This logic is tricky if strict typing.
-                // The hook's handleChange uses: [name]: type === 'checkbox' ? checked : value
-                // e.target.value is a string here.
-                // We need to pass the boolean.
-                // Let's manually call setFormData from the prop? No, let's just use the hook's helper or adapt.
-                // Quick fix: Use the custom logic from the original file by calling a specific handler or
-                // just calling the prop with a fake event object if strictness allows, or better:
-                // The Hook's `handleChange` handles `e.target.value`.
-                // If we pass `value` as boolean, `handleChange` might just set it.
-                // But `e.target.value` on a select is string.
-                // We need a specific handler in parent or just do it here.
-                // Let's assume we can't easily use the generic `handleChange` for this specific transformation
-                // unless we modify the hook.
-                // Modification to hook:
-                // `handleChange` takes `ChangeEvent<HTMLInputElement>`.
-                // Let's modify the hook to be more flexible or just handle it here by passing a custom object.
-              }
-            }
-            // Actually, let's just do the logic here and call a setter if exposed, OR
-            // just pass a `handleModeChange` prop.
-            // Let's use the generic logic:
-            // But wait, the component receives `handleChange`.
-            // Let's cheat slightly and cast:
             const isOnline = e.target.value === 'online'
-            // We can't use the generic handleChange because it reads from e.target.value and sets that.
-            // We want to set a boolean.
-            // Let's just create a synthetic event:
             const syntheticEvent = {
               target: {
                 name: 'is_online',
                 value: isOnline,
-                type: 'text' // trick to avoid checkbox logic
+                type: 'text'
               }
             } as any
             handleChange(syntheticEvent)
@@ -136,17 +116,33 @@ export const DateLocationSection: React.FC<DateLocationSectionProps> = ({
               sx={commonInputSx}
             />
           </Grid>
-          <Grid size={{ xs: 12 }}>
-            <TextField
-              name='venue_address'
-              label='Dirección'
-              fullWidth
-              variant='filled'
-              value={formData.venue_address}
-              onChange={handleChange}
-              sx={commonInputSx}
-            />
-          </Grid>
+
+          {/* LocationPicker with Geocoding */}
+          {handleLocationChange && (
+            <Grid size={{ xs: 12 }}>
+              <LocationPicker
+                value={locationValue}
+                onChange={handleLocationChange}
+                label='Buscar Dirección'
+                helperText='Busca la dirección o haz clic en el mapa para seleccionar ubicación'
+              />
+            </Grid>
+          )}
+
+          {/* Fallback manual address input if no LocationPicker handler */}
+          {!handleLocationChange && (
+            <Grid size={{ xs: 12 }}>
+              <TextField
+                name='venue_address'
+                label='Dirección'
+                fullWidth
+                variant='filled'
+                value={formData.venue_address}
+                onChange={handleChange}
+                sx={commonInputSx}
+              />
+            </Grid>
+          )}
 
           <Grid size={{ xs: 12, md: 6 }}>
             <Autocomplete
