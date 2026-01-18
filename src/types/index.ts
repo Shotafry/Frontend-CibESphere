@@ -169,6 +169,16 @@ export interface OrganizationSummaryResponse
 
 // --- TIPOS DE EVENTO ---
 
+export interface TicketType {
+  id: string
+  name: string
+  description?: string
+  price: number // céntimos
+  capacity: number
+  sold: number
+  is_active: boolean
+}
+
 export interface AgendaItem {
   id: string // Required for UI keying
   time: string
@@ -226,6 +236,7 @@ export interface Event {
   price?: number
   currency: string
   registration_url?: string
+  ticket_types?: TicketType[]
 
   // Media
   image_url: string
@@ -349,6 +360,7 @@ export interface CreateEventDTO {
   price?: number
   currency?: string
   registration_url?: string
+  ticket_types?: string // JSON string of TicketType[]
 
   // Media
   image_url?: string

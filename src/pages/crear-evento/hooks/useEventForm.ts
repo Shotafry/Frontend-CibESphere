@@ -2,7 +2,13 @@ import { useState, useEffect } from 'react'
 import { useNavigate, useLoaderData } from 'react-router-dom'
 import { useAuth } from '../../../context/AuthContext'
 import * as apiService from '../../../services/apiService'
-import { CreateEventDTO, Event, AgendaItem, Speaker } from '../../../types'
+import {
+  CreateEventDTO,
+  Event,
+  AgendaItem,
+  Speaker,
+  TicketType
+} from '../../../types'
 import { LOCATION_DATA } from '../../../constants/filters'
 import { LocationData } from '../../../components/LocationPicker'
 
@@ -35,6 +41,7 @@ export const useEventForm = () => {
     online_url: loadedEvent?.online_url || '',
     price: loadedEvent?.price || 0,
     image_url: loadedEvent?.image_url || '',
+    ticket_types: loadedEvent?.ticket_types || [],
     max_attendees: loadedEvent?.max_attendees || 0,
     agenda: loadedEvent?.agenda || [],
     speakers: loadedEvent?.speakers || [],
@@ -180,6 +187,47 @@ export const useEventForm = () => {
     }))
   }
 
+  // --- TICKET TYPES MANAGEMENT ---
+  const handleAddTicketType = () => {
+    setFormData((prev: any) => ({
+      ...prev,
+      ticket_types: [
+        ...prev.ticket_types,
+        {
+          id: Date.now().toString(),
+          name: '',
+          description: '',
+          price: 0,
+          capacity: 0,
+          sold: 0,
+          is_active: true
+        }
+      ]
+    }))
+  }
+
+  const handleRemoveTicketType = (id: string) => {
+    setFormData((prev: any) => ({
+      ...prev,
+      ticket_types: prev.ticket_types.filter(
+        (item: TicketType) => item.id !== id
+      )
+    }))
+  }
+
+  const handleTicketTypeChange = (
+    id: string,
+    field: keyof TicketType,
+    value: string | number | boolean
+  ) => {
+    setFormData((prev: any) => ({
+      ...prev,
+      ticket_types: prev.ticket_types.map((item: TicketType) =>
+        item.id === id ? { ...item, [field]: value } : item
+      )
+    }))
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!user || !user.organization) {
@@ -233,6 +281,13 @@ export const useEventForm = () => {
             : undefined
       }
 
+      if (cleanData.ticket_types && Array.isArray(cleanData.ticket_types)) {
+        cleanData.ticket_types =
+          cleanData.ticket_types.length > 0
+            ? JSON.stringify(cleanData.ticket_types)
+            : undefined
+      }
+
       const eventData: CreateEventDTO = {
         ...cleanData,
         organization_id: user.organization.id,
@@ -276,6 +331,9 @@ export const useEventForm = () => {
     handleSpeakerChange,
     handleLocationChange,
     handleImageChange,
+    handleAddTicketType,
+    handleRemoveTicketType,
+    handleTicketTypeChange,
     handleSubmit
   }
 }

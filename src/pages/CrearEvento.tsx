@@ -44,6 +44,9 @@ const CrearEvento: FunctionComponent = () => {
     handleSpeakerChange,
     handleLocationChange,
     handleImageChange,
+    handleAddTicketType,
+    handleRemoveTicketType,
+    handleTicketTypeChange,
     handleSubmit
   } = useEventForm()
 
@@ -145,6 +148,9 @@ const CrearEvento: FunctionComponent = () => {
                   <CapacityPriceSection
                     formData={formData}
                     handleChange={handleChange}
+                    handleAddTicketType={handleAddTicketType}
+                    handleRemoveTicketType={handleRemoveTicketType}
+                    handleTicketTypeChange={handleTicketTypeChange}
                   />
                 </Box>
 
