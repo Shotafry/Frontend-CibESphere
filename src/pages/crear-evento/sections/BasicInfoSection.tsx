@@ -2,6 +2,7 @@ import React from 'react'
 import { Grid, TextField, MenuItem, Autocomplete } from '@mui/material'
 import { commonInputSx } from '../styles'
 import { CYBERSECURITY_TAGS, EVENT_LEVELS } from '../../../constants/filters'
+import { EventImageUploader } from '../../../components/EventImageUploader'
 
 interface BasicInfoSectionProps {
   formData: any
@@ -10,13 +11,15 @@ interface BasicInfoSectionProps {
     field: 'tags'
   ) => (event: any, value: string[]) => void
   handleLanguageChange: (event: any, value: string | null) => void
+  handleImageChange?: (url: string | null) => void
 }
 
 export const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({
   formData,
   handleChange,
   handleAutocompleteChange,
-  handleLanguageChange
+  handleLanguageChange,
+  handleImageChange
 }) => {
   return (
     <Grid container spacing={3}>
@@ -34,16 +37,23 @@ export const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({
       </Grid>
 
       <Grid size={{ xs: 12 }}>
-        <TextField
-          name='image_url'
-          label='URL del Logo o Imagen Principal'
-          fullWidth
-          variant='filled'
-          value={formData.image_url}
-          onChange={handleChange}
-          placeholder='https://ejemplo.com/imagen.jpg'
-          sx={commonInputSx}
-        />
+        {handleImageChange ? (
+          <EventImageUploader
+            imageUrl={formData.image_url || null}
+            onImageChange={handleImageChange}
+          />
+        ) : (
+          <TextField
+            name='image_url'
+            label='URL del Logo o Imagen Principal'
+            fullWidth
+            variant='filled'
+            value={formData.image_url}
+            onChange={handleChange}
+            placeholder='https://ejemplo.com/imagen.jpg'
+            sx={commonInputSx}
+          />
+        )}
       </Grid>
 
       <Grid size={{ xs: 12 }}>

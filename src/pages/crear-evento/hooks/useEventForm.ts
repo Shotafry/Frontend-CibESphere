@@ -113,6 +113,11 @@ export const useEventForm = () => {
     }
   }
 
+  // Handler for image upload
+  const handleImageChange = (url: string | null) => {
+    setFormData((prev: any) => ({ ...prev, image_url: url || '' }))
+  }
+
   // --- AGENDA MANAGEMENT ---
   const handleAddAgendaItem = () => {
     setFormData((prev: any) => ({
@@ -190,10 +195,48 @@ export const useEventForm = () => {
     setError(null)
 
     try {
+      // Clean empty strings that would fail URL validation
+      const cleanData = { ...formData }
+      const urlFields = [
+        'image_url',
+        'banner_url',
+        'online_url',
+        'streaming_url',
+        'registration_url'
+      ]
+      urlFields.forEach((field) => {
+        if (cleanData[field] === '') {
+          delete cleanData[field]
+        }
+      })
+
+      // Remove null coordinates for online events
+      if (cleanData.is_online) {
+        delete cleanData.latitude
+        delete cleanData.longitude
+        delete cleanData.venue_address
+        delete cleanData.venue_city
+        delete cleanData.venue_name
+      }
+
+      // Serialize agenda and speakers arrays to JSON strings for backend
+      if (cleanData.agenda && Array.isArray(cleanData.agenda)) {
+        cleanData.agenda =
+          cleanData.agenda.length > 0
+            ? JSON.stringify(cleanData.agenda)
+            : undefined
+      }
+      if (cleanData.speakers && Array.isArray(cleanData.speakers)) {
+        cleanData.speakers =
+          cleanData.speakers.length > 0
+            ? JSON.stringify(cleanData.speakers)
+            : undefined
+      }
+
       const eventData: CreateEventDTO = {
-        ...formData,
+        ...cleanData,
         organization_id: user.organization.id,
-        max_attendees: Number(formData.max_attendees)
+        max_attendees: Number(cleanData.max_attendees)
       } as CreateEventDTO
 
       if (isEditMode) {
@@ -232,6 +275,7 @@ export const useEventForm = () => {
     handleRemoveSpeaker,
     handleSpeakerChange,
     handleLocationChange,
+    handleImageChange,
     handleSubmit
   }
 }

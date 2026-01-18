@@ -4,6 +4,7 @@ import CalendarTodayIcon from '@mui/icons-material/CalendarToday'
 import LocationOnIcon from '@mui/icons-material/LocationOn'
 import ConfirmationNumberIcon from '@mui/icons-material/ConfirmationNumber'
 import { Event, User, Role } from '../../../types'
+import { LazySingleEventMap } from '../../../components/LazyMap'
 
 interface EventSidebarProps {
   event: Event
@@ -114,6 +115,21 @@ export const EventSidebar: React.FC<EventSidebarProps> = ({
             )}
           </Box>
         </Box>
+
+        {/* Map for in-person events with coordinates */}
+        {!event.is_online && event.latitude && event.longitude && (
+          <Box
+            sx={{
+              mb: 3,
+              borderRadius: '12px',
+              overflow: 'hidden',
+              height: '250px', // Explicit height required for Leaflet
+              width: '100%'
+            }}
+          >
+            <LazySingleEventMap event={event} />
+          </Box>
+        )}
 
         <Box sx={{ display: 'flex', alignItems: 'center', mb: 4 }}>
           <ConfirmationNumberIcon

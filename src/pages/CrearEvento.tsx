@@ -42,6 +42,7 @@ const CrearEvento: FunctionComponent = () => {
     handleRemoveSpeaker,
     handleSpeakerChange,
     handleLocationChange,
+    handleImageChange,
     handleSubmit
   } = useEventForm()
 
@@ -103,6 +104,7 @@ const CrearEvento: FunctionComponent = () => {
                   handleChange={handleChange}
                   handleAutocompleteChange={handleAutocompleteChange}
                   handleLanguageChange={handleLanguageChange}
+                  handleImageChange={handleImageChange}
                 />
               </Box>
 

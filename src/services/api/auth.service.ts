@@ -28,7 +28,7 @@ export const logoutAll = async (): Promise<void> => {
  */
 export const uploadImage = async (
   file: File,
-  type: 'avatar' | 'banner' | 'badge' = 'avatar'
+  type: 'avatar' | 'banner' | 'badge' | 'event' = 'avatar'
 ): Promise<string> => {
   const formData = new FormData()
   formData.append('file', file)
