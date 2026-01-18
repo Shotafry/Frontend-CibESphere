@@ -17,6 +17,7 @@ import { EventItinerary } from './evento-detalle/components/EventItinerary'
 import { EventReviews } from './evento-detalle/components/EventReviews'
 import { EventSidebar } from './evento-detalle/components/EventSidebar'
 import { EventDetailSkeleton } from '../components/skeletons'
+import { PageTransition } from '../components/PageTransition'
 
 const Eventos: FunctionComponent = () => {
   const event = useLoaderData() as Event
@@ -73,45 +74,47 @@ const Eventos: FunctionComponent = () => {
   }
 
   return (
-    <Container maxWidth='xl' sx={{ mt: 8, mb: 8, px: { xs: 2, md: 8 } }}>
-      <Grid container spacing={8} justifyContent='center'>
-        {/* Columna Principal: Contenido */}
-        <Grid size={{ xs: 12, md: 8 }}>
-          <Box
-            sx={{
-              backgroundColor: 'var(--White)',
-              borderRadius: '25px',
-              p: { xs: 3, md: 6 },
-              boxShadow: 'var(--shadow-drop)',
-              position: 'relative',
-              overflow: 'hidden'
-            }}
-          >
-            <EventHero event={event} />
+    <PageTransition>
+      <Container maxWidth='xl' sx={{ mt: 8, mb: 8, px: { xs: 2, md: 8 } }}>
+        <Grid container spacing={8} justifyContent='center'>
+          {/* Columna Principal: Contenido */}
+          <Grid size={{ xs: 12, md: 8 }}>
+            <Box
+              sx={{
+                backgroundColor: 'var(--White)',
+                borderRadius: '25px',
+                p: { xs: 3, md: 6 },
+                boxShadow: 'var(--shadow-drop)',
+                position: 'relative',
+                overflow: 'hidden'
+              }}
+            >
+              <EventHero event={event} />
 
-            <EventDetails event={event} />
+              <EventDetails event={event} />
 
-            <EventItinerary event={event} />
+              <EventItinerary event={event} />
 
-            <EventReviews reviews={reviews} />
-          </Box>
+              <EventReviews reviews={reviews} />
+            </Box>
+          </Grid>
+
+          {/* Columna Lateral: Info Clave */}
+          <Grid size={{ xs: 12, md: 4 }}>
+            <EventSidebar
+              event={event}
+              user={user}
+              isAuthenticated={isAuthenticated}
+              isSubscribing={isSubscribing}
+              isAlreadySubscribed={isAlreadySubscribed}
+              isEventEnded={isEventEnded}
+              error={error}
+              onSubscribe={handleSubscribe}
+            />
+          </Grid>
         </Grid>
-
-        {/* Columna Lateral: Info Clave */}
-        <Grid size={{ xs: 12, md: 4 }}>
-          <EventSidebar
-            event={event}
-            user={user}
-            isAuthenticated={isAuthenticated}
-            isSubscribing={isSubscribing}
-            isAlreadySubscribed={isAlreadySubscribed}
-            isEventEnded={isEventEnded}
-            error={error}
-            onSubscribe={handleSubscribe}
-          />
-        </Grid>
-      </Grid>
-    </Container>
+      </Container>
+    </PageTransition>
   )
 }
 

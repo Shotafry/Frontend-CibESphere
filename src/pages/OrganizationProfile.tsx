@@ -4,6 +4,7 @@ import { Box, Container } from '@mui/material'
 import { useLoaderData } from 'react-router-dom'
 import { OrganizationSummary, Event } from '../types'
 import { OrgHero, OrgHeader, OrgEvents } from './organization-profile'
+import { PageTransition } from '../components/PageTransition'
 
 interface LoaderData {
   organization: OrganizationSummary
@@ -19,26 +20,28 @@ const OrganizationProfile: FunctionComponent = () => {
   )
 
   return (
-    <Box sx={{ pb: 8, minHeight: '100vh', bgcolor: '#F8FAFC' }}>
-      <OrgHero bannerUrl={organization.banner_url} />
+    <PageTransition>
+      <Box sx={{ pb: 8, minHeight: '100vh', bgcolor: '#F8FAFC' }}>
+        <OrgHero bannerUrl={organization.banner_url} />
 
-      <Container
-        maxWidth='xl'
-        sx={{
-          px: { xs: 1.5, sm: 2, md: 8 },
-          mt: -10,
-          position: 'relative',
-          zIndex: 2
-        }}
-      >
-        <OrgHeader
-          organization={organization}
-          eventsCount={events.length}
-          totalAttendees={totalAttendees}
-        />
-        <OrgEvents events={events} />
-      </Container>
-    </Box>
+        <Container
+          maxWidth='xl'
+          sx={{
+            px: { xs: 1.5, sm: 2, md: 8 },
+            mt: -10,
+            position: 'relative',
+            zIndex: 2
+          }}
+        >
+          <OrgHeader
+            organization={organization}
+            eventsCount={events.length}
+            totalAttendees={totalAttendees}
+          />
+          <OrgEvents events={events} />
+        </Container>
+      </Box>
+    </PageTransition>
   )
 }
 

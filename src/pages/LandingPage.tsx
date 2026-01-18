@@ -20,6 +20,7 @@ import { EventFilters } from '../components/EventFilters'
 import ComunidadBox from '../components/AboutThis'
 import { getEvents } from '../services/apiService'
 import { Button } from '../components/Button'
+import { PageTransition } from '../components/PageTransition'
 
 // ... imports
 
@@ -70,77 +71,79 @@ const LandingPage: FunctionComponent = () => {
 
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
-      <Hero />
+      <PageTransition>
+        <Hero />
 
-      <Container maxWidth='lg' sx={{ mt: 4, mb: 4 }}>
-        <ComunidadBox />
+        <Container maxWidth='lg' sx={{ mt: 4, mb: 4 }}>
+          <ComunidadBox />
 
-        <Typography
-          variant='h3'
-          component='h2'
-          gutterBottom
-          align='center'
-          fontWeight='bold'
-          sx={{ mt: 4, mb: 4 }}
-        >
-          Próximos Eventos
-        </Typography>
+          <Typography
+            variant='h3'
+            component='h2'
+            gutterBottom
+            align='center'
+            fontWeight='bold'
+            sx={{ mt: 4, mb: 4 }}
+          >
+            Próximos Eventos
+          </Typography>
 
-        <Box id='filtros'>
-          <EventFilters initialFilters={filters} />
-        </Box>
-
-        <Box sx={{ my: 5, display: 'flex', justifyContent: 'center' }}>
-          <LazyEventMap events={events} />
-        </Box>
-
-        <Grid container spacing={4} justifyContent='center'>
-          {events.length > 0 ? (
-            events.map((event) => <EventCard key={event.id} event={event} />)
-          ) : (
-            <Grid size={{ xs: 12 }}>
-              <Typography align='center' sx={{ mt: 5 }}>
-                No se encontraron eventos que coincidan con los filtros
-                seleccionados.
-              </Typography>
-            </Grid>
-          )}
-          {isLoadingMore && (
-            <>
-              <EventCardSkeleton />
-              <EventCardSkeleton />
-              <EventCardSkeleton />
-            </>
-          )}
-        </Grid>
-
-        {/* Load More Button */}
-        {hasMore && events.length > 0 && (
-          <Box sx={{ display: 'flex', justifyContent: 'center', mt: 6 }}>
-            <Button
-              onClick={handleLoadMore}
-              disabled={isLoadingMore}
-              variant='secondary'
-              sx={{
-                px: 4,
-                py: 1.5,
-                fontSize: '1rem',
-                boxShadow: '0 4px 14px 0 rgba(0,118,255,0.15)',
-                '&:hover': {
-                  transform: 'translateY(-2px)',
-                  boxShadow: '0 6px 20px rgba(0,118,255,0.23)'
-                }
-              }}
-            >
-              {isLoadingMore ? (
-                <CircularProgress size={24} color='inherit' />
-              ) : (
-                'Cargar Más Eventos'
-              )}
-            </Button>
+          <Box id='filtros'>
+            <EventFilters initialFilters={filters} />
           </Box>
-        )}
-      </Container>
+
+          <Box sx={{ my: 5, display: 'flex', justifyContent: 'center' }}>
+            <LazyEventMap events={events} />
+          </Box>
+
+          <Grid container spacing={4} justifyContent='center'>
+            {events.length > 0 ? (
+              events.map((event) => <EventCard key={event.id} event={event} />)
+            ) : (
+              <Grid size={{ xs: 12 }}>
+                <Typography align='center' sx={{ mt: 5 }}>
+                  No se encontraron eventos que coincidan con los filtros
+                  seleccionados.
+                </Typography>
+              </Grid>
+            )}
+            {isLoadingMore && (
+              <>
+                <EventCardSkeleton />
+                <EventCardSkeleton />
+                <EventCardSkeleton />
+              </>
+            )}
+          </Grid>
+
+          {/* Load More Button */}
+          {hasMore && events.length > 0 && (
+            <Box sx={{ display: 'flex', justifyContent: 'center', mt: 6 }}>
+              <Button
+                onClick={handleLoadMore}
+                disabled={isLoadingMore}
+                variant='secondary'
+                sx={{
+                  px: 4,
+                  py: 1.5,
+                  fontSize: '1rem',
+                  boxShadow: '0 4px 14px 0 rgba(0,118,255,0.15)',
+                  '&:hover': {
+                    transform: 'translateY(-2px)',
+                    boxShadow: '0 6px 20px rgba(0,118,255,0.23)'
+                  }
+                }}
+              >
+                {isLoadingMore ? (
+                  <CircularProgress size={24} color='inherit' />
+                ) : (
+                  'Cargar Más Eventos'
+                )}
+              </Button>
+            </Box>
+          )}
+        </Container>
+      </PageTransition>
     </LocalizationProvider>
   )
 }

@@ -7,7 +7,6 @@ import { Link as RouterLink } from 'react-router-dom'
 export const Footer: FunctionComponent = () => {
   const footerLinks = [
     { to: '/sobre-nosotros', label: 'Sobre nosotros' },
-    { to: '/', label: 'Eventos' },
     { to: '/terminos', label: 'Términos' },
     { to: '/cookies', label: 'Cookies' },
     { to: '/contacto', label: 'Contacto' },

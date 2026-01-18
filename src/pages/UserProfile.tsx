@@ -12,6 +12,7 @@ import {
   UserBadges,
   UserEventsTab
 } from './user-profile'
+import { PageTransition } from '../components/PageTransition'
 
 interface LoaderData {
   user: PublicUserProfileType
@@ -30,42 +31,44 @@ const UserProfile: React.FC = () => {
   const allEvents = user.registered_events || []
 
   return (
-    <Box sx={{ minHeight: '100vh', bgcolor: '#F8FAFC', pb: 10 }}>
-      {/* HERO SECTION */}
-      <UserHero user={user} />
+    <PageTransition>
+      <Box sx={{ minHeight: '100vh', bgcolor: '#F8FAFC', pb: 10 }}>
+        {/* HERO SECTION */}
+        <UserHero user={user} />
 
-      {/* ACTION BAR (if owner) */}
-      {isOwner && (
-        <Container maxWidth='xl' sx={{ mt: 12, mb: -4, textAlign: 'right' }}>
-          <Button
-            variant='primary'
-            onClick={() => navigate('/panel-de-usuario?tab=2')}
-          >
-            Editar Perfil
-          </Button>
+        {/* ACTION BAR (if owner) */}
+        {isOwner && (
+          <Container maxWidth='xl' sx={{ mt: 12, mb: -4, textAlign: 'right' }}>
+            <Button
+              variant='primary'
+              onClick={() => navigate('/panel-de-usuario?tab=2')}
+            >
+              Editar Perfil
+            </Button>
+          </Container>
+        )}
+
+        {/* MAIN CONTENT */}
+        <Container maxWidth='xl' sx={{ mt: isOwner ? 6 : 14 }}>
+          <Grid container spacing={4}>
+            {/* LEFT COLUMN: BIO, SOCIAL, STATS */}
+            <Grid size={{ xs: 12, md: 4 }}>
+              <Stack spacing={3}>
+                <UserBio bio={user.bio} />
+                <UserSocials user={user} />
+                <UserStats user={user} eventsCount={allEvents.length} />
+                <UserBadges user={user} />
+              </Stack>
+            </Grid>
+
+            {/* RIGHT COLUMN: EVENTS */}
+            <Grid size={{ xs: 12, md: 8 }}>
+              <UserEventsTab events={allEvents} />
+            </Grid>
+          </Grid>
         </Container>
-      )}
-
-      {/* MAIN CONTENT */}
-      <Container maxWidth='xl' sx={{ mt: isOwner ? 6 : 14 }}>
-        <Grid container spacing={4}>
-          {/* LEFT COLUMN: BIO, SOCIAL, STATS */}
-          <Grid size={{ xs: 12, md: 4 }}>
-            <Stack spacing={3}>
-              <UserBio bio={user.bio} />
-              <UserSocials user={user} />
-              <UserStats user={user} eventsCount={allEvents.length} />
-              <UserBadges user={user} />
-            </Stack>
-          </Grid>
-
-          {/* RIGHT COLUMN: EVENTS */}
-          <Grid size={{ xs: 12, md: 8 }}>
-            <UserEventsTab events={allEvents} />
-          </Grid>
-        </Grid>
-      </Container>
-    </Box>
+      </Box>
+    </PageTransition>
   )
 }
 
