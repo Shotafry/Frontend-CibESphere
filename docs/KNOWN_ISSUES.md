@@ -8,7 +8,7 @@
 
 ### Marketplace & Pagos ✅ v0.3.0
 
-- **Stripe:** Flujos de conexión y compra integrados (`useStripeConnect`).
+- **Stripe:** Flujos de conexión y compra integrados (via `organizations.service.ts`).
 - **Scanning:** Lector QR funcional (`html5-qrcode`).
 - **Listados:** `AttendeesList` optimizado para móvil.
 

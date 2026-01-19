@@ -46,7 +46,9 @@ src/
 │   ├── Hero.tsx, ImageUpload.tsx, Layout.tsx, LazyMap.tsx
 │   ├── MobileMenu.tsx, NotificationMenu.tsx, ProtectedRoute.tsx
 │   ├── ParticlesBackground.tsx, AboutThis.tsx
-│   ├── ErrorBoundary.tsx
+│   ├── ErrorBoundary.tsx, PageTransition.tsx
+│   ├── LocationPicker.tsx, EventImageUploader.tsx
+│   ├── events/TicketSelector.tsx (Selector de entradas)
 │   └── skeletons/ (Loaders)
 │       ├── EventCardSkeleton.tsx, EventDetailSkeleton.tsx
 │       ├── PanelSkeleton.tsx, TableSkeleton.tsx, index.ts
@@ -88,17 +90,15 @@ src/
 │   └── (user/organization)-profile/components/ (Vistas públicas)
 │
 ├── services/ (Capa API)
-│   ├── httpClient.ts
+│   ├── httpClient.ts, apiService.ts
 │   └── api/
 │       ├── auth.service.ts, events.service.ts, organizations.service.ts
 │       ├── users.service.ts, reviews.service.ts, notifications.service.ts
-│       ├── admin.service.ts
-│       ├── payment.service.ts (New v0.3.0), attendee.service.ts (New v0.3.0)
-│       ├── tickets.service.ts (New v0.3.0), index.ts
+│       ├── admin.service.ts, attendee.service.ts, index.ts
+│       (Nota: Stripe está integrado en organizations.service.ts)
 │
 ├── hooks/ (Lógica React)
-│   ├── useApi.ts, useEvents.ts, useOrganizations.ts
-│   ├── useStripeConnect.ts (New v0.3.0), index.ts
+│   ├── useApi.ts, useEvents.ts, useOrganizations.ts, index.ts
 │
 ├── context/AuthContext.tsx
 └── types/index.ts (Definiciones TS)
