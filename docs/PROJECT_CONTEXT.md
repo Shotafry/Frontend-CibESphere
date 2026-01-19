@@ -1,20 +1,24 @@
 # 🧠 Contexto del Proyecto: CybESphere Frontend
 
 > **Documento Maestro**: Este archivo contiene toda la información necesaria para que una IA o un desarrollador entienda la arquitectura, flujos y diseño de CybESphere sin necesidad de leer todo el código.
-> **Versión**: Beta v0.2.0 (Enero 2026) - Verificado contra código
+> **Versión**: Beta v0.3.0 (Enero 2026) - **Stripe & QR Enabled**
 
 ---
 
 ## 1. Identidad y Misión
 
-**CybESphere** es una plataforma centralizada (sin ánimo de lucro) para unificar la comunidad de ciberseguridad en España. Su objetivo es dar visibilidad a todos los eventos, desde grandes conferencias hasta pequeños meetups locales.
+**CybESphere** es una plataforma centralizada (sin ánimo de lucro) para unificar la comunidad de ciberseguridad en España. Su objetivo es dar visibilidad a todos los eventos y facilitar la gestión integral para organizadores y asistentes.
+
+**Version v0.3.0:** Introduce capacidades de comercio electrónico, permitiendo a los organizadores vender entradas y validar accesos mediante QR.
 
 **Stack Tecnológico:**
 
 - **Frontend:** React 19, React Router 7 (Data API), Material UI (MUI) 7, Vite.
 - **Backend:** Go (Gin), PostgreSQL (Arquitectura hexagonal).
 - **Mapas:** React Leaflet 5 (con Lazy Loading).
-- **Animaciones:** Framer Motion (uso selectivo en páginas estáticas).
+- **Pagos:** Stripe Connect + Stripe Checkout.
+- **Scanner:** `html5-qrcode` para lectura de QRs.
+- **Animaciones:** Framer Motion (uso selectivo).
 
 ---
 
@@ -25,112 +29,111 @@
 El proyecto utiliza la moderna **Data API** de React Router 7 (`createBrowserRouter`).
 
 - **Loaders:** La carga de datos se realiza en los `loaders` definidos en `src/App.tsx`.
-- **Axios Singleton:** Todas las peticiones HTTP pasan por `src/services/httpClient.ts`.
+- **Axios Singleton:** Hub centralizado en `src/services/httpClient.ts`.
 - **Manejo de Errores:** Interceptor global para errores 401/500 + `ErrorBoundary.tsx`.
 
 ### Inventario Real de Directorios (`src/`)
 
 ```
 src/
-├── App.tsx (12KB - Router + Layout)
-├── global.css (4KB - Variables CSS)
+├── App.tsx (Router + Layout)
+├── global.css (Variables CSS & Overrides)
 ├── index.tsx
 │
-├── components/ (17 archivos + skeletons/)
+├── components/ (UI Compartida)
 │   ├── Button.tsx, EventCard.tsx, Header.tsx, Footer.tsx
 │   ├── EventFilters.tsx, EventMap.tsx, SingleEventMap.tsx
 │   ├── Hero.tsx, ImageUpload.tsx, Layout.tsx, LazyMap.tsx
 │   ├── MobileMenu.tsx, NotificationMenu.tsx, ProtectedRoute.tsx
 │   ├── ParticlesBackground.tsx, AboutThis.tsx
-│   ├── ErrorBoundary.tsx ✅ (Implementado)
-│   └── skeletons/
-│       ├── EventCardSkeleton.tsx
-│       ├── EventDetailSkeleton.tsx
-│       ├── PanelSkeleton.tsx
-│       ├── TableSkeleton.tsx
-│       └── index.ts
+│   ├── ErrorBoundary.tsx
+│   └── skeletons/ (Loaders)
+│       ├── EventCardSkeleton.tsx, EventDetailSkeleton.tsx
+│       ├── PanelSkeleton.tsx, TableSkeleton.tsx, index.ts
 │
-├── pages/ (16 archivos + 7 subdirectorios)
+├── pages/ (Vistas Principales)
 │   ├── LandingPage.tsx, Eventos.tsx, CrearEvento.tsx
 │   ├── PanelDeOrganizador.tsx, PanelDeUsuario.tsx, PanelDeAdministrador.tsx
 │   ├── UserProfile.tsx, OrganizationProfile.tsx
 │   ├── SignUp.tsx, AboutUs.tsx, Contacto.tsx
 │   ├── TerminosYCondiciones.tsx, PoliticaCookies.tsx, ProgramaVulnerabilidades.tsx
-│   ├── ErrorPage.tsx, test-font.tsx
+│   ├── ErrorPage.tsx
 │   │
-│   ├── evento-detalle/components/ (5 archivos)
+│   ├── evento-detalle/components/
 │   │   ├── EventHero.tsx, EventDetails.tsx, EventItinerary.tsx
 │   │   ├── EventReviews.tsx, EventSidebar.tsx
 │   │
-│   ├── crear-evento/ (hooks/, sections/, styles.ts, index.ts)
+│   ├── crear-evento/ (Wizard)
 │   │   ├── hooks/useEventForm.ts
-│   │   └── sections/ (5 archivos: BasicInfo, DateLocation, CapacityPrice, Agenda, Speakers)
+│   │   └── sections/ (BasicInfo, DateLocation, CapacityPrice, Agenda, Speakers)
 │   │
-│   ├── panel-organizador/ (components/, tabs/, index.ts)
-│   │   ├── components/StatCard.tsx, OrgProfileForm.tsx
-│   │   ├── components/form-sections/ (5 archivos: ProfileHeaderPreview, GeneralInfo, ContactInfo, VisualAssets, SocialMedia)
-│   │   └── tabs/ (3 archivos: Dashboard, EventsList, Profile)
+│   ├── panel-organizador/ (Gestión)
+│   │   ├── components/
+│   │   │   ├── StatCard.tsx, OrgProfileForm.tsx
+│   │   │   ├── AttendeesList.tsx (New v0.3.0), QRScannerModal.tsx (New v0.3.0)
+│   │   │   └── form-sections/ (ProfileHeaderPreview, GeneralInfo, ContactInfo, VisualAssets, SocialMedia)
+│   │   └── tabs/
+│   │       ├── Dashboard.tsx, EventsList.tsx, Profile.tsx
+│   │       └── PaymentsTab.tsx (New v0.3.0 - Stripe Connect)
 │   │
-│   ├── panel-usuario/ (components/, tabs/, index.ts)
+│   ├── panel-usuario/ (Dashboard)
 │   │   ├── components/BadgeUploader.tsx, ReviewModal.tsx
-│   │   └── tabs/ (4 archivos: Profile, Events, Bookmarks, Notifications)
+│   │   └── tabs/
+│   │       ├── Profile.tsx, Events.tsx, Bookmarks.tsx, Notifications.tsx
+│   │       └── TicketsTab.tsx (New v0.3.0 - QR Wallet)
 │   │
-│   ├── panel-administrador/ (components/, tabs/, index.ts)
-│   │   ├── components/ (1 archivo)
-│   │   └── tabs/ (3 archivos: Dashboard, Organizations, Users)
+│   ├── panel-administrador/
+│   │   └── tabs/ (Dashboard, Organizations, Users)
 │   │
-│   ├── user-profile/components/ (6 archivos)
-│   │   ├── UserHero.tsx, UserBio.tsx, UserStats.tsx
-│   │   ├── UserSocials.tsx, UserEventsTab.tsx, UserBadges.tsx
-│   │
-│   └── organization-profile/components/ (3 archivos)
-│       ├── OrgHero.tsx, OrgHeader.tsx, OrgEvents.tsx
+│   └── (user/organization)-profile/components/ (Vistas públicas)
 │
-├── services/
-│   ├── httpClient.ts (5.6KB - Axios singleton)
-│   ├── apiService.ts (legacy)
-│   └── api/ (8 archivos)
-│       ├── auth.service.ts, events.service.ts, users.service.ts
-│       ├── organizations.service.ts, reviews.service.ts
-│       ├── admin.service.ts, notifications.service.ts, index.ts
+├── services/ (Capa API)
+│   ├── httpClient.ts
+│   └── api/
+│       ├── auth.service.ts, events.service.ts, organizations.service.ts
+│       ├── users.service.ts, reviews.service.ts, notifications.service.ts
+│       ├── admin.service.ts
+│       ├── payment.service.ts (New v0.3.0), attendee.service.ts (New v0.3.0)
+│       ├── tickets.service.ts (New v0.3.0), index.ts
 │
-├── hooks/ (4 archivos)
-│   ├── useApi.ts, useEvents.ts, useOrganizations.ts, index.ts
+├── hooks/ (Lógica React)
+│   ├── useApi.ts, useEvents.ts, useOrganizations.ts
+│   ├── useStripeConnect.ts (New v0.3.0), index.ts
 │
 ├── context/AuthContext.tsx
-├── types/index.ts (12.6KB)
-├── constants/filters.ts
-└── mocks/
+└── types/index.ts (Definiciones TS)
 ```
 
 ---
 
-## 3. Sistema de Autenticación y Roles (RBAC)
+## 3. Sistema de Autenticación y Despliegue
 
-1. **Attend (Usuario Normal):** `/panel-de-usuario` - Inscribirse, favoritos, reseñas, badges.
-2. **Organizer (Organizador):** `/panel-de-organizador` - CRUD eventos, perfil org, dashboard.
+1. **Attend (Usuario Normal):** `/panel-de-usuario` - Inscribirse, gestionar entradas (QR Wallet), reseñas, badges.
+2. **Organizer (Organizador):** `/panel-de-organizador` - CRUD eventos, perfil org, dashboard financiero (Stripe).
 3. **Admin (Administrador):** `/admin` - Verificar organizaciones, gestión global.
 
 ---
 
 ## 4. Flujos Clave
 
-### A. Gestión de Eventos
+### A. Gestión de Eventos & Ventas (Actualizado v0.3.0)
 
-- **Creación:** `CrearEvento.tsx` → `useEventForm` hook + 5 secciones modulares.
-- **Visualización:** `Eventos.tsx` → 5 sub-componentes (Hero, Details, Itinerary, Reviews, Sidebar).
+- **Creación:** `CrearEvento.tsx` permite definir tipos de entrada (Tiers) y aforo.
+- **Venta:** Integración nativa con Stripe. El usuario es redirigido a Stripe Checkout y retornado a la app.
+- **Validación:**
+  - **QR Scanner:** `QRScannerModal` permite usar la cámara del dispositivo para validar entradas.
+  - **Lista Manual:** `AttendeesList` permite check-in manual desde el panel.
 
 ### B. Perfiles Públicos
 
-- **Organización:** `OrganizationProfile.tsx` → 3 componentes (OrgHero, OrgHeader, OrgEvents).
-- **Usuario:** `UserProfile.tsx` → 6 componentes (Hero, Bio, Stats, Socials, EventsTab, Badges).
+- **Organización:** `OrganizationProfile.tsx` → Muestra eventos activos y pasados.
+- **Usuario:** `UserProfile.tsx` → Muestra biografía, badges y eventos asistidos.
 
 ### C. Optimizaciones Implementadas
 
 - **Lazy Loading:** `LazyMap.tsx` para mapas Leaflet.
-- **Skeletons:** 4 skeletons (EventCard, EventDetail, Panel, Table).
-- **Error Handling:** `ErrorBoundary.tsx` implementado.
-- **Scroll Fix:** `shouldRevalidate` en App.tsx para evitar scroll en cambios de query.
+- **Skeletons:** Carga progresiva en tarjetas, tablas y detalles.
+- **Error Handling:** `ErrorBoundary.tsx` protege contra caídas de renderizado.
 
 ---
 
@@ -138,28 +141,16 @@ src/
 
 - **Paleta:** Cian/Turquesa (`var(--color-cadetblue)`), Fondos claros (`#F8FAFC`).
 - **Efectos:** Glow en hover, Glassmorphism en headers.
-- **Animaciones:** `framer-motion` en páginas estáticas (Contacto, Legal, VDP).
+- **Animaciones:** Micro-interacciones en botones y transiciones de página suaves.
 
 ---
 
-## 6. Integración API
+## 6. Integración API (Servicios)
 
-Servicios en `src/services/api/`:
+Toda la comunicación reside en `src/services/api/`:
 
-- `auth.service.ts` - Login, Registro, Refresh Token, Upload.
-- `events.service.ts` - CRUD eventos, búsqueda.
-- `organizations.service.ts` - Perfil org, dashboard stats.
-- `users.service.ts` - Perfil usuario, historial.
-- `reviews.service.ts` - Sistema de reseñas.
-- `notifications.service.ts` - Notificaciones.
-- `admin.service.ts` - Endpoints admin.
-
----
-
-## 7. Instrucciones para Colaboradores (IAs)
-
-1. **Modularización:** Todo está modularizado. Mantén el patrón orquestador + sub-componentes.
-2. **Estilos:** Usa `sx={{}}` de MUI con CSS vars de `global.css`.
-3. **Estado:** Prefiere loaders de React Router para datos, `react-hook-form` para formularios.
-4. **Errores:** `ErrorBoundary` ya existe, úsalo para envolver componentes riesgosos.
-5. **Animaciones:** Evita transiciones globales de ruta (conflictos con tabs).
+- `payment.service.ts`: Gestión de onboarding Stripe y creación de sesiones de pago.
+- `attendee.service.ts`: Listado de asistentes y acciones de check-in.
+- `tickets.service.ts`: Obtención de mis entradas y generación de QR.
+- `events.service.ts`: CRUD completo de eventos.
+- `auth.service.ts`: Gestión de sesiones JWT.

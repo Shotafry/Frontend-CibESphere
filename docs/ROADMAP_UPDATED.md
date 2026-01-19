@@ -69,25 +69,49 @@ _Estado: COMPLETADO_
 
 ---
 
-## 🚀 Fase 4: Comunidad y Monetización (EN PROGRESO)
+## Fase 4: Monetización y Gestión (Beta v0.3.0) ✅
 
-### 4.1 Funcionalidades Sociales (Q1 2026)
+_Estado: COMPLETADO_
+
+### 4.1 Marketplace & Pagos ✅
+
+- [x] **Stripe Connect:** Flujo de onboarding para organizadores (`PaymentsTab`).
+- [x] **Compra de Entradas:** UI para selección de Tiers (`TicketSelector`) y redirección a Stripe.
+- [x] **Gestión de Entradas:** Panel "Mis Entradas" con visualización de QR.
+
+### 4.2 Herramientas de Organización ✅
+
+- [x] **Scanner QR:** Modal de escaneo de entradas integrado (`QRScannerModal`).
+- [x] **Lista de Asistentes:** Visor "edge-to-edge" con check-in manual (`AttendeesList`).
+- [x] **Edición Avanzada:** Gestión de Tipos de Ticket y Precios.
+
+---
+
+## 🔔 Fase 5: Sistema de Notificaciones (Próx. v0.4.0)
+
+### 5.1 Comunicaciones
+
+- [ ] **Centro de Notificaciones:** Panel de alertas para usuarios y organizadores.
+- [ ] **Push UI:** Toasts y alertas visuales para eventos en tiempo real.
+- [ ] **Preferencias:** Configuración de alertas (Email/Push/SMS).
+
+---
+
+## 🚀 Fase 6: Comunidad y Social (Futuro v0.5.0)
+
+### 6.1 Funcionalidades Sociales
 
 - [ ] **Networking:** Chat entre asistentes y sistema de "Conectar".
 - [ ] **Feed Social:** Tablón de anuncios para organizaciones y usuarios.
 - [ ] **Soporte I18n:** Traducción completa (Español/Inglés).
 
-### 4.2 Monetización y Pagos (Q2 2026)
-
-- [ ] **Ticketing:** Generación de entradas PDF con QR.
-- [ ] **Pagos:** Integración con Stripe para entradas de pago.
-
 ---
 
 ## 📜 Historial de Versiones
 
-| Versión    | Estado   | Descripción                                                                    |
-| ---------- | -------- | ------------------------------------------------------------------------------ |
-| **v0.0.1** | Alpha    | Prototipo estático generado por IA.                                            |
-| **v0.1.0** | Alpha    | Mockup funcional con backend simulado.                                         |
-| **v0.2.0** | **Beta** | **Actual.** Refactorización modular completa, backend Go real, optimizaciones. |
+| Versión    | Estado   | Descripción                                                             |
+| ---------- | -------- | ----------------------------------------------------------------------- |
+| **v0.0.1** | Alpha    | Prototipo estático generado por IA.                                     |
+| **v0.1.0** | Alpha    | Mockup funcional con backend simulado.                                  |
+| **v0.2.0** | Beta     | Refactorización modular completa, backend Go real.                      |
+| **v0.3.0** | **Beta** | **Actual.** Pagos con Stripe, Scan QR, gestión de asistentes y tickets. |

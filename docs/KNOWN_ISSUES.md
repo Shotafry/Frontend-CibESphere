@@ -4,56 +4,44 @@
 
 ---
 
-## ✅ Items Completados (Fases 1-3)
+## ✅ Items Completados (Fases 1-4)
 
-### Refactorización Modular ✅ VERIFICADO
+### Marketplace & Pagos ✅ v0.3.0
 
-| Componente Original    | Líneas Antes | Ahora (Orquestador) | Subdirectorio                |
-| ---------------------- | ------------ | ------------------- | ---------------------------- |
-| `PanelDeOrganizador`   | ~1200        | 7.3KB               | `panel-organizador/`         |
-| `PanelDeUsuario`       | ~1300        | 11.2KB              | `panel-usuario/`             |
-| `PanelDeAdministrador` | ~600         | 5.6KB               | `panel-administrador/tabs/`  |
-| `Eventos`              | ~870         | 3.5KB               | `evento-detalle/components/` |
-| `CrearEvento`          | ~850         | 6.5KB               | `crear-evento/`              |
-| `UserProfile`          | ~550         | 2.1KB               | `user-profile/components/`   |
-| `OrganizationProfile`  | ~420         | 1.2KB               | `organization-profile/`      |
+- **Stripe:** Flujos de conexión y compra integrados (`useStripeConnect`).
+- **Scanning:** Lector QR funcional (`html5-qrcode`).
+- **Listados:** `AttendeesList` optimizado para móvil.
 
-### Optimizaciones de Rendimiento ✅ VERIFICADO
+### Optimizaciones de Rendimiento ✅
 
-| Optimización      | Estado      | Archivos                                                                     |
-| ----------------- | ----------- | ---------------------------------------------------------------------------- |
-| Lazy Loading Maps | ✅ Completo | `components/LazyMap.tsx`                                                     |
-| Skeleton Loaders  | ✅ Completo | `EventCardSkeleton`, `EventDetailSkeleton`, `PanelSkeleton`, `TableSkeleton` |
-| Error Boundary    | ✅ Completo | `components/ErrorBoundary.tsx` (53 líneas)                                   |
-| Scroll Fix        | ✅ Completo | `App.tsx` (shouldRevalidate)                                                 |
+- Lazy Loading Maps, Skeleton Loaders, Error Boundaries y Scroll Fix completados.
 
 ---
 
-## 🛠️ Deuda Técnica Pendiente
+## 🛠️ Deuda Técnica & Bugs Conocidos
 
-### 1. Accesibilidad (a11y) ⚠️ PENDIENTE
+### 1. Layout & Responsividad (Desktop-First)
+
+- **Estado:** Se revirtieron parches responsive inestables.
+- **Efecto:** Algunos componentes complejos (`EventsListTab`, paneles de admin) funcionan mejor en Desktop/Tablet que en móviles muy pequeños.
+- **Mitigación:** Se han aplicado mejoras puntuales ("edge-to-edge") en `AttendeesList`, pero falta una revisión mobile-first integral.
+
+### 2. Permisos de Cámara (QR Scanner)
+
+- **Problema:** En navegadores no seguros (HTTP), la API de cámara puede bloquearse.
+- **Requisito:** `QRScannerModal` requiere HTTPS en producción o `localhost` en desarrollo.
+
+### 3. Accesibilidad (a11y)
 
 - Falta añadir `aria-label` a IconButtons en Header, Footer, EventCard.
-- Impacto: Usuarios con lectores de pantalla no pueden navegar correctamente.
-
-### 2. Sistema de Diseño
-
-| Aspecto              | Estado          | Observación                                |
-| -------------------- | --------------- | ------------------------------------------ |
-| CSS Variables        | ✅ Centralizado | `global.css` (4KB)                         |
-| MUI Theme            | ⚠️ Parcial      | App.tsx tiene tema pero no usa todas vars. |
-| Colores hardcodeados | ⚠️ Algunos      | Algunos `sx={{}}` tienen hex directos.     |
 
 ---
 
-## 🧩 Funcionalidades Pendientes (Fase 4)
+## 🧩 Funcionalidades Pendientes (Fase 5+)
 
-- [ ] **Networking:** Chat entre asistentes, sistema "Seguir".
-- [ ] **Feed Social:** Tablón de anuncios.
-- [ ] **Ticketing:** Entradas PDF con QR.
-- [ ] **Pagos:** Integración Stripe.
-- [ ] **i18n:** Configurar `react-i18next`.
-- [ ] **Testing:** Configurar Vitest.
+- [ ] **Notificaciones:** Centro de notificaciones y push.
+- [ ] **Social:** Chat y Feed.
+- [ ] **i18n:** Traducción (actualmente solo ES).
 
 ---
 
