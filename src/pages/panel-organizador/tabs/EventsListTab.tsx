@@ -191,22 +191,18 @@ export const EventsListTab: React.FC<EventsListTabProps> = ({
 
                     <Box sx={{ display: 'flex', gap: 1 }}>
                       <Button
-                        variant='outlined'
+                        variant='contained'
                         size='small'
                         startIcon={
                           isExpanded ? <ExpandLessIcon /> : <ExpandMoreIcon />
                         }
                         onClick={() => handleToggleExpand(event.id)}
                         sx={{
-                          borderColor: '#E2E8F0',
-                          color: 'text.secondary',
-                          '&:hover': {
-                            borderColor: 'var(--color-cadetblue)',
-                            bgcolor: '#F0FDFA'
-                          }
+                          bgcolor: 'var(--color-cadetblue)',
+                          '&:hover': { bgcolor: '#3a8e99' }
                         }}
                       >
-                        {isExpanded ? 'Cerrar' : 'Ver asistentes'}
+                        {isExpanded ? 'Cerrar' : 'Asistentes'}
                       </Button>
                       <Button
                         variant='contained'
@@ -243,8 +239,8 @@ export const EventsListTab: React.FC<EventsListTabProps> = ({
                         borderTop: '1px dashed #E2E8F0',
                         bgcolor: '#FAFAFA',
                         borderRadius: 2,
-                        mx: -1,
-                        px: 2,
+                        mx: { xs: -2, md: -1 },
+                        px: { xs: 2, md: 3 },
                         pb: 1
                       }}
                     >

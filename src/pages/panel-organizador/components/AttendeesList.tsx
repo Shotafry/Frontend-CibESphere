@@ -113,7 +113,7 @@ export const AttendeesList: React.FC<AttendeesListProps> = ({
   }
 
   return (
-    <Box>
+    <Box sx={{ width: '100%', maxWidth: '100%', overflow: 'hidden' }}>
       {/* Header */}
       <Box
         sx={{
@@ -160,12 +160,15 @@ export const AttendeesList: React.FC<AttendeesListProps> = ({
                       }
                       sx={{
                         color: attendee.checked_in
-                          ? 'success.main'
+                          ? 'var(--color-cadetblue)'
                           : 'text.secondary',
+                        bgcolor: attendee.checked_in
+                          ? '#E0F7FA'
+                          : 'transparent',
                         '&:hover': {
                           bgcolor: attendee.checked_in
-                            ? 'transparent'
-                            : 'success.lighter'
+                            ? '#B2EBF2'
+                            : 'action.hover'
                         }
                       }}
                     >
@@ -241,6 +244,31 @@ export const AttendeesList: React.FC<AttendeesListProps> = ({
                         bgcolor: attendee.is_paid ? '#DBEAFE' : '#F3F4F6',
                         color: attendee.is_paid ? '#1D4ED8' : '#6B7280'
                       }}
+                    />
+                    <Chip
+                      size='small'
+                      label={
+                        attendee.checked_in
+                          ? 'Check-in: ' +
+                            new Date(attendee.check_in_at!).toLocaleTimeString(
+                              [],
+                              { hour: '2-digit', minute: '2-digit' }
+                            )
+                          : 'Pendiente'
+                      }
+                      sx={{
+                        fontSize: '0.7rem',
+                        height: 20,
+                        bgcolor: attendee.checked_in ? '#DCFCE7' : '#FEF3C7',
+                        color: attendee.checked_in ? '#166534' : '#92400E'
+                      }}
+                      icon={
+                        attendee.checked_in ? (
+                          <CheckCircleIcon sx={{ fontSize: 14 }} />
+                        ) : (
+                          <AccessTimeIcon sx={{ fontSize: 14 }} />
+                        )
+                      }
                     />
                     <Typography variant='caption' color='text.secondary'>
                       {formatPrice(attendee.ticket_price)}
