@@ -1,109 +1,131 @@
-# 📋 Plan de Implementación: CybESphere v0.3.0
+# 📋 Plan de Implementación: CybESphere Frontend
 
-> **Estado:** ✅ COMPLETADO (Fases 1-4)
-> **Verificado contra código:** Enero 2026
-> **Próxima Fase:** 5 - Notificaciones y Social
+> **Versión Actual:** v0.3.0 ✅ COMPLETADO
+> **Próxima Versión:** v0.4.0 🚧 EN PLANIFICACIÓN
+> **Última Actualización:** Enero 2026
 
 ---
 
-## 📊 Inventario Verificado
+## ✅ v0.3.0 - Marketplace & Tickets (COMPLETADO)
 
-### Estructura de Componentes (17 archivos + skeletons)
+### Estado de Componentes
 
 | Componente       | Tamaño | Función                 |
 | ---------------- | ------ | ----------------------- |
 | `Button.tsx`     | 2.8KB  | Wrapper MUI + CSS vars  |
-| `ErrorBoundary`  | 1.4KB  | Manejo de errores       |
 | `EventCard`      | 8.4KB  | Tarjeta de evento       |
-| `EventFilters`   | 11.8KB | Filtros de búsqueda     |
-| `EventMap`       | 5.8KB  | Mapa multi-evento       |
-| `SingleEventMap` | 1.5KB  | Mapa evento individual  |
-| `LazyMap`        | 1.1KB  | Lazy loading para mapas |
+| `EventFilters`   | 13.5KB | Filtros de búsqueda     |
 | `Header`         | 8.9KB  | Navegación principal    |
-| `Footer`         | 3.4KB  | Pie de página           |
-| `MobileMenu`     | 9.7KB  | Menú móvil              |
-| `Hero`           | 4.3KB  | Hero section            |
+| `LazyMap`        | 1.1KB  | Lazy loading para mapas |
+| `TicketSelector` | -      | Selector de entradas    |
 
-### Skeletons (4 archivos)
+### Páginas Modularizadas
 
-- `EventCardSkeleton.tsx` (1.6KB)
-- `EventDetailSkeleton.tsx` (2.4KB)
-- `PanelSkeleton.tsx` (2.2KB)
-- `TableSkeleton.tsx` (2.1KB)
+- `evento-detalle/`: 5 componentes
+- `crear-evento/`: 1 hook + 5 secciones
+- `panel-organizador/`: 4 tabs + 4 components
+- `panel-usuario/`: 5 tabs + 2 components
+- `panel-administrador/`: 3 tabs
 
 ---
 
-## 📁 Estructura de Páginas Modularizadas
+## � v0.4.0 - Notificaciones & Social (EN PLANIFICACIÓN)
 
-### evento-detalle/ (5 componentes)
+### 🎯 Objetivos
 
-```
-EventHero.tsx (2.2KB) - Banner + título
-EventDetails.tsx (1.8KB) - Categoría + nivel + tags
-EventItinerary.tsx (7.4KB) - Agenda + ponentes
-EventReviews.tsx (6.8KB) - Reseñas
-EventSidebar.tsx (5.9KB) - Precio + inscripción
-```
+**Fase 5: Sistema de Notificaciones**
 
-### crear-evento/ (1 hook + 5 secciones)
+- Centro de notificaciones funcional
+- Seguir organizaciones (suscripciones)
+- Emails de ticket y confirmación
+- Tickets bonitos para eventos gratuitos
 
-```
-hooks/useEventForm.ts (6.4KB) - Lógica react-hook-form
-sections/BasicInfoSection.tsx (4.7KB)
-sections/DateLocationSection.tsx (7.6KB)
-sections/CapacityPriceSection.tsx (1.7KB)
-sections/AgendaSection.tsx (2.6KB)
-sections/SpeakersSection.tsx (3.4KB)
-```
+**Fase 6: Social & Networking**
 
-### panel-organizador/ (3 tabs + 2 components + 5 form-sections)
+- Sistema de conexiones (handshake usuarios)
+- Campos de contacto social (Discord, Telegram)
+
+---
+
+### 📂 Nuevos Archivos
+
+#### Servicios API
 
 ```
-tabs/DashboardTab.tsx (1.9KB)
-tabs/EventsListTab.tsx (7.9KB)
-tabs/ProfileTab.tsx (2.0KB)
-components/StatCard.tsx (2.0KB)
-components/OrgProfileForm.tsx (3.9KB)
-components/form-sections/ (5 archivos: ProfileHeaderPreview, GeneralInfo, ContactInfo, VisualAssets, SocialMedia)
+[NEW] src/services/api/subscriptions.service.ts
+  - followOrganization(orgId)
+  - unfollowOrganization(orgId)
+  - getFollowing()
+
+[NEW] src/services/api/connections.service.ts
+  - requestConnection(userId, data)
+  - acceptConnection(requestId)
+  - rejectConnection(requestId)
+  - getPendingConnections()
+  - getConnections()
+  - getContactInfo(connectionId)
+
+[MODIFY] src/services/api/notifications.service.ts
+  - markAsRead(id)
+  - markAllAsRead()
 ```
 
-### panel-usuario/ (4 tabs + 2 components)
+#### Nuevos Componentes
 
 ```
-tabs/ProfileTab.tsx (15.8KB)
-tabs/EventsTab.tsx (6.1KB)
-tabs/BookmarksTab.tsx (1.3KB)
-tabs/NotificationsTab.tsx (2.7KB)
-components/BadgeUploader.tsx (5.7KB)
-components/ReviewModal.tsx (4.4KB)
+[NEW] src/components/ConnectionRequestModal.tsx
+[NEW] src/components/ContactInfoModal.tsx
+[NEW] src/pages/panel-usuario/tabs/ConnectionsTab.tsx
 ```
 
-### panel-administrador/ (3 tabs)
+---
 
-```
-tabs/DashboardTab.tsx (1.6KB)
-tabs/OrganizationsTab.tsx (5.9KB)
-tabs/UsersTab.tsx (5.5KB)
-```
+### 🔧 Modificaciones a Componentes Existentes
 
-### user-profile/ (6 componentes)
+#### OrganizationProfile.tsx
 
-```
-UserHero.tsx (4.1KB)
-UserBio.tsx (0.9KB)
-UserStats.tsx (1.8KB)
-UserSocials.tsx (2.8KB)
-UserEventsTab.tsx (3.4KB)
-UserBadges.tsx (2.5KB)
-```
+- [ ] Botón "Seguir" funcional
+- [ ] Contador de seguidores dinámico
+- [ ] Estado siguiendo/no-siguiendo
 
-### organization-profile/ (3 componentes)
+#### AttendeesList.tsx
 
-```
-OrgHero.tsx (0.8KB)
-OrgHeader.tsx (8.5KB)
-OrgEvents.tsx (3.0KB)
-```
+- [ ] Botón "🤝 Conectar" por asistente
+- [ ] Modal de solicitud de conexión
+- [ ] Botón "Descargar lista de emergencia"
+
+#### NotificationsTab.tsx (panel-usuario)
+
+- [ ] Centro de notificaciones real
+- [ ] Filtros por tipo
+- [ ] Marcar como leído
+
+#### TicketsTab.tsx (panel-usuario)
+
+- [ ] Tickets bonitos para eventos gratuitos
+- [ ] Botón "Reenviar a mi correo"
+
+#### ProfileTab.tsx (panel-usuario)
+
+- [ ] Campos: Discord, Telegram
+- [ ] Toggle: "Compartir email al conectar"
+- [ ] Toggle: "Recibir notificaciones por email"
+
+---
+
+### 📋 Orden de Ejecución Frontend
+
+1. [ ] Crear `subscriptions.service.ts`
+2. [ ] Crear `connections.service.ts`
+3. [ ] Expandir `notifications.service.ts`
+4. [ ] OrganizationProfile: botón seguir
+5. [ ] AttendeesList: botón conectar
+6. [ ] NotificationsTab: centro completo
+7. [ ] TicketsTab: tickets bonitos + reenvío
+8. [ ] ProfileTab: campos sociales
+9. [ ] ConnectionRequestModal
+10. [ ] ContactInfoModal
+11. [ ] ConnectionsTab (nueva pestaña)
 
 ---
 
@@ -115,9 +137,3 @@ OrgEvents.tsx (3.0KB)
 | Colores hardcoded | Media     | Pendiente |
 | i18n              | Baja      | Pendiente |
 | Testing (Vitest)  | Baja      | Pendiente |
-
----
-
-## 🚀 Próxima Fase: Notificaciones y Social
-
-Ver `ROADMAP_UPDATED.md` para detalles de Fase 5.

@@ -102,7 +102,6 @@ _Estado: COMPLETADO_
 ### 6.1 Funcionalidades Sociales
 
 - [ ] **Networking:** Chat entre asistentes y sistema de "Conectar".
-- [ ] **Feed Social:** Tablón de anuncios para organizaciones y usuarios.
 - [ ] **Soporte I18n:** Traducción completa (Español/Inglés).
 
 ---
