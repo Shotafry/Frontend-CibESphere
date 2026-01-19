@@ -198,3 +198,26 @@ export const toggleBookmarkWithStatus = async (
     return { isBookmarked: true, message: 'Added to favorites' }
   }
 }
+
+// --- PURCHASING ---
+
+export interface PurchaseItem {
+  ticket_type_id: string
+  quantity: number
+}
+
+export interface CheckoutResponse {
+  session_id: string
+  url: string
+}
+
+export const purchaseEvent = async (
+  eventId: string,
+  items: PurchaseItem[]
+): Promise<CheckoutResponse> => {
+  const response = await httpClient.post<CheckoutResponse>(
+    `/events/${eventId}/purchase`,
+    { items }
+  )
+  return response.data
+}

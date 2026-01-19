@@ -144,7 +144,13 @@ export const EventSidebar: React.FC<EventSidebarProps> = ({
               fontWeight='bold'
               color='var(--color-cadetblue)'
             >
-              {event.is_free ? 'Gratis' : `${event.price} €`}
+              {event.is_free
+                ? 'Gratis'
+                : `${
+                    event.ticket_types && event.ticket_types.length > 1
+                      ? 'Desde '
+                      : ''
+                  }${((event.price || 0) / 100).toFixed(2)} €`}
             </Typography>
           </Box>
         </Box>

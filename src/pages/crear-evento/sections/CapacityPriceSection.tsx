@@ -6,12 +6,6 @@ import {
   Switch,
   Collapse,
   Button,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
   Paper,
   IconButton,
   Typography,
@@ -94,7 +88,7 @@ export const CapacityPriceSection: React.FC<CapacityPriceSectionProps> = ({
             </Typography>
             <Button
               startIcon={<AddIcon />}
-              variant='outlined'
+              variant='contained'
               size='small'
               onClick={handleAddTicketType}
             >
@@ -108,109 +102,117 @@ export const CapacityPriceSection: React.FC<CapacityPriceSectionProps> = ({
               General).
             </Typography>
           ) : (
-            <TableContainer
-              component={Paper}
-              elevation={0}
-              sx={{ border: '1px solid #e0e0e0' }}
-            >
-              <Table size='small'>
-                <TableHead sx={{ bgcolor: '#f1f5f9' }}>
-                  <TableRow>
-                    <TableCell width='30%'>Nombre</TableCell>
-                    <TableCell width='20%'>Precio (€)</TableCell>
-                    <TableCell width='20%'>Stock</TableCell>
-                    <TableCell width='30%'>Descripción</TableCell>
-                    <TableCell width='5%'></TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {formData.ticket_types.map((ticket: TicketType) => (
-                    <TableRow key={ticket.id}>
-                      <TableCell>
-                        <TextField
-                          variant='standard'
-                          placeholder='Ej: General'
-                          fullWidth
-                          value={ticket.name}
-                          onChange={(e) =>
-                            handleTicketTypeChange(
-                              ticket.id,
-                              'name',
-                              e.target.value
-                            )
-                          }
-                          disabled={ticket.sold > 0} // Bloquear nombre si ya hay ventas (opcional, usuario pidió bloquear precio)
-                        />
-                      </TableCell>
-                      <TableCell>
-                        <TextField
-                          type='number'
-                          variant='standard'
-                          fullWidth
-                          value={ticket.price}
-                          onChange={(e) =>
-                            handleTicketTypeChange(
-                              ticket.id,
-                              'price',
-                              Number(e.target.value)
-                            )
-                          }
-                          disabled={ticket.sold > 0} // CRÍTICO: Bloquear precio si hay ventas
-                          InputProps={{
-                            startAdornment: (
-                              <InputAdornment position='start'>
-                                €
-                              </InputAdornment>
-                            )
-                          }}
-                        />
-                      </TableCell>
-                      <TableCell>
-                        <TextField
-                          type='number'
-                          variant='standard'
-                          fullWidth
-                          value={ticket.capacity}
-                          onChange={(e) =>
-                            handleTicketTypeChange(
-                              ticket.id,
-                              'capacity',
-                              Number(e.target.value)
-                            )
-                          }
-                          helperText={`Vendidos: ${ticket.sold}`}
-                        />
-                      </TableCell>
-                      <TableCell>
-                        <TextField
-                          variant='standard'
-                          placeholder='Info adicional...'
-                          fullWidth
-                          value={ticket.description || ''}
-                          onChange={(e) =>
-                            handleTicketTypeChange(
-                              ticket.id,
-                              'description',
-                              e.target.value
-                            )
-                          }
-                        />
-                      </TableCell>
-                      <TableCell>
-                        <IconButton
-                          size='small'
-                          color='error'
-                          onClick={() => handleRemoveTicketType(ticket.id)}
-                          disabled={ticket.sold > 0}
-                        >
-                          <DeleteIcon />
-                        </IconButton>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+              {formData.ticket_types.map((ticket: TicketType) => (
+                <Paper
+                  key={ticket.id}
+                  variant='outlined'
+                  sx={{
+                    p: 2,
+                    borderRadius: 2,
+                    borderColor: 'divider',
+                    backgroundColor: '#fff'
+                  }}
+                >
+                  <Grid container spacing={2} alignItems='flex-start'>
+                    {/* Fila superior: Nombre, Precio, Stock y Borrar */}
+                    <Grid size={{ xs: 12, md: 5 }}>
+                      <TextField
+                        label='Nombre de Entrada'
+                        variant='outlined'
+                        size='small'
+                        fullWidth
+                        value={ticket.name}
+                        onChange={(e) =>
+                          handleTicketTypeChange(
+                            ticket.id,
+                            'name',
+                            e.target.value
+                          )
+                        }
+                        disabled={ticket.sold > 0}
+                      />
+                    </Grid>
+                    <Grid size={{ xs: 6, md: 3 }}>
+                      <TextField
+                        label='Precio'
+                        type='number'
+                        variant='outlined'
+                        size='small'
+                        fullWidth
+                        value={ticket.price}
+                        onChange={(e) =>
+                          handleTicketTypeChange(
+                            ticket.id,
+                            'price',
+                            Number(e.target.value)
+                          )
+                        }
+                        disabled={ticket.sold > 0}
+                        InputProps={{
+                          startAdornment: (
+                            <InputAdornment position='start'>€</InputAdornment>
+                          )
+                        }}
+                      />
+                    </Grid>
+                    <Grid size={{ xs: 6, md: 3 }}>
+                      <TextField
+                        label='Stock'
+                        type='number'
+                        variant='outlined'
+                        size='small'
+                        fullWidth
+                        value={ticket.capacity}
+                        onChange={(e) =>
+                          handleTicketTypeChange(
+                            ticket.id,
+                            'capacity',
+                            Number(e.target.value)
+                          )
+                        }
+                        helperText={
+                          ticket.sold > 0 ? `Vendidos: ${ticket.sold}` : ''
+                        }
+                      />
+                    </Grid>
+                    <Grid
+                      size={{ xs: 12, md: 1 }}
+                      sx={{ display: 'flex', justifyContent: 'center' }}
+                    >
+                      <IconButton
+                        color='error'
+                        onClick={() => handleRemoveTicketType(ticket.id)}
+                        disabled={ticket.sold > 0}
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                    </Grid>
+
+                    {/* Fila inferior: Descripción completa */}
+                    <Grid size={{ xs: 12 }}>
+                      <TextField
+                        label='Descripción / Beneficios'
+                        variant='outlined'
+                        size='small'
+                        fullWidth
+                        multiline
+                        rows={2}
+                        placeholder='Incluye acceso a...'
+                        value={ticket.description || ''}
+                        onChange={(e) =>
+                          handleTicketTypeChange(
+                            ticket.id,
+                            'description',
+                            e.target.value
+                          )
+                        }
+                      />
+                    </Grid>
+                  </Grid>
+                </Paper>
+              ))}
+            </Box>
           )}
         </Box>
       </Collapse>

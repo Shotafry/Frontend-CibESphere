@@ -32,16 +32,18 @@ export const useEventForm = () => {
     start_date: loadedEvent ? new Date(loadedEvent.start_date) : new Date(),
     end_date: loadedEvent ? new Date(loadedEvent.end_date) : new Date(),
     is_online: loadedEvent?.is_online || false,
-    is_free: loadedEvent?.is_free || true,
+    is_free: loadedEvent ? loadedEvent.is_free : true,
     tags: loadedEvent?.tags || [],
     venue_name: loadedEvent?.venue_name || '',
     venue_address: loadedEvent?.venue_address || '',
     venue_city: loadedEvent?.venue_city || '',
     venue_community: loadedEvent?.venue_community || '',
     online_url: loadedEvent?.online_url || '',
-    price: loadedEvent?.price || 0,
+    price: loadedEvent?.price ? loadedEvent.price / 100 : 0,
     image_url: loadedEvent?.image_url || '',
-    ticket_types: loadedEvent?.ticket_types || [],
+    ticket_types: loadedEvent?.ticket_types
+      ? loadedEvent.ticket_types.map((t) => ({ ...t, price: t.price / 100 }))
+      : [],
     max_attendees: loadedEvent?.max_attendees || 0,
     agenda: loadedEvent?.agenda || [],
     speakers: loadedEvent?.speakers || [],
@@ -282,10 +284,19 @@ export const useEventForm = () => {
       }
 
       if (cleanData.ticket_types && Array.isArray(cleanData.ticket_types)) {
+        // Convert prices to cents for backend
+        const ticketsToSend = cleanData.ticket_types.map((t: any) => ({
+          ...t,
+          price: Math.round(t.price * 100)
+        }))
+
         cleanData.ticket_types =
-          cleanData.ticket_types.length > 0
-            ? JSON.stringify(cleanData.ticket_types)
-            : undefined
+          ticketsToSend.length > 0 ? JSON.stringify(ticketsToSend) : undefined
+      }
+
+      // Convert main price to cents if present
+      if (cleanData.price) {
+        cleanData.price = Math.round(cleanData.price * 100)
       }
 
       const eventData: CreateEventDTO = {

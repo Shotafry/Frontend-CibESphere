@@ -18,6 +18,7 @@ import { EventReviews } from './evento-detalle/components/EventReviews'
 import { EventSidebar } from './evento-detalle/components/EventSidebar'
 import { EventDetailSkeleton } from '../components/skeletons'
 import { PageTransition } from '../components/PageTransition'
+import { TicketSelector } from '../components/events/TicketSelector'
 
 const Eventos: FunctionComponent = () => {
   const event = useLoaderData() as Event
@@ -26,6 +27,7 @@ const Eventos: FunctionComponent = () => {
   const { isAuthenticated, user, subscribeToEvent } = useAuth()
   const [isSubscribing, setIsSubscribing] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [isTicketsOpen, setIsTicketsOpen] = useState(false)
 
   const isAlreadySubscribed = user?.registered_events?.some(
     (regEvent) => regEvent.id === event.id
@@ -46,6 +48,12 @@ const Eventos: FunctionComponent = () => {
 
   const handleSubscribe = async () => {
     if (isAlreadySubscribed) return
+
+    // Si hay tipos de entrada, abrir selector
+    if (event.ticket_types && event.ticket_types.length > 0) {
+      setIsTicketsOpen(true)
+      return
+    }
 
     setIsSubscribing(true)
     setError(null)
@@ -114,6 +122,11 @@ const Eventos: FunctionComponent = () => {
           </Grid>
         </Grid>
       </Container>
+      <TicketSelector
+        open={isTicketsOpen}
+        onClose={() => setIsTicketsOpen(false)}
+        event={event}
+      />
     </PageTransition>
   )
 }
