@@ -6,6 +6,7 @@ export interface Attendee {
   user_id: string
   user_name: string
   user_email: string
+  user_slug?: string
   user_avatar?: string
   ticket_type: string
   ticket_price: number // céntimos

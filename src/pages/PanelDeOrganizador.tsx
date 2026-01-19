@@ -150,23 +150,31 @@ const PanelDeOrganizador: FunctionComponent = () => {
                 sx={{
                   display: 'flex',
                   gap: 2,
-                  flexDirection: { xs: 'column', sm: 'row' },
-                  width: { xs: '100%', sm: 'auto' }
+                  flexDirection: { xs: 'column', md: 'row' },
+                  flexWrap: 'wrap',
+                  width: { xs: '100%', md: 'auto' },
+                  mt: { xs: 2, md: 0 }
                 }}
               >
                 <Button
                   variant='secondary'
                   startIcon={<AddCircleOutlineIcon />}
                   onClick={onCrearEventoClick}
-                  sx={{ width: { xs: '100%', sm: 'auto' } }}
+                  sx={{
+                    width: { xs: '100%', md: 'auto' },
+                    flex: { xs: 1, md: 'none' }
+                  }}
                 >
                   Crear Evento
                 </Button>
                 <Button
-                  variant='primary'
+                  variant='secondary'
                   startIcon={<QrCodeScannerIcon />}
                   onClick={() => setScannerOpen(true)}
-                  sx={{ width: { xs: '100%', sm: 'auto' } }}
+                  sx={{
+                    width: { xs: '100%', md: 'auto' },
+                    flex: { xs: 1, md: 'none' }
+                  }}
                 >
                   Escanear Entrada
                 </Button>
@@ -177,7 +185,10 @@ const PanelDeOrganizador: FunctionComponent = () => {
                     onClick={() =>
                       navigate(`/organizacion/${user.organization?.slug}`)
                     }
-                    sx={{ width: { xs: '100%', sm: 'auto' } }}
+                    sx={{
+                      width: { xs: '100%', md: 'auto' },
+                      flex: { xs: 1, md: 'none' }
+                    }}
                   >
                     Ver Perfil Público
                   </Button>

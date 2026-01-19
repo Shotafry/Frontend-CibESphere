@@ -245,17 +245,28 @@ export const QRScannerModal: React.FC<QRScannerModalProps> = ({
       maxWidth='sm'
       fullWidth
       PaperProps={{
-        sx: { borderRadius: 3 }
+        sx: {
+          borderRadius: 3,
+          bgcolor: 'white', // Ensure light background
+          color: 'text.primary'
+        }
       }}
     >
-      <DialogTitle sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+      <DialogTitle
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: 1,
+          borderBottom: '1px solid #E2E8F0'
+        }}
+      >
         <QrCodeScannerIcon sx={{ color: 'var(--color-cadetblue)' }} />
         <Typography variant='h6' fontWeight='bold'>
           Escanear Entrada
         </Typography>
       </DialogTitle>
 
-      <DialogContent>
+      <DialogContent sx={{ mt: 2 }}>
         {error && (
           <Alert severity='error' sx={{ mb: 2 }}>
             {error}
@@ -269,14 +280,16 @@ export const QRScannerModal: React.FC<QRScannerModalProps> = ({
             sx={{
               width: '100%',
               minHeight: 300,
-              bgcolor: '#1E293B',
+              bgcolor: '#F1F5F9', // Light gray placeholder
               borderRadius: 2,
               overflow: 'hidden',
               '& video': {
-                borderRadius: 2
+                borderRadius: 2,
+                objectFit: 'cover'
               },
               '& #qr-shaded-region': {
-                borderColor: 'var(--color-cadetblue) !important'
+                borderColor: 'var(--color-cadetblue) !important', // Custom scanning box color
+                opacity: 0.8
               }
             }}
           />
@@ -308,7 +321,9 @@ export const QRScannerModal: React.FC<QRScannerModalProps> = ({
         )}
       </DialogContent>
 
-      <DialogActions sx={{ px: 3, pb: 3 }}>
+      <DialogActions
+        sx={{ px: 3, pb: 3, borderTop: '1px solid #E2E8F0', pt: 2 }}
+      >
         {result ? (
           <>
             <Button
@@ -338,6 +353,15 @@ export const QRScannerModal: React.FC<QRScannerModalProps> = ({
             variant='outlined'
             onClick={handleClose}
             startIcon={<CloseIcon />}
+            color='inherit' // Use inherit to pick up theme or default
+            sx={{
+              color: 'var(--Gray-600)',
+              borderColor: 'var(--Gray-300)',
+              '&:hover': {
+                bgcolor: 'var(--Gray-100)',
+                borderColor: 'var(--Gray-400)'
+              }
+            }}
           >
             Cancelar
           </Button>

@@ -195,9 +195,33 @@ export const AttendeesList: React.FC<AttendeesListProps> = ({
               </ListItemAvatar>
               <ListItemText
                 primary={
-                  <Typography variant='body2' fontWeight={500}>
-                    {attendee.user_name || 'Usuario'}
-                  </Typography>
+                  <Box>
+                    <Typography
+                      variant='body2'
+                      fontWeight={500}
+                      component='a'
+                      href={`/u/${attendee.user_slug || attendee.user_id}`}
+                      target='_blank'
+                      rel='noopener noreferrer'
+                      sx={{
+                        color: 'text.primary',
+                        textDecoration: 'none',
+                        '&:hover': {
+                          color: 'var(--color-cadetblue)',
+                          textDecoration: 'underline'
+                        }
+                      }}
+                    >
+                      {attendee.user_name || 'Usuario'}
+                    </Typography>
+                    <Typography
+                      variant='caption'
+                      display='block'
+                      color='text.secondary'
+                    >
+                      {attendee.user_email}
+                    </Typography>
+                  </Box>
                 }
                 secondary={
                   <Box
