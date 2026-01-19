@@ -24,6 +24,7 @@ import {
   EventsTab,
   BookmarksTab,
   NotificationsTab,
+  TicketsTab,
   ReviewModal
 } from './panel-usuario'
 
@@ -303,6 +304,7 @@ const PanelDeUsuario: FunctionComponent = () => {
             }}
           >
             <Tab label='Eventos' />
+            <Tab label='Mis Entradas' />
             <Tab label='Favoritos' />
             <Tab label='Perfil' />
             <Tab label='Ajustes' />
@@ -331,13 +333,21 @@ const PanelDeUsuario: FunctionComponent = () => {
         {tabValue === 1 && (
           <Fade in={tabValue === 1} timeout={500}>
             <Box>
-              <BookmarksTab user={user} />
+              <TicketsTab />
             </Box>
           </Fade>
         )}
 
         {tabValue === 2 && (
           <Fade in={tabValue === 2} timeout={500}>
+            <Box>
+              <BookmarksTab user={user} />
+            </Box>
+          </Fade>
+        )}
+
+        {tabValue === 3 && (
+          <Fade in={tabValue === 3} timeout={500}>
             <Box>
               <ProfileTab
                 user={user}
@@ -351,8 +361,8 @@ const PanelDeUsuario: FunctionComponent = () => {
           </Fade>
         )}
 
-        {tabValue === 3 && (
-          <Fade in={tabValue === 3} timeout={500}>
+        {tabValue === 4 && (
+          <Fade in={tabValue === 4} timeout={500}>
             <Box>
               <NotificationsTab />
             </Box>

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import {
   Box,
   Typography,
@@ -8,13 +8,18 @@ import {
   Divider,
   Stack,
   Chip,
-  LinearProgress
+  LinearProgress,
+  Collapse
 } from '@mui/material'
 import EventIcon from '@mui/icons-material/Event'
 import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/Delete'
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import ExpandLessIcon from '@mui/icons-material/ExpandLess'
+import PeopleIcon from '@mui/icons-material/People'
 import { useNavigate } from 'react-router-dom'
 import { Event } from '../../../types'
+import { AttendeesList } from '../components/AttendeesList'
 
 interface EventsListTabProps {
   events: Event[]
@@ -28,6 +33,11 @@ export const EventsListTab: React.FC<EventsListTabProps> = ({
   onCreateEvent
 }) => {
   const navigate = useNavigate()
+  const [expandedEvent, setExpandedEvent] = useState<string | null>(null)
+
+  const handleToggleExpand = (eventId: string) => {
+    setExpandedEvent((prev) => (prev === eventId ? null : eventId))
+  }
 
   return (
     <Box>
@@ -49,6 +59,7 @@ export const EventsListTab: React.FC<EventsListTabProps> = ({
         {events.length > 0 ? (
           events.map((event, index) => {
             const isLast = index === events.length - 1
+            const isExpanded = expandedEvent === event.id
             const occupancy =
               event.max_attendees && event.max_attendees > 0
                 ? Math.round(
@@ -60,135 +71,186 @@ export const EventsListTab: React.FC<EventsListTabProps> = ({
               <React.Fragment key={event.id}>
                 <Box
                   sx={{
-                    display: 'flex',
-                    flexDirection: { xs: 'column', md: 'row' },
-                    justifyContent: 'space-between',
-                    alignItems: { xs: 'flex-start', md: 'center' },
                     p: 3,
-                    gap: 2,
                     transition: 'background 0.2s',
                     '&:hover': { bgcolor: '#F8FAFC' }
                   }}
                 >
-                  <Box sx={{ flex: 1 }}>
-                    <Typography
-                      variant='h6'
-                      fontWeight='bold'
-                      onClick={() => navigate(`/eventos/${event.slug}`)}
-                      sx={{
-                        cursor: 'pointer',
-                        color: 'var(--Gray-800)',
-                        '&:hover': { color: 'var(--color-cadetblue)' }
-                      }}
-                    >
-                      {event.title}
-                    </Typography>
-                    <Stack
-                      direction='row'
-                      spacing={2}
-                      sx={{ mt: 1 }}
-                      alignItems='center'
-                    >
-                      <Typography variant='body2' color='text.secondary'>
-                        📅{' '}
-                        {new Date(event.start_date).toLocaleDateString(
-                          'es-ES',
-                          { dateStyle: 'long' }
-                        )}
-                      </Typography>
-                      <Chip
-                        label={
-                          event.status === 'published'
-                            ? 'Publicado'
-                            : 'Borrador'
-                        }
-                        size='small'
+                  {/* Event Row */}
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      flexDirection: { xs: 'column', md: 'row' },
+                      justifyContent: 'space-between',
+                      alignItems: { xs: 'flex-start', md: 'center' },
+                      gap: 2
+                    }}
+                  >
+                    <Box sx={{ flex: 1 }}>
+                      <Typography
+                        variant='h6'
+                        fontWeight='bold'
+                        onClick={() => navigate(`/eventos/${event.slug}`)}
                         sx={{
-                          bgcolor:
-                            event.status === 'published'
-                              ? '#DCFCE7'
-                              : '#F3F4F6',
-                          color:
-                            event.status === 'published'
-                              ? '#166534'
-                              : '#4B5563',
-                          fontWeight: 'bold'
-                        }}
-                      />
-                    </Stack>
-                  </Box>
-
-                  {/* Barra de Aforo */}
-                  {event.max_attendees && event.max_attendees > 0 && (
-                    <Box sx={{ width: { xs: '100%', md: 200 } }}>
-                      <Box
-                        sx={{
-                          display: 'flex',
-                          justifyContent: 'space-between',
-                          mb: 0.5
+                          cursor: 'pointer',
+                          color: 'var(--Gray-800)',
+                          '&:hover': { color: 'var(--color-cadetblue)' }
                         }}
                       >
-                        <Typography
-                          variant='caption'
-                          fontWeight='bold'
-                          color='text.secondary'
-                        >
-                          Aforo
+                        {event.title}
+                      </Typography>
+                      <Stack
+                        direction='row'
+                        spacing={2}
+                        sx={{ mt: 1 }}
+                        alignItems='center'
+                      >
+                        <Typography variant='body2' color='text.secondary'>
+                          📅{' '}
+                          {new Date(event.start_date).toLocaleDateString(
+                            'es-ES',
+                            { dateStyle: 'long' }
+                          )}
                         </Typography>
-                        <Typography
-                          variant='caption'
-                          fontWeight='bold'
-                          color={
-                            occupancy >= 100 ? 'error.main' : 'primary.main'
+                        <Chip
+                          label={
+                            event.status === 'published'
+                              ? 'Publicado'
+                              : 'Borrador'
                           }
+                          size='small'
+                          sx={{
+                            bgcolor:
+                              event.status === 'published'
+                                ? '#DCFCE7'
+                                : '#F3F4F6',
+                            color:
+                              event.status === 'published'
+                                ? '#166534'
+                                : '#4B5563',
+                            fontWeight: 'bold'
+                          }}
+                        />
+                        {event.current_attendees > 0 && (
+                          <Chip
+                            icon={<PeopleIcon sx={{ fontSize: 14 }} />}
+                            label={`${event.current_attendees} asistentes`}
+                            size='small'
+                            sx={{
+                              bgcolor: '#EDE9FE',
+                              color: '#6D28D9',
+                              fontWeight: 500
+                            }}
+                          />
+                        )}
+                      </Stack>
+                    </Box>
+
+                    {/* Barra de Aforo */}
+                    {event.max_attendees && event.max_attendees > 0 && (
+                      <Box sx={{ width: { xs: '100%', md: 200 } }}>
+                        <Box
+                          sx={{
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            mb: 0.5
+                          }}
                         >
-                          {occupancy}% ({event.current_attendees}/
-                          {event.max_attendees})
-                        </Typography>
+                          <Typography
+                            variant='caption'
+                            fontWeight='bold'
+                            color='text.secondary'
+                          >
+                            Aforo
+                          </Typography>
+                          <Typography
+                            variant='caption'
+                            fontWeight='bold'
+                            color={
+                              occupancy >= 100 ? 'error.main' : 'primary.main'
+                            }
+                          >
+                            {occupancy}% ({event.current_attendees}/
+                            {event.max_attendees})
+                          </Typography>
+                        </Box>
+                        <LinearProgress
+                          variant='determinate'
+                          value={occupancy > 100 ? 100 : occupancy}
+                          sx={{
+                            height: 6,
+                            borderRadius: 3,
+                            bgcolor: '#E2E8F0',
+                            '& .MuiLinearProgress-bar': {
+                              bgcolor: occupancy >= 100 ? '#EF4444' : '#3B82F6'
+                            }
+                          }}
+                        />
                       </Box>
-                      <LinearProgress
-                        variant='determinate'
-                        value={occupancy > 100 ? 100 : occupancy}
+                    )}
+
+                    <Box sx={{ display: 'flex', gap: 1 }}>
+                      <Button
+                        variant='outlined'
+                        size='small'
+                        startIcon={
+                          isExpanded ? <ExpandLessIcon /> : <ExpandMoreIcon />
+                        }
+                        onClick={() => handleToggleExpand(event.id)}
                         sx={{
-                          height: 6,
-                          borderRadius: 3,
-                          bgcolor: '#E2E8F0',
-                          '& .MuiLinearProgress-bar': {
-                            bgcolor: occupancy >= 100 ? '#EF4444' : '#3B82F6'
+                          borderColor: '#E2E8F0',
+                          color: 'text.secondary',
+                          '&:hover': {
+                            borderColor: 'var(--color-cadetblue)',
+                            bgcolor: '#F0FDFA'
                           }
                         }}
-                      />
+                      >
+                        {isExpanded ? 'Cerrar' : 'Ver asistentes'}
+                      </Button>
+                      <Button
+                        variant='contained'
+                        startIcon={<EditIcon />}
+                        onClick={() =>
+                          navigate(`/eventos/${event.slug}/editar`)
+                        }
+                        sx={{
+                          bgcolor: 'var(--color-cadetblue)',
+                          '&:hover': { bgcolor: '#3a8e99' }
+                        }}
+                      >
+                        Editar
+                      </Button>
+                      <IconButton
+                        color='error'
+                        onClick={() => onDeleteEvent(event.id)}
+                        sx={{
+                          bgcolor: '#FEF2F2',
+                          '&:hover': { bgcolor: '#FEE2E2' }
+                        }}
+                      >
+                        <DeleteIcon />
+                      </IconButton>
                     </Box>
-                  )}
+                  </Box>
 
-                  <Box sx={{ display: 'flex', gap: 1 }}>
-                    <Button
-                      variant='contained' // Was 'primary' in custom Button, using generic MUI or custom if available. Original used 'primary', assuming Theme has it or it's custom.
-                      // Checking original PanelDeOrganizador.tsx: import { Button } from '../components/Button'.
-                      // I should import Button from ../../components/Button to match style perfectly.
-                      // Let's fix imports in next step or use standard MUI Button temporarily if custom one complex.
-                      // PanelDeOrganizador used: import { Button } from '../components/Button'
-                      // So I should use that.
-                      startIcon={<EditIcon />}
-                      onClick={() => navigate(`/eventos/${event.slug}/editar`)}
+                  {/* Expandable Attendees Section */}
+                  <Collapse in={isExpanded} timeout='auto' unmountOnExit>
+                    <Box
                       sx={{
-                        bgcolor: 'var(--color-cadetblue)',
-                        '&:hover': { bgcolor: '#3a8e99' }
-                      }} // Fallback if custom variant fails
-                    >
-                      Editar
-                    </Button>
-                    <IconButton
-                      color='error'
-                      onClick={() => onDeleteEvent(event.id)}
-                      sx={{
-                        bgcolor: '#FEF2F2',
-                        '&:hover': { bgcolor: '#FEE2E2' }
+                        mt: 2,
+                        pt: 2,
+                        borderTop: '1px dashed #E2E8F0',
+                        bgcolor: '#FAFAFA',
+                        borderRadius: 2,
+                        mx: -1,
+                        px: 2,
+                        pb: 1
                       }}
                     >
-                      <DeleteIcon />
-                    </IconButton>
-                  </Box>
+                      <AttendeesList eventId={event.id} limit={15} />
+                    </Box>
+                  </Collapse>
                 </Box>
                 {!isLast && <Divider />}
               </React.Fragment>
