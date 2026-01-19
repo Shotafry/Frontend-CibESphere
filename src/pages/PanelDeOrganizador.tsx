@@ -1,5 +1,5 @@
 // src/pages/PanelDeOrganizador.tsx
-import React, { FunctionComponent, useCallback } from 'react'
+import React, { FunctionComponent, useCallback, useState } from 'react'
 import {
   Box,
   Typography,
@@ -20,6 +20,7 @@ import { DashboardStats, Event, OrganizationResponse } from '../types'
 import * as apiService from '../services/apiService'
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
 import VisibilityIcon from '@mui/icons-material/Visibility'
+import QrCodeScannerIcon from '@mui/icons-material/QrCodeScanner'
 import { Button } from '../components/Button'
 
 // Import new modular components
@@ -29,6 +30,7 @@ import {
   ProfileTab,
   PaymentsTab
 } from './panel-organizador'
+import { QRScannerModal } from './panel-organizador/components/QRScannerModal'
 
 interface LoaderData {
   stats: DashboardStats
@@ -68,6 +70,9 @@ const PanelDeOrganizador: FunctionComponent = () => {
   const onCrearEventoClick = useCallback(() => {
     navigate('/crear-evento')
   }, [navigate])
+
+  // QR Scanner state
+  const [scannerOpen, setScannerOpen] = useState(false)
 
   const handleDeleteEvent = async (eventId: string) => {
     if (window.confirm('¿Estás seguro de que quieres borrar este evento?')) {
@@ -156,6 +161,14 @@ const PanelDeOrganizador: FunctionComponent = () => {
                   sx={{ width: { xs: '100%', sm: 'auto' } }}
                 >
                   Crear Evento
+                </Button>
+                <Button
+                  variant='primary'
+                  startIcon={<QrCodeScannerIcon />}
+                  onClick={() => setScannerOpen(true)}
+                  sx={{ width: { xs: '100%', sm: 'auto' } }}
+                >
+                  Escanear Entrada
                 </Button>
                 {user?.organization?.slug && (
                   <Button
@@ -256,6 +269,12 @@ const PanelDeOrganizador: FunctionComponent = () => {
           </Fade>
         )}
       </Container>
+
+      {/* QR Scanner Modal */}
+      <QRScannerModal
+        open={scannerOpen}
+        onClose={() => setScannerOpen(false)}
+      />
     </Box>
   )
 }
