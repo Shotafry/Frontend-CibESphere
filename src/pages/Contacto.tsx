@@ -6,9 +6,9 @@ import {
   Typography,
   Paper,
   Grid,
-  TextField,
-  Button
+  TextField
 } from '@mui/material'
+import { Button } from '../components/Button'
 import { motion } from 'framer-motion'
 import EmailIcon from '@mui/icons-material/Email'
 import SendIcon from '@mui/icons-material/Send'
@@ -229,8 +229,7 @@ const Contacto: React.FC = () => {
                         Gracias por contactarnos. Te responderemos pronto.
                       </Typography>
                       <Button
-                        variant='text'
-                        sx={{ mt: 3, color: 'var(--color-cadetblue)' }}
+                        variant='secondary'
                         onClick={() => setSubmitted(false)}
                       >
                         Enviar otro mensaje
@@ -294,21 +293,9 @@ const Contacto: React.FC = () => {
                       <Grid size={{ xs: 12 }}>
                         <Button
                           type='submit'
-                          variant='contained'
+                          variant='primary'
                           size='large'
                           fullWidth
-                          sx={{
-                            bgcolor: 'var(--color-cadetblue)',
-                            py: 1.5,
-                            borderRadius: '12px',
-                            fontWeight: 'bold',
-                            textTransform: 'none',
-                            fontSize: '1rem',
-                            '&:hover': {
-                              bgcolor: 'var(--color-cadetblue)',
-                              filter: 'brightness(1.1)'
-                            }
-                          }}
                           startIcon={<SendIcon />}
                         >
                           Enviar mensaje

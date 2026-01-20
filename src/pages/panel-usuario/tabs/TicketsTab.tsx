@@ -5,7 +5,6 @@ import {
   Typography,
   Paper,
   Chip,
-  Button,
   CircularProgress,
   Card,
   CardMedia,
@@ -15,6 +14,7 @@ import {
   Snackbar,
   Alert
 } from '@mui/material'
+import { Button } from '../../../components/Button'
 import Grid from '@mui/material/Grid'
 import ConfirmationNumberIcon from '@mui/icons-material/ConfirmationNumber'
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday'
@@ -150,7 +150,7 @@ export const TicketsTab: React.FC = () => {
     return (
       <Box sx={{ textAlign: 'center', py: 6 }}>
         <Typography color='error'>{error}</Typography>
-        <Button variant='outlined' onClick={fetchTickets} sx={{ mt: 2 }}>
+        <Button variant='secondary' onClick={fetchTickets} sx={{ mt: 2 }}>
           Reintentar
         </Button>
       </Box>
@@ -185,14 +185,7 @@ export const TicketsTab: React.FC = () => {
           <Typography variant='body2' color='text.secondary' sx={{ mb: 3 }}>
             Cuando compres entradas para eventos, aparecerán aquí
           </Typography>
-          <Button
-            variant='contained'
-            onClick={() => navigate('/eventos')}
-            sx={{
-              bgcolor: 'var(--color-cadetblue)',
-              '&:hover': { bgcolor: '#3a8e99' }
-            }}
-          >
+          <Button variant='primary' onClick={() => navigate('/eventos')}>
             Explorar Eventos
           </Button>
         </Paper>
@@ -357,26 +350,20 @@ export const TicketsTab: React.FC = () => {
                 {ticket.ticket_image_url && (
                   <Button
                     size='small'
-                    variant='outlined'
+                    variant='secondary'
                     startIcon={<DownloadIcon />}
                     href={
                       ticket.ticket_image_url.startsWith('http')
                         ? ticket.ticket_image_url
                         : `${BACKEND_URL}${ticket.ticket_image_url}`
                     }
-                    download
-                    sx={{
-                      borderColor: '#E2E8F0',
-                      color: 'text.secondary',
-                      '&:hover': { borderColor: 'var(--color-cadetblue)' }
-                    }}
                   >
                     Descargar
                   </Button>
                 )}
                 <Button
                   size='small'
-                  variant='outlined'
+                  variant='secondary'
                   startIcon={
                     resending === ticket.id ? (
                       <CircularProgress size={16} />
@@ -386,22 +373,13 @@ export const TicketsTab: React.FC = () => {
                   }
                   onClick={() => handleResendEmail(ticket.id)}
                   disabled={resending === ticket.id}
-                  sx={{
-                    borderColor: '#E2E8F0',
-                    color: 'text.secondary',
-                    '&:hover': { borderColor: 'var(--color-cadetblue)' }
-                  }}
                 >
                   {resending === ticket.id ? 'Enviando...' : 'Reenviar'}
                 </Button>
                 <Button
                   size='small'
-                  variant='contained'
+                  variant='primary'
                   onClick={() => navigate(`/eventos/${ticket.event_slug}`)}
-                  sx={{
-                    bgcolor: 'var(--color-cadetblue)',
-                    '&:hover': { bgcolor: '#3a8e99' }
-                  }}
                 >
                   Ver Evento
                 </Button>

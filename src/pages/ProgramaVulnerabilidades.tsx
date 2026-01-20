@@ -6,7 +6,6 @@ import {
   Typography,
   Paper,
   Grid,
-  Button,
   TextField,
   List,
   ListItem,
@@ -16,6 +15,7 @@ import {
   Divider,
   Chip
 } from '@mui/material'
+import { Button } from '../components/Button'
 import { motion } from 'framer-motion'
 import SecurityIcon from '@mui/icons-material/Security'
 import BugReportIcon from '@mui/icons-material/BugReport'
@@ -370,14 +370,9 @@ const ProgramaVulnerabilidades: React.FC = () => {
                           <Button
                             type='submit'
                             fullWidth
-                            variant='contained'
+                            variant='primary'
                             size='large'
                             startIcon={<SecurityIcon />}
-                            sx={{
-                              bgcolor: 'var(--color-cadetblue)',
-                              fontWeight: 'bold',
-                              '&:hover': { bgcolor: '#0ea5e9' }
-                            }}
                           >
                             Solicitar Acceso VDP
                           </Button>

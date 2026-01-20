@@ -5,7 +5,6 @@ import {
   Typography,
   Avatar,
   Chip,
-  Button,
   CircularProgress,
   IconButton,
   Tooltip,
@@ -15,6 +14,7 @@ import {
   ListItemText,
   Divider
 } from '@mui/material'
+import { Button } from '../../../components/Button'
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'
 import AccessTimeIcon from '@mui/icons-material/AccessTime'
 import PersonIcon from '@mui/icons-material/Person'
@@ -94,7 +94,12 @@ export const AttendeesList: React.FC<AttendeesListProps> = ({
         <Typography color='error' variant='body2'>
           {error}
         </Typography>
-        <Button size='small' onClick={fetchAttendees} sx={{ mt: 1 }}>
+        <Button
+          size='small'
+          variant='secondary'
+          onClick={fetchAttendees}
+          sx={{ mt: 1 }}
+        >
           Reintentar
         </Button>
       </Box>
@@ -287,11 +292,7 @@ export const AttendeesList: React.FC<AttendeesListProps> = ({
       {/* Show more button */}
       {data.has_more && (
         <Box sx={{ textAlign: 'center', pt: 2 }}>
-          <Button
-            size='small'
-            variant='text'
-            sx={{ color: 'var(--color-cadetblue)' }}
-          >
+          <Button size='small' variant='secondary'>
             Ver todos los asistentes ({data.total})
           </Button>
         </Box>

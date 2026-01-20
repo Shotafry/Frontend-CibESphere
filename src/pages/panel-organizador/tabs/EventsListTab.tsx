@@ -3,7 +3,6 @@ import {
   Box,
   Typography,
   Paper,
-  Button,
   IconButton,
   Divider,
   Stack,
@@ -11,6 +10,7 @@ import {
   LinearProgress,
   Collapse
 } from '@mui/material'
+import { Button } from '../../../components/Button'
 import EventIcon from '@mui/icons-material/Event'
 import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/Delete'
@@ -191,29 +191,21 @@ export const EventsListTab: React.FC<EventsListTabProps> = ({
 
                     <Box sx={{ display: 'flex', gap: 1 }}>
                       <Button
-                        variant='contained'
+                        variant='primary'
                         size='small'
                         startIcon={
                           isExpanded ? <ExpandLessIcon /> : <ExpandMoreIcon />
                         }
                         onClick={() => handleToggleExpand(event.id)}
-                        sx={{
-                          bgcolor: 'var(--color-cadetblue)',
-                          '&:hover': { bgcolor: '#3a8e99' }
-                        }}
                       >
                         {isExpanded ? 'Cerrar' : 'Asistentes'}
                       </Button>
                       <Button
-                        variant='contained'
+                        variant='primary'
                         startIcon={<EditIcon />}
                         onClick={() =>
                           navigate(`/eventos/${event.slug}/editar`)
                         }
-                        sx={{
-                          bgcolor: 'var(--color-cadetblue)',
-                          '&:hover': { bgcolor: '#3a8e99' }
-                        }}
                       >
                         Editar
                       </Button>
@@ -258,7 +250,7 @@ export const EventsListTab: React.FC<EventsListTabProps> = ({
             <Typography variant='h6' color='text.secondary'>
               No has creado ningún evento todavía.
             </Typography>
-            <Button variant='outlined' onClick={onCreateEvent} sx={{ mt: 2 }}>
+            <Button variant='secondary' onClick={onCreateEvent} sx={{ mt: 2 }}>
               Crear mi primer evento
             </Button>
           </Box>

@@ -1,5 +1,6 @@
 import React, { Component, ErrorInfo, ReactNode } from 'react'
-import { Box, Typography, Button } from '@mui/material'
+import { Box, Typography } from '@mui/material'
+import { Button } from './Button'
 
 interface Props {
   children: ReactNode
@@ -37,7 +38,7 @@ export class ErrorBoundary extends Component<Props, State> {
               {this.state.error?.message}
             </Typography>
             <Button
-              variant='outlined'
+              variant='secondary'
               onClick={() => this.setState({ hasError: false, error: null })}
             >
               Intentar de nuevo

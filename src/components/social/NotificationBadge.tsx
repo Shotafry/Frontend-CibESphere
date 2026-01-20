@@ -9,7 +9,6 @@ import {
   Typography,
   Box,
   Divider,
-  Button,
   List,
   ListItem,
   ListItemText,
@@ -18,6 +17,7 @@ import {
   Skeleton,
   Tooltip
 } from '@mui/material'
+import { Button } from '../Button'
 import {
   Notifications as NotificationsIcon,
   MarkEmailRead as MarkReadIcon,
@@ -121,7 +121,7 @@ export const NotificationBadge = ({
   }
 
   const handleViewAll = () => {
-    navigate('/panel-de-usuario?tab=3') // Tab de notificaciones
+    navigate('/panel-de-usuario?tab=4') // Tab de notificaciones (índice 4, pestaña 5)
     handleClose()
   }
 
@@ -192,9 +192,9 @@ export const NotificationBadge = ({
           {unreadCount > 0 && (
             <Button
               size='small'
+              variant='secondary'
               startIcon={<MarkReadIcon />}
               onClick={handleMarkAllRead}
-              sx={{ textTransform: 'none' }}
             >
               Marcar todo
             </Button>
@@ -275,12 +275,8 @@ export const NotificationBadge = ({
 
         {/* Footer */}
         <Divider />
-        <Box sx={{ p: 1 }}>
-          <Button
-            fullWidth
-            onClick={handleViewAll}
-            sx={{ textTransform: 'none' }}
-          >
+        <Box sx={{ p: 1, display: 'flex', justifyContent: 'center' }}>
+          <Button variant='primary' size='small' onClick={handleViewAll}>
             Ver todas las notificaciones
           </Button>
         </Box>

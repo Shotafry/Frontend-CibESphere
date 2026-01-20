@@ -18,11 +18,11 @@ import {
   FormControlLabel,
   FormGroup,
   Skeleton,
-  Button,
   Tabs,
   Tab,
   Badge
 } from '@mui/material'
+import { Button } from '../../../components/Button'
 import {
   Notifications as NotificationsIcon,
   CheckCircle as ReadIcon,
@@ -430,9 +430,7 @@ export const NotificationsTab: React.FC<NotificationsTabProps> = ({
           </FormGroup>
 
           <Box sx={{ mt: 4, pt: 3, borderTop: 1, borderColor: 'divider' }}>
-            <Button variant='contained' color='primary'>
-              Guardar preferencias
-            </Button>
+            <Button variant='primary'>Guardar preferencias</Button>
           </Box>
         </Paper>
       )}
