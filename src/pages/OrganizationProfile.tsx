@@ -1,5 +1,5 @@
 // src/pages/OrganizationProfile.tsx
-import { FunctionComponent, useState, useEffect } from 'react'
+import { FunctionComponent, useState, useEffect, useCallback } from 'react'
 import { Box, Container } from '@mui/material'
 import { useLoaderData } from 'react-router-dom'
 import { OrganizationSummary, Event } from '../types'
@@ -32,6 +32,14 @@ const OrganizationProfile: FunctionComponent = () => {
     }
   }, [organization?.id])
 
+  // Callback para actualizar contador cuando se sigue/deja de seguir
+  const handleFollowChange = useCallback((isFollowing: boolean) => {
+    setSubscribersCount((prev) => {
+      if (prev === undefined) return isFollowing ? 1 : 0
+      return isFollowing ? prev + 1 : Math.max(0, prev - 1)
+    })
+  }, [])
+
   const totalAttendees = events.reduce(
     (acc, curr) => acc + curr.current_attendees,
     0
@@ -56,6 +64,7 @@ const OrganizationProfile: FunctionComponent = () => {
             eventsCount={events.length}
             totalAttendees={totalAttendees}
             subscribersCount={subscribersCount}
+            onFollowChange={handleFollowChange}
           />
           <OrgEvents events={events} />
         </Container>

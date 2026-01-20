@@ -25,13 +25,15 @@ interface OrgHeaderProps {
   eventsCount: number
   totalAttendees: number
   subscribersCount?: number
+  onFollowChange?: (isFollowing: boolean) => void
 }
 
 export const OrgHeader: React.FC<OrgHeaderProps> = ({
   organization,
   eventsCount,
   totalAttendees,
-  subscribersCount
+  subscribersCount,
+  onFollowChange
 }) => {
   // Support both social_media (backend) and social_links (legacy) fields
   const socialLinks =
@@ -231,7 +233,8 @@ export const OrgHeader: React.FC<OrgHeaderProps> = ({
           organizationId={organization.id}
           organizationName={organization.name}
           ownerId={organization.owner_id}
-          sx={{ width: '100%' }}
+          onFollowChange={onFollowChange}
+          sx={{ minWidth: 120 }}
         />
 
         <Stack
@@ -242,7 +245,7 @@ export const OrgHeader: React.FC<OrgHeaderProps> = ({
             bgcolor: '#F1F5F9',
             p: 2,
             borderRadius: '16px',
-            width: '100%'
+            maxWidth: 400
           }}
         >
           <Box sx={{ textAlign: 'center', flex: 1 }}>

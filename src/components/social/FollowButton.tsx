@@ -93,25 +93,39 @@ export const FollowButton = ({
   return (
     <Tooltip title={isFollowing ? 'Dejar de seguir' : 'Seguir organización'}>
       <Button
-        variant={isFollowing ? 'outlined' : 'contained'}
-        color={isFollowing ? 'success' : 'primary'}
+        variant='contained'
         onClick={handleClick}
         disabled={actionLoading}
         startIcon={
-          actionLoading ? <CircularProgress size={16} /> : <ButtonIcon />
+          actionLoading ? (
+            <CircularProgress size={16} sx={{ color: 'inherit' }} />
+          ) : (
+            <ButtonIcon />
+          )
         }
         sx={{
-          borderRadius: 2,
+          borderRadius: '12px',
           textTransform: 'none',
           fontWeight: 600,
+          px: 2.5,
+          py: 1,
+          minWidth: 'auto',
+          boxShadow: isFollowing ? 'none' : '0 4px 14px rgba(0, 217, 255, 0.4)',
+          background: isFollowing
+            ? 'transparent'
+            : 'var(--gradient-button-primary)',
+          color: isFollowing ? 'var(--color-cadetblue)' : 'var(--White)',
+          border: isFollowing ? '2px solid var(--color-cadetblue)' : 'none',
           transition: 'all 0.2s ease',
           '&:hover': {
-            transform: 'scale(1.02)',
-            ...(isFollowing && {
-              backgroundColor: 'error.light',
-              borderColor: 'error.main',
-              color: 'error.main'
-            })
+            boxShadow: isFollowing
+              ? 'none'
+              : '0 6px 20px rgba(0, 217, 255, 0.6)',
+            background: isFollowing
+              ? 'rgba(239, 68, 68, 0.1)'
+              : 'var(--gradient-button-primary-hover)',
+            borderColor: isFollowing ? '#EF4444' : undefined,
+            color: isFollowing ? '#EF4444' : 'var(--White)'
           }
         }}
         {...buttonProps}
