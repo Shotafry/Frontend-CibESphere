@@ -13,11 +13,15 @@ import NotificationsIcon from '@mui/icons-material/Notifications'
 import MenuIcon from '@mui/icons-material/Menu'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
-import { Role, Notification } from '../types'
-import { getNotifications } from '../services/apiService'
-import { NotificationMenu } from './NotificationMenu'
+import { Role } from '../types'
 import { MobileMenu } from './MobileMenu'
+import { NotificationBadge } from './social'
 import { Button } from './Button'
+import {
+  getNotifications,
+  getUnreadCount,
+  Notification
+} from '../services/api/notifications.service'
 import logoAndTextUrl from '/img/brand/logo-and-text.png'
 import logoOnlyTextUrl from '/img/brand/logo-onlytext.png'
 import logoIconUrl from '/img/brand/logo-icon.png'
@@ -37,7 +41,6 @@ export const Header: FunctionComponent = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   const isLandingPage = location.pathname === '/'
-  const openNotifications = Boolean(anchorEl)
 
   useEffect(() => {
     const handleScroll = () => {
@@ -48,7 +51,6 @@ export const Header: FunctionComponent = () => {
       window.addEventListener('scroll', handleScroll)
       handleScroll()
     } else {
-      // Si no es la landing, el header es blanco por defecto
       setIsScrolled(true)
     }
 
@@ -57,29 +59,24 @@ export const Header: FunctionComponent = () => {
     }
   }, [isLandingPage, location.pathname])
 
+  // v0.4.0 - Cargar notificaciones para MobileMenu
   useEffect(() => {
-    if (isAuthenticated && user) {
-      getNotifications(user.id).then((data) => {
-        setNotifications(data)
-        setUnreadCount(data.filter((n) => !n.is_read).length)
-      })
+    const loadNotifications = async () => {
+      if (isAuthenticated) {
+        try {
+          const [notifData, count] = await Promise.all([
+            getNotifications(1, 10),
+            getUnreadCount()
+          ])
+          setNotifications(notifData.data as any)
+          setUnreadCount(count)
+        } catch (error) {
+          console.error('Error loading notifications:', error)
+        }
+      }
     }
-  }, [isAuthenticated, user])
-
-  const handleOpenNotifications = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget)
-  }
-
-  const handleCloseNotifications = () => {
-    setAnchorEl(null)
-  }
-
-  const handleMarkAsRead = (id: string) => {
-    setNotifications((prev) =>
-      prev.map((n) => (n.id === id ? { ...n, is_read: true } : n))
-    )
-    setUnreadCount((prev) => Math.max(0, prev - 1))
-  }
+    loadNotifications()
+  }, [isAuthenticated])
 
   // --- LÓGICA ORIGINAL RESTAURADA ---
   // Vuelve a ser 'transparent' o 'var(--White)'
@@ -234,22 +231,7 @@ export const Header: FunctionComponent = () => {
                   <CircularProgress size={24} />
                 ) : isAuthenticated ? (
                   <>
-                    <IconButton
-                      onClick={handleOpenNotifications}
-                      sx={{ mr: 1 }}
-                      aria-label='Notificaciones'
-                    >
-                      <Badge badgeContent={unreadCount} color='error'>
-                        <NotificationsIcon sx={{ color: textColor }} />
-                      </Badge>
-                    </IconButton>
-                    <NotificationMenu
-                      anchorEl={anchorEl}
-                      open={openNotifications}
-                      onClose={handleCloseNotifications}
-                      notifications={notifications}
-                      onMarkAsRead={handleMarkAsRead}
-                    />
+                    <NotificationBadge />
                     <Typography sx={{ color: textColor, fontWeight: 500 }}>
                       Hola, {user?.first_name || user?.email}
                     </Typography>

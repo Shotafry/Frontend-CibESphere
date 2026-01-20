@@ -1,5 +1,5 @@
 // src/components/social/ConnectButton.tsx
-// v0.4.0 - Botón para solicitar conexión con otro usuario
+// v0.4.0 - Botón para solicitar conexión con otro usuario con selector de eventos
 
 import { useState, useEffect } from 'react'
 import {
@@ -11,18 +11,34 @@ import {
   DialogContent,
   DialogActions,
   TextField,
-  ButtonProps
+  ButtonProps,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  Box,
+  Typography,
+  Alert
 } from '@mui/material'
 import {
   Handshake as ConnectIcon,
   Check as ConnectedIcon,
-  HourglassEmpty as PendingIcon
+  HourglassEmpty as PendingIcon,
+  Event as EventIcon
 } from '@mui/icons-material'
 import { useAuth } from '../../context/AuthContext'
 import {
   isConnectedWith,
   requestConnection
 } from '../../services/api/connections.service'
+import { httpClient } from '../../services/httpClient'
+
+interface EventSummary {
+  id: string
+  title: string
+  start_date: string
+  image_url?: string
+}
 
 interface ConnectButtonProps extends Omit<ButtonProps, 'onClick'> {
   targetUserId: string
@@ -35,7 +51,7 @@ interface ConnectButtonProps extends Omit<ButtonProps, 'onClick'> {
 export const ConnectButton = ({
   targetUserId,
   targetUserName = 'este usuario',
-  eventId,
+  eventId: initialEventId,
   showLabel = true,
   onConnectionChange,
   ...buttonProps
@@ -47,6 +63,10 @@ export const ConnectButton = ({
   const [actionLoading, setActionLoading] = useState(false)
   const [dialogOpen, setDialogOpen] = useState(false)
   const [message, setMessage] = useState('')
+  const [selectedEventId, setSelectedEventId] = useState(initialEventId || '')
+  const [targetEvents, setTargetEvents] = useState<EventSummary[]>([])
+  const [loadingEvents, setLoadingEvents] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   // Verificar estado inicial
   useEffect(() => {
@@ -75,30 +95,63 @@ export const ConnectButton = ({
     checkConnectionStatus()
   }, [targetUserId, isAuthenticated, user])
 
+  // Cargar eventos del target cuando se abre el dialog
+  const loadTargetEvents = async () => {
+    setLoadingEvents(true)
+    try {
+      // Obtener eventos a los que asiste el target
+      const response = await httpClient.get<{ events: EventSummary[] }>(
+        `/users/${targetUserId}/registered-events`
+      )
+      setTargetEvents(response.data.events || [])
+    } catch (error) {
+      console.error('Error loading target events:', error)
+      // Si falla, no pasa nada, el selector simplemente no mostrará eventos
+      setTargetEvents([])
+    } finally {
+      setLoadingEvents(false)
+    }
+  }
+
   const handleClick = () => {
     if (!isAuthenticated) {
-      console.info('Inicia sesión para conectar con usuarios')
+      setError('Inicia sesión para conectar con usuarios')
       return
     }
 
     if (isConnected || isPending) return
 
     setDialogOpen(true)
+    loadTargetEvents()
   }
 
   const handleSendRequest = async () => {
     setActionLoading(true)
+    setError(null)
     try {
-      await requestConnection(targetUserId, eventId, message)
+      await requestConnection(
+        targetUserId,
+        selectedEventId || undefined,
+        message
+      )
       setIsPending(true)
       onConnectionChange?.('pending')
       setDialogOpen(false)
       setMessage('')
+      setSelectedEventId('')
     } catch (error: any) {
-      console.error('Error al enviar solicitud:', error)
+      const msg = error.response?.data?.message || 'Error al enviar solicitud'
+      setError(msg)
     } finally {
       setActionLoading(false)
     }
+  }
+
+  const handleCloseDialog = () => {
+    setDialogOpen(false)
+    setMessage('')
+    setSelectedEventId(initialEventId || '')
+    setError(null)
   }
 
   // No mostrar si es el mismo usuario
@@ -144,6 +197,14 @@ export const ConnectButton = ({
 
   const state = getButtonState()
 
+  const formatEventDate = (dateStr: string) => {
+    return new Date(dateStr).toLocaleDateString('es-ES', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric'
+    })
+  }
+
   return (
     <>
       <Tooltip
@@ -178,27 +239,96 @@ export const ConnectButton = ({
         </span>
       </Tooltip>
 
-      {/* Dialog para enviar mensaje */}
+      {/* Dialog para enviar solicitud de conexión */}
       <Dialog
         open={dialogOpen}
-        onClose={() => setDialogOpen(false)}
+        onClose={handleCloseDialog}
         maxWidth='sm'
         fullWidth
+        PaperProps={{
+          sx: { borderRadius: 3 }
+        }}
       >
-        <DialogTitle>Conectar con {targetUserName}</DialogTitle>
+        <DialogTitle sx={{ pb: 1 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <ConnectIcon color='primary' />
+            <Typography variant='h6' fontWeight={600}>
+              Conectar con {targetUserName}
+            </Typography>
+          </Box>
+        </DialogTitle>
         <DialogContent>
+          {error && (
+            <Alert severity='error' sx={{ mb: 2 }}>
+              {error}
+            </Alert>
+          )}
+
+          <Typography variant='body2' color='text.secondary' sx={{ mb: 3 }}>
+            Envía una solicitud de conexión. Si {targetUserName} la acepta,
+            podrás ver sus datos de contacto.
+          </Typography>
+
+          {/* Selector de evento */}
+          <FormControl fullWidth sx={{ mb: 3 }}>
+            <InputLabel id='event-select-label'>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <EventIcon fontSize='small' />
+                ¿Para qué evento?
+              </Box>
+            </InputLabel>
+            <Select
+              labelId='event-select-label'
+              value={selectedEventId}
+              onChange={(e) => setSelectedEventId(e.target.value)}
+              label='¿Para qué evento?'
+              disabled={loadingEvents}
+            >
+              <MenuItem value=''>
+                <em>Sin especificar evento</em>
+              </MenuItem>
+              {loadingEvents ? (
+                <MenuItem disabled>
+                  <CircularProgress size={16} sx={{ mr: 1 }} />
+                  Cargando eventos...
+                </MenuItem>
+              ) : targetEvents.length === 0 ? (
+                <MenuItem disabled>
+                  <em>No hay eventos registrados</em>
+                </MenuItem>
+              ) : (
+                targetEvents.map((event) => (
+                  <MenuItem key={event.id} value={event.id}>
+                    <Box>
+                      <Typography variant='body2' fontWeight={500}>
+                        {event.title}
+                      </Typography>
+                      <Typography variant='caption' color='text.secondary'>
+                        {formatEventDate(event.start_date)}
+                      </Typography>
+                    </Box>
+                  </MenuItem>
+                ))
+              )}
+            </Select>
+          </FormControl>
+
+          {/* Mensaje personalizado */}
           <TextField
             fullWidth
             multiline
             rows={3}
-            placeholder='Añade un mensaje personalizado (opcional)'
+            label='Mensaje personalizado'
+            placeholder='Hola, veo que vas al mismo evento. ¿Te gustaría quedar?'
             value={message}
             onChange={(e) => setMessage(e.target.value)}
-            sx={{ mt: 1 }}
+            helperText='Opcional - Añade contexto a tu solicitud'
           />
         </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setDialogOpen(false)}>Cancelar</Button>
+        <DialogActions sx={{ p: 2, pt: 0 }}>
+          <Button onClick={handleCloseDialog} color='inherit'>
+            Cancelar
+          </Button>
           <Button
             variant='contained'
             onClick={handleSendRequest}

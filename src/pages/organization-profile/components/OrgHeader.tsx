@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import {
   Box,
   Typography,
@@ -15,12 +15,10 @@ import {
   LinkedIn as LinkedInIcon,
   GitHub as GitHubIcon,
   X as XIcon,
-  LocationOn as LocationIcon,
-  Add as FollowIcon,
-  Check as FollowingIcon
+  LocationOn as LocationIcon
 } from '@mui/icons-material'
 import { OrganizationSummary } from '../../../types'
-import { Button } from '../../../components/Button'
+import { FollowButton } from '../../../components/social'
 
 interface OrgHeaderProps {
   organization: OrganizationSummary
@@ -33,12 +31,6 @@ export const OrgHeader: React.FC<OrgHeaderProps> = ({
   eventsCount,
   totalAttendees
 }) => {
-  const [isFollowing, setIsFollowing] = useState(false)
-
-  const handleFollow = () => {
-    setIsFollowing(!isFollowing)
-  }
-
   // Support both social_media (backend) and social_links (legacy) fields
   const socialLinks =
     organization.social_links || organization.social_media || {}
@@ -233,14 +225,11 @@ export const OrgHeader: React.FC<OrgHeaderProps> = ({
           minWidth: { xs: '100%', md: 200 }
         }}
       >
-        <Button
-          variant={isFollowing ? 'secondary' : 'primary'}
-          startIcon={isFollowing ? <FollowingIcon /> : <FollowIcon />}
-          onClick={handleFollow}
-          fullWidth
-        >
-          {isFollowing ? 'Siguiendo' : 'Seguir'}
-        </Button>
+        <FollowButton
+          organizationId={organization.id}
+          organizationName={organization.name}
+          sx={{ width: '100%' }}
+        />
 
         <Stack
           direction='row'

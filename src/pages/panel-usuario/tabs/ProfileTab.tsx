@@ -397,6 +397,128 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
                   />
                 </Grid>
               </Grid>
+
+              {/* Datos de Conexión Social (v0.4.0) */}
+              <Box
+                sx={{
+                  mt: 4,
+                  p: 3,
+                  bgcolor: '#F0F9FF',
+                  borderRadius: 2,
+                  border: '1px solid #BAE6FD'
+                }}
+              >
+                <Typography
+                  variant='subtitle2'
+                  fontWeight='bold'
+                  sx={{ mb: 1, color: '#0369A1' }}
+                >
+                  🤝 Datos de Conexión
+                </Typography>
+                <Typography
+                  variant='body2'
+                  color='text.secondary'
+                  sx={{ mb: 3 }}
+                >
+                  Esta información solo se compartirá con usuarios que acepten
+                  tu solicitud de conexión. No aparecerá en tu perfil público.
+                </Typography>
+                <Grid container spacing={2}>
+                  <Grid size={{ xs: 12, md: 6 }}>
+                    <Controller
+                      name='social_discord'
+                      control={control}
+                      render={({ field }) => (
+                        <TextField
+                          {...field}
+                          label='Discord'
+                          placeholder='usuario#1234'
+                          fullWidth
+                          variant='outlined'
+                          helperText='Tu usuario de Discord para networking'
+                          InputProps={{
+                            startAdornment: (
+                              <Box
+                                component='span'
+                                sx={{
+                                  mr: 1,
+                                  fontSize: '1.2rem',
+                                  display: 'flex',
+                                  alignItems: 'center'
+                                }}
+                              >
+                                🎮
+                              </Box>
+                            )
+                          }}
+                        />
+                      )}
+                    />
+                  </Grid>
+                  <Grid size={{ xs: 12, md: 6 }}>
+                    <Controller
+                      name='social_telegram'
+                      control={control}
+                      render={({ field }) => (
+                        <TextField
+                          {...field}
+                          label='Telegram'
+                          placeholder='@usuario'
+                          fullWidth
+                          variant='outlined'
+                          helperText='Tu usuario de Telegram para networking'
+                          InputProps={{
+                            startAdornment: (
+                              <Box
+                                component='span'
+                                sx={{
+                                  mr: 1,
+                                  fontSize: '1.2rem',
+                                  display: 'flex',
+                                  alignItems: 'center'
+                                }}
+                              >
+                                ✈️
+                              </Box>
+                            )
+                          }}
+                        />
+                      )}
+                    />
+                  </Grid>
+                  <Grid size={{ xs: 12 }}>
+                    <Controller
+                      name='show_email_on_match'
+                      control={control}
+                      render={({ field: { value, onChange } }) => (
+                        <Box
+                          sx={{ display: 'flex', alignItems: 'center', gap: 2 }}
+                        >
+                          <input
+                            type='checkbox'
+                            checked={value || false}
+                            onChange={(e) => onChange(e.target.checked)}
+                            style={{ width: 18, height: 18 }}
+                          />
+                          <Box>
+                            <Typography variant='body2' fontWeight={500}>
+                              Compartir mi email al conectar
+                            </Typography>
+                            <Typography
+                              variant='caption'
+                              color='text.secondary'
+                            >
+                              Si está activo, tu email se compartirá
+                              automáticamente cuando aceptes o te acepten una
+                              conexión
+                            </Typography>
+                          </Box>
+                        </Box>
+                      )}
+                    />
+                  </Grid>
+                </Grid>
+              </Box>
             </Grid>
 
             <Grid size={{ xs: 12 }}>

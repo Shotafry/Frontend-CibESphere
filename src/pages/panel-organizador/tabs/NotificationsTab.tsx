@@ -1,43 +1,39 @@
-// src/pages/panel-usuario/tabs/NotificationsTab.tsx
-// v0.4.0 - Tab de notificaciones para usuario con historial, configuración y preferencias de región
+// src/pages/panel-organizador/tabs/NotificationsTab.tsx
+// v0.4.0 - Tab de notificaciones para organizador con historial y configuración
 
 import React, { useState, useEffect } from 'react'
 import {
   Box,
   Typography,
-  Container,
   Paper,
-  Divider,
-  FormGroup,
-  FormControlLabel,
-  Switch,
-  Alert,
   List,
   ListItem,
   ListItemAvatar,
   ListItemText,
   Avatar,
-  Chip,
   IconButton,
+  Chip,
+  Divider,
+  Switch,
+  FormControlLabel,
+  FormGroup,
   Skeleton,
+  Button,
   Tabs,
   Tab,
-  Badge,
-  TextField,
-  Autocomplete
+  Badge
 } from '@mui/material'
 import {
-  Settings as SettingsIcon,
   Notifications as NotificationsIcon,
   CheckCircle as ReadIcon,
   Circle as UnreadIcon,
   Event as EventIcon,
   Person as PersonIcon,
-  Business as OrgIcon,
+  Payment as PaymentIcon,
+  Settings as SettingsIcon,
   Refresh as RefreshIcon,
   MarkEmailRead as MarkAllReadIcon
 } from '@mui/icons-material'
-import { Button } from '../../../components/Button'
 import {
   getNotifications,
   markAsRead,
@@ -47,46 +43,25 @@ import {
   Notification
 } from '../../../services/api/notifications.service'
 
-// Lista de comunidades autónomas españolas
-const SPANISH_REGIONS = [
-  'Andalucía',
-  'Aragón',
-  'Asturias',
-  'Baleares',
-  'Canarias',
-  'Cantabria',
-  'Castilla-La Mancha',
-  'Castilla y León',
-  'Cataluña',
-  'Comunidad Valenciana',
-  'Extremadura',
-  'Galicia',
-  'La Rioja',
-  'Madrid',
-  'Murcia',
-  'Navarra',
-  'País Vasco'
-]
+interface NotificationsTabProps {
+  organizationId?: string
+}
 
-export const NotificationsTab: React.FC = () => {
+export const NotificationsTab: React.FC<NotificationsTabProps> = ({
+  organizationId
+}) => {
   const [subTab, setSubTab] = useState(0) // 0: Historial, 1: Configuración
   const [notifications, setNotifications] = useState<Notification[]>([])
   const [loading, setLoading] = useState(true)
   const [unreadCount, setUnreadCount] = useState(0)
-  const [saveMessage, setSaveMessage] = useState<{
-    type: 'success' | 'error'
-    text: string
-  } | null>(null)
 
-  // Preferencias
+  // Configuración de preferencias
   const [preferences, setPreferences] = useState({
-    emailEnabled: true,
-    pushEnabled: true,
-    newEventsNearby: true,
-    followedOrgsEvents: true,
-    eventReminders: true
+    emailOnSale: true,
+    emailDailyDigest: false,
+    emailEventReminder: true,
+    pushEnabled: true
   })
-  const [selectedRegions, setSelectedRegions] = useState<string[]>([])
 
   // Cargar notificaciones
   const loadNotifications = async () => {
@@ -133,14 +108,14 @@ export const NotificationsTab: React.FC = () => {
 
   const getNotificationIcon = (type: string) => {
     switch (type) {
+      case 'TICKET_PURCHASED':
+        return <PaymentIcon />
       case 'EVENT_CREATED':
       case 'EVENT_REMINDER':
         return <EventIcon />
       case 'CONNECTION_REQUEST':
       case 'CONNECTION_ACCEPTED':
         return <PersonIcon />
-      case 'ORG_VERIFIED':
-        return <OrgIcon />
       default:
         return <NotificationsIcon />
     }
@@ -148,12 +123,12 @@ export const NotificationsTab: React.FC = () => {
 
   const getNotificationColor = (type: string) => {
     switch (type) {
+      case 'TICKET_PURCHASED':
+        return '#22c55e'
       case 'EVENT_CREATED':
         return '#4fbac8'
       case 'CONNECTION_REQUEST':
         return '#f59e0b'
-      case 'CONNECTION_ACCEPTED':
-        return '#22c55e'
       default:
         return '#64748b'
     }
@@ -164,19 +139,11 @@ export const NotificationsTab: React.FC = () => {
       ...prev,
       [key]: !prev[key]
     }))
-  }
-
-  const handleSavePreferences = () => {
     // TODO: Llamar a API para guardar preferencias
-    setSaveMessage({
-      type: 'success',
-      text: 'Preferencias guardadas correctamente'
-    })
-    setTimeout(() => setSaveMessage(null), 3000)
   }
 
   return (
-    <Container maxWidth='md'>
+    <Box>
       {/* Header */}
       <Box
         sx={{
@@ -207,7 +174,6 @@ export const NotificationsTab: React.FC = () => {
           </IconButton>
           {unreadCount > 0 && (
             <Button
-              variant='secondary'
               startIcon={<MarkAllReadIcon />}
               onClick={handleMarkAllAsRead}
               size='small'
@@ -237,17 +203,18 @@ export const NotificationsTab: React.FC = () => {
           <Tab
             icon={<SettingsIcon />}
             iconPosition='start'
-            label='Preferencias'
+            label='Configuración'
           />
         </Tabs>
       </Paper>
 
+      {/* Tab Content */}
       {subTab === 0 ? (
         /* Historial de Notificaciones */
         <Paper sx={{ borderRadius: 2, overflow: 'hidden' }}>
           {loading ? (
             <Box sx={{ p: 2 }}>
-              {[1, 2, 3, 4].map((i) => (
+              {[1, 2, 3, 4, 5].map((i) => (
                 <Box key={i} sx={{ display: 'flex', gap: 2, mb: 2 }}>
                   <Skeleton variant='circular' width={48} height={48} />
                   <Box sx={{ flex: 1 }}>
@@ -258,7 +225,13 @@ export const NotificationsTab: React.FC = () => {
               ))}
             </Box>
           ) : notifications.length === 0 ? (
-            <Box sx={{ py: 6, textAlign: 'center', color: 'text.secondary' }}>
+            <Box
+              sx={{
+                py: 6,
+                textAlign: 'center',
+                color: 'text.secondary'
+              }}
+            >
               <NotificationsIcon sx={{ fontSize: 64, opacity: 0.3, mb: 2 }} />
               <Typography>No tienes notificaciones</Typography>
             </Box>
@@ -282,11 +255,11 @@ export const NotificationsTab: React.FC = () => {
                     secondaryAction={
                       <IconButton
                         size='small'
-                        disabled={notification.is_read}
                         onClick={(e) => {
                           e.stopPropagation()
                           handleMarkAsRead(notification.id)
                         }}
+                        disabled={notification.is_read}
                       >
                         {notification.is_read ? (
                           <ReadIcon color='success' />
@@ -336,7 +309,9 @@ export const NotificationsTab: React.FC = () => {
                             color='text.disabled'
                             sx={{ ml: 2, whiteSpace: 'nowrap' }}
                           >
-                            {formatRelativeTime(notification.created_at || '')}
+                            {formatRelativeTime(
+                              notification.created_at || notification.date || ''
+                            )}
                           </Typography>
                         </Box>
                       }
@@ -350,47 +325,91 @@ export const NotificationsTab: React.FC = () => {
         </Paper>
       ) : (
         /* Configuración de Preferencias */
-        <Paper sx={{ borderRadius: 2, p: 4 }}>
-          {saveMessage && (
-            <Alert severity={saveMessage.type} sx={{ mb: 3 }}>
-              {saveMessage.text}
-            </Alert>
-          )}
-
+        <Paper sx={{ borderRadius: 2, p: 3 }}>
           <Typography variant='h6' fontWeight={600} sx={{ mb: 3 }}>
             Preferencias de Notificaciones
           </Typography>
 
           <FormGroup>
-            {/* Tipo de notificaciones */}
             <Box sx={{ mb: 4 }}>
               <Typography
                 variant='subtitle2'
                 color='text.secondary'
                 sx={{ mb: 2 }}
               >
-                Canales de Notificación
+                Notificaciones por Email
               </Typography>
               <FormControlLabel
                 control={
                   <Switch
-                    checked={preferences.emailEnabled}
-                    onChange={() => handlePreferenceChange('emailEnabled')}
+                    checked={preferences.emailOnSale}
+                    onChange={() => handlePreferenceChange('emailOnSale')}
+                    color='primary'
+                  />
+                }
+                label={
+                  <Box>
+                    <Typography variant='body1'>Venta de entrada</Typography>
+                    <Typography variant='caption' color='text.secondary'>
+                      Recibe un email cada vez que alguien compre una entrada
+                    </Typography>
+                  </Box>
+                }
+                sx={{ mb: 2, alignItems: 'flex-start' }}
+              />
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={preferences.emailDailyDigest}
+                    onChange={() => handlePreferenceChange('emailDailyDigest')}
+                    color='primary'
+                  />
+                }
+                label={
+                  <Box>
+                    <Typography variant='body1'>Resumen diario</Typography>
+                    <Typography variant='caption' color='text.secondary'>
+                      Recibe un resumen diario de actividad en lugar de emails
+                      individuales
+                    </Typography>
+                  </Box>
+                }
+                sx={{ mb: 2, alignItems: 'flex-start' }}
+              />
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={preferences.emailEventReminder}
+                    onChange={() =>
+                      handlePreferenceChange('emailEventReminder')
+                    }
                     color='primary'
                   />
                 }
                 label={
                   <Box>
                     <Typography variant='body1'>
-                      Notificaciones por Email
+                      Recordatorios de evento
                     </Typography>
                     <Typography variant='caption' color='text.secondary'>
-                      Recibe correos sobre eventos y novedades
+                      Recibe recordatorios antes de que empiecen tus eventos
                     </Typography>
                   </Box>
                 }
-                sx={{ mb: 2, alignItems: 'flex-start' }}
+                sx={{ alignItems: 'flex-start' }}
               />
+            </Box>
+
+            <Divider sx={{ my: 3 }} />
+
+            <Box>
+              <Typography
+                variant='subtitle2'
+                color='text.secondary'
+                sx={{ mb: 2 }}
+              >
+                Notificaciones Push (Web)
+              </Typography>
               <FormControlLabel
                 control={
                   <Switch
@@ -401,132 +420,26 @@ export const NotificationsTab: React.FC = () => {
                 }
                 label={
                   <Box>
-                    <Typography variant='body1'>
-                      Notificaciones Push (Web)
-                    </Typography>
+                    <Typography variant='body1'>Notificaciones push</Typography>
                     <Typography variant='caption' color='text.secondary'>
-                      Recibe alertas en tu navegador cuando estés conectado
+                      Recibe notificaciones en tiempo real en tu navegador
                     </Typography>
                   </Box>
                 }
                 sx={{ alignItems: 'flex-start' }}
-              />
-            </Box>
-
-            <Divider sx={{ my: 3 }} />
-
-            {/* Contenido */}
-            <Box sx={{ mb: 4 }}>
-              <Typography
-                variant='subtitle2'
-                color='text.secondary'
-                sx={{ mb: 2 }}
-              >
-                Tipos de Contenido
-              </Typography>
-              <FormControlLabel
-                control={
-                  <Switch
-                    checked={preferences.followedOrgsEvents}
-                    onChange={() =>
-                      handlePreferenceChange('followedOrgsEvents')
-                    }
-                    color='primary'
-                  />
-                }
-                label={
-                  <Box>
-                    <Typography variant='body1'>
-                      Nuevos eventos de organizaciones que sigo
-                    </Typography>
-                    <Typography variant='caption' color='text.secondary'>
-                      Cuando una organización que sigues publique un evento
-                    </Typography>
-                  </Box>
-                }
-                sx={{ mb: 2, alignItems: 'flex-start' }}
-              />
-              <FormControlLabel
-                control={
-                  <Switch
-                    checked={preferences.newEventsNearby}
-                    onChange={() => handlePreferenceChange('newEventsNearby')}
-                    color='primary'
-                  />
-                }
-                label={
-                  <Box>
-                    <Typography variant='body1'>
-                      Eventos cerca de mi ubicación
-                    </Typography>
-                    <Typography variant='caption' color='text.secondary'>
-                      Eventos nuevos en las regiones que selecciones
-                    </Typography>
-                  </Box>
-                }
-                sx={{ mb: 2, alignItems: 'flex-start' }}
-              />
-              <FormControlLabel
-                control={
-                  <Switch
-                    checked={preferences.eventReminders}
-                    onChange={() => handlePreferenceChange('eventReminders')}
-                    color='primary'
-                  />
-                }
-                label={
-                  <Box>
-                    <Typography variant='body1'>
-                      Recordatorios de eventos
-                    </Typography>
-                    <Typography variant='caption' color='text.secondary'>
-                      Recuérdame antes de que empiecen mis eventos
-                    </Typography>
-                  </Box>
-                }
-                sx={{ alignItems: 'flex-start' }}
-              />
-            </Box>
-
-            <Divider sx={{ my: 3 }} />
-
-            {/* Regiones preferidas */}
-            <Box sx={{ mb: 4 }}>
-              <Typography
-                variant='subtitle2'
-                color='text.secondary'
-                sx={{ mb: 2 }}
-              >
-                Regiones de Interés
-              </Typography>
-              <Typography variant='body2' color='text.secondary' sx={{ mb: 2 }}>
-                Selecciona las comunidades autónomas de las que quieres recibir
-                notificaciones de eventos
-              </Typography>
-              <Autocomplete
-                multiple
-                options={SPANISH_REGIONS}
-                value={selectedRegions}
-                onChange={(_, newValue) => setSelectedRegions(newValue)}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    placeholder='Selecciona regiones...'
-                    variant='outlined'
-                  />
-                )}
-                ChipProps={{ size: 'small' }}
               />
             </Box>
           </FormGroup>
 
           <Box sx={{ mt: 4, pt: 3, borderTop: 1, borderColor: 'divider' }}>
-            <Button variant='primary' onClick={handleSavePreferences}>
-              Guardar Preferencias
+            <Button variant='contained' color='primary'>
+              Guardar preferencias
             </Button>
           </Box>
         </Paper>
       )}
-    </Container>
+    </Box>
   )
 }
+
+export default NotificationsTab

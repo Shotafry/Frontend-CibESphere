@@ -28,7 +28,8 @@ import {
   DashboardTab,
   EventsListTab,
   ProfileTab,
-  PaymentsTab
+  PaymentsTab,
+  NotificationsTab
 } from './panel-organizador'
 import { QRScannerModal } from './panel-organizador/components/QRScannerModal'
 
@@ -52,13 +53,15 @@ const PanelDeOrganizador: FunctionComponent = () => {
     dashboard: 0,
     events: 1,
     profile: 2,
-    payments: 3
+    payments: 3,
+    notifications: 4
   }
   const indexToTab: { [key: number]: string } = {
     0: 'dashboard',
     1: 'events',
     2: 'profile',
-    3: 'payments'
+    3: 'payments',
+    4: 'notifications'
   }
 
   const tabValue = tabMap[currentTab] ?? 0
@@ -235,6 +238,7 @@ const PanelDeOrganizador: FunctionComponent = () => {
             <Tab label='Mis Eventos' />
             <Tab label='Perfil de Organización' />
             <Tab label='Pagos e Ingresos' />
+            <Tab label='Notificaciones' />
           </Tabs>
         </Container>
       </Box>
@@ -276,6 +280,15 @@ const PanelDeOrganizador: FunctionComponent = () => {
           <Fade in={tabValue === 3} timeout={500}>
             <Box>
               <PaymentsTab />
+            </Box>
+          </Fade>
+        )}
+
+        {/* TAB NOTIFICACIONES */}
+        {tabValue === 4 && (
+          <Fade in={tabValue === 4} timeout={500}>
+            <Box>
+              <NotificationsTab organizationId={organization?.id} />
             </Box>
           </Fade>
         )}

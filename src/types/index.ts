@@ -69,6 +69,12 @@ export interface User {
   language?: string
   newsletter_enabled?: boolean
 
+  // Social & Networking (v0.4.0)
+  social_discord?: string
+  social_telegram?: string
+  show_email_on_match?: boolean
+  email_notifications?: boolean
+
   // UI Specific
   avatar_url?: string
   banner_url?: string
@@ -405,13 +411,35 @@ export interface DashboardStats {
 
 // --- NOTIFICACIONES ---
 
+export type NotificationType =
+  | 'EVENT_CREATED'
+  | 'TICKET_PURCHASED'
+  | 'CONNECTION_REQUEST'
+  | 'CONNECTION_ACCEPTED'
+  | 'EVENT_REMINDER'
+  | 'ORG_VERIFIED'
+  | 'GENERAL'
+  // Legacy types for backward compatibility
+  | 'info'
+  | 'success'
+  | 'warning'
+  | 'error'
+
 export interface Notification {
   id: string
   title: string
   message: string
-  date: string
   is_read: boolean
-  type: 'info' | 'success' | 'warning' | 'error'
+  type: NotificationType
+  // v0.4.0 fields
+  created_at?: string
+  read_at?: string
+  action_url?: string
+  event_id?: string
+  organization_id?: string
+  related_user_id?: string
+  // Legacy field (deprecated, use created_at)
+  date?: string
   link?: string
 }
 
