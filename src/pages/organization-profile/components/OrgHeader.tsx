@@ -239,7 +239,7 @@ export const OrgHeader: React.FC<OrgHeaderProps> = ({
 
         <Stack
           direction='row'
-          spacing={{ xs: 2, sm: 4 }}
+          spacing={{ xs: 2, sm: 3 }}
           justifyContent='center'
           sx={{
             bgcolor: '#F1F5F9',
