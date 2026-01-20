@@ -104,7 +104,16 @@ const PanelDeOrganizador: FunctionComponent = () => {
   }
 
   return (
-    <Box sx={{ minHeight: '100vh', bgcolor: '#F8FAFC', pb: 8 }}>
+    <Box
+      sx={{
+        minHeight: '100vh',
+        bgcolor: '#F8FAFC',
+        pb: 8,
+        overflow: 'hidden',
+        maxWidth: '100vw',
+        boxSizing: 'border-box'
+      }}
+    >
       {/* HEADER DEL PANEL */}
       <Box
         sx={{

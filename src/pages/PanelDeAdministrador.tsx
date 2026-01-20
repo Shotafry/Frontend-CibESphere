@@ -32,7 +32,16 @@ const PanelDeAdministrador: React.FC = () => {
   }
 
   return (
-    <Box sx={{ minHeight: '100vh', bgcolor: '#f8fafc', pb: 8 }}>
+    <Box
+      sx={{
+        minHeight: '100vh',
+        bgcolor: '#f8fafc',
+        pb: 8,
+        overflow: 'hidden',
+        maxWidth: '100vw',
+        boxSizing: 'border-box'
+      }}
+    >
       {/* Header Premium */}
       <Box
         sx={{
