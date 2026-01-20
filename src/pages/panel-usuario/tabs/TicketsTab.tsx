@@ -12,13 +12,16 @@ import {
   CardMedia,
   CardContent,
   CardActions,
-  Skeleton
+  Skeleton,
+  Snackbar,
+  Alert
 } from '@mui/material'
 import ConfirmationNumberIcon from '@mui/icons-material/ConfirmationNumber'
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday'
 import LocationOnIcon from '@mui/icons-material/LocationOn'
 import DownloadIcon from '@mui/icons-material/Download'
 import QrCodeIcon from '@mui/icons-material/QrCode'
+import EmailIcon from '@mui/icons-material/Email'
 import { useNavigate } from 'react-router-dom'
 import { httpClient } from '../../../services/httpClient'
 
@@ -50,6 +53,12 @@ export const TicketsTab: React.FC = () => {
   const [tickets, setTickets] = useState<UserTicket[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [resending, setResending] = useState<string | null>(null)
+  const [snackbar, setSnackbar] = useState<{
+    open: boolean
+    message: string
+    severity: 'success' | 'error'
+  }>({ open: false, message: '', severity: 'success' })
 
   const fetchTickets = async () => {
     try {
@@ -64,6 +73,26 @@ export const TicketsTab: React.FC = () => {
       setError(null) // Don't show error for missing endpoint
     } finally {
       setLoading(false)
+    }
+  }
+
+  const handleResendEmail = async (ticketId: string) => {
+    setResending(ticketId)
+    try {
+      await httpClient.post(`/tickets/${ticketId}/resend-email`)
+      setSnackbar({
+        open: true,
+        message: '¡Entrada enviada a tu correo!',
+        severity: 'success'
+      })
+    } catch (err: any) {
+      setSnackbar({
+        open: true,
+        message: 'Error al reenviar. Inténtalo de nuevo.',
+        severity: 'error'
+      })
+    } finally {
+      setResending(null)
     }
   }
 
@@ -309,7 +338,9 @@ export const TicketsTab: React.FC = () => {
                 </Box>
               </CardContent>
 
-              <CardActions sx={{ px: 2, pb: 2, pt: 0, gap: 1 }}>
+              <CardActions
+                sx={{ px: 2, pb: 2, pt: 0, gap: 1, flexWrap: 'wrap' }}
+              >
                 {ticket.ticket_image_url && (
                   <Button
                     size='small'
@@ -328,6 +359,26 @@ export const TicketsTab: React.FC = () => {
                 )}
                 <Button
                   size='small'
+                  variant='outlined'
+                  startIcon={
+                    resending === ticket.id ? (
+                      <CircularProgress size={16} />
+                    ) : (
+                      <EmailIcon />
+                    )
+                  }
+                  onClick={() => handleResendEmail(ticket.id)}
+                  disabled={resending === ticket.id}
+                  sx={{
+                    borderColor: '#E2E8F0',
+                    color: 'text.secondary',
+                    '&:hover': { borderColor: 'var(--color-cadetblue)' }
+                  }}
+                >
+                  {resending === ticket.id ? 'Enviando...' : 'Reenviar'}
+                </Button>
+                <Button
+                  size='small'
                   variant='contained'
                   onClick={() => navigate(`/eventos/${ticket.event_slug}`)}
                   sx={{
@@ -342,6 +393,21 @@ export const TicketsTab: React.FC = () => {
           </Grid>
         ))}
       </Grid>
+
+      {/* Snackbar para feedback */}
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={4000}
+        onClose={() => setSnackbar({ ...snackbar, open: false })}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert
+          severity={snackbar.severity}
+          onClose={() => setSnackbar({ ...snackbar, open: false })}
+        >
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
     </Box>
   )
 }

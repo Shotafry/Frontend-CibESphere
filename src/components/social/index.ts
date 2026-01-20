@@ -4,3 +4,4 @@
 export { FollowButton } from './FollowButton'
 export { ConnectButton } from './ConnectButton'
 export { NotificationBadge } from './NotificationBadge'
+export { ConnectionRequestsManager } from './ConnectionRequestsManager'

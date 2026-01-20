@@ -13,6 +13,7 @@ import {
   UserEventsTab
 } from './user-profile'
 import { PageTransition } from '../components/PageTransition'
+import { ConnectButton } from '../components/social'
 
 interface LoaderData {
   user: PublicUserProfileType
@@ -36,17 +37,28 @@ const UserProfile: React.FC = () => {
         {/* HERO SECTION */}
         <UserHero user={user} />
 
-        {/* ACTION BAR (if owner) */}
-        {isOwner && (
-          <Container maxWidth='xl' sx={{ mt: 12, mb: -4, textAlign: 'right' }}>
-            <Button
-              variant='primary'
-              onClick={() => navigate('/panel-de-usuario?tab=2')}
-            >
-              Editar Perfil
-            </Button>
-          </Container>
-        )}
+        {/* ACTION BAR */}
+        <Container maxWidth='xl' sx={{ mt: 12, mb: -4, textAlign: 'right' }}>
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
+            {!isOwner && loggedUser && (
+              <ConnectButton
+                targetUserId={user.id}
+                targetUserName={
+                  user.full_name || `${user.first_name} ${user.last_name}`
+                }
+                showLabel={true}
+              />
+            )}
+            {isOwner && (
+              <Button
+                variant='primary'
+                onClick={() => navigate('/panel-de-usuario?tab=2')}
+              >
+                Editar Perfil
+              </Button>
+            )}
+          </Box>
+        </Container>
 
         {/* MAIN CONTENT */}
         <Container maxWidth='xl' sx={{ mt: isOwner ? 6 : 14 }}>
