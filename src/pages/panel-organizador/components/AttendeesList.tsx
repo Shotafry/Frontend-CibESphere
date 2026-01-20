@@ -19,6 +19,7 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle'
 import AccessTimeIcon from '@mui/icons-material/AccessTime'
 import PersonIcon from '@mui/icons-material/Person'
 import RefreshIcon from '@mui/icons-material/Refresh'
+import DownloadIcon from '@mui/icons-material/Download'
 import {
   attendeeService,
   Attendee,
@@ -38,6 +39,7 @@ export const AttendeesList: React.FC<AttendeesListProps> = ({
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [checkingIn, setCheckingIn] = useState<string | null>(null)
+  const [exporting, setExporting] = useState(false)
 
   const fetchAttendees = async () => {
     try {
@@ -80,6 +82,59 @@ export const AttendeesList: React.FC<AttendeesListProps> = ({
     return `${(cents / 100).toFixed(2)}€`
   }
 
+  // Exportar lista de asistentes a CSV
+  const handleExportCSV = () => {
+    if (!data || !data.attendees.length) {
+      console.warn('No attendees to export')
+      return
+    }
+
+    setExporting(true)
+    try {
+      // Usar los datos ya cargados en el componente
+      const attendeesList = data.attendees
+
+      // Generar CSV
+      const headers = [
+        'Nombre',
+        'Email',
+        'Tipo Entrada',
+        'Precio',
+        'Check-in',
+        'Fecha Check-in',
+        'Registrado'
+      ]
+      const rows = attendeesList.map((a) => [
+        a.user_name || 'N/A',
+        a.user_email || 'N/A',
+        a.ticket_type || 'General',
+        formatPrice(a.ticket_price || 0),
+        a.checked_in ? 'Sí' : 'No',
+        a.check_in_at ? new Date(a.check_in_at).toLocaleString() : '-',
+        a.registered_at ? new Date(a.registered_at).toLocaleString() : '-'
+      ])
+
+      const csvContent = [
+        headers.join(','),
+        ...rows.map((row) => row.map((cell) => `"${cell}"`).join(','))
+      ].join('\n')
+
+      // Descargar archivo
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
+      const link = document.createElement('a')
+      link.href = URL.createObjectURL(blob)
+      link.download = `asistentes_${eventId.slice(0, 8)}_${new Date().toISOString().split('T')[0]}.csv`
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      URL.revokeObjectURL(link.href)
+    } catch (err) {
+      console.error('Error exporting CSV:', err)
+    } finally {
+      setExporting(false)
+    }
+  }
+
   if (loading) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', py: 3 }}>
@@ -119,7 +174,6 @@ export const AttendeesList: React.FC<AttendeesListProps> = ({
 
   return (
     <Box sx={{ width: '100%', maxWidth: '100%', overflow: 'hidden' }}>
-      {/* Header */}
       <Box
         sx={{
           display: 'flex',
@@ -132,11 +186,26 @@ export const AttendeesList: React.FC<AttendeesListProps> = ({
         <Typography variant='subtitle2' color='text.secondary'>
           Asistentes ({data.total})
         </Typography>
-        <Tooltip title='Actualizar'>
-          <IconButton size='small' onClick={fetchAttendees}>
-            <RefreshIcon fontSize='small' />
-          </IconButton>
-        </Tooltip>
+        <Box sx={{ display: 'flex', gap: 0.5 }}>
+          <Tooltip title='Exportar CSV'>
+            <IconButton
+              size='small'
+              onClick={handleExportCSV}
+              disabled={exporting || !data.attendees.length}
+            >
+              {exporting ? (
+                <CircularProgress size={18} />
+              ) : (
+                <DownloadIcon fontSize='small' />
+              )}
+            </IconButton>
+          </Tooltip>
+          <Tooltip title='Actualizar'>
+            <IconButton size='small' onClick={fetchAttendees}>
+              <RefreshIcon fontSize='small' />
+            </IconButton>
+          </Tooltip>
+        </Box>
       </Box>
 
       {/* List */}
