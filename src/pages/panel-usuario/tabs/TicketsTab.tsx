@@ -270,8 +270,8 @@ export const TicketsTab: React.FC = () => {
                   size='small'
                   sx={{
                     position: 'absolute',
-                    top: 12,
-                    right: 12,
+                    top: 15,
+                    right: 16,
                     bgcolor: ticket.checked_in ? '#22C55E' : '#0EA5E9',
                     color: 'white',
                     fontWeight: 'bold',
@@ -280,7 +280,7 @@ export const TicketsTab: React.FC = () => {
                 />
               </Box>
 
-              <CardContent sx={{ pb: 1 }}>
+              <CardContent sx={{ p: 3, pb: 3 }}>
                 {/* Event Title */}
                 <Typography
                   variant='h6'
@@ -345,7 +345,7 @@ export const TicketsTab: React.FC = () => {
               </CardContent>
 
               <CardActions
-                sx={{ px: 2, pb: 2, pt: 0, gap: 1, flexWrap: 'wrap' }}
+                sx={{ px: 3, pb: 3, pt: 0, gap: 1, flexWrap: 'wrap' }}
               >
                 {ticket.ticket_image_url && (
                   <Button
