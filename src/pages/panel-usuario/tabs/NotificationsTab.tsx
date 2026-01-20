@@ -323,9 +323,16 @@ export const NotificationsTab: React.FC = () => {
                       cursor: 'pointer',
                       '&:hover': { bgcolor: 'action.selected' }
                     }}
-                    onClick={() =>
-                      !notification.is_read && handleMarkAsRead(notification.id)
-                    }
+                    onClick={() => {
+                      // Para solicitudes de conexión, no marcar como leída automáticamente
+                      // El usuario debe usar los botones Aceptar/Rechazar
+                      if (
+                        notification.type !== 'CONNECTION_REQUEST' &&
+                        !notification.is_read
+                      ) {
+                        handleMarkAsRead(notification.id)
+                      }
+                    }}
                     secondaryAction={
                       <IconButton
                         size='small'
