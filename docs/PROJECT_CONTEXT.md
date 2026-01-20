@@ -45,6 +45,9 @@ src/
 │   ├── EventFilters.tsx, EventMap.tsx, SingleEventMap.tsx
 │   ├── Hero.tsx, ImageUpload.tsx, Layout.tsx, LazyMap.tsx
 │   ├── MobileMenu.tsx, NotificationMenu.tsx, ProtectedRoute.tsx
+│   ├── social/ (Social Features)
+│   │   ├── ConnectButton.tsx (Solicitud y status de conexión), FollowButton.tsx
+│   │   └── NotificationBadge.tsx (Icono con conteo real-time)
 │   ├── ParticlesBackground.tsx, AboutThis.tsx
 │   ├── ErrorBoundary.tsx, PageTransition.tsx
 │   ├── LocationPicker.tsx, EventImageUploader.tsx
@@ -91,11 +94,11 @@ src/
 │
 ├── services/ (Capa API)
 │   ├── httpClient.ts, apiService.ts
-│   └── api/
-│       ├── auth.service.ts, events.service.ts, organizations.service.ts
-│       ├── users.service.ts, reviews.service.ts, notifications.service.ts
-│       ├── admin.service.ts, attendee.service.ts, index.ts
-│       (Nota: Stripe está integrado en organizations.service.ts)
+│    └── api/
+        ├── auth.service.ts, events.service.ts, organizations.service.ts
+        ├── users.service.ts, reviews.service.ts, notifications.service.ts
+        ├── connections.service.ts (Networking), admin.service.ts, attendee.service.ts, index.ts
+        (Nota: Stripe está integrado en organizations.service.ts)
 │
 ├── hooks/ (Lógica React)
 │   ├── useApi.ts, useEvents.ts, useOrganizations.ts, index.ts

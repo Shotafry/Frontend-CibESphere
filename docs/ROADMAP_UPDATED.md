@@ -87,21 +87,28 @@ _Estado: COMPLETADO_
 
 ---
 
-## 🔔 Fase 5: Sistema de Notificaciones (Próx. v0.4.0)
+## 🔔 Fase 5: Sistema de Notificaciones y Social (v0.4.0)
+
+_Estado: EN PROGRESO_
 
 ### 5.1 Comunicaciones
 
-- [ ] **Centro de Notificaciones:** Panel de alertas para usuarios y organizadores.
-- [ ] **Push UI:** Toasts y alertas visuales para eventos en tiempo real.
-- [ ] **Preferencias:** Configuración de alertas (Email/Push/SMS).
+- [x] **Centro de Notificaciones:** Panel de alertas (`NotificationsTab`).
+- [x] **Visualización:** Formato de fecha relativa y acciones directas.
+- [ ] **Push UI:** Toasts y alertas visuales realtime.
+
+### 5.2 Social & Networking
+
+- [x] **ConnectButton:** Botón inteligente con estados (Conectar, Pendiente, Contactado).
+- [x] **Popup de Contacto:** Visualización de datos (Discord, Email) tras conectar.
+- [x] **Solicitudes:** Gestión de peticiones de conexión en panel de usuario.
 
 ---
 
-## 🚀 Fase 6: Comunidad y Social (Futuro v0.5.0)
+## 🚀 Fase 6: Comunidad Avanzada (Futuro v0.5.0)
 
 ### 6.1 Funcionalidades Sociales
 
-- [ ] **Networking:** Chat entre asistentes y sistema de "Conectar".
 - [ ] **Soporte I18n:** Traducción completa (Español/Inglés).
 
 ---

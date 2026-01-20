@@ -16,6 +16,12 @@
 
 - Lazy Loading Maps, Skeleton Loaders, Error Boundaries y Scroll Fix completados.
 
+### Fixes Recientes (v0.4.0) ✅
+
+- **Notificaciones:** Corregido error de visualización vacía y formato de fechas.
+- **Conexiones:** Corregido error 500 por solicitudes duplicadas (Botón ahora maneja estado "Pendiente").
+- **Hooks:** Solucionado error "Rendered more hooks" en `ConnectButton`.
+
 ---
 
 ## 🛠️ Deuda Técnica & Bugs Conocidos
