@@ -19,6 +19,7 @@ interface FollowButtonProps extends Omit<ButtonProps, 'onClick'> {
   organizationName?: string
   showLabel?: boolean
   onFollowChange?: (isFollowing: boolean) => void
+  ownerId?: string
 }
 
 export const FollowButton = ({
@@ -26,6 +27,7 @@ export const FollowButton = ({
   organizationName = 'esta organización',
   showLabel = true,
   onFollowChange,
+  ownerId,
   ...buttonProps
 }: FollowButtonProps) => {
   const { user, isAuthenticated } = useAuth()
@@ -70,6 +72,11 @@ export const FollowButton = ({
     } finally {
       setActionLoading(false)
     }
+  }
+
+  // Si el usuario es el propietario, no mostrar el botón
+  if (user && ownerId && user.id === ownerId) {
+    return null
   }
 
   if (loading) {

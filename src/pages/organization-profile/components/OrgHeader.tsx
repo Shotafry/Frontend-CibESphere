@@ -24,12 +24,14 @@ interface OrgHeaderProps {
   organization: OrganizationSummary
   eventsCount: number
   totalAttendees: number
+  subscribersCount?: number
 }
 
 export const OrgHeader: React.FC<OrgHeaderProps> = ({
   organization,
   eventsCount,
-  totalAttendees
+  totalAttendees,
+  subscribersCount
 }) => {
   // Support both social_media (backend) and social_links (legacy) fields
   const socialLinks =
@@ -228,6 +230,7 @@ export const OrgHeader: React.FC<OrgHeaderProps> = ({
         <FollowButton
           organizationId={organization.id}
           organizationName={organization.name}
+          ownerId={organization.owner_id}
           sx={{ width: '100%' }}
         />
 
@@ -279,6 +282,29 @@ export const OrgHeader: React.FC<OrgHeaderProps> = ({
               ASISTENTES
             </Typography>
           </Box>
+          {subscribersCount !== undefined && (
+            <>
+              <Divider orientation='vertical' flexItem />
+              <Box sx={{ textAlign: 'center', flex: 1 }}>
+                <Typography
+                  variant='h5'
+                  fontWeight='bold'
+                  color='var(--Gray-900)'
+                  sx={{ fontSize: { xs: '1.25rem', md: '1.5rem' } }}
+                >
+                  {subscribersCount}
+                </Typography>
+                <Typography
+                  variant='caption'
+                  color='var(--Gray-500)'
+                  fontWeight='bold'
+                  sx={{ fontSize: { xs: '0.7rem', md: '0.75rem' } }}
+                >
+                  SUSCRITOS
+                </Typography>
+              </Box>
+            </>
+          )}
         </Stack>
       </Box>
     </Paper>

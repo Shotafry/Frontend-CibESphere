@@ -121,7 +121,7 @@ export const NotificationBadge = ({
   }
 
   const handleViewAll = () => {
-    navigate('/panel-de-usuario?tab=2') // Tab de notificaciones
+    navigate('/panel-de-usuario?tab=3') // Tab de notificaciones
     handleClose()
   }
 

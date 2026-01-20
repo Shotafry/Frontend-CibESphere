@@ -1,10 +1,11 @@
 // src/pages/OrganizationProfile.tsx
-import { FunctionComponent } from 'react'
+import { FunctionComponent, useState, useEffect } from 'react'
 import { Box, Container } from '@mui/material'
 import { useLoaderData } from 'react-router-dom'
 import { OrganizationSummary, Event } from '../types'
 import { OrgHero, OrgHeader, OrgEvents } from './organization-profile'
 import { PageTransition } from '../components/PageTransition'
+import { getOrganizationFollowersCount } from '../services/api/subscriptions.service'
 
 interface LoaderData {
   organization: OrganizationSummary
@@ -13,6 +14,23 @@ interface LoaderData {
 
 const OrganizationProfile: FunctionComponent = () => {
   const { organization, events } = useLoaderData() as LoaderData
+  const [subscribersCount, setSubscribersCount] = useState<number | undefined>(
+    undefined
+  )
+
+  useEffect(() => {
+    const fetchSubscribers = async () => {
+      try {
+        const count = await getOrganizationFollowersCount(organization.id)
+        setSubscribersCount(count)
+      } catch (error) {
+        console.error('Error fetching subscribers count:', error)
+      }
+    }
+    if (organization?.id) {
+      fetchSubscribers()
+    }
+  }, [organization?.id])
 
   const totalAttendees = events.reduce(
     (acc, curr) => acc + curr.current_attendees,
@@ -37,6 +55,7 @@ const OrganizationProfile: FunctionComponent = () => {
             organization={organization}
             eventsCount={events.length}
             totalAttendees={totalAttendees}
+            subscribersCount={subscribersCount}
           />
           <OrgEvents events={events} />
         </Container>

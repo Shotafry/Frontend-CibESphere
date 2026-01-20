@@ -29,7 +29,8 @@ import {
 import { useAuth } from '../../context/AuthContext'
 import {
   isConnectedWith,
-  requestConnection
+  requestConnection,
+  getContactInfo
 } from '../../services/api/connections.service'
 import { httpClient } from '../../services/httpClient'
 
@@ -68,6 +69,29 @@ export const ConnectButton = ({
   const [loadingEvents, setLoadingEvents] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
+  // Estado para popup de contacto
+  const [contactDialogOpen, setContactDialogOpen] = useState(false)
+  const [contactInfo, setContactInfo] = useState<{
+    name: string
+    email?: string
+    discord?: string
+    telegram?: string
+  } | null>(null)
+
+  const handleShowContact = async () => {
+    setLoading(true)
+    try {
+      const info = await getContactInfo(targetUserId)
+      setContactInfo(info)
+      setContactDialogOpen(true)
+    } catch (error) {
+      console.error('Error getting contact info:', error)
+      // Fallback si falla
+      setError('No se pudo obtener la información de contacto.')
+    } finally {
+      setLoading(false)
+    }
+  }
   // Verificar estado inicial
   useEffect(() => {
     const checkConnectionStatus = async () => {
@@ -83,8 +107,18 @@ export const ConnectButton = ({
       }
 
       try {
-        const connected = await isConnectedWith(targetUserId)
-        setIsConnected(connected)
+        const { is_connected, status } = await isConnectedWith(targetUserId)
+        setIsConnected(is_connected)
+
+        // Manejar estados pendientes y rechazados
+        if (status === 'pending_sent' || status === 'pending_received') {
+          setIsPending(true)
+          if (onConnectionChange) onConnectionChange('pending')
+        } else if (is_connected) {
+          if (onConnectionChange) onConnectionChange('connected')
+        } else {
+          if (onConnectionChange) onConnectionChange('none')
+        }
       } catch (error) {
         console.error('Error checking connection status:', error)
       } finally {
@@ -170,11 +204,13 @@ export const ConnectButton = ({
   const getButtonState = () => {
     if (isConnected) {
       return {
-        label: 'Conectados',
+        label: 'Contactado',
         icon: <ConnectedIcon />,
         color: 'success' as const,
         variant: 'outlined' as const,
-        disabled: true
+        disabled: false,
+        onClick: handleShowContact,
+        tooltip: 'Ver información de contacto'
       }
     }
     if (isPending) {
@@ -183,7 +219,8 @@ export const ConnectButton = ({
         icon: <PendingIcon />,
         color: 'warning' as const,
         variant: 'outlined' as const,
-        disabled: true
+        disabled: true,
+        tooltip: 'Solicitud pendiente'
       }
     }
     return {
@@ -191,7 +228,9 @@ export const ConnectButton = ({
       icon: <ConnectIcon />,
       color: 'primary' as const,
       variant: 'contained' as const,
-      disabled: false
+      disabled: false,
+      onClick: handleClick,
+      tooltip: 'Enviar solicitud de conexión'
     }
   }
 
@@ -207,20 +246,12 @@ export const ConnectButton = ({
 
   return (
     <>
-      <Tooltip
-        title={
-          isConnected
-            ? 'Ya estás conectado'
-            : isPending
-            ? 'Solicitud pendiente'
-            : 'Enviar solicitud de conexión'
-        }
-      >
+      <Tooltip title={state.tooltip || ''}>
         <span>
           <Button
             variant={state.variant}
             color={state.color}
-            onClick={handleClick}
+            onClick={state.onClick}
             disabled={state.disabled || actionLoading}
             startIcon={state.icon}
             sx={{
@@ -339,6 +370,90 @@ export const ConnectButton = ({
           >
             Enviar solicitud
           </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Dialog de Información de Contacto */}
+      <Dialog
+        open={contactDialogOpen}
+        onClose={() => setContactDialogOpen(false)}
+        maxWidth='xs'
+        fullWidth
+      >
+        <DialogTitle sx={{ pb: 1 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <ConnectedIcon color='success' />
+            <Typography variant='h6'>¡Estáis conectados!</Typography>
+          </Box>
+        </DialogTitle>
+        <DialogContent>
+          <Typography variant='body2' color='text.secondary' paragraph>
+            Información de contacto compartida por {targetUserName}:
+          </Typography>
+
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 1 }}>
+            {contactInfo?.email && (
+              <Box sx={{ p: 1.5, bgcolor: 'action.hover', borderRadius: 1 }}>
+                <Typography variant='caption' color='text.secondary'>
+                  Email
+                </Typography>
+                <Typography
+                  variant='body1'
+                  fontWeight={500}
+                  sx={{ wordBreak: 'break-all' }}
+                >
+                  {contactInfo.email}
+                </Typography>
+              </Box>
+            )}
+
+            {contactInfo?.discord && (
+              <Box
+                sx={{
+                  p: 1.5,
+                  bgcolor: '#5865F220',
+                  borderRadius: 1,
+                  border: '1px solid #5865F240'
+                }}
+              >
+                <Typography variant='caption' sx={{ color: '#5865F2' }}>
+                  Discord
+                </Typography>
+                <Typography variant='body1' fontWeight={500}>
+                  {contactInfo.discord}
+                </Typography>
+              </Box>
+            )}
+
+            {contactInfo?.telegram && (
+              <Box
+                sx={{
+                  p: 1.5,
+                  bgcolor: '#0088cc20',
+                  borderRadius: 1,
+                  border: '1px solid #0088cc40'
+                }}
+              >
+                <Typography variant='caption' sx={{ color: '#0088cc' }}>
+                  Telegram
+                </Typography>
+                <Typography variant='body1' fontWeight={500}>
+                  {contactInfo.telegram}
+                </Typography>
+              </Box>
+            )}
+
+            {!contactInfo?.email &&
+              !contactInfo?.discord &&
+              !contactInfo?.telegram && (
+                <Alert severity='info'>
+                  Este usuario no comparte información pública detallada.
+                </Alert>
+              )}
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setContactDialogOpen(false)}>Cerrar</Button>
         </DialogActions>
       </Dialog>
     </>

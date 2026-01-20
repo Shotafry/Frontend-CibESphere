@@ -70,13 +70,29 @@ export const requestConnection = async (
 /**
  * Verificar si estás conectado con otro usuario
  */
+export type ConnectionStatus =
+  | 'none'
+  | 'pending_sent'
+  | 'pending_received'
+  | 'connected'
+  | 'rejected'
+
+/**
+ * Verificar si estás conectado con otro usuario
+ */
 export const isConnectedWith = async (
   targetUserId: string
-): Promise<boolean> => {
-  const response = await httpClient.get<{ is_connected: boolean }>(
-    `/users/${targetUserId}/connection-status`
-  )
-  return response.data.is_connected
+): Promise<{ is_connected: boolean; status: ConnectionStatus }> => {
+  const response = await httpClient.get<{
+    is_connected: boolean
+    status: ConnectionStatus
+  }>(`/users/${targetUserId}/connection-status`)
+  return {
+    is_connected: response.data.is_connected,
+    status:
+      response.data.status ||
+      (response.data.is_connected ? 'connected' : 'none')
+  }
 }
 
 // --- GESTIÓN DE SOLICITUDES ---

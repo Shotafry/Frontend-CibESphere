@@ -177,6 +177,7 @@ export interface OrganizationSummaryResponse
   social_media?: SocialMediaLinks // Backend field
   stripe_account_id?: string
   stripe_onboarding_complete?: boolean
+  owner_id?: string
 }
 
 // --- TIPOS DE EVENTO ---

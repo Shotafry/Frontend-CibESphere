@@ -185,7 +185,7 @@ export const NotificationsTab: React.FC<NotificationsTabProps> = ({
       </Box>
 
       {/* Sub-tabs */}
-      <Paper sx={{ mb: 3, borderRadius: 2 }}>
+      <Paper sx={{ mb: 3, borderRadius: 2, overflow: 'hidden' }}>
         <Tabs
           value={subTab}
           onChange={(_, v) => setSubTab(v)}
@@ -309,9 +309,7 @@ export const NotificationsTab: React.FC<NotificationsTabProps> = ({
                             color='text.disabled'
                             sx={{ ml: 2, whiteSpace: 'nowrap' }}
                           >
-                            {formatRelativeTime(
-                              notification.created_at || notification.date || ''
-                            )}
+                            {formatRelativeTime(notification.created_at || '')}
                           </Typography>
                         </Box>
                       }

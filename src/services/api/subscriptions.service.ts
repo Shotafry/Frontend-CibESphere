@@ -113,6 +113,18 @@ export const getFollowingOrganizations = async (
   }
 }
 
+/**
+ * Obtener el número de seguidores de una organización (Público)
+ */
+export const getOrganizationFollowersCount = async (
+  organizationId: string
+): Promise<number> => {
+  const response = await httpClient.get<{ count: number }>(
+    `/organizations/${organizationId}/followers-count`
+  )
+  return response.data.count
+}
+
 // --- HELPERS ---
 
 /**

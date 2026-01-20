@@ -24,7 +24,8 @@ import {
   Tab,
   Badge,
   TextField,
-  Autocomplete
+  Autocomplete,
+  Button as MuiButton
 } from '@mui/material'
 import {
   Settings as SettingsIcon,
@@ -44,8 +45,17 @@ import {
   markAllAsRead,
   getUnreadCount,
   formatRelativeTime,
+  getNotificationIcon,
+  getNotificationColor,
   Notification
 } from '../../../services/api/notifications.service'
+import {
+  getPendingRequests,
+  acceptConnection,
+  rejectConnection,
+  ConnectionRequest
+} from '../../../services/api/connections.service'
+import { Check as AcceptIcon, Close as RejectIcon } from '@mui/icons-material'
 
 // Lista de comunidades autónomas españolas
 const SPANISH_REGIONS = [
@@ -71,6 +81,7 @@ const SPANISH_REGIONS = [
 export const NotificationsTab: React.FC = () => {
   const [subTab, setSubTab] = useState(0) // 0: Historial, 1: Configuración
   const [notifications, setNotifications] = useState<Notification[]>([])
+  const [requests, setRequests] = useState<ConnectionRequest[]>([])
   const [loading, setLoading] = useState(true)
   const [unreadCount, setUnreadCount] = useState(0)
   const [saveMessage, setSaveMessage] = useState<{
@@ -92,12 +103,14 @@ export const NotificationsTab: React.FC = () => {
   const loadNotifications = async () => {
     setLoading(true)
     try {
-      const [result, count] = await Promise.all([
+      const [result, count, requestsResult] = await Promise.all([
         getNotifications(1, 50),
-        getUnreadCount()
+        getUnreadCount(),
+        getPendingRequests(1, 100)
       ])
       setNotifications(result.data)
       setUnreadCount(count)
+      setRequests(requestsResult.data)
     } catch (error) {
       console.error('Error loading notifications:', error)
     } finally {
@@ -118,6 +131,40 @@ export const NotificationsTab: React.FC = () => {
       setUnreadCount((prev) => Math.max(0, prev - 1))
     } catch (error) {
       console.error('Error marking as read:', error)
+    }
+  }
+
+  const handleAcceptConnection = async (notification: Notification) => {
+    const request = requests.find(
+      (r) => r.requester?.id === notification.related_user_id
+    )
+    if (!request) return
+
+    try {
+      await acceptConnection(request.id)
+      loadNotifications() // Recargar
+      if (!notification.is_read) {
+        markAsRead(notification.id)
+      }
+    } catch (error) {
+      console.error('Error accepting connection:', error)
+    }
+  }
+
+  const handleRejectConnection = async (notification: Notification) => {
+    const request = requests.find(
+      (r) => r.requester?.id === notification.related_user_id
+    )
+    if (!request) return
+
+    try {
+      await rejectConnection(request.id)
+      loadNotifications()
+      if (!notification.is_read) {
+        markAsRead(notification.id)
+      }
+    } catch (error) {
+      console.error('Error rejecting connection:', error)
     }
   }
 
@@ -219,7 +266,7 @@ export const NotificationsTab: React.FC = () => {
       </Box>
 
       {/* Sub-tabs */}
-      <Paper sx={{ mb: 3, borderRadius: 2 }}>
+      <Paper sx={{ mb: 3, borderRadius: 2, overflow: 'hidden' }}>
         <Tabs
           value={subTab}
           onChange={(_, v) => setSubTab(v)}
@@ -320,24 +367,66 @@ export const NotificationsTab: React.FC = () => {
                         </Typography>
                       }
                       secondary={
-                        <Box
-                          sx={{
-                            display: 'flex',
-                            justifyContent: 'space-between',
-                            alignItems: 'center',
-                            mt: 0.5
-                          }}
-                        >
-                          <Typography variant='body2' color='text.secondary'>
-                            {notification.message}
-                          </Typography>
-                          <Typography
-                            variant='caption'
-                            color='text.disabled'
-                            sx={{ ml: 2, whiteSpace: 'nowrap' }}
+                        <Box sx={{ mt: 0.5 }}>
+                          <Box
+                            sx={{
+                              display: 'flex',
+                              justifyContent: 'space-between',
+                              alignItems: 'center'
+                            }}
                           >
-                            {formatRelativeTime(notification.created_at || '')}
-                          </Typography>
+                            <Typography variant='body2' color='text.secondary'>
+                              {notification.message}
+                            </Typography>
+                            <Typography
+                              variant='caption'
+                              color='text.disabled'
+                              sx={{ ml: 2, whiteSpace: 'nowrap' }}
+                            >
+                              {formatRelativeTime(
+                                notification.created_at || ''
+                              )}
+                            </Typography>
+                          </Box>
+
+                          {/* Botones de acción para solicitudes de conexión */}
+                          {notification.type === 'CONNECTION_REQUEST' &&
+                            !notification.is_read && (
+                              <Box sx={{ display: 'flex', gap: 1, mt: 1.5 }}>
+                                <MuiButton
+                                  size='small'
+                                  variant='contained'
+                                  color='success'
+                                  startIcon={<AcceptIcon />}
+                                  onClick={(e) => {
+                                    e.stopPropagation()
+                                    handleAcceptConnection(notification)
+                                  }}
+                                  sx={{
+                                    borderRadius: 4,
+                                    textTransform: 'none'
+                                  }}
+                                >
+                                  Aceptar
+                                </MuiButton>
+                                <MuiButton
+                                  size='small'
+                                  variant='outlined'
+                                  color='error'
+                                  startIcon={<RejectIcon />}
+                                  onClick={(e) => {
+                                    e.stopPropagation()
+                                    handleRejectConnection(notification)
+                                  }}
+                                  sx={{
+                                    borderRadius: 4,
+                                    textTransform: 'none'
+                                  }}
+                                >
+                                  Rechazar
+                                </MuiButton>
+                              </Box>
+                            )}
                         </Box>
                       }
                     />

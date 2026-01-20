@@ -307,7 +307,7 @@ const PanelDeUsuario: FunctionComponent = () => {
             <Tab label='Mis Entradas' />
             <Tab label='Favoritos' />
             <Tab label='Perfil' />
-            <Tab label='Ajustes' />
+            <Tab label='Notificaciones' />
           </Tabs>
         </Container>
       </Box>
