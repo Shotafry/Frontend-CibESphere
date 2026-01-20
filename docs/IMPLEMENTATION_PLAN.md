@@ -1,7 +1,7 @@
 # 📋 Plan de Implementación: CybESphere Frontend
 
-> **Versión Actual:** v0.3.0 ✅ COMPLETADO
-> **Próxima Versión:** v0.4.0 🚧 EN PLANIFICACIÓN
+> **Versión Actual:** v0.4.0 ✅ COMPLETADO
+> **Próxima Versión:** v0.5.0 🚧 EN DESARROLLO (Testing & Bug Fixes)
 > **Última Actualización:** Enero 2026
 
 ---
@@ -29,21 +29,72 @@
 
 ---
 
-## � v0.4.0 - Notificaciones & Social (EN PLANIFICACIÓN)
+## ✅ v0.4.0 - Notificaciones & Social (COMPLETADO)
 
-### 🎯 Objetivos
+### 🎯 Objetivos Alcanzados
 
-**Fase 5: Sistema de Notificaciones**
+**Fase 5: Sistema de Notificaciones ✅**
 
-- Centro de notificaciones funcional
-- Seguir organizaciones (suscripciones)
-- Emails de ticket y confirmación
-- Tickets bonitos para eventos gratuitos
+- [x] Centro de notificaciones funcional
+- [x] Seguir organizaciones (suscripciones)
+- [x] Emails de ticket y confirmación
+- [x] Tickets bonitos para eventos gratuitos
 
-**Fase 6: Social & Networking**
+**Fase 6: Social & Networking ✅**
 
-- Sistema de conexiones (handshake usuarios)
-- Campos de contacto social (Discord, Telegram)
+- [x] Sistema de conexiones (handshake usuarios)
+- [x] Campos de contacto social (Discord, Telegram)
+
+---
+
+### 📂 Servicios Implementados
+
+```
+[✅] src/services/api/subscriptions.service.ts
+  - followOrganization(orgId)
+  - unfollowOrganization(orgId)
+  - getFollowing()
+
+[✅] src/services/api/connections.service.ts
+  - requestConnection(userId, data)
+  - acceptConnection(requestId)
+  - rejectConnection(requestId)
+  - getPendingConnections()
+  - getConnections()
+  - getContactInfo(connectionId)
+
+[✅] src/services/api/notifications.service.ts
+  - getNotifications()
+  - markAsRead(id)
+  - markAllAsRead()
+  - getUnreadCount()
+```
+
+### Componentes Implementados
+
+```
+[✅] src/components/social/ConnectButton.tsx
+[✅] src/components/social/FollowButton.tsx
+[✅] src/components/social/NotificationBadge.tsx
+[✅] src/components/social/ConnectionRequestsManager.tsx
+```
+
+---
+
+## 🚧 v0.5.0 - Testing & Bug Fixes (EN DESARROLLO)
+
+### Bugs Conocidos a Corregir
+
+- [ ] **Notificaciones:** El icono aparece pero la notificación no se muestra al hacer click
+- [ ] **QRs:** No se ven correctamente en el panel de usuario
+- [ ] **Mejoras Visuales:** Ajustes pendientes de UI/UX
+
+### Testing Pendiente
+
+- [ ] Verificación funcional de conexiones
+- [ ] Verificación funcional de notificaciones
+- [ ] Verificación funcional de subscripciones
+- [ ] Testing de flujo completo de tickets
 
 ---
 

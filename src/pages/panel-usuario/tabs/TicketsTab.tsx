@@ -4,7 +4,6 @@ import {
   Box,
   Typography,
   Paper,
-  Grid,
   Chip,
   Button,
   CircularProgress,
@@ -16,6 +15,7 @@ import {
   Snackbar,
   Alert
 } from '@mui/material'
+import Grid from '@mui/material/Grid'
 import ConfirmationNumberIcon from '@mui/icons-material/ConfirmationNumber'
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday'
 import LocationOnIcon from '@mui/icons-material/LocationOn'
@@ -24,6 +24,11 @@ import QrCodeIcon from '@mui/icons-material/QrCode'
 import EmailIcon from '@mui/icons-material/Email'
 import { useNavigate } from 'react-router-dom'
 import { httpClient } from '../../../services/httpClient'
+
+// URL base del backend para assets estáticos (sin /api/v1)
+const BACKEND_URL =
+  (import.meta as any).env.VITE_API_URL?.replace('/api/v1', '') ||
+  'http://localhost:8080'
 
 interface UserTicket {
   id: string
@@ -128,7 +133,7 @@ export const TicketsTab: React.FC = () => {
         </Typography>
         <Grid container spacing={3}>
           {[1, 2, 3].map((i) => (
-            <Grid item xs={12} md={6} key={i}>
+            <Grid size={{ xs: 12, md: 6 }} key={i}>
               <Skeleton
                 variant='rounded'
                 height={280}
@@ -207,7 +212,7 @@ export const TicketsTab: React.FC = () => {
 
       <Grid container spacing={3}>
         {tickets.map((ticket) => (
-          <Grid item xs={12} md={6} key={ticket.id}>
+          <Grid size={{ xs: 12, md: 6 }} key={ticket.id}>
             <Card
               elevation={0}
               sx={{
@@ -237,14 +242,22 @@ export const TicketsTab: React.FC = () => {
                   <CardMedia
                     component='img'
                     height='140'
-                    image={ticket.ticket_image_url}
+                    image={
+                      ticket.ticket_image_url.startsWith('http')
+                        ? ticket.ticket_image_url
+                        : `${BACKEND_URL}${ticket.ticket_image_url}`
+                    }
                     alt='Ticket'
                     sx={{ objectFit: 'contain', p: 2 }}
                   />
                 ) : ticket.qr_code_url ? (
                   <Box
                     component='img'
-                    src={ticket.qr_code_url}
+                    src={
+                      ticket.qr_code_url.startsWith('http')
+                        ? ticket.qr_code_url
+                        : `${BACKEND_URL}${ticket.qr_code_url}`
+                    }
                     alt='QR Code'
                     sx={{
                       height: 120,
@@ -346,7 +359,11 @@ export const TicketsTab: React.FC = () => {
                     size='small'
                     variant='outlined'
                     startIcon={<DownloadIcon />}
-                    href={ticket.ticket_image_url}
+                    href={
+                      ticket.ticket_image_url.startsWith('http')
+                        ? ticket.ticket_image_url
+                        : `${BACKEND_URL}${ticket.ticket_image_url}`
+                    }
                     download
                     sx={{
                       borderColor: '#E2E8F0',

@@ -51,14 +51,30 @@ export const getNotifications = async (
     const response = await httpClient.get<any>(
       `/notifications?page=${page}&limit=${limit}`
     )
-    return {
-      data: response.data.data || response.data.notifications || [],
-      pagination: response.data.pagination || {
-        page,
-        limit,
-        total: 0,
-        total_pages: 0
+    // El httpClient ahora preserva la estructura { data, pagination } cuando hay paginación
+    const responseData = response.data
+
+    // Si la respuesta tiene la estructura { data, pagination }
+    if (
+      responseData &&
+      typeof responseData === 'object' &&
+      'data' in responseData
+    ) {
+      return {
+        data: responseData.data || [],
+        pagination: responseData.pagination || {
+          page,
+          limit,
+          total: 0,
+          total_pages: 0
+        }
       }
+    }
+
+    // Fallback: si es un array directamente (sin paginación)
+    return {
+      data: Array.isArray(responseData) ? responseData : [],
+      pagination: { page, limit, total: 0, total_pages: 0 }
     }
   } catch (e) {
     console.warn('Notifications endpoint not ready', e)

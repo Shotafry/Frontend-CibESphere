@@ -81,14 +81,29 @@ export const getOrganizationFollowers = async (
   const response = await httpClient.get<any>(
     `/organizations/${organizationId}/followers?page=${page}&limit=${limit}`
   )
-  return {
-    data: response.data.data || response.data.followers || [],
-    pagination: response.data.pagination || {
-      page,
-      limit,
-      total: 0,
-      total_pages: 0
+  const responseData = response.data
+
+  // Si la respuesta tiene la estructura { data, pagination }
+  if (
+    responseData &&
+    typeof responseData === 'object' &&
+    'data' in responseData
+  ) {
+    return {
+      data: responseData.data || [],
+      pagination: responseData.pagination || {
+        page,
+        limit,
+        total: 0,
+        total_pages: 0
+      }
     }
+  }
+
+  // Fallback
+  return {
+    data: Array.isArray(responseData) ? responseData : [],
+    pagination: { page, limit, total: 0, total_pages: 0 }
   }
 }
 
@@ -102,14 +117,29 @@ export const getFollowingOrganizations = async (
   const response = await httpClient.get<any>(
     `/users/me/following?page=${page}&limit=${limit}`
   )
-  return {
-    data: response.data.data || response.data.organizations || [],
-    pagination: response.data.pagination || {
-      page,
-      limit,
-      total: 0,
-      total_pages: 0
+  const responseData = response.data
+
+  // Si la respuesta tiene la estructura { data, pagination }
+  if (
+    responseData &&
+    typeof responseData === 'object' &&
+    'data' in responseData
+  ) {
+    return {
+      data: responseData.data || [],
+      pagination: responseData.pagination || {
+        page,
+        limit,
+        total: 0,
+        total_pages: 0
+      }
     }
+  }
+
+  // Fallback
+  return {
+    data: Array.isArray(responseData) ? responseData : [],
+    pagination: { page, limit, total: 0, total_pages: 0 }
   }
 }
 

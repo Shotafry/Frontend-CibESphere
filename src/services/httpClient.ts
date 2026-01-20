@@ -64,11 +64,16 @@ class HttpClient {
           'data' in response.data &&
           'success' in response.data
         ) {
-          // Si es una respuesta estándar de nuestra API, devolvemos response,
-          // pero modificamos response.data para que sea directamente el payload.
-          // Esto permite que (await axios.get()).data siga funcionando como se espera
-          // en apiService.ts pero conteniendo el objeto limpio.
-          response.data = response.data.data
+          // Si hay pagination, preservarla junto con los datos
+          if ('pagination' in response.data && response.data.pagination) {
+            response.data = {
+              data: response.data.data,
+              pagination: response.data.pagination
+            }
+          } else {
+            // Si no hay pagination, devolver solo los datos directamente
+            response.data = response.data.data
+          }
         }
         return response
       },

@@ -87,37 +87,63 @@ _Estado: COMPLETADO_
 
 ---
 
-## 🔔 Fase 5: Sistema de Notificaciones y Social (v0.4.0)
+## 🔔 Fase 5: Sistema de Notificaciones y Social (v0.4.0) ✅
 
-_Estado: EN PROGRESO_
+_Estado: COMPLETADO_
 
-### 5.1 Comunicaciones
+### 5.1 Comunicaciones ✅
 
 - [x] **Centro de Notificaciones:** Panel de alertas (`NotificationsTab`).
 - [x] **Visualización:** Formato de fecha relativa y acciones directas.
-- [ ] **Push UI:** Toasts y alertas visuales realtime.
+- [ ] **Push UI:** Toasts y alertas visuales realtime. _(Pendiente para v0.6.0)_
 
-### 5.2 Social & Networking
+### 5.2 Social & Networking ✅
 
 - [x] **ConnectButton:** Botón inteligente con estados (Conectar, Pendiente, Contactado).
 - [x] **Popup de Contacto:** Visualización de datos (Discord, Email) tras conectar.
 - [x] **Solicitudes:** Gestión de peticiones de conexión en panel de usuario.
+- [x] **FollowButton:** Seguir organizaciones.
+- [x] **NotificationBadge:** Icono con conteo de notificaciones.
 
 ---
 
-## 🚀 Fase 6: Comunidad Avanzada (Futuro v0.5.0)
+## 🧪 Fase 6: Testing & Bug Fixes (v0.5.0)
 
-### 6.1 Funcionalidades Sociales
+_Estado: EN PROGRESO_
 
+### Bugs Conocidos a Corregir
+
+- [ ] **Notificaciones:** El icono aparece pero la notificación no se muestra al hacer click.
+- [ ] **QRs:** No se ven correctamente en el panel de usuario.
+- [ ] **Mejoras Visuales:** Ajustes de UI/UX pendientes.
+
+### Testing
+
+- [ ] Verificación funcional de conexiones.
+- [ ] Verificación funcional de notificaciones.
+- [ ] Verificación funcional de subscripciones.
+- [ ] Testing de flujo completo de tickets.
+
+---
+
+## 🚀 Fase 7: Comunidad Avanzada (Futuro v0.6.0+)
+
+### 7.1 Funcionalidades Sociales
+
+- [ ] **Push Notifications:** Alertas en tiempo real.
+- [ ] **Feed Social:** Tablón de actividad.
+- [ ] **Chat:** Mensajería directa.
 - [ ] **Soporte I18n:** Traducción completa (Español/Inglés).
 
 ---
 
 ## 📜 Historial de Versiones
 
-| Versión    | Estado   | Descripción                                                             |
-| ---------- | -------- | ----------------------------------------------------------------------- |
-| **v0.0.1** | Alpha    | Prototipo estático generado por IA.                                     |
-| **v0.1.0** | Alpha    | Mockup funcional con backend simulado.                                  |
-| **v0.2.0** | Beta     | Refactorización modular completa, backend Go real.                      |
-| **v0.3.0** | **Beta** | **Actual.** Pagos con Stripe, Scan QR, gestión de asistentes y tickets. |
+| Versión    | Estado   | Descripción                                                        |
+| ---------- | -------- | ------------------------------------------------------------------ | --- |
+| **v0.0.1** | Alpha    | Prototipo estático generado por IA.                                |
+| **v0.1.0** | Alpha    | Mockup funcional con backend simulado.                             |
+| **v0.2.0** | Beta     | Refactorización modular completa, backend Go real.                 |
+| **v0.3.0** | Beta     | Pagos con Stripe, Scan QR, gestión de asistentes y tickets.        |
+| **v0.4.0** | **Beta** | **Completado.** Social, Conexiones, Subscriptions, Notificaciones. |
+| **v0.5.0** | **Beta** | **En Desarrollo.** Testing, Bug Fixes y QA.                        |     |

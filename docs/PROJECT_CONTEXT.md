@@ -1,7 +1,8 @@
 # 🧠 Contexto del Proyecto: CybESphere Frontend
 
 > **Documento Maestro**: Este archivo contiene toda la información necesaria para que una IA o un desarrollador entienda la arquitectura, flujos y diseño de CybESphere sin necesidad de leer todo el código.
-> **Versión**: Beta v0.3.0 (Enero 2026) - **Stripe & QR Enabled**
+> **Versión**: Beta v0.4.0 (Enero 2026) - **Social & Notifications Enabled**
+> **En Desarrollo**: Beta v0.5.0 - Testing & Bug Fixes
 
 ---
 
@@ -9,7 +10,7 @@
 
 **CybESphere** es una plataforma centralizada (sin ánimo de lucro) para unificar la comunidad de ciberseguridad en España. Su objetivo es dar visibilidad a todos los eventos y facilitar la gestión integral para organizadores y asistentes.
 
-**Version v0.3.0:** Introduce capacidades de comercio electrónico, permitiendo a los organizadores vender entradas y validar accesos mediante QR.
+**Version v0.4.0:** Incorpora sistema completo de Social & Networking (conexiones entre usuarios, suscripciones a organizaciones, centro de notificaciones). Mantiene todas las capacidades de e-commerce de v0.3.0.
 
 **Stack Tecnológico:**
 

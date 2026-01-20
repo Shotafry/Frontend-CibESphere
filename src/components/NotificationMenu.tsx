@@ -137,7 +137,9 @@ export const NotificationMenu: React.FC<NotificationMenuProps> = ({
                         variant='caption'
                         color='text.secondary'
                       >
-                        {new Date(notif.date).toLocaleDateString()}
+                        {notif.date
+                          ? new Date(notif.date).toLocaleDateString()
+                          : ''}
                       </Typography>
                     </React.Fragment>
                   }
@@ -170,7 +172,7 @@ export const NotificationMenu: React.FC<NotificationMenuProps> = ({
         )}
       </List>
       <Box sx={{ p: 1.5, borderTop: '1px solid #F1F5F9', textAlign: 'center' }}>
-        <Button variant="primary" size="small" onClick={onClose}>
+        <Button variant='primary' size='small' onClick={onClose}>
           Cerrar
         </Button>
       </Box>

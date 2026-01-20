@@ -1,6 +1,6 @@
 # 🐛 Errores Conocidos y Deuda Técnica
 
-> **Última Auditoría:** Enero 2026 (Verificado contra código real)
+> **Última Auditoría:** Enero 2026 (Beta v0.5.0 - Verificado contra código real)
 
 ---
 
@@ -21,6 +21,13 @@
 - **Notificaciones:** Corregido error de visualización vacía y formato de fechas.
 - **Conexiones:** Corregido error 500 por solicitudes duplicadas (Botón ahora maneja estado "Pendiente").
 - **Hooks:** Solucionado error "Rendered more hooks" en `ConnectButton`.
+
+### Social & Networking (v0.4.0) ✅
+
+- **ConnectButton:** Implementado con estados (Conectar, Pendiente, Conectado).
+- **FollowButton:** Seguir organizaciones funcional.
+- **NotificationBadge:** Icono con conteo implementado.
+- **ConnectionRequestsManager:** Gestión de solicitudes pendientes.
 
 ---
 
@@ -43,10 +50,32 @@
 
 ---
 
-## 🧩 Funcionalidades Pendientes (Fase 5+)
+## 🔴 Bugs Conocidos (v0.5.0)
 
-- [ ] **Notificaciones:** Centro de notificaciones y push.
-- [ ] **Social:** Chat y Feed.
+### 1. Notificaciones no se muestran
+
+- **Problema:** El icono de notificaciones (NotificationBadge) aparece correctamente pero al hacer click no muestra las notificaciones.
+- **Ubicación:** `NotificationMenu.tsx` o `NotificationsTab.tsx`
+- **Prioridad:** Media
+
+### 2. QRs no visibles en panel de usuario
+
+- **Problema:** Los códigos QR de las entradas no se ven correctamente en el panel de usuario (TicketsTab).
+- **Ubicación:** `panel-usuario/tabs/TicketsTab.tsx`
+- **Prioridad:** Alta
+
+### 3. Mejoras Visuales Pendientes
+
+- **Problema:** Varios componentes necesitan ajustes de UI/UX identificados durante testing.
+- **Prioridad:** Media
+
+---
+
+## 🧩 Funcionalidades Pendientes (Fase 6+)
+
+- [ ] **Push Notifications:** Toasts y alertas visuales realtime.
+- [ ] **Chat:** Mensajería directa.
+- [ ] **Feed Social:** Tablón de actividad.
 - [ ] **i18n:** Traducción (actualmente solo ES).
 
 ---
