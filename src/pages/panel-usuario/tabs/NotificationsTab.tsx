@@ -89,11 +89,15 @@ export const NotificationsTab: React.FC = () => {
     text: string
   } | null>(null)
 
-  // Preferencias
+  // Preferencias - Solo Email y Web (sin Push)
   const [preferences, setPreferences] = useState({
+    // Canales
     emailEnabled: true,
-    pushEnabled: true,
-    newEventsNearby: true,
+    webEnabled: true,
+    // Tipos de notificaciones
+    connectionRequests: true,
+    ticketNotifications: true,
+    newEventsInRegions: true,
     followedOrgsEvents: true,
     eventReminders: true
   })
@@ -485,23 +489,27 @@ export const NotificationsTab: React.FC = () => {
                     </Typography>
                   </Box>
                 }
-                sx={{ mb: 2, alignItems: 'flex-start' }}
+                sx={{
+                  mb: 2.5,
+                  alignItems: 'flex-start',
+                  minHeight: 56,
+                  display: 'flex',
+                  width: '100%'
+                }}
               />
               <FormControlLabel
                 control={
                   <Switch
-                    checked={preferences.pushEnabled}
-                    onChange={() => handlePreferenceChange('pushEnabled')}
+                    checked={preferences.webEnabled}
+                    onChange={() => handlePreferenceChange('webEnabled')}
                     color='primary'
                   />
                 }
                 label={
                   <Box>
-                    <Typography variant='body1'>
-                      Notificaciones Push (Web)
-                    </Typography>
+                    <Typography variant='body1'>Notificaciones Web</Typography>
                     <Typography variant='caption' color='text.secondary'>
-                      Recibe alertas en tu navegador cuando estés conectado
+                      Recibe notificaciones en tu centro de notificaciones
                     </Typography>
                   </Box>
                 }
@@ -511,15 +519,77 @@ export const NotificationsTab: React.FC = () => {
 
             <Divider sx={{ my: 3 }} />
 
-            {/* Contenido */}
+            {/* Tipos de Notificaciones */}
             <Box sx={{ mb: 4 }}>
               <Typography
                 variant='subtitle2'
                 color='text.secondary'
                 sx={{ mb: 2 }}
               >
-                Tipos de Contenido
+                Tipos de Notificaciones
               </Typography>
+
+              {/* Conexiones */}
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={preferences.connectionRequests}
+                    onChange={() =>
+                      handlePreferenceChange('connectionRequests')
+                    }
+                    color='primary'
+                  />
+                }
+                label={
+                  <Box>
+                    <Typography variant='body1'>
+                      Solicitudes de conexión
+                    </Typography>
+                    <Typography variant='caption' color='text.secondary'>
+                      Cuando alguien quiera conectar contigo
+                    </Typography>
+                  </Box>
+                }
+                sx={{
+                  mb: 2.5,
+                  alignItems: 'flex-start',
+                  minHeight: 56,
+                  display: 'flex',
+                  width: '100%'
+                }}
+              />
+
+              {/* Entradas */}
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={preferences.ticketNotifications}
+                    onChange={() =>
+                      handlePreferenceChange('ticketNotifications')
+                    }
+                    color='primary'
+                  />
+                }
+                label={
+                  <Box>
+                    <Typography variant='body1'>
+                      Entradas compradas o gratuitas
+                    </Typography>
+                    <Typography variant='caption' color='text.secondary'>
+                      Confirmaciones de inscripción a eventos
+                    </Typography>
+                  </Box>
+                }
+                sx={{
+                  mb: 2.5,
+                  alignItems: 'flex-start',
+                  minHeight: 56,
+                  display: 'flex',
+                  width: '100%'
+                }}
+              />
+
+              {/* Eventos de orgs seguidas */}
               <FormControlLabel
                 control={
                   <Switch
@@ -540,28 +610,46 @@ export const NotificationsTab: React.FC = () => {
                     </Typography>
                   </Box>
                 }
-                sx={{ mb: 2, alignItems: 'flex-start' }}
+                sx={{
+                  mb: 2.5,
+                  alignItems: 'flex-start',
+                  minHeight: 56,
+                  display: 'flex',
+                  width: '100%'
+                }}
               />
+
+              {/* Eventos en regiones */}
               <FormControlLabel
                 control={
                   <Switch
-                    checked={preferences.newEventsNearby}
-                    onChange={() => handlePreferenceChange('newEventsNearby')}
+                    checked={preferences.newEventsInRegions}
+                    onChange={() =>
+                      handlePreferenceChange('newEventsInRegions')
+                    }
                     color='primary'
                   />
                 }
                 label={
                   <Box>
                     <Typography variant='body1'>
-                      Eventos cerca de mi ubicación
+                      Eventos en mis regiones de interés
                     </Typography>
                     <Typography variant='caption' color='text.secondary'>
-                      Eventos nuevos en las regiones que selecciones
+                      Eventos nuevos en las comunidades que selecciones
                     </Typography>
                   </Box>
                 }
-                sx={{ mb: 2, alignItems: 'flex-start' }}
+                sx={{
+                  mb: 2.5,
+                  alignItems: 'flex-start',
+                  minHeight: 56,
+                  display: 'flex',
+                  width: '100%'
+                }}
               />
+
+              {/* Recordatorios */}
               <FormControlLabel
                 control={
                   <Switch
@@ -576,7 +664,7 @@ export const NotificationsTab: React.FC = () => {
                       Recordatorios de eventos
                     </Typography>
                     <Typography variant='caption' color='text.secondary'>
-                      Recuérdame antes de que empiecen mis eventos
+                      3 días antes y el día del evento
                     </Typography>
                   </Box>
                 }

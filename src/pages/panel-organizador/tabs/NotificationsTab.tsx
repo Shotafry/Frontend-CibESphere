@@ -55,12 +55,16 @@ export const NotificationsTab: React.FC<NotificationsTabProps> = ({
   const [loading, setLoading] = useState(true)
   const [unreadCount, setUnreadCount] = useState(0)
 
-  // Configuración de preferencias
+  // Configuración de preferencias - Solo Email y Web (sin Push)
   const [preferences, setPreferences] = useState({
+    // Canales
+    emailEnabled: true,
+    webEnabled: true,
+    // Tipos de notificaciones
     emailOnSale: true,
+    emailNewFollowers: true,
     emailDailyDigest: false,
-    emailEventReminder: true,
-    pushEnabled: true
+    emailEventReminder: true
   })
 
   // Cargar notificaciones
@@ -353,7 +357,37 @@ export const NotificationsTab: React.FC<NotificationsTabProps> = ({
                     </Typography>
                   </Box>
                 }
-                sx={{ mb: 2, alignItems: 'flex-start' }}
+                sx={{
+                  mb: 2.5,
+                  alignItems: 'flex-start',
+                  minHeight: 56,
+                  display: 'flex',
+                  width: '100%'
+                }}
+              />
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={preferences.emailNewFollowers}
+                    onChange={() => handlePreferenceChange('emailNewFollowers')}
+                    color='primary'
+                  />
+                }
+                label={
+                  <Box>
+                    <Typography variant='body1'>Nuevos seguidores</Typography>
+                    <Typography variant='caption' color='text.secondary'>
+                      Recibe un email cuando un usuario siga tu organización
+                    </Typography>
+                  </Box>
+                }
+                sx={{
+                  mb: 2.5,
+                  alignItems: 'flex-start',
+                  minHeight: 56,
+                  display: 'flex',
+                  width: '100%'
+                }}
               />
               <FormControlLabel
                 control={
@@ -372,7 +406,13 @@ export const NotificationsTab: React.FC<NotificationsTabProps> = ({
                     </Typography>
                   </Box>
                 }
-                sx={{ mb: 2, alignItems: 'flex-start' }}
+                sx={{
+                  mb: 2.5,
+                  alignItems: 'flex-start',
+                  minHeight: 56,
+                  display: 'flex',
+                  width: '100%'
+                }}
               />
               <FormControlLabel
                 control={
@@ -406,21 +446,21 @@ export const NotificationsTab: React.FC<NotificationsTabProps> = ({
                 color='text.secondary'
                 sx={{ mb: 2 }}
               >
-                Notificaciones Push (Web)
+                Notificaciones Web
               </Typography>
               <FormControlLabel
                 control={
                   <Switch
-                    checked={preferences.pushEnabled}
-                    onChange={() => handlePreferenceChange('pushEnabled')}
+                    checked={preferences.webEnabled}
+                    onChange={() => handlePreferenceChange('webEnabled')}
                     color='primary'
                   />
                 }
                 label={
                   <Box>
-                    <Typography variant='body1'>Notificaciones push</Typography>
+                    <Typography variant='body1'>Notificaciones web</Typography>
                     <Typography variant='caption' color='text.secondary'>
-                      Recibe notificaciones en tiempo real en tu navegador
+                      Recibe notificaciones en tu centro de notificaciones
                     </Typography>
                   </Box>
                 }
