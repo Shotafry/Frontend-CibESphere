@@ -47,7 +47,9 @@ import {
   formatRelativeTime,
   getNotificationIcon,
   getNotificationColor,
-  Notification
+  Notification,
+  getNotificationPreferences,
+  saveNotificationPreferences
 } from '../../../services/api/notifications.service'
 import {
   getPendingRequests,
@@ -124,6 +126,24 @@ export const NotificationsTab: React.FC = () => {
 
   useEffect(() => {
     loadNotifications()
+    // Cargar preferencias desde API
+    getNotificationPreferences().then((prefs) => {
+      setPreferences({
+        emailEnabled: prefs.email_notifications,
+        webEnabled: prefs.web_notifications,
+        connectionRequests: prefs.connection_requests,
+        ticketNotifications: prefs.ticket_notifications,
+        newEventsInRegions: prefs.new_events_in_regions,
+        followedOrgsEvents: prefs.followed_orgs_events,
+        eventReminders: prefs.event_reminders
+      })
+      try {
+        const regions = JSON.parse(prefs.preferred_regions || '[]')
+        setSelectedRegions(regions)
+      } catch {
+        setSelectedRegions([])
+      }
+    })
   }, [])
 
   const handleMarkAsRead = async (notificationId: string) => {
@@ -217,12 +237,29 @@ export const NotificationsTab: React.FC = () => {
     }))
   }
 
-  const handleSavePreferences = () => {
-    // TODO: Llamar a API para guardar preferencias
-    setSaveMessage({
-      type: 'success',
-      text: 'Preferencias guardadas correctamente'
-    })
+  const handleSavePreferences = async () => {
+    try {
+      await saveNotificationPreferences({
+        email_notifications: preferences.emailEnabled,
+        web_notifications: preferences.webEnabled,
+        connection_requests: preferences.connectionRequests,
+        ticket_notifications: preferences.ticketNotifications,
+        new_events_in_regions: preferences.newEventsInRegions,
+        followed_orgs_events: preferences.followedOrgsEvents,
+        event_reminders: preferences.eventReminders,
+        preferred_regions: JSON.stringify(selectedRegions)
+      })
+      setSaveMessage({
+        type: 'success',
+        text: 'Preferencias guardadas correctamente'
+      })
+    } catch (e) {
+      console.error('Error saving preferences:', e)
+      setSaveMessage({
+        type: 'error',
+        text: 'Error al guardar preferencias'
+      })
+    }
     setTimeout(() => setSaveMessage(null), 3000)
   }
 

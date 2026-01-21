@@ -40,7 +40,9 @@ import {
   markAllAsRead,
   getUnreadCount,
   formatRelativeTime,
-  Notification
+  Notification,
+  getNotificationPreferences,
+  saveNotificationPreferences
 } from '../../../services/api/notifications.service'
 
 interface NotificationsTabProps {
@@ -143,8 +145,38 @@ export const NotificationsTab: React.FC<NotificationsTabProps> = ({
       ...prev,
       [key]: !prev[key]
     }))
-    // TODO: Llamar a API para guardar preferencias
   }
+
+  const handleSavePreferences = async () => {
+    try {
+      await saveNotificationPreferences({
+        email_notifications: preferences.emailEnabled,
+        web_notifications: preferences.webEnabled,
+        ticket_sales: preferences.emailOnSale,
+        new_followers: preferences.emailNewFollowers,
+        daily_summary: preferences.emailDailyDigest,
+        event_reminders: preferences.emailEventReminder
+      })
+      alert('Preferencias guardadas correctamente')
+    } catch (e) {
+      console.error('Error saving preferences:', e)
+      alert('Error al guardar preferencias')
+    }
+  }
+
+  // Cargar preferencias al montar
+  useEffect(() => {
+    getNotificationPreferences().then((prefs) => {
+      setPreferences({
+        emailEnabled: prefs.email_notifications,
+        webEnabled: prefs.web_notifications,
+        emailOnSale: prefs.ticket_sales,
+        emailNewFollowers: prefs.new_followers,
+        emailDailyDigest: prefs.daily_summary,
+        emailEventReminder: prefs.event_reminders
+      })
+    })
+  }, [])
 
   return (
     <Box>

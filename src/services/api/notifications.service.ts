@@ -185,3 +185,60 @@ export const formatRelativeTime = (dateString?: string): string => {
     month: 'short'
   })
 }
+
+// --- PREFERENCIAS DE NOTIFICACIONES ---
+
+export interface NotificationPreferences {
+  // Canales
+  email_notifications: boolean
+  web_notifications: boolean
+  // Usuario
+  connection_requests: boolean
+  ticket_notifications: boolean
+  new_events_in_regions: boolean
+  followed_orgs_events: boolean
+  event_reminders: boolean
+  // Organizador
+  ticket_sales: boolean
+  new_followers: boolean
+  daily_summary: boolean
+  preferred_regions: string
+}
+
+/**
+ * Obtener preferencias de notificaciones del usuario actual
+ */
+export const getNotificationPreferences =
+  async (): Promise<NotificationPreferences> => {
+    try {
+      const response = await httpClient.get<NotificationPreferences>(
+        '/user/notification-preferences'
+      )
+      return response.data
+    } catch (e) {
+      console.warn('Notification preferences endpoint not ready', e)
+      // Return defaults
+      return {
+        email_notifications: true,
+        web_notifications: true,
+        connection_requests: true,
+        ticket_notifications: true,
+        new_events_in_regions: true,
+        followed_orgs_events: true,
+        event_reminders: true,
+        ticket_sales: true,
+        new_followers: true,
+        daily_summary: false,
+        preferred_regions: '[]'
+      }
+    }
+  }
+
+/**
+ * Guardar preferencias de notificaciones
+ */
+export const saveNotificationPreferences = async (
+  preferences: Partial<NotificationPreferences>
+): Promise<void> => {
+  await httpClient.put('/user/notification-preferences', preferences)
+}
