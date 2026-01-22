@@ -1,8 +1,8 @@
 # 🧠 Contexto del Proyecto: CybESphere Frontend
 
-> **Documento Maestro**: Este archivo contiene toda la información necesaria para que una IA o un desarrollador entienda la arquitectura, flujos y diseño de CybESphere sin necesidad de leer todo el código.
-> **Versión**: Beta v0.4.0 (Enero 2026) - **Social & Notifications Enabled**
-> **En Desarrollo**: Beta v0.5.0 - Testing & Bug Fixes
+> **Documento Maestro**: Este archivo contiene toda la información necesaria para que una IA o desarrollador entienda la arquitectura, flujos y diseño de CybESphere.
+> **Versión**: Beta v0.5.0 (Enero 2026) - **Funcionalidad Completa**
+> **Próxima**: RC v1.0.0 "Sentinel" - Refactorización y Testing
 
 ---
 
@@ -10,12 +10,12 @@
 
 **CybESphere** es una plataforma centralizada (sin ánimo de lucro) para unificar la comunidad de ciberseguridad en España. Su objetivo es dar visibilidad a todos los eventos y facilitar la gestión integral para organizadores y asistentes.
 
-**Version v0.4.0:** Incorpora sistema completo de Social & Networking (conexiones entre usuarios, suscripciones a organizaciones, centro de notificaciones). Mantiene todas las capacidades de e-commerce de v0.3.0.
+**Version v0.5.0:** Incluye sistema completo de Social & Networking, preferencias de notificaciones personalizables, exportación CSV de asistentes, y todos los bug fixes de la fase Beta.
 
 **Stack Tecnológico:**
 
 - **Frontend:** React 19, React Router 7 (Data API), Material UI (MUI) 7, Vite.
-- **Backend:** Go (Gin), PostgreSQL (Arquitectura hexagonal).
+- **Backend:** Go (Gin), PostgreSQL (Arquitectura hexagonal con GORM).
 - **Mapas:** React Leaflet 5 (con Lazy Loading).
 - **Pagos:** Stripe Connect + Stripe Checkout.
 - **Scanner:** `html5-qrcode` para lectura de QRs.
@@ -23,7 +23,7 @@
 
 ---
 
-## 2. Arquitectura Frontend (Verificada)
+## 2. Arquitectura Frontend
 
 ### Estructura de Rutas y Datos
 
@@ -33,7 +33,7 @@ El proyecto utiliza la moderna **Data API** de React Router 7 (`createBrowserRou
 - **Axios Singleton:** Hub centralizado en `src/services/httpClient.ts`.
 - **Manejo de Errores:** Interceptor global para errores 401/500 + `ErrorBoundary.tsx`.
 
-### Inventario Real de Directorios (`src/`)
+### Inventario de Directorios (`src/`)
 
 ```
 src/
@@ -42,102 +42,101 @@ src/
 ├── index.tsx
 │
 ├── components/ (UI Compartida)
-│   ├── Button.tsx, EventCard.tsx, Header.tsx, Footer.tsx
+│   ├── Button.tsx (Variantes: primary, secondary)
+│   ├── EventCard.tsx, Header.tsx, Footer.tsx
 │   ├── EventFilters.tsx, EventMap.tsx, SingleEventMap.tsx
 │   ├── Hero.tsx, ImageUpload.tsx, Layout.tsx, LazyMap.tsx
 │   ├── MobileMenu.tsx, NotificationMenu.tsx, ProtectedRoute.tsx
-│   ├── social/ (Social Features)
-│   │   ├── ConnectButton.tsx (Solicitud y status de conexión), FollowButton.tsx
-│   │   └── NotificationBadge.tsx (Icono con conteo real-time)
-│   ├── ParticlesBackground.tsx, AboutThis.tsx
-│   ├── ErrorBoundary.tsx, PageTransition.tsx
-│   ├── LocationPicker.tsx, EventImageUploader.tsx
-│   ├── events/TicketSelector.tsx (Selector de entradas)
+│   ├── social/ (v0.4.0+)
+│   │   ├── ConnectButton.tsx (Estados: Conectar, Pendiente, Contactado)
+│   │   ├── FollowButton.tsx (Seguir organizaciones)
+│   │   └── NotificationBadge.tsx (Contador real-time)
+│   ├── events/TicketSelector.tsx
 │   └── skeletons/ (Loaders)
-│       ├── EventCardSkeleton.tsx, EventDetailSkeleton.tsx
-│       ├── PanelSkeleton.tsx, TableSkeleton.tsx, index.ts
 │
 ├── pages/ (Vistas Principales)
 │   ├── LandingPage.tsx, Eventos.tsx, CrearEvento.tsx
 │   ├── PanelDeOrganizador.tsx, PanelDeUsuario.tsx, PanelDeAdministrador.tsx
 │   ├── UserProfile.tsx, OrganizationProfile.tsx
-│   ├── SignUp.tsx, AboutUs.tsx, Contacto.tsx
-│   ├── TerminosYCondiciones.tsx, PoliticaCookies.tsx, ProgramaVulnerabilidades.tsx
-│   ├── ErrorPage.tsx
 │   │
-│   ├── evento-detalle/components/
-│   │   ├── EventHero.tsx, EventDetails.tsx, EventItinerary.tsx
-│   │   ├── EventReviews.tsx, EventSidebar.tsx
-│   │
-│   ├── crear-evento/ (Wizard)
-│   │   ├── hooks/useEventForm.ts
-│   │   └── sections/ (BasicInfo, DateLocation, CapacityPrice, Agenda, Speakers)
-│   │
-│   ├── panel-organizador/ (Gestión)
+│   ├── panel-organizador/
 │   │   ├── components/
-│   │   │   ├── StatCard.tsx, OrgProfileForm.tsx
-│   │   │   ├── AttendeesList.tsx (New v0.3.0), QRScannerModal.tsx (New v0.3.0)
-│   │   │   └── form-sections/ (ProfileHeaderPreview, GeneralInfo, ContactInfo, VisualAssets, SocialMedia)
+│   │   │   ├── StatCard.tsx, AttendeesList.tsx (CSV Export)
+│   │   │   └── QRScannerModal.tsx
 │   │   └── tabs/
 │   │       ├── Dashboard.tsx, EventsList.tsx, Profile.tsx
-│   │       └── PaymentsTab.tsx (New v0.3.0 - Stripe Connect)
+│   │       ├── PaymentsTab.tsx (Stripe Connect)
+│   │       └── NotificationsTab.tsx (Preferencias Email/Web)
 │   │
-│   ├── panel-usuario/ (Dashboard)
-│   │   ├── components/BadgeUploader.tsx, ReviewModal.tsx
+│   ├── panel-usuario/
 │   │   └── tabs/
-│   │       ├── Profile.tsx, Events.tsx, Bookmarks.tsx, Notifications.tsx
-│   │       └── TicketsTab.tsx (New v0.3.0 - QR Wallet)
+│   │       ├── Profile.tsx, Events.tsx, Bookmarks.tsx
+│   │       ├── TicketsTab.tsx (QR Wallet)
+│   │       └── NotificationsTab.tsx (Preferencias + Regiones)
 │   │
-│   ├── panel-administrador/
-│   │   └── tabs/ (Dashboard, Organizations, Users)
-│   │
-│   └── (user/organization)-profile/components/ (Vistas públicas)
+│   └── panel-administrador/tabs/
 │
 ├── services/ (Capa API)
-│   ├── httpClient.ts, apiService.ts
-│    └── api/
-        ├── auth.service.ts, events.service.ts, organizations.service.ts
-        ├── users.service.ts, reviews.service.ts, notifications.service.ts
-        ├── connections.service.ts (Networking), admin.service.ts, attendee.service.ts, index.ts
-        (Nota: Stripe está integrado en organizations.service.ts)
+│   ├── httpClient.ts (Axios + Interceptores)
+│   └── api/
+│       ├── auth.service.ts
+│       ├── events.service.ts
+│       ├── organizations.service.ts
+│       ├── users.service.ts
+│       ├── notifications.service.ts (GET/Save Preferences)
+│       ├── connections.service.ts
+│       ├── subscriptions.service.ts
+│       ├── attendee.service.ts
+│       └── index.ts
 │
-├── hooks/ (Lógica React)
-│   ├── useApi.ts, useEvents.ts, useOrganizations.ts, index.ts
+├── hooks/
+│   ├── useApi.ts, useEvents.ts, useOrganizations.ts
 │
 ├── context/AuthContext.tsx
-└── types/index.ts (Definiciones TS)
+└── types/index.ts
 ```
 
 ---
 
-## 3. Sistema de Autenticación y Despliegue
+## 3. Sistema de Autenticación y Roles
 
-1. **Attend (Usuario Normal):** `/panel-de-usuario` - Inscribirse, gestionar entradas (QR Wallet), reseñas, badges.
-2. **Organizer (Organizador):** `/panel-de-organizador` - CRUD eventos, perfil org, dashboard financiero (Stripe).
-3. **Admin (Administrador):** `/admin` - Verificar organizaciones, gestión global.
+1. **Attend (Usuario Normal):** `/panel-de-usuario`
+   - Inscribirse, gestionar entradas (QR Wallet), reseñas, badges.
+   - Preferencias de notificaciones personalizables.
+   - Conexiones con otros usuarios.
+
+2. **Organizer (Organizador):** `/panel-de-organizador`
+   - CRUD eventos, perfil org, dashboard financiero (Stripe).
+   - Scanner QR y lista de asistentes con export CSV.
+   - Notificaciones de ventas y nuevos seguidores.
+
+3. **Admin (Administrador):** `/admin`
+   - Verificar organizaciones, gestión global de usuarios y eventos.
 
 ---
 
 ## 4. Flujos Clave
 
-### A. Gestión de Eventos & Ventas (Actualizado v0.3.0)
+### A. Gestión de Eventos & Ventas
 
 - **Creación:** `CrearEvento.tsx` permite definir tipos de entrada (Tiers) y aforo.
-- **Venta:** Integración nativa con Stripe. El usuario es redirigido a Stripe Checkout y retornado a la app.
+- **Venta:** Integración nativa con Stripe Checkout.
 - **Validación:**
-  - **QR Scanner:** `QRScannerModal` permite usar la cámara del dispositivo para validar entradas.
-  - **Lista Manual:** `AttendeesList` permite check-in manual desde el panel.
+  - **QR Scanner:** `QRScannerModal` usa cámara para validar entradas.
+  - **Lista Manual:** `AttendeesList` permite check-in manual + export CSV.
 
-### B. Perfiles Públicos
+### B. Sistema de Notificaciones (v0.5.0)
 
-- **Organización:** `OrganizationProfile.tsx` → Muestra eventos activos y pasados.
-- **Usuario:** `UserProfile.tsx` → Muestra biografía, badges y eventos asistidos.
+- **Canales:** Solo Email y Web (Push eliminado).
+- **Usuario:** Toggles para conexiones, tickets, eventos nuevos, recordatorios.
+- **Organizador:** Toggles para ventas, seguidores, resumen diario.
+- **API Backend:** `GET/PUT /user/notification-preferences`.
 
-### C. Optimizaciones Implementadas
+### C. Social & Networking
 
-- **Lazy Loading:** `LazyMap.tsx` para mapas Leaflet.
-- **Skeletons:** Carga progresiva en tarjetas, tablas y detalles.
-- **Error Handling:** `ErrorBoundary.tsx` protege contra caídas de renderizado.
+- **Conexiones:** Solicitar, aceptar, rechazar conexiones entre usuarios.
+- **Suscripciones:** Seguir organizaciones para recibir notificaciones.
+- **Contador:** Actualización en tiempo real de seguidores.
 
 ---
 
@@ -145,16 +144,33 @@ src/
 
 - **Paleta:** Cian/Turquesa (`var(--color-cadetblue)`), Fondos claros (`#F8FAFC`).
 - **Efectos:** Glow en hover, Glassmorphism en headers.
+- **Botones:** Dos variantes principales (`primary`, `secondary`).
 - **Animaciones:** Micro-interacciones en botones y transiciones de página suaves.
 
 ---
 
-## 6. Integración API (Servicios)
+## 6. APIs Backend
 
-Toda la comunicación reside en `src/services/api/`:
+### Endpoints Principales
 
-- `payment.service.ts`: Gestión de onboarding Stripe y creación de sesiones de pago.
-- `attendee.service.ts`: Listado de asistentes y acciones de check-in.
-- `tickets.service.ts`: Obtención de mis entradas y generación de QR.
-- `events.service.ts`: CRUD completo de eventos.
-- `auth.service.ts`: Gestión de sesiones JWT.
+| Recurso          | Métodos                    | Descripción                    |
+| ---------------- | -------------------------- | ------------------------------ |
+| `/auth`          | POST login/register/logout | Autenticación JWT              |
+| `/events`        | CRUD + /purchase           | Gestión de eventos             |
+| `/organizations` | CRUD + /stripe-\*          | Gestión de organizaciones      |
+| `/users`         | CRUD + /profile            | Gestión de usuarios            |
+| `/user`          | GET/PUT /notification-pref | Preferencias de notificaciones |
+| `/notifications` | GET, PATCH, mark-all-read  | Centro de notificaciones       |
+| `/connections`   | POST/PATCH request/accept  | Conexiones entre usuarios      |
+| `/subscriptions` | POST/DELETE follow         | Seguir organizaciones          |
+| `/tickets`       | GET /validate              | Validación de entradas         |
+| `/registrations` | GET /attendees, /checkin   | Gestión de asistentes          |
+
+---
+
+## 7. Próximos Pasos (v1.0.0 RC)
+
+1. **Refactorización:** Dividir componentes grandes (NotificationsTab, EventFilters).
+2. **Testing E2E:** Flujos automatizados de registro → compra → check-in.
+3. **Accesibilidad:** Aria-labels en todos los IconButtons.
+4. **Optimización:** Bundle size y caching de API.

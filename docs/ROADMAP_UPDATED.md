@@ -69,7 +69,7 @@ _Estado: COMPLETADO_
 
 ---
 
-## Fase 4: Monetización y Gestión (Beta v0.3.0) ✅
+## 💳 Fase 4: Monetización y Gestión (Beta v0.3.0) ✅
 
 _Estado: COMPLETADO_
 
@@ -87,63 +87,104 @@ _Estado: COMPLETADO_
 
 ---
 
-## 🔔 Fase 5: Sistema de Notificaciones y Social (v0.4.0) ✅
+## 🔔 Fase 5: Sistema Social y Notificaciones (v0.4.0 → v0.5.0) ✅
 
 _Estado: COMPLETADO_
 
-### 5.1 Comunicaciones ✅
+### 5.1 Comunicaciones (v0.4.0) ✅
 
 - [x] **Centro de Notificaciones:** Panel de alertas (`NotificationsTab`).
 - [x] **Visualización:** Formato de fecha relativa y acciones directas.
-- [ ] **Push UI:** Toasts y alertas visuales realtime. _(Pendiente para v0.6.0)_
+- [x] **NotificationBadge:** Icono con conteo de notificaciones no leídas.
 
-### 5.2 Social & Networking ✅
+### 5.2 Social & Networking (v0.4.0) ✅
 
 - [x] **ConnectButton:** Botón inteligente con estados (Conectar, Pendiente, Contactado).
 - [x] **Popup de Contacto:** Visualización de datos (Discord, Email) tras conectar.
 - [x] **Solicitudes:** Gestión de peticiones de conexión en panel de usuario.
-- [x] **FollowButton:** Seguir organizaciones.
-- [x] **NotificationBadge:** Icono con conteo de notificaciones.
+- [x] **FollowButton:** Seguir organizaciones con contador en tiempo real.
+
+### 5.3 Bug Fixes y Mejoras (v0.5.0) ✅
+
+- [x] **QRs:** Corregido BACKEND_URL para visualización correcta.
+- [x] **Notificaciones:** Corregido error de pagination y formato de fechas.
+- [x] **Grid MUI v7:** Migración a nueva API de Grid2.
+- [x] **CSV Export:** Exportar lista de asistentes funcional.
+- [x] **Conexiones:** Separado click en card vs botón aceptar.
+- [x] **Estilos:** Botones unificados con variantes primary/secondary.
+
+### 5.4 Preferencias de Notificaciones (v0.5.0) ✅
+
+- [x] **Push eliminado:** Solo canales Email y Web.
+- [x] **API Backend:** GET/PUT `/user/notification-preferences`.
+- [x] **Usuario:** Toggles para conexiones, tickets, eventos, recordatorios.
+- [x] **Organizador:** Toggles para ventas, seguidores, resumen diario.
+- [x] **Regiones:** Selector de comunidades autónomas.
 
 ---
 
-## 🧪 Fase 6: Testing & Bug Fixes (v0.5.0)
+## 🚀 Fase 6: Release Candidate (RC v1.0.0)
 
-_Estado: EN PROGRESO_
+_Estado: PLANIFICADA_
 
-### Bugs Conocidos a Corregir
+> **Nombre de versión: "Sentinel"** - La primera versión estable y lista para producción.
 
-- [ ] **Notificaciones:** El icono aparece pero la notificación no se muestra al hacer click.
-- [ ] **QRs:** No se ven correctamente en el panel de usuario.
-- [ ] **Mejoras Visuales:** Ajustes de UI/UX pendientes.
+### 6.1 Refactorización de Componentes
 
-### Testing
+- [ ] **NotificationsTab (Usuario):** ~700 líneas, dividir en subcomponentes.
+- [ ] **NotificationsTab (Organizador):** ~500 líneas, dividir en subcomponentes.
+- [ ] **EventFilters:** ~12KB, considerar extracción de filtros individuales.
+- [ ] **Header/MobileMenu:** Unificar estructura y añadir aria-labels.
 
-- [ ] Verificación funcional de conexiones.
-- [ ] Verificación funcional de notificaciones.
-- [ ] Verificación funcional de subscripciones.
-- [ ] Testing de flujo completo de tickets.
+### 6.2 Testing & QA
+
+- [ ] **E2E Tests:** Flujo completo de registro → compra → check-in.
+- [ ] **Verificación Social:** Conexiones, solicitudes, notificaciones.
+- [ ] **Verificación Pagos:** Stripe Connect, compras, reembolsos.
+- [ ] **Cross-Browser:** Chrome, Firefox, Safari, Edge.
+- [ ] **Mobile:** Responsive en iOS Safari y Android Chrome.
+
+### 6.3 Mejoras de UX/UI
+
+- [ ] **Accesibilidad (a11y):** Aria-labels en todos los IconButtons.
+- [ ] **Loading States:** Feedback visual consistente en todas las acciones.
+- [ ] **Error Messages:** Mensajes de error amigables y contextuales.
+- [ ] **Empty States:** Diseños para listas vacías.
+
+### 6.4 Optimización
+
+- [ ] **Bundle Size:** Análisis y reducción de dependencias.
+- [ ] **Image Optimization:** Lazy loading y formatos modernos (WebP/AVIF).
+- [ ] **API Caching:** Estrategias de cache para datos frecuentes.
 
 ---
 
-## 🚀 Fase 7: Comunidad Avanzada (Futuro v0.6.0+)
+## 🌐 Fase 7: Comunidad Avanzada (v1.1.0+)
 
-### 7.1 Funcionalidades Sociales
+_Estado: FUTURO_
 
-- [ ] **Push Notifications:** Alertas en tiempo real.
-- [ ] **Feed Social:** Tablón de actividad.
-- [ ] **Chat:** Mensajería directa.
-- [ ] **Soporte I18n:** Traducción completa (Español/Inglés).
+### 7.1 Funcionalidades Sociales Avanzadas
+
+- [ ] **Push Notifications:** Alertas en tiempo real (Service Worker).
+- [ ] **Feed Social:** Tablón de actividad de la comunidad.
+- [ ] **Chat:** Mensajería directa entre usuarios conectados.
+
+### 7.2 Internacionalización
+
+- [ ] **i18n:** Soporte completo para Español e Inglés.
+- [ ] **Localización:** Formatos de fecha/hora según región.
 
 ---
 
 ## 📜 Historial de Versiones
 
-| Versión    | Estado   | Descripción                                                        |
-| ---------- | -------- | ------------------------------------------------------------------ | --- |
-| **v0.0.1** | Alpha    | Prototipo estático generado por IA.                                |
-| **v0.1.0** | Alpha    | Mockup funcional con backend simulado.                             |
-| **v0.2.0** | Beta     | Refactorización modular completa, backend Go real.                 |
-| **v0.3.0** | Beta     | Pagos con Stripe, Scan QR, gestión de asistentes y tickets.        |
-| **v0.4.0** | **Beta** | **Completado.** Social, Conexiones, Subscriptions, Notificaciones. |
-| **v0.5.0** | **Beta** | **En Desarrollo.** Testing, Bug Fixes y QA.                        |     |
+| Versión     | Tipo    | Estado        | Descripción                                                     |
+| ----------- | ------- | ------------- | --------------------------------------------------------------- |
+| **v0.0.1**  | Alpha   | ✅ Completado | Prototipo estático generado por IA.                             |
+| **v0.1.0**  | Alpha   | ✅ Completado | Mockup funcional con backend simulado.                          |
+| **v0.2.0**  | Beta    | ✅ Completado | Refactorización modular completa, backend Go real.              |
+| **v0.3.0**  | Beta    | ✅ Completado | Pagos con Stripe, Scan QR, gestión de asistentes y tickets.     |
+| **v0.4.0**  | Beta    | ✅ Completado | Social, Conexiones, Subscriptions, Notificaciones.              |
+| **v0.5.0**  | Beta    | ✅ Completado | Testing, Bug Fixes, Preferencias de Notificaciones, CSV Export. |
+| **v1.0.0**  | RC      | 🔜 Próxima    | "Sentinel" - Primera versión estable para producción.           |
+| **v1.1.0+** | Release | 📋 Futuro     | Comunidad avanzada, Push, Chat, i18n.                           |
