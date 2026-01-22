@@ -129,6 +129,11 @@ _Estado: PLANIFICADA_
 
 > **Nombre de versión: "Sentinel"** - La primera versión estable y lista para producción.
 
+### 6.0 Internacionalización
+
+- [ ] **i18n:** Soporte completo para Español e Inglés.
+- [ ] **Localización:** Formatos de fecha/hora según región.
+
 ### 6.1 Refactorización de Componentes
 
 - [ ] **NotificationsTab (Usuario):** ~700 líneas, dividir en subcomponentes.
@@ -159,32 +164,28 @@ _Estado: PLANIFICADA_
 
 ---
 
-## 🌐 Fase 7: Comunidad Avanzada (v1.1.0+)
+## 🌐 Fase por definir: Comunidad Avanzada (vX.X.0+)
 
-_Estado: FUTURO_
+_Estado: FUTURO_ soli implementar si la web crece y se hace popular.
 
-### 7.1 Funcionalidades Sociales Avanzadas
+### X.X Funcionalidades Sociales Avanzadas
 
 - [ ] **Push Notifications:** Alertas en tiempo real (Service Worker).
 - [ ] **Feed Social:** Tablón de actividad de la comunidad.
 - [ ] **Chat:** Mensajería directa entre usuarios conectados.
 
-### 7.2 Internacionalización
-
-- [ ] **i18n:** Soporte completo para Español e Inglés.
-- [ ] **Localización:** Formatos de fecha/hora según región.
-
 ---
 
 ## 📜 Historial de Versiones
 
-| Versión     | Tipo    | Estado        | Descripción                                                     |
-| ----------- | ------- | ------------- | --------------------------------------------------------------- |
-| **v0.0.1**  | Alpha   | ✅ Completado | Prototipo estático generado por IA.                             |
-| **v0.1.0**  | Alpha   | ✅ Completado | Mockup funcional con backend simulado.                          |
-| **v0.2.0**  | Beta    | ✅ Completado | Refactorización modular completa, backend Go real.              |
-| **v0.3.0**  | Beta    | ✅ Completado | Pagos con Stripe, Scan QR, gestión de asistentes y tickets.     |
-| **v0.4.0**  | Beta    | ✅ Completado | Social, Conexiones, Subscriptions, Notificaciones.              |
-| **v0.5.0**  | Beta    | ✅ Completado | Testing, Bug Fixes, Preferencias de Notificaciones, CSV Export. |
-| **v1.0.0**  | RC      | 🔜 Próxima    | "Sentinel" - Primera versión estable para producción.           |
-| **v1.1.0+** | Release | 📋 Futuro     | Comunidad avanzada, Push, Chat, i18n.                           |
+| Versión     | Tipo    | Estado        | Descripción                                                                 |
+| ----------- | ------- | ------------- | --------------------------------------------------------------------------- |
+| **v0.0.1**  | Alpha   | ✅ Completado | Prototipo estático generado por IA.                                         |
+| **v0.1.0**  | Alpha   | ✅ Completado | Mockup funcional con backend simulado.                                      |
+| **v0.2.0**  | Beta    | ✅ Completado | Refactorización modular completa, backend Go real.                          |
+| **v0.3.0**  | Beta    | ✅ Completado | Pagos con Stripe, Scan QR, gestión de asistentes y tickets.                 |
+| **v0.4.0**  | Beta    | ✅ Completado | Social, Conexiones, Subscriptions, Notificaciones.                          |
+| **v0.5.0**  | Beta    | ✅ Completado | Testing, Bug Fixes, Preferencias de Notificaciones, CSV Export.             |
+| **v1.0.0**  | RC      | 🔜 Próxima    | "Sentinel" - Primera versión estable para producción.                       |
+| **v1.1.0+** | Release | 📋 Futuro     | Por definir.                                                                |
+| **vX.X.0+** | Release | 📋 Futuro     | Si la web crece y se hace popular, se implementarán nuevas funcionalidades. |

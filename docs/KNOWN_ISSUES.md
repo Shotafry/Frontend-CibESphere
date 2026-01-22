@@ -84,9 +84,6 @@
 
 - [ ] **Refactorización:** Dividir componentes grandes en subcomponentes reutilizables.
 - [ ] **Testing E2E:** Flujos completos automatizados.
-- [ ] **Push Notifications:** Toasts y alertas visuales realtime (Service Worker).
-- [ ] **Chat:** Mensajería directa entre usuarios conectados.
-- [ ] **Feed Social:** Tablón de actividad de la comunidad.
 - [ ] **i18n:** Traducción completa (Español/Inglés).
 
 ---
