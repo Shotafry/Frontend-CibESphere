@@ -36,6 +36,7 @@ import Contacto from './pages/Contacto'
 import ProgramaVulnerabilidades from './pages/ProgramaVulnerabilidades'
 import VerifyEmail from './pages/VerifyEmail'
 import CheckEmail from './pages/CheckEmail'
+import CreateOrganization from './pages/CreateOrganization'
 
 import {
   CssBaseline,
@@ -278,6 +279,11 @@ const routes: RouteObject[] = [
               return favoriteEvents
             },
             shouldRevalidate: shouldRevalidatePanel
+          },
+          // Permite acceso a usuarios normales para crear organización (onboarding)
+          {
+            path: 'crear-organizacion',
+            element: <CreateOrganization />
           }
         ]
       },
