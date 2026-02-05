@@ -45,6 +45,8 @@ import {
 } from '@mui/material'
 
 import './global.css'
+import { CookieProvider } from './context/CookieContext'
+import CookieBanner from './components/CookieBanner'
 
 // Componente Wrapper (sin cambios)
 const AppWrapper: React.FC = () => {
@@ -98,9 +100,12 @@ const AppWrapper: React.FC = () => {
 
   return (
     <AuthProvider>
-      <Layout>
-        <Outlet />
-      </Layout>
+      <CookieProvider>
+        <Layout>
+          <Outlet />
+        </Layout>
+        <CookieBanner />
+      </CookieProvider>
     </AuthProvider>
   )
 }
