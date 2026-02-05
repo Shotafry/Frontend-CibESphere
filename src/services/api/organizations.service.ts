@@ -18,9 +18,8 @@ export const getAllOrganizations = async (): Promise<OrganizationSummary[]> => {
 }
 
 export const getMyOrganization = async (): Promise<OrganizationSummary> => {
-  const response = await httpClient.get<OrganizationSummary>(
-    '/organizations/me'
-  )
+  const response =
+    await httpClient.get<OrganizationSummary>('/organizations/me')
   return response.data
 }
 
@@ -52,7 +51,7 @@ export const getOrganizationEvents = async (
   orgId: string
 ): Promise<Event[]> => {
   // Use public events endpoint with organization filter
-  return getEvents({ organization_id: orgId })
+  return getEvents({ organization_id: orgId, timeFilter: 'all' })
 }
 
 // --- CRUD ---

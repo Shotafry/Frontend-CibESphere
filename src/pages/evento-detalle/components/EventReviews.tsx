@@ -138,7 +138,7 @@ export const EventReviews: React.FC<EventReviewsProps> = ({ reviews }) => {
                       src={review.userAvatar}
                       sx={{ bgcolor: 'var(--color-cadetblue)' }}
                     >
-                      {review.userName[0]}
+                      {review.userName?.[0] || '?'}
                     </Avatar>
                     <Box>
                       <Typography
