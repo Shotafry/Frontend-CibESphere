@@ -12,6 +12,10 @@ export const register = async (data: RegisterDTO): Promise<AuthResponse> => {
   return response.data
 }
 
+export const verifyEmail = async (token: string): Promise<void> => {
+  await httpClient.get(`/auth/verify?token=${token}`)
+}
+
 export const logout = async (): Promise<void> => {
   await httpClient.post('/auth/logout')
 }

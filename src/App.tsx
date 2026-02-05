@@ -34,6 +34,8 @@ import TerminosYCondiciones from './pages/TerminosYCondiciones'
 import PoliticaCookies from './pages/PoliticaCookies'
 import Contacto from './pages/Contacto'
 import ProgramaVulnerabilidades from './pages/ProgramaVulnerabilidades'
+import VerifyEmail from './pages/VerifyEmail'
+import CheckEmail from './pages/CheckEmail'
 
 import {
   CssBaseline,
@@ -201,6 +203,14 @@ const routes: RouteObject[] = [
       {
         path: 'loginsign-up', // Mantener por compatibilidad si se usa en algún link
         element: <SignUp />
+      },
+      {
+        path: 'verify-email',
+        element: <VerifyEmail />
+      },
+      {
+        path: 'check-email',
+        element: <CheckEmail />
       },
       {
         path: 'eventos/:slug',

@@ -110,8 +110,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   const register = async (data: RegisterDTO) => {
     setIsLoading(true)
     try {
-      const authData = await apiService.register(data)
-      handleAuthSuccess(authData)
+      await apiService.register(data)
+      // No login automatically, waiting for email verification
     } catch (error) {
       setIsLoading(false)
       throw error

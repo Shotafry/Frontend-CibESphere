@@ -68,6 +68,7 @@ const SignUp: FunctionComponent = () => {
         // En registro, aseguramos que los campos opcionales no vayan null si son string
         const registerData = { ...data }
         await register(registerData)
+        navigate('/check-email')
       }
     } catch (err: any) {
       console.error(err)
