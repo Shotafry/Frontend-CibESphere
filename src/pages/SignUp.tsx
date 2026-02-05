@@ -9,14 +9,16 @@ import {
   IconButton,
   CircularProgress,
   Divider,
-  ToggleButtonGroup,
-  ToggleButton,
-  Collapse,
   Grid,
   Alert,
-  useTheme
+  useTheme,
+  Collapse,
+  CardContent,
+  Stack,
+  Chip
 } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
+import { motion, AnimatePresence } from 'framer-motion'
 import { useAuth } from '../context/AuthContext'
 import { Role, RegisterDTO } from '../types'
 import MailOutlineIcon from '@mui/icons-material/MailOutline'
@@ -24,49 +26,212 @@ import LockIcon from '@mui/icons-material/Lock'
 import VisibilityIcon from '@mui/icons-material/Visibility'
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'
 import PersonIcon from '@mui/icons-material/Person'
-import BusinessIcon from '@mui/icons-material/Business'
+import AddBusinessIcon from '@mui/icons-material/AddBusiness'
+import AnalyticsIcon from '@mui/icons-material/Analytics'
+import QrCodeIcon from '@mui/icons-material/QrCode'
+import VerifiedUserIcon from '@mui/icons-material/VerifiedUser'
+import CheckCircleIcon from '@mui/icons-material/CheckCircle'
+import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked'
 import { Button } from '../components/Button'
+
+// Componente visual para la promoción de Organizador
+const OrganizerPromoCard = ({
+  selected,
+  onToggle
+}: {
+  selected: boolean
+  onToggle: () => void
+}) => {
+  return (
+    <motion.div
+      layout
+      onClick={onToggle}
+      initial={false}
+      animate={
+        selected
+          ? {
+              backgroundImage:
+                'linear-gradient(135deg, rgba(82, 255, 237, 0.1) 0%, rgba(0, 163, 255, 0.05) 100%)',
+              borderColor: 'var(--color-cadetblue)',
+              boxShadow: '0 8px 32px rgba(82, 255, 237, 0.15)'
+            }
+          : {
+              backgroundImage: 'none',
+              borderColor: 'rgba(0, 0, 0, 0.12)',
+              boxShadow: 'none'
+            }
+      }
+      style={{
+        border: '2px solid',
+        borderRadius: '16px',
+        cursor: 'pointer',
+        overflow: 'hidden',
+        position: 'relative',
+        marginBottom: '16px'
+      }}
+      transition={{ duration: 0.3 }}
+    >
+      <CardContent sx={{ p: '24px !important' }}>
+        <Stack
+          direction='row'
+          alignItems='center'
+          spacing={2}
+          mb={selected ? 2 : 0}
+        >
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: 48,
+              height: 48,
+              borderRadius: '12px',
+              bgcolor: selected
+                ? 'rgba(82, 255, 237, 0.2)'
+                : 'rgba(0,0,0,0.05)',
+              color: selected ? 'var(--color-cadetblue)' : 'text.disabled',
+              transition: 'all 0.3s ease'
+            }}
+          >
+            <AddBusinessIcon fontSize='large' />
+          </Box>
+          <Box sx={{ flex: 1 }}>
+            <Typography
+              variant='h6'
+              fontWeight='bold'
+              color={selected ? 'var(--color-cadetblue)' : 'text.primary'}
+            >
+              Organizar Eventos
+            </Typography>
+            <Typography variant='body2' color='text.secondary'>
+              {selected
+                ? '¡Modo Organizador Activado!'
+                : '¿Quieres crear eventos en CybESphere?'}
+            </Typography>
+          </Box>
+          <Box
+            sx={{
+              color: selected ? 'var(--color-cadetblue)' : 'text.disabled'
+            }}
+          >
+            {selected ? <CheckCircleIcon /> : <RadioButtonUncheckedIcon />}
+          </Box>
+        </Stack>
+
+        <AnimatePresence>
+          {selected && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              <Box
+                sx={{ mt: 2, pt: 2, borderTop: '1px solid rgba(0,0,0,0.08)' }}
+              >
+                <Typography variant='subtitle2' fontWeight='bold' gutterBottom>
+                  Beneficios incluidos:
+                </Typography>
+                <Grid container spacing={2}>
+                  {[
+                    {
+                      icon: <AnalyticsIcon fontSize='small' />,
+                      text: 'Analíticas'
+                    },
+                    {
+                      icon: <QrCodeIcon fontSize='small' />,
+                      text: 'Ticketing & QR'
+                    },
+                    {
+                      icon: <VerifiedUserIcon fontSize='small' />,
+                      text: 'Perfil Verificado'
+                    },
+                    {
+                      icon: <AddBusinessIcon fontSize='small' />,
+                      text: 'Gestión de Staff'
+                    }
+                  ].map((item, idx) => (
+                    <Grid size={{ xs: 6 }} key={idx}>
+                      <Stack direction='row' spacing={1} alignItems='center'>
+                        <Box sx={{ color: 'var(--color-cadetblue)' }}>
+                          {item.icon}
+                        </Box>
+                        <Typography variant='caption'>{item.text}</Typography>
+                      </Stack>
+                    </Grid>
+                  ))}
+                </Grid>
+                <Chip
+                  label='Configuración en el siguiente paso'
+                  size='small'
+                  sx={{
+                    mt: 2,
+                    width: '100%',
+                    bgcolor: 'rgba(82, 255, 237, 0.1)',
+                    color: 'var(--color-deep-teal)'
+                  }}
+                />
+              </Box>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </CardContent>
+    </motion.div>
+  )
+}
 
 const SignUp: FunctionComponent = () => {
   const navigate = useNavigate()
   const { login, register } = useAuth()
-  const theme = useTheme() // Added useTheme hook
+  const theme = useTheme()
   const [isLogin, setIsLogin] = useState(true)
 
   const [showPassword, setShowPassword] = useState(false)
-  const [isPasswordFocused, setIsPasswordFocused] = useState(false) // Added new state
+  const [isPasswordFocused, setIsPasswordFocused] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+
+  // Extendemos RegisterDTO localmente para incluir el checkbox
+  interface SignUpFormData extends RegisterDTO {
+    wantsToOrganize: boolean
+  }
 
   const {
     register: registerForm,
     handleSubmit,
     control,
     watch,
+    setValue,
     formState: { errors }
-  } = useForm<RegisterDTO>({
+  } = useForm<SignUpFormData>({
     defaultValues: {
       email: '',
       password: '',
       first_name: '',
       last_name: '',
-      role: Role.User,
-      organization_name: '',
-      organization_website: '' // Opcional
+      role: Role.User, // Default a User
+      wantsToOrganize: false
     }
   })
 
-  const role = watch('role')
-
-  const onSubmit: SubmitHandler<RegisterDTO> = async (data: RegisterDTO) => {
+  const onSubmit: SubmitHandler<SignUpFormData> = async (
+    data: SignUpFormData
+  ) => {
     setIsLoading(true)
     setError(null)
     try {
       if (isLogin) {
         await login(data.email, data.password)
       } else {
-        // En registro, aseguramos que los campos opcionales no vayan null si son string
-        const registerData = { ...data }
+        // En registro
+        const registerData: RegisterDTO = {
+          email: data.email,
+          password: data.password,
+          first_name: data.first_name,
+          last_name: data.last_name,
+          role: data.wantsToOrganize ? Role.Organizer : Role.User
+          // Eliminamos campos de org aquí, se llenarán en el onboarding
+        }
         await register(registerData)
         navigate('/check-email')
       }
@@ -128,30 +293,6 @@ const SignUp: FunctionComponent = () => {
             {isLogin ? 'Iniciar Sesión' : 'Crear Cuenta'}
           </Typography>
           <Box component='form' onSubmit={handleSubmit(onSubmit)}>
-            {!isLogin && (
-              <Box mb={2}>
-                <Controller
-                  name='role'
-                  control={control}
-                  render={({ field }) => (
-                    <ToggleButtonGroup
-                      value={field.value}
-                      exclusive
-                      onChange={(e, newRole) =>
-                        newRole !== null && field.onChange(newRole)
-                      }
-                      fullWidth
-                    >
-                      <ToggleButton value={Role.User}>Asistente</ToggleButton>
-                      <ToggleButton value={Role.Organizer}>
-                        Organizador
-                      </ToggleButton>
-                    </ToggleButtonGroup>
-                  )}
-                />
-              </Box>
-            )}
-
             <TextField
               fullWidth
               required
@@ -216,7 +357,7 @@ const SignUp: FunctionComponent = () => {
               }}
             />
 
-            {/* Mostrar panel solo si se está escribiendo o está enfocado */}
+            {/* Requisitos de password */}
             <Collapse
               in={
                 !isLogin &&
@@ -327,38 +468,20 @@ const SignUp: FunctionComponent = () => {
                   />
                 </Grid>
               </Grid>
-            </Collapse>
 
-            <Collapse in={!isLogin && role === Role.Organizer}>
-              <Divider sx={{ my: 2 }}>Información de la Organización</Divider>
-              <TextField
-                fullWidth
-                required={!isLogin && role === Role.Organizer}
-                margin='normal'
-                label='Nombre de la Organización'
-                {...registerForm('organization_name', {
-                  required:
-                    role === Role.Organizer
-                      ? 'El nombre de la organización es obligatorio'
-                      : false
-                })}
-                error={!!errors.organization_name}
-                helperText={errors.organization_name?.message}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position='start'>
-                      <BusinessIcon />
-                    </InputAdornment>
-                  )
-                }}
-              />
-              <TextField
-                fullWidth
-                margin='normal'
-                label='Sitio Web (Opcional)'
-                type='url'
-                {...registerForm('organization_website')}
-              />
+              {/* Enhanced Organizer Promo Card */}
+              <Box sx={{ mt: 3, mb: 1 }}>
+                <OrganizerPromoCard
+                  selected={watch('wantsToOrganize')}
+                  onToggle={() => {
+                    const current = watch('wantsToOrganize')
+                    setValue('wantsToOrganize', !current, {
+                      shouldValidate: true,
+                      shouldDirty: true
+                    })
+                  }}
+                />
+              </Box>
             </Collapse>
 
             {error && (
