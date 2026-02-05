@@ -1,8 +1,8 @@
 # 🧠 Contexto del Proyecto: CybESphere Frontend
 
 > **Documento Maestro**: Este archivo contiene toda la información necesaria para que una IA o desarrollador entienda la arquitectura, flujos y diseño de CybESphere.
-> **Versión**: Beta v0.5.0 (Enero 2026) - **Funcionalidad Completa**
-> **Próxima**: RC v1.0.0 "Sentinel" - Refactorización y Testing
+> **Versión**: Beta v0.6.0 (Febrero 2026) - **Seguridad y Compliance**
+> **Próxima**: Beta v0.7.0 - Panel de Administración y Organizador
 
 ---
 
@@ -10,7 +10,7 @@
 
 **CybESphere** es una plataforma centralizada (sin ánimo de lucro) para unificar la comunidad de ciberseguridad en España. Su objetivo es dar visibilidad a todos los eventos y facilitar la gestión integral para organizadores y asistentes.
 
-**Version v0.5.0:** Incluye sistema completo de Social & Networking, preferencias de notificaciones personalizables, exportación CSV de asistentes, y todos los bug fixes de la fase Beta.
+**Versión v0.6.0:** Incluye sistema completo de Social & Networking, verificación de email obligatoria, Cookie Banner GDPR, internacionalización (PoC) con selector de idioma, y todos los bug fixes de la fase Beta.
 
 **Stack Tecnológico:**
 
@@ -51,6 +51,8 @@ src/
 │   │   ├── ConnectButton.tsx (Estados: Conectar, Pendiente, Contactado)
 │   │   ├── FollowButton.tsx (Seguir organizaciones)
 │   │   └── NotificationBadge.tsx (Contador real-time)
+│   ├── CookieBanner.tsx (GDPR - v0.6.0)
+│   ├── LanguageSelector.tsx (i18n - v0.6.0)
 │   ├── events/TicketSelector.tsx
 │   └── skeletons/ (Loaders)
 │
@@ -58,6 +60,7 @@ src/
 │   ├── LandingPage.tsx, Eventos.tsx, CrearEvento.tsx
 │   ├── PanelDeOrganizador.tsx, PanelDeUsuario.tsx, PanelDeAdministrador.tsx
 │   ├── UserProfile.tsx, OrganizationProfile.tsx
+│   ├── CheckEmail.tsx, VerifyEmail.tsx (v0.6.0)
 │   │
 │   ├── panel-organizador/
 │   │   ├── components/
@@ -92,7 +95,13 @@ src/
 ├── hooks/
 │   ├── useApi.ts, useEvents.ts, useOrganizations.ts
 │
-├── context/AuthContext.tsx
+├── i18n/ (v0.6.0)
+│   ├── index.ts (Configuración react-i18next)
+│   └── locales/ (es.json, en.json)
+│
+├── context/
+│   ├── AuthContext.tsx
+│   └── CookieContext.tsx (GDPR - v0.6.0)
 └── types/index.ts
 ```
 
@@ -168,9 +177,9 @@ src/
 
 ---
 
-## 7. Próximos Pasos (v1.0.0 RC)
+## 7. Próximos Pasos (Beta v0.7.0)
 
-1. **Refactorización:** Dividir componentes grandes (NotificationsTab, EventFilters).
-2. **Testing E2E:** Flujos automatizados de registro → compra → check-in.
-3. **Accesibilidad:** Aria-labels en todos los IconButtons.
-4. **Optimización:** Bundle size y caching de API.
+1. **Panel Admin:** Mejoras en gestión de usuarios (banning, verificación manual).
+2. **Panel Organizador:** Dashboard mejorado con métricas ampliadas.
+3. **i18n Completa:** Extender traducciones a todas las páginas (actual: PoC Landing).
+4. **Refactorización:** Dividir componentes grandes (NotificationsTab, EventFilters).

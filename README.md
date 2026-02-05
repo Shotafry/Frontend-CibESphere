@@ -98,6 +98,35 @@ Sistema de control de acceso basado en roles gestionado por el backend.
 
 ---
 
+### 🆕 Novedades Beta v0.6.0 (Febrero 2026)
+
+#### 🔐 Verificación de Email
+
+- **Flujo completo de verificación**: Los nuevos usuarios deben verificar su email antes del primer login
+- **Páginas dedicadas**: `/check-email` (post-registro) y `/verify-email` (verificación)
+- **Integración con Backend**: Soporte para el nuevo endpoint `GET /auth/verify`
+
+#### 🍪 Compliance GDPR - Cookie Banner
+
+- **Banner de Cookies con Glassmorphism**: Diseño moderno y consistente con la UI
+- **Consentimiento Granular**: Esenciales vs Opcionales (Analytics, Marketing)
+- **Contexto Global**: `CookieContext` para gestión de preferencias en toda la app
+- **Persistencia**: Las preferencias se guardan en localStorage
+
+#### 🌍 Internacionalización (i18n)
+
+- **react-i18next configurado**: Soporte para múltiples idiomas
+- **Landing Page traducida**: PoC con textos en Español e Inglés
+- **Selector de Idioma**: Nuevo componente `LanguageSelector` en Header y menú móvil
+- **Nueva variante Button `text`**: Para elementos interactivos ligeros (dropdown, etc.)
+
+#### 🐛 Bug Fixes
+
+- **Reviews**: Fallback para reseñas de usuarios eliminados (evita crash)
+- **Eventos Pasados**: Corregido filtro en perfil público de organizaciones
+
+---
+
 ## 📂 Estructura del Proyecto
 
 ```text
@@ -110,11 +139,19 @@ Frontend-CybESphere/
 │
 ├── src/                    # Código fuente de la aplicación
 │   ├── components/         # Componentes UI reutilizables
+│   │   ├── Button.tsx      # Botón estándar (primary/secondary/text)
+│   │   ├── CookieBanner.tsx # Banner GDPR con consentimiento
+│   │   └── LanguageSelector.tsx # Selector de idioma
 │   ├── constants/          # Constantes globales
-│   ├── context/            # Estado global (AuthContext, Providers)
+│   ├── context/            # Estado global (AuthContext, CookieContext)
 │   ├── hooks/              # Custom hooks
+│   ├── i18n/               # Internacionalización
+│   │   ├── index.ts        # Configuración react-i18next
+│   │   └── locales/        # Archivos de traducción (es.json, en.json)
 │   ├── mocks/              # Mock data
 │   ├── pages/              # Vistas (rutas)
+│   │   ├── CheckEmail.tsx  # Post-registro: "Revisa tu correo"
+│   │   └── VerifyEmail.tsx # Verificación de email con token
 │   ├── services/           # Capa API (Axios)
 │   │   └── api/            # Endpoints por entidad
 │   └── types/              # Tipos TypeScript

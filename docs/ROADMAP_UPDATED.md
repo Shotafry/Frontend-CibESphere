@@ -121,27 +121,62 @@ _Estado: COMPLETADO_
 - [x] **Organizador:** Toggles para ventas, seguidores, resumen diario.
 - [x] **Regiones:** Selector de comunidades autónomas.
 
+### 5.5 Seguridad, Estabilidad y Compliance (v0.6.0) ✅
+
+- [x] **Verificación de Email:**
+  - Páginas `/check-email` y `/verify-email` con diseño consistente.
+  - Integración con endpoint `GET /auth/verify`.
+  - Bloqueo de login hasta verificar email.
+- [x] **Compliance GDPR - Cookie Banner:**
+  - Banner con glassmorphism y consentimiento granular.
+  - `CookieContext` para gestión global de preferencias.
+  - Persistencia en localStorage.
+- [x] **Internacionalización (i18n):**
+  - `react-i18next` configurado con ES/EN.
+  - Landing Page traducida (PoC).
+  - `LanguageSelector` en Header y MobileMenu.
+  - Nueva variante `Button text` para elementos ligeros.
+- [x] **Bug Fixes:**
+  - Reviews: Fallback para usuarios eliminados.
+  - Eventos Pasados: Filtro corregido en perfil público.
+
 ---
 
-## 🚀 Fase 6: Release Candidate (RC v1.0.0)
+## 🛠️ Fase 6: Panel de Administración y Organizador (Beta v0.7.0)
+
+_Estado: PLANIFICADA_
+
+### 6.1 Panel de Administrador
+
+- [ ] **Gestión de Usuarios:** Banning, verificación manual.
+- [ ] **TBD:** Por definir.
+
+### 6.2 Panel de Organizador
+
+- [ ] **Dashboard Mejorado:** Métricas ampliadas.
+- [ ] **TBD:** Por definir.
+
+---
+
+## 🚀 Fase 7: Release Candidate (RC v1.0.0)
 
 _Estado: PLANIFICADA_
 
 > **Nombre de versión: "Sentinel"** - La primera versión estable y lista para producción.
 
-### 6.0 Internacionalización
+### 7.0 Internacionalización Completa
 
-- [ ] **i18n:** Soporte completo para Español e Inglés.
+- [ ] **i18n Global:** Extender traducciones a todas las páginas.
 - [ ] **Localización:** Formatos de fecha/hora según región.
 
-### 6.1 Refactorización de Componentes
+### 7.1 Refactorización de Componentes
 
 - [ ] **NotificationsTab (Usuario):** ~700 líneas, dividir en subcomponentes.
 - [ ] **NotificationsTab (Organizador):** ~500 líneas, dividir en subcomponentes.
 - [ ] **EventFilters:** ~12KB, considerar extracción de filtros individuales.
 - [ ] **Header/MobileMenu:** Unificar estructura y añadir aria-labels.
 
-### 6.2 Testing & QA
+### 7.2 Testing & QA
 
 - [ ] **E2E Tests:** Flujo completo de registro → compra → check-in.
 - [ ] **Verificación Social:** Conexiones, solicitudes, notificaciones.
@@ -149,14 +184,14 @@ _Estado: PLANIFICADA_
 - [ ] **Cross-Browser:** Chrome, Firefox, Safari, Edge.
 - [ ] **Mobile:** Responsive en iOS Safari y Android Chrome.
 
-### 6.3 Mejoras de UX/UI
+### 7.3 Mejoras de UX/UI
 
 - [ ] **Accesibilidad (a11y):** Aria-labels en todos los IconButtons.
 - [ ] **Loading States:** Feedback visual consistente en todas las acciones.
 - [ ] **Error Messages:** Mensajes de error amigables y contextuales.
 - [ ] **Empty States:** Diseños para listas vacías.
 
-### 6.4 Optimización
+### 7.4 Optimización
 
 - [ ] **Bundle Size:** Análisis y reducción de dependencias.
 - [ ] **Image Optimization:** Lazy loading y formatos modernos (WebP/AVIF).
@@ -166,7 +201,7 @@ _Estado: PLANIFICADA_
 
 ## 🌐 Fase por definir: Comunidad Avanzada (vX.X.0+)
 
-_Estado: FUTURO_ soli implementar si la web crece y se hace popular.
+_Estado: FUTURO_ solo implementar si la web crece y se hace popular.
 
 ### X.X Funcionalidades Sociales Avanzadas
 
@@ -178,14 +213,15 @@ _Estado: FUTURO_ soli implementar si la web crece y se hace popular.
 
 ## 📜 Historial de Versiones
 
-| Versión     | Tipo    | Estado        | Descripción                                                                 |
-| ----------- | ------- | ------------- | --------------------------------------------------------------------------- |
-| **v0.0.1**  | Alpha   | ✅ Completado | Prototipo estático generado por IA.                                         |
-| **v0.1.0**  | Alpha   | ✅ Completado | Mockup funcional con backend simulado.                                      |
-| **v0.2.0**  | Beta    | ✅ Completado | Refactorización modular completa, backend Go real.                          |
-| **v0.3.0**  | Beta    | ✅ Completado | Pagos con Stripe, Scan QR, gestión de asistentes y tickets.                 |
-| **v0.4.0**  | Beta    | ✅ Completado | Social, Conexiones, Subscriptions, Notificaciones.                          |
-| **v0.5.0**  | Beta    | ✅ Completado | Testing, Bug Fixes, Preferencias de Notificaciones, CSV Export.             |
-| **v1.0.0**  | RC      | 🔜 Próxima    | "Sentinel" - Primera versión estable para producción.                       |
-| **v1.1.0+** | Release | 📋 Futuro     | Por definir.                                                                |
-| **vX.X.0+** | Release | 📋 Futuro     | Si la web crece y se hace popular, se implementarán nuevas funcionalidades. |
+| Versión     | Tipo    | Estado        | Descripción                                                     |
+| ----------- | ------- | ------------- | --------------------------------------------------------------- |
+| **v0.0.1**  | Alpha   | ✅ Completado | Prototipo estático generado por IA.                             |
+| **v0.1.0**  | Alpha   | ✅ Completado | Mockup funcional con backend simulado.                          |
+| **v0.2.0**  | Beta    | ✅ Completado | Refactorización modular completa, backend Go real.              |
+| **v0.3.0**  | Beta    | ✅ Completado | Pagos con Stripe, Scan QR, gestión de asistentes y tickets.     |
+| **v0.4.0**  | Beta    | ✅ Completado | Social, Conexiones, Subscriptions, Notificaciones.              |
+| **v0.5.0**  | Beta    | ✅ Completado | Testing, Bug Fixes, Preferencias de Notificaciones, CSV Export. |
+| **v0.6.0**  | Beta    | ✅ Completado | Verificación Email, i18n (PoC), Cookie Banner GDPR, Bug Fixes.  |
+| **v0.7.0**  | Beta    | 🔜 Próxima    | Panel de Administración y Organizador.                          |
+| **v1.0.0**  | RC      | 📋 Futuro     | "Sentinel" - Primera versión estable para producción.           |
+| **v1.1.0+** | Release | 📋 Futuro     | Por definir.                                                    |
