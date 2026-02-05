@@ -1,0 +1,12 @@
+{
+  "landing": {
+    "upcoming_events": "Upcoming Events",
+    "no_events_found": "No events found matching the selected filters.",
+    "load_more": "Load More Events"
+  },
+  "hero": {
+    "title": "The Future of Cybersecurity in Spain",
+    "subtitle": "Discover, connect, and participate in the most important cybersecurity events.",
+    "cta": "Explore Events"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "landing": {
+    "upcoming_events": "Próximos Eventos",
+    "no_events_found": "No se encontraron eventos que coincidan con los filtros seleccionados.",
+    "load_more": "Cargar Más Eventos"
+  },
+  "hero": {
+    "title": "El Futuro de la Ciberseguridad en España",
+    "subtitle": "Descubre, conecta y participa en los eventos más importantes de ciberseguridad.",
+    "cta": "Explorar Eventos"
+  }
+}

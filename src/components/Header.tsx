@@ -17,6 +17,7 @@ import { Role } from '../types'
 import { MobileMenu } from './MobileMenu'
 import { NotificationBadge } from './social'
 import { Button } from './Button'
+import { LanguageSelector } from './LanguageSelector'
 import {
   getNotifications,
   getUnreadCount,
@@ -227,6 +228,9 @@ export const Header: FunctionComponent = () => {
               />
 
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                <div className='hidden md:block'>
+                  <LanguageSelector />
+                </div>
                 {isLoading ? (
                   <CircularProgress size={24} />
                 ) : isAuthenticated ? (

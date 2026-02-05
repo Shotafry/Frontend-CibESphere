@@ -3,7 +3,7 @@ import { Button as MuiButton } from '@mui/material'
 import { useTheme, useMediaQuery } from '@mui/material'
 import { Link } from 'react-router-dom'
 
-export type ButtonVariant = 'primary' | 'secondary'
+export type ButtonVariant = 'primary' | 'secondary' | 'text'
 
 /*
   🔥 ESTILOS DE BOTONES (LA LEY) 🔥
@@ -32,6 +32,7 @@ interface CustomButtonProps {
   disabled?: boolean
   type?: 'button' | 'submit' | 'reset'
   startIcon?: React.ReactNode
+  endIcon?: React.ReactNode
 }
 
 export const Button: FunctionComponent<CustomButtonProps> = ({
@@ -46,7 +47,8 @@ export const Button: FunctionComponent<CustomButtonProps> = ({
   fullWidth = false,
   disabled = false,
   type = 'button',
-  startIcon
+  startIcon,
+  endIcon
 }) => {
   const theme = useTheme()
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
@@ -91,18 +93,41 @@ export const Button: FunctionComponent<CustomButtonProps> = ({
       }
     }
 
+    if (variant === 'text') {
+      return {
+        ...baseStyles,
+        background: 'transparent',
+        color: 'var(--color-cadetblue)', // Texto Cian
+        border: '1px solid transparent', // Reserva espacio o simplemente sin borde
+        padding: '6px 16px', // Un poco más compacto
+        '&:hover': !isMobile
+          ? {
+              background: 'var(--gradient-button-primary)', // Fondo Cian al hover
+              color: 'var(--White)', // Texto Blanco
+              borderColor: 'transparent'
+            }
+          : {}
+      }
+    }
+
     return baseStyles
   }
 
+  const getMuiVariant = (): 'contained' | 'outlined' | 'text' => {
+    if (variant === 'primary') return 'contained'
+    if (variant === 'secondary') return 'outlined'
+    return 'text'
+  }
+
   const commonProps = {
-    variant:
-      variant === 'primary' ? ('contained' as const) : ('outlined' as const),
+    variant: getMuiVariant(),
     sx: { ...getStyles(), ...sx },
     size,
     fullWidth,
     disabled,
     type,
     startIcon,
+    endIcon,
     href,
     target
   }

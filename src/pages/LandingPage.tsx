@@ -1,5 +1,6 @@
 // src/pages/LandingPage.tsx
 import { FunctionComponent, useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import {
   Box,
   Typography,
@@ -29,6 +30,8 @@ const LandingPage: FunctionComponent = () => {
     events: Event[]
     filters: EventFilterParams
   }
+
+  const { t } = useTranslation()
 
   const [events, setEvents] = useState<Event[]>(initialEvents)
   const [filters, setFilters] = useState<EventFilterParams>(loaderFilters)
@@ -85,7 +88,7 @@ const LandingPage: FunctionComponent = () => {
             fontWeight='bold'
             sx={{ mt: 4, mb: 4 }}
           >
-            Próximos Eventos
+            {t('landing.upcoming_events')}
           </Typography>
 
           <Box id='filtros'>
@@ -102,8 +105,7 @@ const LandingPage: FunctionComponent = () => {
             ) : (
               <Grid size={{ xs: 12 }}>
                 <Typography align='center' sx={{ mt: 5 }}>
-                  No se encontraron eventos que coincidan con los filtros
-                  seleccionados.
+                  {t('landing.no_events_found')}
                 </Typography>
               </Grid>
             )}
@@ -137,7 +139,7 @@ const LandingPage: FunctionComponent = () => {
                 {isLoadingMore ? (
                   <CircularProgress size={24} color='inherit' />
                 ) : (
-                  'Cargar Más Eventos'
+                  t('landing.load_more')
                 )}
               </Button>
             </Box>
