@@ -125,6 +125,17 @@ Sistema de control de acceso basado en roles gestionado por el backend.
 - **Reviews**: Fallback para reseñas de usuarios eliminados (evita crash)
 - **Eventos Pasados**: Corregido filtro en perfil público de organizaciones
 
+#### 🚀 Journey del Organizador (Onboarding Mejorado)
+
+- **Registro Simplificado**: Checkbox "Quiero organizar eventos" en SignUp (elimina tabs)
+- **Página de Onboarding**: Nueva página `/crear-organizacion` con formulario por pasos (Stepper)
+- **Campos Obligatorios**: Nombre, CIF/NIF, Email Público (con validación en tiempo real)
+- **Backend Transaccional**: Creación atómica de organización con estado `pending`
+- **Success Modal con Portal**: Popup de éxito con glassmorphism y auto-cierre (5s)
+- **Page Transitions**: Animaciones suaves de entrada/salida con `framer-motion`
+- **Self-Follow Prevention**: Botón "Seguir" oculto para miembros de la propia organización
+- **Estado Pendiente UX**: Banner de advertencia y botón "Crear Evento" deshabilitado hasta aprobación
+
 ---
 
 ## 📂 Estructura del Proyecto

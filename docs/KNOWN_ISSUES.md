@@ -1,6 +1,6 @@
 # 🐛 Errores Conocidos y Deuda Técnica
 
-> **Última Auditoría:** Enero 2026 (Beta v0.5.0 - COMPLETADA)
+> **Última Auditoría:** Febrero 2026 (Beta v0.6.0 - COMPLETADA)
 
 ---
 
@@ -37,6 +37,16 @@
 - **API Backend:** GET/PUT `/user/notification-preferences`.
 - **Push eliminado:** Solo canales Email y Web.
 - **Toggles uniformes:** Espaciado consistente con minHeight y width: 100%.
+
+### Seguridad, Compliance y Journey Organizador (v0.6.0) ✅
+
+- **Verificación de Email:** Flujo completo con páginas `/check-email` y `/verify-email`.
+- **Cookie Banner GDPR:** Banner glassmorphism con consentimiento granular.
+- **i18n (PoC):** `react-i18next` configurado, Landing Page traducida.
+- **Journey del Organizador:** Onboarding con formulario de 3 pasos (`CreateOrganization.tsx`).
+- **Success Modal:** Componente `SuccessModal` con React Portal y auto-cierre.
+- **Page Transitions:** `PageTransition` wrapper con `framer-motion`.
+- **Self-Follow Prevention:** `FollowButton` oculto para miembros de la organización.
 
 ---
 
@@ -90,13 +100,15 @@
 
 ## 📊 Estado de Componentes Clave
 
-| Componente      | Tamaño | Estado        | Notas                        |
-| --------------- | ------ | ------------- | ---------------------------- |
-| `EventCard`     | 8.4KB  | ✅ Bien       | Falta aria-label             |
-| `Button`        | 2.8KB  | ✅ Bien       | Wrapper limpio con variantes |
-| `Header`        | 8.9KB  | ⚠️ Falta a11y | Añadir aria-labels           |
-| `Footer`        | 3.4KB  | ⚠️ Falta a11y | Añadir aria-labels           |
-| `MobileMenu`    | 9.7KB  | ⚠️ Falta a11y | Añadir aria-labels           |
-| `FollowButton`  | 3.2KB  | ✅ Bien       | Estados correctos            |
-| `ConnectButton` | 4.1KB  | ✅ Bien       | Maneja todos los estados     |
-| `AttendeesList` | 6.5KB  | ✅ Bien       | CSV Export funcional         |
+| Componente           | Tamaño | Estado        | Notas                        |
+| -------------------- | ------ | ------------- | ---------------------------- |
+| `EventCard`          | 8.4KB  | ✅ Bien       | Falta aria-label             |
+| `Button`             | 2.8KB  | ✅ Bien       | Wrapper limpio con variantes |
+| `Header`             | 8.9KB  | ⚠️ Falta a11y | Añadir aria-labels           |
+| `Footer`             | 3.4KB  | ⚠️ Falta a11y | Añadir aria-labels           |
+| `MobileMenu`         | 9.7KB  | ⚠️ Falta a11y | Añadir aria-labels           |
+| `FollowButton`       | 3.2KB  | ✅ Bien       | Estados correctos            |
+| `ConnectButton`      | 4.1KB  | ✅ Bien       | Maneja todos los estados     |
+| `AttendeesList`      | 6.5KB  | ✅ Bien       | CSV Export funcional         |
+| `SuccessModal`       | 2.5KB  | ✅ Bien       | Portal-based, auto-cierre    |
+| `CreateOrganization` | 12KB   | ✅ Bien       | Stepper de 3 pasos           |

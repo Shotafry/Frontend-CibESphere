@@ -140,6 +140,32 @@ _Estado: COMPLETADO_
   - Reviews: Fallback para usuarios eliminados.
   - Eventos Pasados: Filtro corregido en perfil público.
 
+### 5.6 Journey del Organizador (v0.6.0) ✅
+
+- [x] **Refactorización SignUp:**
+  - Eliminado ToggleButtonGroup (tabs Asistente/Organizador).
+  - Añadido Checkbox "Quiero organizar eventos" con animación flip.
+  - Redirección condicional: checkbox → `/crear-organizacion`.
+- [x] **Página de Onboarding (`CreateOrganization.tsx`):**
+  - Formulario de 3 pasos con Stepper (Datos Básicos, Contacto, Legal).
+  - Validación en tiempo real con `react-hook-form`.
+  - Campos: Nombre, CIF/NIF, Email Público, Teléfono, Web, Dirección, Descripción.
+- [x] **Backend Transaccional:**
+  - Creación atómica con `gorm.Session{SkipHooks: true}`.
+  - Estado inicial: `pending`, `IsVerified=false`, `CanCreateEvents=false`.
+- [x] **Success Modal con Portal:**
+  - Componente `SuccessModal` con `ReactDOM.createPortal`.
+  - Diseño glassmorphism, icono CheckCircle, auto-cierre 5 segundos.
+  - Persistencia con `sessionStorage` (resistente a recargas).
+- [x] **Page Transitions:**
+  - `PageTransition` wrapper con `framer-motion` (fade + blur).
+  - Animación de entrada suave en CreateOrganization.
+- [x] **Self-Follow Prevention:**
+  - `FollowButton` oculto para propietarios y miembros de la organización.
+- [x] **Estado Pendiente UX:**
+  - Banner de advertencia en `PanelDeOrganizador`.
+  - Botón "Crear Evento" deshabilitado hasta aprobación.
+
 ---
 
 ## 🛠️ Fase 6: Panel de Administración y Organizador (Beta v0.7.0)

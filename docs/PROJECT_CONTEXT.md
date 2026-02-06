@@ -10,7 +10,7 @@
 
 **CybESphere** es una plataforma centralizada (sin ánimo de lucro) para unificar la comunidad de ciberseguridad en España. Su objetivo es dar visibilidad a todos los eventos y facilitar la gestión integral para organizadores y asistentes.
 
-**Versión v0.6.0:** Incluye sistema completo de Social & Networking, verificación de email obligatoria, Cookie Banner GDPR, internacionalización (PoC) con selector de idioma, y todos los bug fixes de la fase Beta.
+**Versión v0.6.0:** Incluye sistema completo de Social & Networking, verificación de email obligatoria, Cookie Banner GDPR, internacionalización (PoC), **Journey del Organizador** (onboarding con formulario de 3 pasos, Success Modal con Portal, transiciones de página, y estado "pendiente" UX).
 
 **Stack Tecnológico:**
 
@@ -53,6 +53,8 @@ src/
 │   │   └── NotificationBadge.tsx (Contador real-time)
 │   ├── CookieBanner.tsx (GDPR - v0.6.0)
 │   ├── LanguageSelector.tsx (i18n - v0.6.0)
+│   ├── SuccessModal.tsx (Portal-based modal - v0.6.0)
+│   ├── PageTransition.tsx (framer-motion wrapper)
 │   ├── events/TicketSelector.tsx
 │   └── skeletons/ (Loaders)
 │
@@ -61,6 +63,7 @@ src/
 │   ├── PanelDeOrganizador.tsx, PanelDeUsuario.tsx, PanelDeAdministrador.tsx
 │   ├── UserProfile.tsx, OrganizationProfile.tsx
 │   ├── CheckEmail.tsx, VerifyEmail.tsx (v0.6.0)
+│   ├── CreateOrganization.tsx (Onboarding Organizador - v0.6.0)
 │   │
 │   ├── panel-organizador/
 │   │   ├── components/
