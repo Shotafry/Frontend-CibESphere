@@ -74,7 +74,11 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     if (data.user.role === Role.Admin) {
       navigate('/admin')
     } else if (data.user.role === Role.Organizer) {
-      navigate('/panel-de-organizador')
+      if (data.user.organization) {
+        navigate('/panel-de-organizador')
+      } else {
+        navigate('/crear-organizacion')
+      }
     } else {
       navigate('/panel-de-usuario')
     }

@@ -7,7 +7,8 @@ import {
   IconButton,
   Badge,
   useTheme,
-  useMediaQuery
+  useMediaQuery,
+  Avatar
 } from '@mui/material'
 import NotificationsIcon from '@mui/icons-material/Notifications'
 import MenuIcon from '@mui/icons-material/Menu'
@@ -236,9 +237,26 @@ export const Header: FunctionComponent = () => {
                 ) : isAuthenticated ? (
                   <>
                     <NotificationBadge />
-                    <Typography sx={{ color: textColor, fontWeight: 500 }}>
-                      Hola, {user?.first_name || user?.email}
-                    </Typography>
+                    {user?.role === Role.Organizer && user?.organization ? (
+                      <Box
+                        sx={{ display: 'flex', alignItems: 'center', gap: 1 }}
+                      >
+                        {user.organization.logo_url && (
+                          <Avatar
+                            src={user.organization.logo_url}
+                            alt={user.organization.name}
+                            sx={{ width: 32, height: 32 }}
+                          />
+                        )}
+                        <Typography sx={{ color: textColor, fontWeight: 500 }}>
+                          {user.organization.name}
+                        </Typography>
+                      </Box>
+                    ) : (
+                      <Typography sx={{ color: textColor, fontWeight: 500 }}>
+                        Hola, {user?.first_name || user?.email}
+                      </Typography>
+                    )}
                     <Button variant='primary' onClick={onPanelClick}>
                       Mi Panel
                     </Button>

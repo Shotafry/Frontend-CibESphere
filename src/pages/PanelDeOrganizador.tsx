@@ -1,5 +1,10 @@
 // src/pages/PanelDeOrganizador.tsx
-import React, { FunctionComponent, useCallback, useState } from 'react'
+import React, {
+  FunctionComponent,
+  useCallback,
+  useState,
+  useEffect
+} from 'react'
 import {
   Box,
   Typography,
@@ -7,13 +12,16 @@ import {
   CircularProgress,
   Tabs,
   Tab,
-  Fade
+  Fade,
+  Alert,
+  Paper
 } from '@mui/material'
 import {
   useLoaderData,
   useNavigate,
   useNavigation,
-  useSearchParams
+  useSearchParams,
+  useLocation
 } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { DashboardStats, Event, OrganizationResponse } from '../types'
@@ -22,6 +30,7 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
 import VisibilityIcon from '@mui/icons-material/Visibility'
 import QrCodeScannerIcon from '@mui/icons-material/QrCodeScanner'
 import { Button } from '../components/Button'
+import { SuccessModal } from '../components/SuccessModal'
 
 // Import new modular components
 import {
@@ -43,7 +52,28 @@ const PanelDeOrganizador: FunctionComponent = () => {
   const { stats, events, organization } = useLoaderData() as LoaderData
   const navigation = useNavigation()
   const navigate = useNavigate()
+  const location = useLocation()
   const { user } = useAuth()
+
+  // Success Modal State - shows after creating organization
+  const [showOrgCreatedModal, setShowOrgCreatedModal] = useState(false)
+
+  // Check if coming from org creation flow
+  useEffect(() => {
+    // Check sessionStorage (robust against reloads) or location state
+    const fromSession =
+      sessionStorage.getItem('organization_created') === 'true'
+    const fromState = (location.state as { justCreatedOrg?: boolean } | null)
+      ?.justCreatedOrg
+
+    if (fromSession || fromState) {
+      setShowOrgCreatedModal(true)
+
+      // Clear flags
+      sessionStorage.removeItem('organization_created')
+      window.history.replaceState({}, document.title)
+    }
+  }, [location])
 
   // Tab State Management via URL
   const [searchParams, setSearchParams] = useSearchParams()
@@ -88,6 +118,8 @@ const PanelDeOrganizador: FunctionComponent = () => {
     }
   }
 
+  const isPending = organization?.status === 'pending'
+
   if (navigation.state === 'loading') {
     return (
       <Box
@@ -114,6 +146,12 @@ const PanelDeOrganizador: FunctionComponent = () => {
         boxSizing: 'border-box'
       }}
     >
+      {/* Success Modal - using Portal for z-index safety */}
+      <SuccessModal
+        open={showOrgCreatedModal}
+        onClose={() => setShowOrgCreatedModal(false)}
+      />
+
       {/* HEADER DEL PANEL */}
       <Box
         sx={{
@@ -125,6 +163,17 @@ const PanelDeOrganizador: FunctionComponent = () => {
         }}
       >
         <Container maxWidth='lg'>
+          {/* PENDING STATUS BANNER */}
+          {isPending && (
+            <Alert severity='warning' sx={{ mb: 4, borderRadius: 2 }}>
+              <Typography variant='subtitle2' fontWeight='bold'>
+                Organización en revisión
+              </Typography>
+              Tu organización está pendiente de aprobación. Hasta que sea
+              verificada, no podrás publicar eventos.
+            </Alert>
+          )}
+
           <Box
             sx={{
               display: 'flex',
@@ -172,6 +221,7 @@ const PanelDeOrganizador: FunctionComponent = () => {
                   variant='secondary'
                   startIcon={<AddCircleOutlineIcon />}
                   onClick={onCrearEventoClick}
+                  disabled={isPending}
                   sx={{
                     width: { xs: '100%', md: 'auto' },
                     flex: { xs: 1, md: 'none' }
@@ -183,6 +233,7 @@ const PanelDeOrganizador: FunctionComponent = () => {
                   variant='secondary'
                   startIcon={<QrCodeScannerIcon />}
                   onClick={() => setScannerOpen(true)}
+                  disabled={isPending} // También deshabilitar scanner si gustas, o dejarlo
                   sx={{
                     width: { xs: '100%', md: 'auto' },
                     flex: { xs: 1, md: 'none' }

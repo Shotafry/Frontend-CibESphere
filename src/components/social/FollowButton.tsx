@@ -74,8 +74,12 @@ export const FollowButton = ({
     }
   }
 
-  // Si el usuario es el propietario, no mostrar el botón
-  if (user && ownerId && user.id === ownerId) {
+  // Si el usuario es el propietario o pertenece a la organización, no mostrar el botón
+  const isOwnOrganization =
+    (user && ownerId && user.id === ownerId) ||
+    (user && user.organization?.id === organizationId)
+
+  if (isOwnOrganization) {
     return null
   }
 
