@@ -25,9 +25,10 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({ stats }) => (
         fontWeight='bold'
         mb={4}
         sx={{
-          background: 'linear-gradient(45deg, #fff 30%, #6366f1 90%)',
+          background: 'linear-gradient(45deg, #1e293b 30%, #6366f1 90%)',
           WebkitBackgroundClip: 'text',
-          WebkitTextFillColor: 'transparent'
+          WebkitTextFillColor: 'transparent',
+          letterSpacing: '-1px'
         }}
       >
         Dashboard General
@@ -72,24 +73,23 @@ export const DashboardTab: React.FC<DashboardTabProps> = ({ stats }) => (
         </Grid>
       </Grid>
 
-      {/* Main Charts Row */}
+      {/* Main Charts Area */}
       <Grid container spacing={3} mb={4}>
-        <Grid size={{ xs: 12, lg: 8 }}>
+        {/* Events Bar Chart - Full Width for better detail */}
+        <Grid size={{ xs: 12 }}>
           <Box height={400}>
             <EventsChart data={stats.events_per_month} />
           </Box>
         </Grid>
-        <Grid size={{ xs: 12, lg: 4 }}>
-          <Box height={400}>
+
+        {/* Categories (Pie) & Users (Area) - Split 50/50 */}
+        <Grid size={{ xs: 12, md: 6 }}>
+          <Box height={450}>
             <CategoryPieChart data={stats.category_distribution} />
           </Box>
         </Grid>
-      </Grid>
-
-      {/* Secondary Charts Row */}
-      <Grid container spacing={3}>
-        <Grid size={{ xs: 12 }}>
-          <Box height={350}>
+        <Grid size={{ xs: 12, md: 6 }}>
+          <Box height={450}>
             <UserRegistrationsChart data={stats.user_registrations} />
           </Box>
         </Grid>

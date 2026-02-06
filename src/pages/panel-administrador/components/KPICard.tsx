@@ -27,20 +27,22 @@ export const KPICard: React.FC<KPICardProps> = ({
       sx={{
         p: 3,
         height: '100%',
-        background: 'rgba(17, 25, 40, 0.75)',
-        backdropFilter: 'blur(16px)',
-        border: '1px solid rgba(255, 255, 255, 0.1)',
+        background: '#ffffff',
+        border: '1px solid #e2e8f0', // Light slate border
         borderRadius: 4,
         position: 'relative',
         overflow: 'hidden',
         transition: 'all 0.3s ease-in-out',
+        boxShadow:
+          '0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03)',
         '&:hover': {
           transform: 'translateY(-5px)',
-          boxShadow: `0 10px 30px -10px ${color}40`,
-          border: `1px solid ${color}40`
+          boxShadow: `0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)`,
+          borderColor: color
         }
       }}
     >
+      {/* Background decoration */}
       <Box
         sx={{
           position: 'absolute',
@@ -49,7 +51,7 @@ export const KPICard: React.FC<KPICardProps> = ({
           width: 100,
           height: 100,
           borderRadius: '50%',
-          background: `radial-gradient(circle, ${color}20 0%, transparent 70%)`
+          background: `radial-gradient(circle, ${color}15 0%, transparent 70%)`
         }}
       />
 
@@ -58,26 +60,32 @@ export const KPICard: React.FC<KPICardProps> = ({
           sx={{
             p: 1.5,
             borderRadius: 3,
-            background: `linear-gradient(135deg, ${color}20 0%, ${color}10 100%)`,
+            background: `linear-gradient(135deg, ${color}15 0%, ${color}05 100%)`,
             color: color,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             mr: 2,
-            boxShadow: `0 4px 12px ${color}20`
+            boxShadow: `0 2px 5px ${color}10`
           }}
         >
           {icon}
         </Box>
-        <Typography variant='subtitle2' color='text.secondary' fontWeight={500}>
+        <Typography
+          variant='body2'
+          color='text.secondary'
+          fontWeight={600}
+          textTransform='uppercase'
+          letterSpacing={0.5}
+        >
           {title}
         </Typography>
       </Box>
 
       <Typography
         variant='h4'
-        fontWeight='bold'
-        sx={{ mb: 1, letterSpacing: '-0.5px' }}
+        fontWeight='800'
+        sx={{ mb: 1, letterSpacing: '-1px', color: '#1e293b' }}
       >
         {value}
       </Typography>
@@ -88,17 +96,18 @@ export const KPICard: React.FC<KPICardProps> = ({
             variant='caption'
             sx={{
               color: trend.value >= 0 ? '#10b981' : '#ef4444',
-              fontWeight: 'bold',
+              fontWeight: '800',
               bgcolor: trend.value >= 0 ? '#10b98115' : '#ef444415',
               px: 1,
               py: 0.5,
-              borderRadius: 1
+              borderRadius: 2,
+              display: 'flex',
+              alignItems: 'center'
             }}
           >
-            {trend.value >= 0 ? '+' : ''}
-            {trend.value}%
+            {trend.value >= 0 ? '↑' : '↓'} {Math.abs(trend.value)}%
           </Typography>
-          <Typography variant='caption' color='text.secondary'>
+          <Typography variant='caption' color='text.secondary' fontWeight={500}>
             {trend.label}
           </Typography>
         </Box>
