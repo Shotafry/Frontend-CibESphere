@@ -265,7 +265,11 @@ const routes: RouteObject[] = [
 
       // --- Rutas Protegidas Asistentes ---
       {
-        element: <ProtectedRoute allowedRoles={[Role.User, Role.Admin]} />,
+        element: (
+          <ProtectedRoute
+            allowedRoles={[Role.User, Role.Admin, Role.Organizer]}
+          />
+        ),
         children: [
           {
             path: 'panel-de-usuario',
@@ -280,7 +284,7 @@ const routes: RouteObject[] = [
             },
             shouldRevalidate: shouldRevalidatePanel
           },
-          // Permite acceso a usuarios normales para crear organización (onboarding)
+          // Permite acceso a usuarios normales y organizadores pendientes para crear organización (onboarding)
           {
             path: 'crear-organizacion',
             element: <CreateOrganization />
