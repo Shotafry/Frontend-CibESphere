@@ -4,53 +4,94 @@ import {
   Event as EventIcon,
   People as PeopleIcon,
   Business as BusinessIcon,
-  Verified as VerifiedIcon
+  Verified as VerifiedIcon,
+  AttachMoney as MoneyIcon
 } from '@mui/icons-material'
-import { DashboardStats } from '../../../types'
-import { StatCard } from '../components/StatCard'
+import { AdminStats } from '../../../types'
+import { KPICard } from '../components/KPICard'
+import { EventsChart } from '../components/EventsChart'
+import { CategoryPieChart } from '../components/CategoryPieChart'
+import { UserRegistrationsChart } from '../components/UserRegistrationsChart'
 
 interface DashboardTabProps {
-  stats: DashboardStats
+  stats: AdminStats
 }
 
 export const DashboardTab: React.FC<DashboardTabProps> = ({ stats }) => (
   <Fade in timeout={500}>
     <Box>
-      <Typography variant='h6' fontWeight='bold' mb={3}>
-        Resumen General
+      <Typography
+        variant='h4'
+        fontWeight='bold'
+        mb={4}
+        sx={{
+          background: 'linear-gradient(45deg, #fff 30%, #6366f1 90%)',
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent'
+        }}
+      >
+        Dashboard General
       </Typography>
-      <Grid container spacing={3}>
+
+      {/* KPI Cards Row */}
+      <Grid container spacing={3} mb={4}>
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-          <StatCard
-            title='Eventos Totales'
-            value={stats.total_events}
+          <KPICard
+            title='Eventos Activos'
+            value={stats.active_events.toString()}
             icon={<EventIcon />}
             color='#0ea5e9'
+            trend={{ value: 12, label: 'vs mes anterior' }}
           />
         </Grid>
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-          <StatCard
-            title='Usuarios'
-            value={stats.total_attendees}
+          <KPICard
+            title='Usuarios Totales'
+            value={stats.total_users.toLocaleString()}
             icon={<PeopleIcon />}
             color='#10b981'
+            trend={{ value: 8.5, label: 'crecimiento' }}
           />
         </Grid>
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-          <StatCard
-            title='Ciudades'
-            value={stats.total_cities}
-            icon={<BusinessIcon />}
+          <KPICard
+            title='Orgs Verificadas'
+            value={stats.verified_orgs.toString()}
+            icon={<VerifiedIcon />}
             color='#f59e0b'
           />
         </Grid>
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-          <StatCard
-            title='Publicados'
-            value={stats.published_events}
-            icon={<VerifiedIcon />}
+          <KPICard
+            title='Ingresos (Simulado)'
+            value={`$${(stats.total_revenue / 100).toLocaleString()}`}
+            icon={<MoneyIcon />}
             color='#6366f1'
+            trend={{ value: 24, label: 'vs mes anterior' }}
           />
+        </Grid>
+      </Grid>
+
+      {/* Main Charts Row */}
+      <Grid container spacing={3} mb={4}>
+        <Grid size={{ xs: 12, lg: 8 }}>
+          <Box height={400}>
+            <EventsChart data={stats.events_per_month} />
+          </Box>
+        </Grid>
+        <Grid size={{ xs: 12, lg: 4 }}>
+          <Box height={400}>
+            <CategoryPieChart data={stats.category_distribution} />
+          </Box>
+        </Grid>
+      </Grid>
+
+      {/* Secondary Charts Row */}
+      <Grid container spacing={3}>
+        <Grid size={{ xs: 12 }}>
+          <Box height={350}>
+            <UserRegistrationsChart data={stats.user_registrations} />
+          </Box>
         </Grid>
       </Grid>
     </Box>

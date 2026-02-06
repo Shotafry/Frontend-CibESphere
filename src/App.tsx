@@ -361,7 +361,7 @@ const routes: RouteObject[] = [
             path: 'admin',
             element: <PanelDeAdministrador />,
             loader: async () => {
-              const stats = await apiService.getAdminDashboard()
+              const stats = await apiService.getAdminStats()
               return { stats }
             },
             shouldRevalidate: shouldRevalidatePanel

@@ -10,7 +10,7 @@ import {
   Stack
 } from '@mui/material'
 import { useLoaderData } from 'react-router-dom'
-import { DashboardStats } from '../types'
+import { AdminStats } from '../types'
 import { DashboardTab, OrganizationsTab, UsersTab } from './panel-administrador'
 
 // Icons
@@ -20,7 +20,7 @@ import BusinessIcon from '@mui/icons-material/Business'
 import VerifiedIcon from '@mui/icons-material/Verified'
 
 interface AdminLoaderData {
-  stats: DashboardStats
+  stats: AdminStats
 }
 
 const PanelDeAdministrador: React.FC = () => {

@@ -26,7 +26,7 @@ interface CustomButtonProps {
   to?: string
   href?: string
   target?: string
-  onClick?: () => void
+  onClick?: React.MouseEventHandler<HTMLButtonElement>
   size?: 'small' | 'medium' | 'large'
   fullWidth?: boolean
   disabled?: boolean

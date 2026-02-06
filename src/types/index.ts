@@ -166,8 +166,7 @@ export interface OrganizationResponse {
   stripe_onboarding_complete?: boolean
 }
 
-export interface OrganizationSummaryResponse
-  extends Partial<OrganizationResponse> {
+export interface OrganizationSummaryResponse extends Partial<OrganizationResponse> {
   id: string
   slug: string
   name: string
@@ -408,6 +407,43 @@ export interface DashboardStats {
   total_attendees: number
   total_cities: number
   published_events: number
+}
+
+export interface MonthlyCount {
+  month: string
+  count: number
+}
+
+export interface CategoryCount {
+  category: string
+  count: number
+}
+
+export interface DailyCount {
+  date: string
+  count: number
+}
+
+export interface AdminStats {
+  total_users: number
+  verified_orgs: number
+  active_events: number
+  total_revenue: number
+  events_per_month: MonthlyCount[]
+  category_distribution: CategoryCount[]
+  user_registrations: DailyCount[]
+}
+
+export interface AuditLogEntry {
+  id: string
+  user_id: string
+  action: string
+  resource: string
+  resource_id: string
+  changes: Record<string, unknown>
+  ip_address: string
+  user_agent: string
+  timestamp: string
 }
 
 // --- NOTIFICACIONES ---
