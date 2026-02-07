@@ -12,9 +12,41 @@ import {
 
 // --- PUBLIC DISCOVERY ---
 
-export const getAllOrganizations = async (): Promise<OrganizationSummary[]> => {
-  const response = await httpClient.get<any>('/public/organizations')
-  return response.data.organizations || response.data.data || response.data
+export interface OrganizationFilterParams {
+  page?: number
+  limit?: number
+  search?: string
+  status?: string
+  is_verified?: boolean
+  sort_by?: string
+  sort_order?: 'asc' | 'desc'
+}
+
+export const getAllOrganizations = async (
+  params?: OrganizationFilterParams
+): Promise<{ organizations: OrganizationSummary[]; pagination: any }> => {
+  const queryParams = new URLSearchParams()
+
+  if (params) {
+    if (params.page) queryParams.append('page', params.page.toString())
+    if (params.limit) queryParams.append('limit', params.limit.toString())
+    if (params.search) queryParams.append('search', params.search)
+    if (params.status && params.status !== 'all')
+      queryParams.append('status', params.status)
+    if (params.is_verified !== undefined)
+      queryParams.append('is_verified', params.is_verified.toString())
+    if (params.sort_by) queryParams.append('order_by', params.sort_by)
+    if (params.sort_order) queryParams.append('order_dir', params.sort_order)
+  }
+
+  // Use protected endpoint for admin capabilities
+  const response = await httpClient.get<any>(
+    `/organizations?${queryParams.toString()}`
+  )
+  return {
+    organizations: response.data.data || [],
+    pagination: response.data.pagination
+  }
 }
 
 export const getMyOrganization = async (): Promise<OrganizationSummary> => {
