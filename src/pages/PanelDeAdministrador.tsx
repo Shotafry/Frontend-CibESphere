@@ -11,13 +11,19 @@ import {
 } from '@mui/material'
 import { useLoaderData } from 'react-router-dom'
 import { AdminStats } from '../types'
-import { DashboardTab, OrganizationsTab, UsersTab } from './panel-administrador'
+import {
+  DashboardTab,
+  OrganizationsTab,
+  UsersTab,
+  LogsTab
+} from './panel-administrador'
 
 // Icons
 import DashboardIcon from '@mui/icons-material/Dashboard'
 import PeopleIcon from '@mui/icons-material/People'
 import BusinessIcon from '@mui/icons-material/Business'
 import VerifiedIcon from '@mui/icons-material/Verified'
+import HistoryIcon from '@mui/icons-material/History'
 
 interface AdminLoaderData {
   stats: AdminStats
@@ -171,6 +177,7 @@ const PanelDeAdministrador: React.FC = () => {
                 iconPosition='start'
                 label='Usuarios'
               />
+              <Tab icon={<HistoryIcon />} iconPosition='start' label='Logs' />
             </Tabs>
           </Box>
 
@@ -179,6 +186,7 @@ const PanelDeAdministrador: React.FC = () => {
             {currentTab === 0 && <DashboardTab stats={stats} />}
             {currentTab === 1 && <OrganizationsTab />}
             {currentTab === 2 && <UsersTab />}
+            {currentTab === 3 && <LogsTab />}
           </Box>
         </Paper>
       </Container>

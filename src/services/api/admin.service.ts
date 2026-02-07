@@ -40,3 +40,7 @@ export const updateOrganizationStatus = async (
 ): Promise<void> => {
   await httpClient.patch(`/organizations/${orgId}/status`, { status })
 }
+
+export const verifyOrganization = async (orgId: string): Promise<void> => {
+  await httpClient.post(`/organizations/${orgId}/verify`)
+}
