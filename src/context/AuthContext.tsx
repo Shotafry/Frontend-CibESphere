@@ -85,15 +85,15 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   }
 
   const login = async (email: string, password: string) => {
-    setIsLoading(true)
+    // setIsLoading(true) // DO NOT toggle global loading, it unmounts the app!
     try {
       const data = await apiService.login({ email, password })
       handleAuthSuccess(data)
     } catch (error) {
-      setIsLoading(false)
+      // setIsLoading(false)
       throw error
     } finally {
-      setIsLoading(false)
+      // setIsLoading(false)
     }
   }
 
@@ -112,15 +112,15 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   }
 
   const register = async (data: RegisterDTO) => {
-    setIsLoading(true)
+    // setIsLoading(true) // DO NOT toggle global loading
     try {
       await apiService.register(data)
       // No login automatically, waiting for email verification
     } catch (error) {
-      setIsLoading(false)
+      // setIsLoading(false)
       throw error
     } finally {
-      setIsLoading(false)
+      // setIsLoading(false)
     }
   }
 
@@ -139,7 +139,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
         user,
         token,
         isAuthenticated: !!user,
-        isLoading,
+        isLoading, // Keep passing it, but it now represents initialization only
         login,
         logout,
         register,

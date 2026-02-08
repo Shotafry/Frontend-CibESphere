@@ -33,6 +33,7 @@ import VerifiedUserIcon from '@mui/icons-material/VerifiedUser'
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked'
 import { Button } from '../components/Button'
+import { SuspensionModal } from '../components/SuspensionModal'
 
 // Componente visual para la promoción de Organizador
 const OrganizerPromoCard = ({
@@ -191,6 +192,10 @@ const SignUp: FunctionComponent = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
+  // Estado para modal de suspensión
+  const [showSuspendedModal, setShowSuspendedModal] = useState(false)
+  const [suspendedMessage, setSuspendedMessage] = useState('')
+
   // Extendemos RegisterDTO localmente para incluir el checkbox
   interface SignUpFormData extends RegisterDTO {
     wantsToOrganize: boolean
@@ -215,8 +220,11 @@ const SignUp: FunctionComponent = () => {
   })
 
   const onSubmit: SubmitHandler<SignUpFormData> = async (
-    data: SignUpFormData
+    data: SignUpFormData,
+    e?: React.BaseSyntheticEvent
   ) => {
+    if (e) e.preventDefault() // Force prevent default
+
     setIsLoading(true)
     setError(null)
     try {
@@ -237,9 +245,24 @@ const SignUp: FunctionComponent = () => {
       }
     } catch (err: any) {
       console.error(err)
-      setError(
-        err.response?.data?.message || err.message || 'Ha ocurrido un error.'
-      )
+
+      // Detectar error de cuenta suspendida
+      const responseData = err.response?.data
+      const errorDetails = responseData?.error
+
+      // El backend devuelve { error: { code: 'account_suspended', ... } }
+      console.log('Error recibido en SignUp:', errorDetails) // DEBUG
+      if (errorDetails?.code === 'account_suspended') {
+        console.log('Activando modal de suspensión') // DEBUG
+        setSuspendedMessage(
+          errorDetails.message || 'Tu cuenta ha sido suspendida.'
+        )
+        setShowSuspendedModal(true)
+        setIsLoading(false) // Stop loading explicitly
+        return // No mostramos el error genérico en la UI
+      }
+
+      setError(errorDetails?.message || err.message || 'Ha ocurrido un error.')
     } finally {
       setIsLoading(false)
     }
@@ -256,6 +279,12 @@ const SignUp: FunctionComponent = () => {
         p: 3
       }}
     >
+      <SuspensionModal
+        open={showSuspendedModal}
+        onClose={() => setShowSuspendedModal(false)}
+        message={suspendedMessage}
+      />
+
       <Grid
         container
         justifyContent='center'
