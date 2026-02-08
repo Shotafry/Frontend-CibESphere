@@ -138,6 +138,36 @@ Sistema de control de acceso basado en roles gestionado por el backend.
 
 ---
 
+### 🆕 Novedades Beta v0.7.0 (Febrero 2026)
+
+#### 🛡️ Panel de Administración Rediseñado
+
+- **Dashboard de Métricas**: Visualización de KPIs clave (usuarios, organizaciones, eventos) con gráficos interactivos (Recharts).
+- **Gestión Avanzada de Usuarios**:
+  - Filtro por rol y estado.
+  - Acciones rápidas: Editar rol, Suspender/Activar usuario.
+  - **Banner de Suspensión**: Feedback visual inmediato para usuarios suspendidos.
+- **Gestión de Organizaciones**:
+  - Visualización del "Dueño" (Owner) de la organización.
+  - Flujo de verificación y suspensión con auditoría.
+- **Audit Logs (Infraestructura)**: Registro automático de acciones administrativas críticas.
+
+#### 💅 Mejoras de UI/UX
+
+- **Data Grids Modernos**: Tablas con paginación real, filtros y estados visuales (badges).
+- **Feedback de Errores Mejorado**: Modales específicos para errores de cuenta suspendida o bloqueada.
+- **Optimizaciones de Rendimiento**: Solución de race conditions en cargas masivas de datos.
+
+---
+
+### 🔜 Próximamente: Beta v0.8.0 (Estabilidad y Polish)
+
+- **Audit Logs UI**: Visualización completa de los logs de auditoría en el panel.
+- **Refinamiento Visual**: Micro-interacciones y pulido de estilos globales.
+- **Bug Fixes**: Resolución de issues menores reportados en v0.7.0.
+
+---
+
 ## 📂 Estructura del Proyecto
 
 ```text

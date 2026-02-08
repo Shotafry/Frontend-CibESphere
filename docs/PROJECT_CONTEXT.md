@@ -1,8 +1,6 @@
-# 🧠 Contexto del Proyecto: CybESphere Frontend
-
 > **Documento Maestro**: Este archivo contiene toda la información necesaria para que una IA o desarrollador entienda la arquitectura, flujos y diseño de CybESphere.
-> **Versión**: Beta v0.6.0 (Febrero 2026) - **Seguridad y Compliance**
-> **Próxima**: Beta v0.7.0 - Panel de Administración y Organizador
+> **Versión**: Beta v0.7.0 (Febrero 2026) - **Gestión y Auditoría**
+> **Próxima**: Beta v0.8.0 - Estabilidad y Polish
 
 ---
 
@@ -10,7 +8,7 @@
 
 **CybESphere** es una plataforma centralizada (sin ánimo de lucro) para unificar la comunidad de ciberseguridad en España. Su objetivo es dar visibilidad a todos los eventos y facilitar la gestión integral para organizadores y asistentes.
 
-**Versión v0.6.0:** Incluye sistema completo de Social & Networking, verificación de email obligatoria, Cookie Banner GDPR, internacionalización (PoC), **Journey del Organizador** (onboarding con formulario de 3 pasos, Success Modal con Portal, transiciones de página, y estado "pendiente" UX).
+**Versión v0.7.0:** Introduce un **Panel de Administración** completo con dashboards de métricas, gestión avanzada de usuarios y organizaciones, y un sistema de **Auditoría** (backend). También mejora la UX para organizaciones suspendidas y optimiza el rendimiento general.
 
 **Stack Tecnológico:**
 

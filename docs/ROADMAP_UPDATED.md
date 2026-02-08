@@ -168,41 +168,68 @@ _Estado: COMPLETADO_
 
 ---
 
-## 🛠️ Fase 6: Panel de Administración y Organizador (Beta v0.7.0)
+## 🛠️ Fase 6: Panel de Administración y Organizador (Beta v0.7.0) ✅
 
-_Estado: PLANIFICADA_
+_Estado: COMPLETADO_
 
-### 6.1 Panel de Administrador
+### 6.1 Panel de Administrador (Rediseño Total) ✅
 
-- [ ] **Gestión de Usuarios:** Banning, verificación manual.
-- [ ] **TBD:** Por definir.
+- [x] **Dashboard de Métricas:** Gráficos de actividad (Eventos, Usuarios) con Recharts.
+- [x] **Gestión de Usuarios:** Tabla avanzada con filtrado, edición de roles y acciones de suspensión/activación.
+- [x] **Gestión de Organizaciones:**
+  - Visualización del "Dueño" (Owner).
+  - Verificación y Suspensión de organizaciones con logs de auditoría.
+- [x] **Audit Logs (Backend):** Infraestructura de logging para acciones administrativas críticas.
 
-### 6.2 Panel de Organizador
+### 6.2 Panel de Organizador ✅
 
-- [ ] **Dashboard Mejorado:** Métricas ampliadas.
-- [ ] **TBD:** Por definir.
+- [x] **Dashboard Mejorado:** KPIs en tiempo real de eventos y ventas.
+- [x] **Gestión de Eventos:** Flujo optimizado para creación y edición.
+- [x] **Estado de Organización:** Feedback visual claro si la organización está pendiente o suspendida.
 
 ---
 
-## 🚀 Fase 7: Release Candidate (RC v1.0.0)
+## 🧹 Fase 8: Estabilidad y Polish (Beta v0.8.0) 🔄
+
+_Estado: EN PROGRESO_
+
+### 8.1 UI de Auditoría
+
+- [ ] **Audit Logs Visualizer:** Interfaz completa para ver y filtrar logs de administración.
+- [ ] **Detalle de Log:** Vista expandida con diff de cambios (JSON viewer).
+
+### 8.2 Refinamiento Visual
+
+- [ ] **Micro-interacciones:** Mejorar feedback en botones y formularios.
+- [ ] **Empty States:** Ilustraciones personalizadas para listas vacías.
+- [ ] **Skeleton Loading:** Ajustar loaders para evitar layout shift en tablas.
+
+### 8.3 Bug Fixes & Tech Debt
+
+- [ ] **Optimización de renders:** Reducir re-renders innecesarios en DataGrids.
+- [ ] **Accesibilidad:** Completar aria-labels faltantes (audit v0.6.0).
+
+---
+
+## 🚀 Fase 9: Release Candidate (RC v1.0.0)
 
 _Estado: PLANIFICADA_
 
 > **Nombre de versión: "Sentinel"** - La primera versión estable y lista para producción.
 
-### 7.0 Internacionalización Completa
+### 9.0 Internacionalización Completa
 
 - [ ] **i18n Global:** Extender traducciones a todas las páginas.
 - [ ] **Localización:** Formatos de fecha/hora según región.
 
-### 7.1 Refactorización de Componentes
+### 9.1 Refactorización de Componentes
 
 - [ ] **NotificationsTab (Usuario):** ~700 líneas, dividir en subcomponentes.
 - [ ] **NotificationsTab (Organizador):** ~500 líneas, dividir en subcomponentes.
 - [ ] **EventFilters:** ~12KB, considerar extracción de filtros individuales.
 - [ ] **Header/MobileMenu:** Unificar estructura y añadir aria-labels.
 
-### 7.2 Testing & QA
+### 9.2 Testing & QA
 
 - [ ] **E2E Tests:** Flujo completo de registro → compra → check-in.
 - [ ] **Verificación Social:** Conexiones, solicitudes, notificaciones.
@@ -210,14 +237,14 @@ _Estado: PLANIFICADA_
 - [ ] **Cross-Browser:** Chrome, Firefox, Safari, Edge.
 - [ ] **Mobile:** Responsive en iOS Safari y Android Chrome.
 
-### 7.3 Mejoras de UX/UI
+### 9.3 Mejoras de UX/UI
 
 - [ ] **Accesibilidad (a11y):** Aria-labels en todos los IconButtons.
 - [ ] **Loading States:** Feedback visual consistente en todas las acciones.
 - [ ] **Error Messages:** Mensajes de error amigables y contextuales.
 - [ ] **Empty States:** Diseños para listas vacías.
 
-### 7.4 Optimización
+### 9.4 Optimización
 
 - [ ] **Bundle Size:** Análisis y reducción de dependencias.
 - [ ] **Image Optimization:** Lazy loading y formatos modernos (WebP/AVIF).
@@ -239,15 +266,16 @@ _Estado: FUTURO_ solo implementar si la web crece y se hace popular.
 
 ## 📜 Historial de Versiones
 
-| Versión     | Tipo    | Estado        | Descripción                                                     |
-| ----------- | ------- | ------------- | --------------------------------------------------------------- |
-| **v0.0.1**  | Alpha   | ✅ Completado | Prototipo estático generado por IA.                             |
-| **v0.1.0**  | Alpha   | ✅ Completado | Mockup funcional con backend simulado.                          |
-| **v0.2.0**  | Beta    | ✅ Completado | Refactorización modular completa, backend Go real.              |
-| **v0.3.0**  | Beta    | ✅ Completado | Pagos con Stripe, Scan QR, gestión de asistentes y tickets.     |
-| **v0.4.0**  | Beta    | ✅ Completado | Social, Conexiones, Subscriptions, Notificaciones.              |
-| **v0.5.0**  | Beta    | ✅ Completado | Testing, Bug Fixes, Preferencias de Notificaciones, CSV Export. |
-| **v0.6.0**  | Beta    | ✅ Completado | Verificación Email, i18n (PoC), Cookie Banner GDPR, Bug Fixes.  |
-| **v0.7.0**  | Beta    | 🔜 Próxima    | Panel de Administración y Organizador.                          |
-| **v1.0.0**  | RC      | 📋 Futuro     | "Sentinel" - Primera versión estable para producción.           |
-| **v1.1.0+** | Release | 📋 Futuro     | Por definir.                                                    |
+| Versión     | Tipo    | Estado         | Descripción                                                     |
+| ----------- | ------- | -------------- | --------------------------------------------------------------- |
+| **v0.0.1**  | Alpha   | ✅ Completado  | Prototipo estático generado por IA.                             |
+| **v0.1.0**  | Alpha   | ✅ Completado  | Mockup funcional con backend simulado.                          |
+| **v0.2.0**  | Beta    | ✅ Completado  | Refactorización modular completa, backend Go real.              |
+| **v0.3.0**  | Beta    | ✅ Completado  | Pagos con Stripe, Scan QR, gestión de asistentes y tickets.     |
+| **v0.4.0**  | Beta    | ✅ Completado  | Social, Conexiones, Subscriptions, Notificaciones.              |
+| **v0.5.0**  | Beta    | ✅ Completado  | Testing, Bug Fixes, Preferencias de Notificaciones, CSV Export. |
+| **v0.6.0**  | Beta    | ✅ Completado  | Verificación Email, i18n (PoC), Cookie Banner GDPR, Bug Fixes.  |
+| **v0.7.0**  | Beta    | ✅ Completado  | Panel de Administración Rediseñado, Gestión de Org/Usuarios.    |
+| **v0.8.0**  | Beta    | 🔄 En Progreso | Estabilidad, UI Auditoría, Polish Visual.                       |
+| **v1.0.0**  | RC      | 📋 Futuro      | "Sentinel" - Primera versión estable para producción.           |
+| **v1.1.0+** | Release | 📋 Futuro      | Por definir.                                                    |
