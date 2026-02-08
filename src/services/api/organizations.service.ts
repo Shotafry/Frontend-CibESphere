@@ -33,7 +33,8 @@ export const getAllOrganizations = async (
     if (params.search) queryParams.append('search', params.search)
     if (params.status && params.status !== 'all')
       queryParams.append('status', params.status)
-    if (params.is_verified !== undefined)
+    // Only append is_verified if it is strictly boolean true or false
+    if (typeof params.is_verified === 'boolean')
       queryParams.append('is_verified', params.is_verified.toString())
     if (params.sort_by) queryParams.append('order_by', params.sort_by)
     if (params.sort_order) queryParams.append('order_dir', params.sort_order)

@@ -40,7 +40,7 @@ import {
   verifyOrganization as verifyOrgAdmin
 } from '../../../services/api/admin.service'
 import { TableSkeleton } from '../../../components/skeletons'
-import { useDebounce } from 'use-debounce'
+import { useDebounce } from '../../../hooks/useDebounce'
 
 export const OrganizationsTab: React.FC = () => {
   // Data State
@@ -53,6 +53,7 @@ export const OrganizationsTab: React.FC = () => {
   const [limit, setLimit] = useState(10)
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState<string>('all')
+  const [verifiedFilter, setVerifiedFilter] = useState<string>('all')
   const [debouncedSearch] = useDebounce(search, 500)
 
   // Actions State
@@ -69,7 +70,9 @@ export const OrganizationsTab: React.FC = () => {
         page: page + 1,
         limit,
         search: debouncedSearch,
-        status: statusFilter !== 'all' ? statusFilter : undefined
+        status: statusFilter !== 'all' ? statusFilter : undefined,
+        is_verified:
+          verifiedFilter === 'all' ? undefined : verifiedFilter === 'verified'
       })
       setOrgs(resp.organizations)
       setTotal(resp.pagination?.total_items || 0)
@@ -78,7 +81,7 @@ export const OrganizationsTab: React.FC = () => {
     } finally {
       setLoading(false)
     }
-  }, [page, limit, debouncedSearch, statusFilter])
+  }, [page, limit, debouncedSearch, statusFilter, verifiedFilter])
 
   useEffect(() => {
     fetchOrgs()
@@ -105,10 +108,6 @@ export const OrganizationsTab: React.FC = () => {
 
     setActionLoading(true)
     try {
-      // Use admin service specific for verification or the one in organizations service if wrapper exists
-      // Check imports: we imported verifyOrgAdmin from admin.service
-      // But looking at previous code, verifyOrganization was in organizations.service (but pointing to admin endpoint)
-      // I'll use the one from admin.service to be safe or explicit
       await verifyOrgAdmin(selectedOrg.id)
       await fetchOrgs()
       handleMenuClose()
@@ -122,9 +121,19 @@ export const OrganizationsTab: React.FC = () => {
 
   const handleToggleStatus = async () => {
     if (!selectedOrg) return
-    const isSuspended = selectedOrg.status === 'suspended'
-    const newStatus = isSuspended ? 'active' : 'suspended'
-    const actionName = isSuspended ? 'activar' : 'suspender'
+
+    // Determine target status and action name
+    let newStatus: 'active' | 'suspended' = 'active'
+    let actionName = 'activar'
+
+    if (selectedOrg.status === 'active') {
+      newStatus = 'suspended'
+      actionName = 'suspender'
+    } else {
+      // If pending or suspended, we want to activate
+      newStatus = 'active'
+      actionName = 'activar'
+    }
 
     if (
       !window.confirm(
@@ -147,7 +156,9 @@ export const OrganizationsTab: React.FC = () => {
   }
 
   // Render Helpers
-  const getStatusChip = (status: string, isVerified: boolean) => {
+  const getStatusChip = (status: string | undefined) => {
+    if (!status) return <Chip label='Desconocido' size='small' />
+
     if (status === 'suspended') {
       return (
         <Chip
@@ -157,7 +168,7 @@ export const OrganizationsTab: React.FC = () => {
         />
       )
     }
-    if (status === 'pending' || !isVerified) {
+    if (status === 'pending') {
       return (
         <Chip
           icon={<GppBadIcon sx={{ fontSize: 16 }} />}
@@ -184,177 +195,139 @@ export const OrganizationsTab: React.FC = () => {
     <Fade in timeout={500}>
       <Box>
         {/* Header */}
-        <Box
-          display='flex'
-          justifyContent='space-between'
-          alignItems='center'
-          mb={4}
-        >
-          <Box>
-            <Typography
-              variant='h5'
-              fontWeight='800'
-              color='#1e293b'
-              gutterBottom
-            >
-              Gestión de Organizaciones
-            </Typography>
-            <Typography variant='body2' color='#64748b'>
-              Administra las empresas y organizadores registrados
-            </Typography>
-          </Box>
-          <Chip
-            label={`${total} Total`}
-            color='primary'
-            variant='outlined'
-            sx={{ fontWeight: 'bold' }}
-          />
+        <Box sx={{ mb: 3 }}>
+          <Typography variant='h5' fontWeight='700' gutterBottom>
+            Gestión de Organizaciones
+          </Typography>
+          <Typography variant='body2' color='text.secondary'>
+            Administra y verifica las organizaciones de la plataforma
+          </Typography>
         </Box>
 
         {/* Toolbar */}
         <Paper
-          elevation={0}
-          sx={{ p: 2, mb: 3, border: '1px solid #e2e8f0', borderRadius: 3 }}
+          sx={{
+            p: 2,
+            mb: 3,
+            borderRadius: 3,
+            display: 'flex',
+            gap: 2,
+            flexWrap: 'wrap',
+            alignItems: 'center'
+          }}
         >
-          <Stack direction={{ xs: 'column', md: 'row' }} spacing={2}>
-            <TextField
-              placeholder='Buscar por nombre...'
-              size='small'
-              fullWidth
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position='start'>
-                    <SearchIcon color='action' />
-                  </InputAdornment>
-                )
-              }}
-              sx={{ flexGrow: 1 }}
-            />
-
-            <TextField
-              select
-              label='Estado'
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-              size='small'
-              sx={{ minWidth: 150 }}
-            >
-              <MenuItem value='all'>Todos</MenuItem>
-              <MenuItem value='active'>Activas</MenuItem>
-              <MenuItem value='pending'>Pendientes</MenuItem>
-              <MenuItem value='suspended'>Suspendidas</MenuItem>
-            </TextField>
-          </Stack>
+          <TextField
+            size='small'
+            placeholder='Buscar organización...'
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position='start'>
+                  <SearchIcon />
+                </InputAdornment>
+              )
+            }}
+            sx={{ minWidth: 250 }}
+          />
+          <TextField
+            select
+            size='small'
+            label='Estado'
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+            sx={{ minWidth: 150 }}
+          >
+            <MenuItem value='all'>Todos</MenuItem>
+            <MenuItem value='active'>Activas</MenuItem>
+            <MenuItem value='pending'>Pendientes</MenuItem>
+            <MenuItem value='suspended'>Suspendidas</MenuItem>
+          </TextField>
+          <TextField
+            select
+            size='small'
+            label='Verificación'
+            value={verifiedFilter}
+            onChange={(e) => setVerifiedFilter(e.target.value)}
+            sx={{ minWidth: 150 }}
+          >
+            <MenuItem value='all'>Todas</MenuItem>
+            <MenuItem value='verified'>Verificadas</MenuItem>
+            <MenuItem value='unverified'>No Verificadas</MenuItem>
+          </TextField>
         </Paper>
 
         {/* Table */}
-        <TableContainer
-          component={Paper}
-          elevation={0}
-          sx={{ borderRadius: 3, border: '1px solid #e2e8f0' }}
-        >
+        <TableContainer component={Paper} sx={{ borderRadius: 3 }}>
           {loading ? (
             <TableSkeleton />
           ) : (
-            <Table sx={{ minWidth: 650 }}>
-              <TableHead sx={{ bgcolor: '#f8fafc' }}>
-                <TableRow>
-                  <TableCell sx={{ fontWeight: '700', color: '#475569' }}>
-                    Organización
-                  </TableCell>
-                  <TableCell sx={{ fontWeight: '700', color: '#475569' }}>
-                    Ubicación
-                  </TableCell>
-                  <TableCell sx={{ fontWeight: '700', color: '#475569' }}>
-                    Estado
-                  </TableCell>
-                  <TableCell
-                    align='right'
-                    sx={{ fontWeight: '700', color: '#475569' }}
-                  >
+            <Table>
+              <TableHead>
+                <TableRow sx={{ bgcolor: 'grey.50' }}>
+                  <TableCell sx={{ fontWeight: 700 }}>Organización</TableCell>
+                  <TableCell sx={{ fontWeight: 700 }}>Email</TableCell>
+                  <TableCell sx={{ fontWeight: 700 }}>Estado</TableCell>
+                  <TableCell sx={{ fontWeight: 700 }}>Verificada</TableCell>
+                  <TableCell sx={{ fontWeight: 700 }} align='right'>
                     Acciones
                   </TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
-                {orgs.map((org) => (
-                  <TableRow
-                    key={org.id}
-                    hover
-                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                  >
-                    <TableCell>
-                      <Stack direction='row' spacing={2} alignItems='center'>
-                        <Avatar
-                          src={org.logo_url}
-                          variant='rounded'
-                          sx={{
-                            bgcolor: 'white',
-                            border: '1px solid #e2e8f0',
-                            color: 'var(--color-cadetblue)'
-                          }}
-                        >
-                          {org.name[0]}
-                        </Avatar>
-                        <Box>
-                          <Stack
-                            direction='row'
-                            alignItems='center'
-                            spacing={0.5}
-                          >
-                            <Typography
-                              fontWeight='600'
-                              variant='body2'
-                              color='#1e293b'
-                            >
-                              {org.name}
-                            </Typography>
-                            {org.is_verified && (
-                              <VerifiedIcon
-                                sx={{ fontSize: 14, color: '#3b82f6' }}
-                              />
-                            )}
-                          </Stack>
-                          <Typography variant='caption' color='#64748b'>
-                            {org.email || 'Sin contacto'}
-                          </Typography>
-                        </Box>
-                      </Stack>
-                    </TableCell>
-                    <TableCell>
-                      {org.city ? (
-                        <Typography variant='body2' color='#475569'>
-                          {org.city}, {org.country}
-                        </Typography>
-                      ) : (
-                        <Typography variant='caption' color='text.secondary'>
-                          No especificada
-                        </Typography>
-                      )}
-                    </TableCell>
-                    <TableCell>
-                      {getStatusChip(org.status, org.is_verified)}
-                    </TableCell>
-                    <TableCell align='right'>
-                      <IconButton
-                        size='small'
-                        onClick={(e) => handleMenuOpen(e, org)}
-                      >
-                        <MoreVertIcon fontSize='small' />
-                      </IconButton>
-                    </TableCell>
-                  </TableRow>
-                ))}
-                {orgs.length === 0 && (
+                {orgs.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={4} align='center' sx={{ py: 8 }}>
+                    <TableCell colSpan={5} align='center' sx={{ py: 4 }}>
                       <Typography color='text.secondary'>
                         No se encontraron organizaciones
                       </Typography>
                     </TableCell>
                   </TableRow>
+                ) : (
+                  orgs.map((org) => (
+                    <TableRow key={org.id} hover>
+                      <TableCell>
+                        <Stack direction='row' alignItems='center' spacing={2}>
+                          <Avatar
+                            src={org.logo_url}
+                            sx={{ bgcolor: 'primary.main' }}
+                          >
+                            <BusinessIcon />
+                          </Avatar>
+                          <Box>
+                            <Typography fontWeight='600'>{org.name}</Typography>
+                            <Typography
+                              variant='caption'
+                              color='text.secondary'
+                            >
+                              @{org.slug}
+                            </Typography>
+                          </Box>
+                        </Stack>
+                      </TableCell>
+                      <TableCell>{org.email}</TableCell>
+                      <TableCell>{getStatusChip(org.status)}</TableCell>
+                      <TableCell>
+                        {org.is_verified ? (
+                          <Tooltip title='Organización Verificada'>
+                            <VerifiedIcon color='primary' />
+                          </Tooltip>
+                        ) : (
+                          <Tooltip title='No Verificada'>
+                            <GppBadIcon color='disabled' />
+                          </Tooltip>
+                        )}
+                      </TableCell>
+                      <TableCell align='right'>
+                        <IconButton
+                          size='small'
+                          onClick={(e) => handleMenuOpen(e, org)}
+                        >
+                          <MoreVertIcon />
+                        </IconButton>
+                      </TableCell>
+                    </TableRow>
+                  ))
                 )}
               </TableBody>
             </Table>
@@ -369,8 +342,8 @@ export const OrganizationsTab: React.FC = () => {
               setLimit(parseInt(e.target.value, 10))
               setPage(0)
             }}
-            rowsPerPageOptions={[5, 10, 25]}
-            labelRowsPerPage='Filas:'
+            rowsPerPageOptions={[5, 10, 25, 50]}
+            labelRowsPerPage='Por página:'
           />
         </TableContainer>
 
@@ -386,6 +359,7 @@ export const OrganizationsTab: React.FC = () => {
             }
           }}
         >
+          {/* Verify Check - Only if not verified */}
           {!selectedOrg?.is_verified && (
             <MenuItem onClick={handleVerify} disabled={actionLoading}>
               <ListItemIcon>
@@ -397,20 +371,21 @@ export const OrganizationsTab: React.FC = () => {
             </MenuItem>
           )}
 
+          {/* Activate/Suspend Toggle */}
           <MenuItem onClick={handleToggleStatus} disabled={actionLoading}>
             <ListItemIcon>
-              {selectedOrg?.status === 'suspended' ? (
-                <CheckCircleIcon fontSize='small' color='success' />
-              ) : (
+              {selectedOrg?.status === 'active' ? (
                 <BlockIcon fontSize='small' color='error' />
+              ) : (
+                <CheckCircleIcon fontSize='small' color='success' />
               )}
             </ListItemIcon>
             <Typography
               color={
-                selectedOrg?.status === 'suspended' ? 'success.main' : 'error'
+                selectedOrg?.status === 'active' ? 'error' : 'success.main'
               }
             >
-              {selectedOrg?.status === 'suspended' ? 'Reactivar' : 'Suspender'}
+              {selectedOrg?.status === 'active' ? 'Suspender' : 'Activar'}
             </Typography>
           </MenuItem>
 

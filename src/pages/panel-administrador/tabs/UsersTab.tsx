@@ -19,6 +19,7 @@ import {
   MenuItem,
   InputAdornment,
   Tooltip,
+  CircularProgress,
   Menu,
   ListItemIcon,
   Dialog,
@@ -46,7 +47,7 @@ import {
 import { User, Role } from '../../../types'
 import * as apiService from '../../../services/apiService'
 import { TableSkeleton } from '../../../components/skeletons'
-import { useDebounce } from 'use-debounce'
+import { useDebounce } from '../../../hooks/useDebounce'
 
 export const UsersTab: React.FC = () => {
   // Data State
