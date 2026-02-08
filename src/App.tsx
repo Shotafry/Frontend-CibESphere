@@ -142,12 +142,14 @@ const routes: RouteObject[] = [
           const searchParams = url.searchParams
 
           // Parse dates
-          const startDate = searchParams.get('startDate')
-            ? new Date(searchParams.get('startDate')!)
-            : null
-          const endDate = searchParams.get('endDate')
-            ? new Date(searchParams.get('endDate')!)
-            : null
+          // Parse dates (support both new snake_case from filters and old camelCase just in case)
+          const startDateStr =
+            searchParams.get('start_date_from') || searchParams.get('startDate')
+          const endDateStr =
+            searchParams.get('start_date_to') || searchParams.get('endDate')
+
+          const startDate = startDateStr ? new Date(startDateStr) : null
+          const endDate = endDateStr ? new Date(endDateStr) : null
 
           // Determine timeFilter (only apply if no dates are set)
           const hasDateFilters = startDate || endDate

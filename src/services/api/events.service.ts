@@ -18,10 +18,13 @@ export const getEvents = async (
   const params = new URLSearchParams()
 
   if (filters.startDate) {
-    params.append('start_date', filters.startDate.toISOString())
+    params.append(
+      'start_date_from',
+      filters.startDate.toISOString().split('T')[0]
+    )
   }
   if (filters.endDate) {
-    params.append('end_date', filters.endDate.toISOString())
+    params.append('start_date_to', filters.endDate.toISOString().split('T')[0])
   }
 
   if (filters.locations && filters.locations.length > 0) {
