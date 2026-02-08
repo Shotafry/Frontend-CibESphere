@@ -195,13 +195,27 @@ export const OrganizationsTab: React.FC = () => {
     <Fade in timeout={500}>
       <Box>
         {/* Header */}
-        <Box sx={{ mb: 3 }}>
-          <Typography variant='h5' fontWeight='700' gutterBottom>
-            Gestión de Organizaciones
-          </Typography>
-          <Typography variant='body2' color='text.secondary'>
-            Administra y verifica las organizaciones de la plataforma
-          </Typography>
+        <Box
+          display='flex'
+          justifyContent='space-between'
+          alignItems='center'
+          mb={3}
+        >
+          <Box>
+            <Typography variant='h5' fontWeight='700' gutterBottom>
+              Gestión de Organizaciones
+            </Typography>
+            <Typography variant='body2' color='text.secondary'>
+              Administra y verifica las organizaciones de la plataforma
+            </Typography>
+          </Box>
+          <Chip
+            icon={<BusinessIcon />}
+            label={`${total} Organizaciones`}
+            color='primary'
+            variant='outlined'
+            sx={{ fontWeight: 'bold' }}
+          />
         </Box>
 
         {/* Toolbar */}
