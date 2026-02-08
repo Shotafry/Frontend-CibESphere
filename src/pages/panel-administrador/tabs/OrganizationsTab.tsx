@@ -67,14 +67,18 @@ export const OrganizationsTab: React.FC = () => {
   const fetchOrgs = useCallback(async () => {
     setLoading(true)
     try {
-      const resp = await apiService.getAllOrganizations({
-        page: page + 1,
-        limit,
-        search: debouncedSearch,
-        status: statusFilter !== 'all' ? statusFilter : undefined,
-        is_verified:
-          verifiedFilter === 'all' ? undefined : verifiedFilter === 'verified'
-      })
+      const resp = await apiService.getAllOrganizations(
+        {
+          page: page + 1,
+          limit,
+          search: debouncedSearch,
+          status: statusFilter !== 'all' ? statusFilter : undefined,
+          is_verified:
+            verifiedFilter === 'all' ? undefined : verifiedFilter === 'verified'
+        },
+        // Backend helper now parses this include param
+        'include=users' as any
+      )
       setOrgs(resp.organizations)
       setTotal(resp.pagination?.total_items || 0)
     } catch (error) {
@@ -192,6 +196,13 @@ export const OrganizationsTab: React.FC = () => {
     return <Chip label={status} size='small' />
   }
 
+  // Helper to find owner
+  const getOwner = (org: OrganizationSummary) => {
+    if (!org.users || org.users.length === 0) return null
+    // Prioritize 'organizer' role, otherwise first user
+    return org.users.find((u) => u.role === 'organizer') || org.users[0]
+  }
+
   return (
     <Fade in timeout={500}>
       <Box>
@@ -281,7 +292,7 @@ export const OrganizationsTab: React.FC = () => {
               <TableHead>
                 <TableRow sx={{ bgcolor: 'grey.50' }}>
                   <TableCell sx={{ fontWeight: 700 }}>Organización</TableCell>
-                  <TableCell sx={{ fontWeight: 700 }}>Organizador</TableCell>
+                  <TableCell sx={{ fontWeight: 700 }}>Contacto</TableCell>
                   <TableCell sx={{ fontWeight: 700 }}>Estado</TableCell>
                   <TableCell sx={{ fontWeight: 700 }}>Verificada</TableCell>
                   <TableCell sx={{ fontWeight: 700 }} align='right'>
@@ -299,65 +310,111 @@ export const OrganizationsTab: React.FC = () => {
                     </TableCell>
                   </TableRow>
                 ) : (
-                  orgs.map((org) => (
-                    <TableRow key={org.id} hover>
-                      <TableCell>
-                        <Stack direction='row' alignItems='center' spacing={2}>
-                          <Avatar
-                            src={org.logo_url}
-                            sx={{ bgcolor: 'primary.main' }}
+                  orgs.map((org) => {
+                    const owner = getOwner(org)
+                    return (
+                      <TableRow key={org.id} hover>
+                        <TableCell>
+                          <Stack
+                            direction='row'
+                            alignItems='center'
+                            spacing={2}
                           >
-                            <BusinessIcon />
-                          </Avatar>
-                          <Box>
-                            <Typography fontWeight='600'>{org.name}</Typography>
-                            <Typography
-                              variant='caption'
-                              color='text.secondary'
+                            <Avatar
+                              src={org.logo_url}
+                              sx={{
+                                bgcolor: 'primary.main',
+                                width: 48,
+                                height: 48
+                              }}
                             >
-                              @{org.slug}
-                            </Typography>
-                          </Box>
-                        </Stack>
-                      </TableCell>
-                      <TableCell>
-                        <Stack direction='row' alignItems='center' spacing={1}>
-                          <PersonIcon fontSize='small' color='action' />
-                          <Box>
-                            <Typography variant='body2' fontWeight='500'>
-                              {org.email || 'Sin contacto'}
-                            </Typography>
-                            <Typography
-                              variant='caption'
-                              color='text.secondary'
-                            >
-                              Contacto principal
-                            </Typography>
-                          </Box>
-                        </Stack>
-                      </TableCell>
-                      <TableCell>{getStatusChip(org.status)}</TableCell>
-                      <TableCell>
-                        {org.is_verified ? (
-                          <Tooltip title='Organización Verificada'>
-                            <VerifiedIcon color='primary' />
-                          </Tooltip>
-                        ) : (
-                          <Tooltip title='No Verificada'>
-                            <GppBadIcon color='disabled' />
-                          </Tooltip>
-                        )}
-                      </TableCell>
-                      <TableCell align='right'>
-                        <IconButton
-                          size='small'
-                          onClick={(e) => handleMenuOpen(e, org)}
-                        >
-                          <MoreVertIcon />
-                        </IconButton>
-                      </TableCell>
-                    </TableRow>
-                  ))
+                              <BusinessIcon />
+                            </Avatar>
+                            <Box>
+                              <Typography fontWeight='600' variant='subtitle1'>
+                                {org.name}
+                              </Typography>
+                              <Typography
+                                variant='caption'
+                                color='text.secondary'
+                                display='block'
+                              >
+                                @{org.slug}
+                              </Typography>
+
+                              {/* Owner Info */}
+                              {owner && (
+                                <Tooltip
+                                  title={`Dueño: ${owner.full_name} (${owner.email})`}
+                                >
+                                  <Stack
+                                    direction='row'
+                                    alignItems='center'
+                                    spacing={0.5}
+                                    sx={{ mt: 0.5, cursor: 'pointer' }}
+                                  >
+                                    <Avatar
+                                      src={owner.avatar_url}
+                                      sx={{ width: 16, height: 16 }}
+                                    >
+                                      <PersonIcon sx={{ fontSize: 12 }} />
+                                    </Avatar>
+                                    <Typography
+                                      variant='caption'
+                                      color='text.secondary'
+                                    >
+                                      Managed by{' '}
+                                      <strong>{owner.first_name}</strong>
+                                    </Typography>
+                                  </Stack>
+                                </Tooltip>
+                              )}
+                            </Box>
+                          </Stack>
+                        </TableCell>
+                        <TableCell>
+                          <Stack
+                            direction='row'
+                            alignItems='center'
+                            spacing={1}
+                          >
+                            <PersonIcon fontSize='small' color='action' />
+                            <Box>
+                              <Typography variant='body2' fontWeight='500'>
+                                {org.email || 'Sin contacto'}
+                              </Typography>
+                              <Typography
+                                variant='caption'
+                                color='text.secondary'
+                              >
+                                Email Organización
+                              </Typography>
+                            </Box>
+                          </Stack>
+                        </TableCell>
+                        <TableCell>{getStatusChip(org.status)}</TableCell>
+                        <TableCell>
+                          {org.is_verified ? (
+                            <Tooltip title='Organización Verificada'>
+                              <VerifiedIcon color='primary' />
+                            </Tooltip>
+                          ) : (
+                            <Tooltip title='No Verificada'>
+                              <GppBadIcon color='disabled' />
+                            </Tooltip>
+                          )}
+                        </TableCell>
+                        <TableCell align='right'>
+                          <IconButton
+                            size='small'
+                            onClick={(e) => handleMenuOpen(e, org)}
+                          >
+                            <MoreVertIcon />
+                          </IconButton>
+                        </TableCell>
+                      </TableRow>
+                    )
+                  })
                 )}
               </TableBody>
             </Table>

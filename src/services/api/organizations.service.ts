@@ -23,7 +23,8 @@ export interface OrganizationFilterParams {
 }
 
 export const getAllOrganizations = async (
-  params?: OrganizationFilterParams
+  params?: OrganizationFilterParams,
+  extraParams?: string
 ): Promise<{ organizations: OrganizationSummary[]; pagination: any }> => {
   const queryParams = new URLSearchParams()
 
@@ -40,10 +41,13 @@ export const getAllOrganizations = async (
     if (params.sort_order) queryParams.append('order_dir', params.sort_order)
   }
 
+  let queryString = queryParams.toString()
+  if (extraParams) {
+    queryString += (queryString ? '&' : '') + extraParams
+  }
+
   // Use protected endpoint for admin capabilities
-  const response = await httpClient.get<any>(
-    `/organizations?${queryParams.toString()}`
-  )
+  const response = await httpClient.get<any>(`/organizations?${queryString}`)
   return {
     organizations: response.data.data || [],
     pagination: response.data.pagination

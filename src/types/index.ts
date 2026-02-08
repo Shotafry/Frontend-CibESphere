@@ -177,6 +177,7 @@ export interface OrganizationSummaryResponse extends Partial<OrganizationRespons
   stripe_account_id?: string
   stripe_onboarding_complete?: boolean
   owner_id?: string
+  users?: User[]
 }
 
 // --- TIPOS DE EVENTO ---
