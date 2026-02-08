@@ -119,6 +119,7 @@ const PanelDeOrganizador: FunctionComponent = () => {
   }
 
   const isPending = organization?.status === 'pending'
+  const isSuspended = organization?.status === 'suspended'
 
   if (navigation.state === 'loading') {
     return (
@@ -174,6 +175,17 @@ const PanelDeOrganizador: FunctionComponent = () => {
             </Alert>
           )}
 
+          {/* SUSPENDED STATUS BANNER */}
+          {isSuspended && (
+            <Alert severity='error' sx={{ mb: 4, borderRadius: 2 }}>
+              <Typography variant='subtitle2' fontWeight='bold'>
+                Organización suspendida
+              </Typography>
+              Tu organización ha sido suspendida. No puedes crear ni editar
+              eventos. Contacta con soporte para más información.
+            </Alert>
+          )}
+
           <Box
             sx={{
               display: 'flex',
@@ -221,7 +233,7 @@ const PanelDeOrganizador: FunctionComponent = () => {
                   variant='secondary'
                   startIcon={<AddCircleOutlineIcon />}
                   onClick={onCrearEventoClick}
-                  disabled={isPending}
+                  disabled={isPending || isSuspended}
                   sx={{
                     width: { xs: '100%', md: 'auto' },
                     flex: { xs: 1, md: 'none' }
@@ -233,7 +245,7 @@ const PanelDeOrganizador: FunctionComponent = () => {
                   variant='secondary'
                   startIcon={<QrCodeScannerIcon />}
                   onClick={() => setScannerOpen(true)}
-                  disabled={isPending} // También deshabilitar scanner si gustas, o dejarlo
+                  disabled={isPending || isSuspended}
                   sx={{
                     width: { xs: '100%', md: 'auto' },
                     flex: { xs: 1, md: 'none' }
@@ -321,6 +333,7 @@ const PanelDeOrganizador: FunctionComponent = () => {
                 events={events}
                 onDeleteEvent={handleDeleteEvent}
                 onCreateEvent={onCrearEventoClick}
+                isDisabled={isPending || isSuspended}
               />
             </Box>
           </Fade>

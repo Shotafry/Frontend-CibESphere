@@ -24,7 +24,41 @@ import {
 } from './crear-evento'
 import { PageTransition } from '../components/PageTransition'
 
+import { useAuth } from '../context/AuthContext'
+import * as apiService from '../services/apiService'
+import { useEffect, useState } from 'react'
+
 const CrearEvento: FunctionComponent = () => {
+  const { user } = useAuth()
+  const [isCheckingStatus, setIsCheckingStatus] = useState(true)
+  const [blockReason, setBlockReason] = useState<
+    'suspended' | 'pending' | null
+  >(null)
+
+  useEffect(() => {
+    const checkOrgStatus = async () => {
+      try {
+        const org = await apiService.getMyOrganization()
+        if (org.status === 'suspended') setBlockReason('suspended')
+        else if (org.status === 'pending') setBlockReason('pending')
+        else setBlockReason(null)
+      } catch (error) {
+        console.error('Error checking organization status:', error)
+        // Fallback to user context if API fails
+        if (user?.organization?.status === 'suspended')
+          setBlockReason('suspended')
+        else if (user?.organization?.status === 'pending')
+          setBlockReason('pending')
+      } finally {
+        setIsCheckingStatus(false)
+      }
+    }
+    checkOrgStatus()
+  }, [user])
+
+  const isSuspended = blockReason === 'suspended'
+  const isPending = blockReason === 'pending'
+
   const {
     formData,
     isLoading,
@@ -50,7 +84,41 @@ const CrearEvento: FunctionComponent = () => {
     handleSubmit
   } = useEventForm()
 
-  if (isLoading) {
+  // Block access if suspended or pending
+  if (isSuspended || isPending) {
+    return (
+      <Container maxWidth='md' sx={{ my: 10 }}>
+        <Paper
+          elevation={3}
+          sx={{
+            p: 4,
+            borderRadius: '25px',
+            textAlign: 'center',
+            bgcolor: '#FFF'
+          }}
+        >
+          <Typography
+            variant='h4'
+            color={isSuspended ? 'error' : 'warning.main'}
+            fontWeight='bold'
+            gutterBottom
+          >
+            {isSuspended ? 'Acceso Restringido' : 'En Revisión'}
+          </Typography>
+          <Typography variant='body1' color='text.secondary' paragraph>
+            {isSuspended
+              ? 'Tu organización ha sido suspendida. No puedes crear ni editar eventos en este momento. Por favor, contacta con el soporte para resolver esta situación.'
+              : 'Tu organización está pendiente de verificación. Podrás crear eventos una vez que tu cuenta haya sido aprobada.'}
+          </Typography>
+          <Button variant='primary' onClick={() => window.history.back()}>
+            Volver al Panel
+          </Button>
+        </Paper>
+      </Container>
+    )
+  }
+
+  if (isLoading || isCheckingStatus) {
     return (
       <Box
         sx={{

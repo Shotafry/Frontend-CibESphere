@@ -31,7 +31,8 @@ import {
   MoreVert as MoreVertIcon,
   Block as BlockIcon,
   Public as PublicIcon,
-  Business as BusinessIcon
+  Business as BusinessIcon,
+  Person as PersonIcon
 } from '@mui/icons-material'
 import { OrganizationSummary } from '../../../types'
 import * as apiService from '../../../services/api/organizations.service'
@@ -280,7 +281,7 @@ export const OrganizationsTab: React.FC = () => {
               <TableHead>
                 <TableRow sx={{ bgcolor: 'grey.50' }}>
                   <TableCell sx={{ fontWeight: 700 }}>Organización</TableCell>
-                  <TableCell sx={{ fontWeight: 700 }}>Email</TableCell>
+                  <TableCell sx={{ fontWeight: 700 }}>Organizador</TableCell>
                   <TableCell sx={{ fontWeight: 700 }}>Estado</TableCell>
                   <TableCell sx={{ fontWeight: 700 }}>Verificada</TableCell>
                   <TableCell sx={{ fontWeight: 700 }} align='right'>
@@ -319,7 +320,22 @@ export const OrganizationsTab: React.FC = () => {
                           </Box>
                         </Stack>
                       </TableCell>
-                      <TableCell>{org.email}</TableCell>
+                      <TableCell>
+                        <Stack direction='row' alignItems='center' spacing={1}>
+                          <PersonIcon fontSize='small' color='action' />
+                          <Box>
+                            <Typography variant='body2' fontWeight='500'>
+                              {org.email || 'Sin contacto'}
+                            </Typography>
+                            <Typography
+                              variant='caption'
+                              color='text.secondary'
+                            >
+                              Contacto principal
+                            </Typography>
+                          </Box>
+                        </Stack>
+                      </TableCell>
                       <TableCell>{getStatusChip(org.status)}</TableCell>
                       <TableCell>
                         {org.is_verified ? (

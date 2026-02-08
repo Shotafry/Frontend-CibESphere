@@ -25,12 +25,14 @@ interface EventsListTabProps {
   events: Event[]
   onDeleteEvent: (id: string) => void
   onCreateEvent: () => void
+  isDisabled?: boolean
 }
 
 export const EventsListTab: React.FC<EventsListTabProps> = ({
   events,
   onDeleteEvent,
-  onCreateEvent
+  onCreateEvent,
+  isDisabled = false
 }) => {
   const navigate = useNavigate()
   const [expandedEvent, setExpandedEvent] = useState<string | null>(null)
@@ -203,6 +205,7 @@ export const EventsListTab: React.FC<EventsListTabProps> = ({
                       <Button
                         variant='primary'
                         startIcon={<EditIcon />}
+                        disabled={isDisabled}
                         onClick={() =>
                           navigate(`/eventos/${event.slug}/editar`)
                         }
@@ -250,7 +253,12 @@ export const EventsListTab: React.FC<EventsListTabProps> = ({
             <Typography variant='h6' color='text.secondary'>
               No has creado ningún evento todavía.
             </Typography>
-            <Button variant='secondary' onClick={onCreateEvent} sx={{ mt: 2 }}>
+            <Button
+              variant='secondary'
+              onClick={onCreateEvent}
+              sx={{ mt: 2 }}
+              disabled={isDisabled}
+            >
               Crear mi primer evento
             </Button>
           </Box>
