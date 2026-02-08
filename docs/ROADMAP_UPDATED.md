@@ -189,66 +189,56 @@ _Estado: COMPLETADO_
 
 ---
 
-## 🧹 Fase 8: Estabilidad y Polish (Beta v0.8.0) 🔄
+## 🏗️ Fase 8: Arquitectura y Refactorización (Beta v0.8.0) 🔄
 
 _Estado: EN PROGRESO_
 
-### 8.1 UI de Auditoría
+### 8.1 Desacoplamiento de Componentes Monolíticos
 
-- [ ] **Audit Logs Visualizer:** Interfaz completa para ver y filtrar logs de administración.
-- [ ] **Detalle de Log:** Vista expandida con diff de cambios (JSON viewer).
+- [ ] **NotificationsTab (Usuario):** Dividir en `NotificationList`, `NotificationItem`, `NotificationFilters`.
+- [ ] **NotificationsTab (Organizador):** Extraer subcomponentes compartidos.
+- [ ] **UsersTab (Admin):** Extraer `UserTable`, `EditRoleModal`, `StatusBadge` a componentes propios.
 
-### 8.2 Refinamiento Visual
+### 8.2 Optimización de Rendimiento
 
-- [ ] **Micro-interacciones:** Mejorar feedback en botones y formularios.
-- [ ] **Empty States:** Ilustraciones personalizadas para listas vacías.
-- [ ] **Skeleton Loading:** Ajustar loaders para evitar layout shift en tablas.
-
-### 8.3 Bug Fixes & Tech Debt
-
-- [ ] **Optimización de renders:** Reducir re-renders innecesarios en DataGrids.
-- [ ] **Accesibilidad:** Completar aria-labels faltantes (audit v0.6.0).
+- [ ] **EventFilters:** Modularizar para evitar re-renders masivos.
+- [ ] **Data Management:** Mover lógica de fetch compleja a custom hooks (`useNotifications`, `useUsers`).
 
 ---
 
-## 🚀 Fase 9: Release Candidate (RC v1.0.0)
+## 🛡️ Fase 9: Calidad y Auditoría (Beta v0.9.0)
 
 _Estado: PLANIFICADA_
 
-> **Nombre de versión: "Sentinel"** - La primera versión estable y lista para producción.
+### 9.1 UI de Auditoría (Audit Logs)
 
-### 9.0 Internacionalización Completa
-
-- [ ] **i18n Global:** Extender traducciones a todas las páginas.
-- [ ] **Localización:** Formatos de fecha/hora según región.
-
-### 9.1 Refactorización de Componentes
-
-- [ ] **NotificationsTab (Usuario):** ~700 líneas, dividir en subcomponentes.
-- [ ] **NotificationsTab (Organizador):** ~500 líneas, dividir en subcomponentes.
-- [ ] **EventFilters:** ~12KB, considerar extracción de filtros individuales.
-- [ ] **Header/MobileMenu:** Unificar estructura y añadir aria-labels.
+- [ ] **AuditVisualizer:** Interfaz visual para logs de backend.
+- [ ] **JSON Diff Viewer:** Para ver cambios exactos en recursos editados.
 
 ### 9.2 Testing & QA
 
-- [ ] **E2E Tests:** Flujo completo de registro → compra → check-in.
-- [ ] **Verificación Social:** Conexiones, solicitudes, notificaciones.
-- [ ] **Verificación Pagos:** Stripe Connect, compras, reembolsos.
-- [ ] **Cross-Browser:** Chrome, Firefox, Safari, Edge.
-- [ ] **Mobile:** Responsive en iOS Safari y Android Chrome.
+- [ ] **Unit Testing:** Tests para componentes aislados en Fase 8.
+- [ ] **E2E Critical Paths:** Registro, Login, Compra de Entrada.
+- [ ] **Bug Bashing:** Resolver lista de issues menores acumulados.
 
-### 9.3 Mejoras de UX/UI
+---
 
-- [ ] **Accesibilidad (a11y):** Aria-labels en todos los IconButtons.
-- [ ] **Loading States:** Feedback visual consistente en todas las acciones.
-- [ ] **Error Messages:** Mensajes de error amigables y contextuales.
-- [ ] **Empty States:** Diseños para listas vacías.
+## 🚀 Fase 10: Release Candidate (RC v1.0.0)
 
-### 9.4 Optimización
+_Estado: PLANIFICADA_
 
-- [ ] **Bundle Size:** Análisis y reducción de dependencias.
-- [ ] **Image Optimization:** Lazy loading y formatos modernos (WebP/AVIF).
-- [ ] **API Caching:** Estrategias de cache para datos frecuentes.
+> **Nombre de versión: "Sentinel"** - La primera versión estable.
+
+### 10.1 Polish Visual & UX
+
+- [ ] **Micro-interacciones:** Feedback en botones y transiciones.
+- [ ] **Empty States:** Ilustraciones para estados vacíos.
+- [ ] **Accesibilidad:** Revisión completa de aria-labels y contraste.
+
+### 10.2 Internacionalización
+
+- [ ] **Traducción Completa:** Extender i18n a toda la app.
+- [ ] **Formatos Locales:** Fechas y monedas dinámicas.
 
 ---
 
