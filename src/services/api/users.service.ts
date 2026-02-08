@@ -126,7 +126,9 @@ export const getAllUsers = async (
     if (params.sort_order) queryParams.append('order_dir', params.sort_order)
   }
 
-  const response = await httpClient.get<any>(`/users?${queryParams.toString()}`)
+  const response = await httpClient.get<any>(
+    `/admin/users?${queryParams.toString()}`
+  )
   return {
     users: response.data.users || response.data.data || [],
     pagination: response.data.pagination
@@ -134,15 +136,15 @@ export const getAllUsers = async (
 }
 
 export const deleteUser = async (userId: string): Promise<void> => {
-  await httpClient.delete(`/users/${userId}`)
+  await httpClient.delete(`/admin/users/${userId}`)
 }
 
 export const changeUserRole = async (
   userId: string,
   data: ChangeRoleRequest
 ): Promise<ChangeRoleResponse> => {
-  const response = await httpClient.put<ChangeRoleResponse>(
-    `/users/${userId}/role`,
+  const response = await httpClient.patch<ChangeRoleResponse>(
+    `/admin/users/${userId}/role`,
     data
   )
   return response.data
@@ -153,7 +155,7 @@ export const activateUser = async (
   data: ActivateUserRequest
 ): Promise<ActivateUserResponse> => {
   const response = await httpClient.post<ActivateUserResponse>(
-    `/users/${userId}/activate`,
+    `/admin/users/${userId}/activate`,
     data
   )
   return response.data
@@ -164,7 +166,7 @@ export const deactivateUser = async (
   data: ActivateUserRequest
 ): Promise<ActivateUserResponse> => {
   const response = await httpClient.post<ActivateUserResponse>(
-    `/users/${userId}/deactivate`,
+    `/admin/users/${userId}/deactivate`,
     data
   )
   return response.data
