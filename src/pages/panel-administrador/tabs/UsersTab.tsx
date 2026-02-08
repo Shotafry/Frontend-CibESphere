@@ -276,8 +276,15 @@ export const UsersTab: React.FC = () => {
 
         {/* Filters Toolbar */}
         <Paper
-          elevation={0}
-          sx={{ p: 2, mb: 3, border: '1px solid #e2e8f0', borderRadius: 3 }}
+          sx={{
+            p: 2,
+            mb: 3,
+            borderRadius: 3,
+            display: 'flex',
+            gap: 2,
+            flexWrap: 'wrap',
+            alignItems: 'center'
+          }}
         >
           <Stack direction={{ xs: 'column', md: 'row' }} spacing={2}>
             <TextField
@@ -328,8 +335,9 @@ export const UsersTab: React.FC = () => {
         {/* Users Table */}
         <TableContainer
           component={Paper}
-          elevation={0}
-          sx={{ borderRadius: 3, border: '1px solid #e2e8f0' }}
+          sx={{
+            borderRadius: 3
+          }}
         >
           {loading ? (
             <TableSkeleton />
