@@ -59,13 +59,19 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({
 
   const getPanelPath = () => {
     if (user?.role === Role.Admin) return '/admin'
-    if (user?.role === Role.Organizer) return '/panel-de-organizador'
+    if (user?.role === Role.Organizer) {
+      if (!user.organization) return '/crear-organizacion'
+      return '/panel-de-organizador'
+    }
     return '/panel-de-usuario'
   }
 
   const getPanelLabel = () => {
     if (user?.role === Role.Admin) return 'Panel Admin'
-    if (user?.role === Role.Organizer) return 'Panel Organizador'
+    if (user?.role === Role.Organizer) {
+      if (!user.organization) return 'Crear Organización'
+      return 'Panel Organizador'
+    }
     return 'Mi Panel'
   }
 
