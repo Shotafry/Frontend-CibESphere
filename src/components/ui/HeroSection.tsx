@@ -20,10 +20,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
     ? 'var(--gradient-hero-secondary)'
     : 'var(--gradient-header-footer)'
 
-  const textColor = isSecondary ? 'var(--color-cadetblue)' : 'white'
-  const subtextColor = isSecondary
-    ? 'rgba(255, 255, 255, 0.7)'
-    : 'rgba(255, 255, 255, 0.9)'
+  const textColor = 'white'
+  const subtextColor = 'white'
   // For primary variant, existing logic used 'white' for title.
   // For secondary, user asked for Cyan title in plan ("Texto en cian para destacar").
 
@@ -49,7 +47,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             mb: 3,
             fontSize: { xs: '2.5rem', md: '3.5rem' },
             textShadow: '0 4px 10px rgba(0,0,0,0.2)',
-            color: isSecondary ? 'var(--color-cadetblue)' : 'white'
+            color: 'white'
           }}
         >
           {title}

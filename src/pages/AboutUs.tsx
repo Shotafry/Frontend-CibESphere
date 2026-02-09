@@ -270,7 +270,7 @@ const AboutUs: React.FC = () => {
           <Box
             sx={{
               borderRadius: '32px',
-              background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)',
+              background: 'var(--gradient-hero-secondary)',
               p: { xs: 4, md: 8 },
               textAlign: 'center',
               color: 'white',
@@ -321,20 +321,20 @@ const AboutUs: React.FC = () => {
               target='_blank'
               startIcon={<LinkedInIcon />}
               sx={{
-                bgcolor: 'var(--color-cadetblue)',
-                color: 'white',
+                bgcolor: 'white',
+                color: 'var(--color-cadetblue)',
                 px: 6,
                 py: 1.5,
                 borderRadius: '50px',
                 fontSize: '1.1rem',
                 fontWeight: 'bold',
                 textTransform: 'none',
-                boxShadow: '0 0 20px rgba(0, 217, 255, 0.4)',
+                boxShadow: '0 4px 14px rgba(0, 0, 0, 0.1)',
                 '&:hover': {
-                  bgcolor: 'white',
+                  bgcolor: '#f8fafc',
                   color: 'var(--color-cadetblue)',
                   transform: 'scale(1.05)',
-                  boxShadow: '0 0 30px rgba(0, 217, 255, 0.6)'
+                  boxShadow: '0 6px 20px rgba(0, 0, 0, 0.15)'
                 },
                 transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
               }}

@@ -94,7 +94,7 @@ const PanelDeAdministrador: React.FC = () => {
               sx={{
                 fontSize: { xs: 30, md: 40 },
                 opacity: 0.8,
-                color: 'var(--color-cadetblue)'
+                color: 'white'
               }}
             />
             <Typography
@@ -116,7 +116,7 @@ const PanelDeAdministrador: React.FC = () => {
               maxWidth: '600px',
               fontWeight: 400,
               fontSize: { xs: '0.9rem', sm: '1rem', md: '1.25rem' },
-              color: 'var(--color-cadetblue)'
+              color: 'white'
             }}
           >
             Bienvenido, Administrador. Aquí tienes el control total sobre
