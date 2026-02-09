@@ -1,7 +1,7 @@
 // src/pages/panel-organizador/tabs/NotificationsTab.tsx
-// v0.4.0 - Tab de notificaciones para organizador con historial y configuración
+// v0.5.0 - Refactorizado con useNotifications hook
 
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import {
   Box,
   Typography,
@@ -20,7 +20,8 @@ import {
   Skeleton,
   Tabs,
   Tab,
-  Badge
+  Badge,
+  Alert
 } from '@mui/material'
 import { Button } from '../../../components/Button'
 import {
@@ -34,15 +35,10 @@ import {
   Refresh as RefreshIcon,
   MarkEmailRead as MarkAllReadIcon
 } from '@mui/icons-material'
+import { useNotifications } from '../../../hooks/useNotifications'
 import {
-  getNotifications,
-  markAsRead,
-  markAllAsRead,
-  getUnreadCount,
   formatRelativeTime,
-  Notification,
-  getNotificationPreferences,
-  saveNotificationPreferences
+  NotificationPreferences
 } from '../../../services/api/notifications.service'
 
 interface NotificationsTabProps {
@@ -53,63 +49,27 @@ export const NotificationsTab: React.FC<NotificationsTabProps> = ({
   organizationId
 }) => {
   const [subTab, setSubTab] = useState(0) // 0: Historial, 1: Configuración
-  const [notifications, setNotifications] = useState<Notification[]>([])
-  const [loading, setLoading] = useState(true)
-  const [unreadCount, setUnreadCount] = useState(0)
 
-  // Configuración de preferencias - Solo Email y Web (sin Push)
-  const [preferences, setPreferences] = useState({
-    // Canales
-    emailEnabled: true,
-    webEnabled: true,
-    // Tipos de notificaciones
-    emailOnSale: true,
-    emailNewFollowers: true,
-    emailDailyDigest: false,
-    emailEventReminder: true
-  })
+  // Usar el hook personalizado
+  const {
+    notifications,
+    unreadCount,
+    loading,
+    preferences,
+    loadingPreferences,
+    refreshNotifications,
+    markOneAsRead,
+    markAllAsReadUser,
+    updatePreferences
+  } = useNotifications()
 
-  // Cargar notificaciones
-  const loadNotifications = async () => {
-    setLoading(true)
-    try {
-      const [result, count] = await Promise.all([
-        getNotifications(1, 50),
-        getUnreadCount()
-      ])
-      setNotifications(result.data)
-      setUnreadCount(count)
-    } catch (error) {
-      console.error('Error loading notifications:', error)
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  useEffect(() => {
-    loadNotifications()
-  }, [])
-
-  const handleMarkAsRead = async (notificationId: string) => {
-    try {
-      await markAsRead(notificationId)
-      setNotifications((prev) =>
-        prev.map((n) => (n.id === notificationId ? { ...n, is_read: true } : n))
-      )
-      setUnreadCount((prev) => Math.max(0, prev - 1))
-    } catch (error) {
-      console.error('Error marking as read:', error)
-    }
-  }
+  const [saveMessage, setSaveMessage] = useState<{
+    type: 'success' | 'error'
+    text: string
+  } | null>(null)
 
   const handleMarkAllAsRead = async () => {
-    try {
-      await markAllAsRead()
-      setNotifications((prev) => prev.map((n) => ({ ...n, is_read: true })))
-      setUnreadCount(0)
-    } catch (error) {
-      console.error('Error marking all as read:', error)
-    }
+    await markAllAsReadUser()
   }
 
   const getNotificationIcon = (type: string) => {
@@ -140,53 +100,29 @@ export const NotificationsTab: React.FC<NotificationsTabProps> = ({
     }
   }
 
-  const handlePreferenceChange = (key: keyof typeof preferences) => {
-    setPreferences((prev) => ({
-      ...prev,
-      [key]: !prev[key]
-    }))
-  }
-
-  const handleSavePreferences = async () => {
+  const handleTogglePreference = async (key: keyof NotificationPreferences) => {
+    if (!preferences) return
+    const currentVal = preferences[key] as unknown as boolean
     try {
-      await saveNotificationPreferences({
-        email_notifications: preferences.emailEnabled,
-        web_notifications: preferences.webEnabled,
-        ticket_sales: preferences.emailOnSale,
-        new_followers: preferences.emailNewFollowers,
-        daily_summary: preferences.emailDailyDigest,
-        event_reminders: preferences.emailEventReminder
-      })
-      alert('Preferencias guardadas correctamente')
+      await updatePreferences({ [key]: !currentVal })
+      setSaveMessage({ type: 'success', text: 'Preferencia actualizada' })
     } catch (e) {
-      console.error('Error saving preferences:', e)
-      alert('Error al guardar preferencias')
+      setSaveMessage({ type: 'error', text: 'Error al actualizar preferencia' })
     }
+    setTimeout(() => setSaveMessage(null), 2000)
   }
-
-  // Cargar preferencias al montar
-  useEffect(() => {
-    getNotificationPreferences().then((prefs) => {
-      setPreferences({
-        emailEnabled: prefs.email_notifications,
-        webEnabled: prefs.web_notifications,
-        emailOnSale: prefs.ticket_sales,
-        emailNewFollowers: prefs.new_followers,
-        emailDailyDigest: prefs.daily_summary,
-        emailEventReminder: prefs.event_reminders
-      })
-    })
-  }, [])
 
   return (
-    <Box>
+    <Box sx={{ maxWidth: 900, mx: 'auto', px: { xs: 1, sm: 2 } }}>
       {/* Header */}
       <Box
         sx={{
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
-          mb: 3
+          mb: 3,
+          flexWrap: 'wrap',
+          gap: 2
         }}
       >
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
@@ -205,7 +141,7 @@ export const NotificationsTab: React.FC<NotificationsTabProps> = ({
           )}
         </Box>
         <Box sx={{ display: 'flex', gap: 1 }}>
-          <IconButton onClick={loadNotifications} title='Actualizar'>
+          <IconButton onClick={refreshNotifications} title='Actualizar'>
             <RefreshIcon />
           </IconButton>
           {unreadCount > 0 && (
@@ -213,6 +149,7 @@ export const NotificationsTab: React.FC<NotificationsTabProps> = ({
               startIcon={<MarkAllReadIcon />}
               onClick={handleMarkAllAsRead}
               size='small'
+              sx={{ display: { xs: 'none', sm: 'flex' } }}
             >
               Marcar todo
             </Button>
@@ -225,6 +162,7 @@ export const NotificationsTab: React.FC<NotificationsTabProps> = ({
         <Tabs
           value={subTab}
           onChange={(_, v) => setSubTab(v)}
+          variant='fullWidth'
           sx={{
             '& .MuiTab-root': { textTransform: 'none', fontWeight: 600 }
           }}
@@ -276,26 +214,29 @@ export const NotificationsTab: React.FC<NotificationsTabProps> = ({
               {notifications.map((notification, index) => (
                 <React.Fragment key={notification.id}>
                   <ListItem
+                    disablePadding={false}
                     sx={{
                       py: 2,
-                      px: 3,
+                      px: { xs: 2, sm: 3 },
                       bgcolor: notification.is_read
                         ? 'transparent'
                         : 'action.hover',
                       cursor: 'pointer',
-                      '&:hover': { bgcolor: 'action.selected' }
+                      '&:hover': { bgcolor: 'action.selected' },
+                      transition: 'background-color 0.2s'
                     }}
                     onClick={() =>
-                      !notification.is_read && handleMarkAsRead(notification.id)
+                      !notification.is_read && markOneAsRead(notification.id)
                     }
                     secondaryAction={
                       <IconButton
                         size='small'
                         onClick={(e) => {
                           e.stopPropagation()
-                          handleMarkAsRead(notification.id)
+                          markOneAsRead(notification.id)
                         }}
                         disabled={notification.is_read}
+                        edge='end'
                       >
                         {notification.is_read ? (
                           <ReadIcon color='success' />
@@ -323,7 +264,8 @@ export const NotificationsTab: React.FC<NotificationsTabProps> = ({
                       primary={
                         <Typography
                           variant='body1'
-                          fontWeight={notification.is_read ? 400 : 600}
+                          fontWeight={notification.is_read ? 400 : 700}
+                          sx={{ pr: 4 }}
                         >
                           {notification.title}
                         </Typography>
@@ -332,9 +274,11 @@ export const NotificationsTab: React.FC<NotificationsTabProps> = ({
                         <Box
                           sx={{
                             display: 'flex',
+                            flexDirection: { xs: 'column', sm: 'row' },
                             justifyContent: 'space-between',
-                            alignItems: 'center',
-                            mt: 0.5
+                            alignItems: { xs: 'flex-start', sm: 'center' },
+                            mt: 0.5,
+                            gap: 0.5
                           }}
                         >
                           <Typography variant='body2' color='text.secondary'>
@@ -343,7 +287,7 @@ export const NotificationsTab: React.FC<NotificationsTabProps> = ({
                           <Typography
                             variant='caption'
                             color='text.disabled'
-                            sx={{ ml: 2, whiteSpace: 'nowrap' }}
+                            sx={{ whiteSpace: 'nowrap' }}
                           >
                             {formatRelativeTime(notification.created_at || '')}
                           </Typography>
@@ -359,150 +303,174 @@ export const NotificationsTab: React.FC<NotificationsTabProps> = ({
         </Paper>
       ) : (
         /* Configuración de Preferencias */
-        <Paper sx={{ borderRadius: 2, p: 3 }}>
+        <Paper sx={{ borderRadius: 2, p: { xs: 2, md: 3 } }}>
           <Typography variant='h6' fontWeight={600} sx={{ mb: 3 }}>
             Preferencias de Notificaciones
           </Typography>
 
-          <FormGroup>
-            <Box sx={{ mb: 4 }}>
-              <Typography
-                variant='subtitle2'
-                color='text.secondary'
-                sx={{ mb: 2 }}
-              >
-                Notificaciones por Email
-              </Typography>
-              <FormControlLabel
-                control={
-                  <Switch
-                    checked={preferences.emailOnSale}
-                    onChange={() => handlePreferenceChange('emailOnSale')}
-                    color='primary'
-                  />
-                }
-                label={
-                  <Box>
-                    <Typography variant='body1'>Venta de entrada</Typography>
-                    <Typography variant='caption' color='text.secondary'>
-                      Recibe un email cada vez que alguien compre una entrada
-                    </Typography>
-                  </Box>
-                }
-                sx={{
-                  mb: 2.5,
-                  alignItems: 'flex-start',
-                  minHeight: 56,
-                  display: 'flex',
-                  width: '100%'
-                }}
-              />
-              <FormControlLabel
-                control={
-                  <Switch
-                    checked={preferences.emailNewFollowers}
-                    onChange={() => handlePreferenceChange('emailNewFollowers')}
-                    color='primary'
-                  />
-                }
-                label={
-                  <Box>
-                    <Typography variant='body1'>Nuevos seguidores</Typography>
-                    <Typography variant='caption' color='text.secondary'>
-                      Recibe un email cuando un usuario siga tu organización
-                    </Typography>
-                  </Box>
-                }
-                sx={{
-                  mb: 2.5,
-                  alignItems: 'flex-start',
-                  minHeight: 56,
-                  display: 'flex',
-                  width: '100%'
-                }}
-              />
-              <FormControlLabel
-                control={
-                  <Switch
-                    checked={preferences.emailDailyDigest}
-                    onChange={() => handlePreferenceChange('emailDailyDigest')}
-                    color='primary'
-                  />
-                }
-                label={
-                  <Box>
-                    <Typography variant='body1'>Resumen diario</Typography>
-                    <Typography variant='caption' color='text.secondary'>
-                      Recibe un resumen diario de actividad en lugar de emails
-                      individuales
-                    </Typography>
-                  </Box>
-                }
-                sx={{
-                  mb: 2.5,
-                  alignItems: 'flex-start',
-                  minHeight: 56,
-                  display: 'flex',
-                  width: '100%'
-                }}
-              />
-              <FormControlLabel
-                control={
-                  <Switch
-                    checked={preferences.emailEventReminder}
-                    onChange={() =>
-                      handlePreferenceChange('emailEventReminder')
+          {saveMessage && (
+            <Alert severity={saveMessage.type} sx={{ mb: 2 }}>
+              {saveMessage.text}
+            </Alert>
+          )}
+
+          {loadingPreferences ? (
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+              <Skeleton height={40} />
+              <Skeleton height={40} />
+              <Skeleton height={40} />
+            </Box>
+          ) : (
+            preferences && (
+              <FormGroup>
+                <Box sx={{ mb: 4 }}>
+                  <Typography
+                    variant='subtitle2'
+                    color='text.secondary'
+                    sx={{ mb: 2 }}
+                  >
+                    Notificaciones por Email
+                  </Typography>
+                  <FormControlLabel
+                    control={
+                      <Switch
+                        checked={preferences.ticket_sales}
+                        onChange={() => handleTogglePreference('ticket_sales')}
+                        color='primary'
+                      />
                     }
-                    color='primary'
+                    label={
+                      <Box>
+                        <Typography variant='body1'>
+                          Venta de entrada
+                        </Typography>
+                        <Typography variant='caption' color='text.secondary'>
+                          Recibe un email cada vez que alguien compre una
+                          entrada
+                        </Typography>
+                      </Box>
+                    }
+                    sx={{
+                      mb: 2.5,
+                      alignItems: 'flex-start',
+                      display: 'flex',
+                      width: '100%'
+                    }}
                   />
-                }
-                label={
-                  <Box>
-                    <Typography variant='body1'>
-                      Recordatorios de evento
-                    </Typography>
-                    <Typography variant='caption' color='text.secondary'>
-                      Recibe recordatorios antes de que empiecen tus eventos
-                    </Typography>
-                  </Box>
-                }
-                sx={{ alignItems: 'flex-start' }}
-              />
-            </Box>
-
-            <Divider sx={{ my: 3 }} />
-
-            <Box>
-              <Typography
-                variant='subtitle2'
-                color='text.secondary'
-                sx={{ mb: 2 }}
-              >
-                Notificaciones Web
-              </Typography>
-              <FormControlLabel
-                control={
-                  <Switch
-                    checked={preferences.webEnabled}
-                    onChange={() => handlePreferenceChange('webEnabled')}
-                    color='primary'
+                  <FormControlLabel
+                    control={
+                      <Switch
+                        checked={preferences.new_followers}
+                        onChange={() => handleTogglePreference('new_followers')}
+                        color='primary'
+                      />
+                    }
+                    label={
+                      <Box>
+                        <Typography variant='body1'>
+                          Nuevos seguidores
+                        </Typography>
+                        <Typography variant='caption' color='text.secondary'>
+                          Recibe un email cuando un usuario siga tu organización
+                        </Typography>
+                      </Box>
+                    }
+                    sx={{
+                      mb: 2.5,
+                      alignItems: 'flex-start',
+                      display: 'flex',
+                      width: '100%'
+                    }}
                   />
-                }
-                label={
-                  <Box>
-                    <Typography variant='body1'>Notificaciones web</Typography>
-                    <Typography variant='caption' color='text.secondary'>
-                      Recibe notificaciones en tu centro de notificaciones
-                    </Typography>
-                  </Box>
-                }
-                sx={{ alignItems: 'flex-start' }}
-              />
-            </Box>
-          </FormGroup>
+                  <FormControlLabel
+                    control={
+                      <Switch
+                        checked={preferences.daily_summary}
+                        onChange={() => handleTogglePreference('daily_summary')}
+                        color='primary'
+                      />
+                    }
+                    label={
+                      <Box>
+                        <Typography variant='body1'>Resumen diario</Typography>
+                        <Typography variant='caption' color='text.secondary'>
+                          Recibe un resumen diario de actividad en lugar de
+                          emails individuales
+                        </Typography>
+                      </Box>
+                    }
+                    sx={{
+                      mb: 2.5,
+                      alignItems: 'flex-start',
+                      display: 'flex',
+                      width: '100%'
+                    }}
+                  />
+                  <FormControlLabel
+                    control={
+                      <Switch
+                        checked={preferences.event_reminders}
+                        onChange={() =>
+                          handleTogglePreference('event_reminders')
+                        }
+                        color='primary'
+                      />
+                    }
+                    label={
+                      <Box>
+                        <Typography variant='body1'>
+                          Recordatorios de evento
+                        </Typography>
+                        <Typography variant='caption' color='text.secondary'>
+                          Recibe recordatorios antes de que empiecen tus eventos
+                        </Typography>
+                      </Box>
+                    }
+                    sx={{ alignItems: 'flex-start' }}
+                  />
+                </Box>
+
+                <Divider sx={{ my: 3 }} />
+
+                <Box>
+                  <Typography
+                    variant='subtitle2'
+                    color='text.secondary'
+                    sx={{ mb: 2 }}
+                  >
+                    Notificaciones Web
+                  </Typography>
+                  <FormControlLabel
+                    control={
+                      <Switch
+                        checked={preferences.web_notifications}
+                        onChange={() =>
+                          handleTogglePreference('web_notifications')
+                        }
+                        color='primary'
+                      />
+                    }
+                    label={
+                      <Box>
+                        <Typography variant='body1'>
+                          Notificaciones web
+                        </Typography>
+                        <Typography variant='caption' color='text.secondary'>
+                          Recibe notificaciones en tu centro de notificaciones
+                        </Typography>
+                      </Box>
+                    }
+                    sx={{ alignItems: 'flex-start' }}
+                  />
+                </Box>
+              </FormGroup>
+            )
+          )}
 
           <Box sx={{ mt: 4, pt: 3, borderTop: 1, borderColor: 'divider' }}>
-            <Button variant='primary'>Guardar preferencias</Button>
+            <Button variant='primary' disabled>
+              Guardado Automático
+            </Button>
           </Box>
         </Paper>
       )}
