@@ -70,19 +70,22 @@ export const Button: FunctionComponent<CustomButtonProps> = ({
       transition: 'all 0.3s ease'
     }
 
+    // Media query for devices that support hover (mouse)
+    const hoverMediaQuery = '@media (hover: hover)'
+
     if (variant === 'primary') {
       return {
         ...baseStyles,
         background: 'var(--gradient-button-primary)',
         color: 'var(--White)',
         border: 'none',
-        '&:hover': !isMobile
-          ? {
-              background: 'white',
-              color: 'var(--color-cadetblue)',
-              border: '1px solid var(--color-cadetblue)'
-            }
-          : {}
+        [hoverMediaQuery]: {
+          '&:hover': {
+            background: 'white',
+            color: 'var(--color-cadetblue)',
+            border: '1px solid var(--color-cadetblue)'
+          }
+        }
       }
     }
 
@@ -92,13 +95,13 @@ export const Button: FunctionComponent<CustomButtonProps> = ({
         background: 'white',
         color: 'var(--color-cadetblue)',
         border: '1px solid var(--color-cadetblue)',
-        '&:hover': !isMobile
-          ? {
-              background: 'var(--gradient-button-primary)',
-              color: 'var(--White)',
-              borderColor: 'transparent'
-            }
-          : {}
+        [hoverMediaQuery]: {
+          '&:hover': {
+            background: 'var(--gradient-button-primary)',
+            color: 'var(--White)',
+            borderColor: 'transparent'
+          }
+        }
       }
     }
 
@@ -109,13 +112,13 @@ export const Button: FunctionComponent<CustomButtonProps> = ({
         color: 'var(--color-cadetblue)', // Texto Cian
         border: '1px solid transparent', // Reserva espacio o simplemente sin borde
         padding: '6px 16px', // Un poco más compacto
-        '&:hover': !isMobile
-          ? {
-              background: 'var(--gradient-button-primary)', // Fondo Cian al hover
-              color: 'var(--White)', // Texto Blanco
-              borderColor: 'transparent'
-            }
-          : {}
+        [hoverMediaQuery]: {
+          '&:hover': {
+            background: 'var(--gradient-button-primary)', // Fondo Cian al hover
+            color: 'var(--White)', // Texto Blanco
+            borderColor: 'transparent'
+          }
+        }
       }
     }
 
