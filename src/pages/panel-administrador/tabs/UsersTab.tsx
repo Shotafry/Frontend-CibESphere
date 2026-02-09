@@ -3,24 +3,14 @@ import {
   Box,
   Typography,
   Chip,
-  TableContainer,
   Paper,
-  Table,
-  TableHead,
-  TableRow,
-  TableCell,
-  TableBody,
   Stack,
-  Avatar,
   Fade,
-  IconButton,
   TablePagination,
   TextField,
   MenuItem,
   InputAdornment,
   CircularProgress,
-  Menu,
-  ListItemIcon,
   Dialog,
   DialogTitle,
   DialogContent,
@@ -31,27 +21,18 @@ import {
   Alert,
   useTheme,
   useMediaQuery,
-  Card,
-  CardContent,
-  CardActions,
-  Divider
+  Button as MuiButton
 } from '@mui/material'
-import {
-  Delete as DeleteIcon,
-  Search as SearchIcon,
-  Edit as EditIcon,
-  Block as BlockIcon,
-  CheckCircle as ActiveIcon,
-  MoreVert as MoreVertIcon,
-  Verified as VerifiedIcon,
-  AdminPanelSettings as AdminIcon,
-  Event as OrganizerIcon,
-  Person as UserIcon
-} from '@mui/icons-material'
+import { Search as SearchIcon } from '@mui/icons-material'
 import { User, Role } from '../../../types'
 import { TableSkeleton } from '../../../components/skeletons'
 import { useUsers } from '../../../hooks/useUsers'
 import { Button } from '../../../components/Button'
+
+// Modular Components
+import { UsersTable } from './users/UsersTable'
+import { UsersMobileList } from './users/UsersMobileList'
+import { UserActionsMenu } from './users/UserActionsMenu'
 
 export const UsersTab: React.FC = () => {
   const theme = useTheme()
@@ -163,55 +144,6 @@ export const UsersTab: React.FC = () => {
     }
   }
 
-  // Render Helpers
-  const getRoleBadge = (role: Role) => {
-    switch (role) {
-      case Role.Admin:
-        return (
-          <Chip
-            icon={<AdminIcon />}
-            label='Admin'
-            size='small'
-            sx={{ bgcolor: '#fce7f3', color: '#be185d', fontWeight: 700 }}
-          />
-        )
-      case Role.Organizer:
-        return (
-          <Chip
-            icon={<OrganizerIcon />}
-            label='Organizador'
-            size='small'
-            sx={{ bgcolor: '#dbeafe', color: '#1d4ed8', fontWeight: 700 }}
-          />
-        )
-      default:
-        return (
-          <Chip
-            icon={<UserIcon />}
-            label='Usuario'
-            size='small'
-            sx={{ bgcolor: '#f1f5f9', color: '#475569', fontWeight: 600 }}
-          />
-        )
-    }
-  }
-
-  const getStatusBadge = (isActive: boolean) => {
-    return isActive ? (
-      <Chip
-        label='Activo'
-        size='small'
-        sx={{ bgcolor: '#dcfce7', color: '#15803d', fontWeight: 700 }}
-      />
-    ) : (
-      <Chip
-        label='Suspendido'
-        size='small'
-        sx={{ bgcolor: '#fee2e2', color: '#b91c1c', fontWeight: 700 }}
-      />
-    )
-  }
-
   return (
     <Fade in timeout={500}>
       <Box>
@@ -311,178 +243,9 @@ export const UsersTab: React.FC = () => {
         {loading ? (
           <TableSkeleton />
         ) : isMobile ? (
-          /* Mobile Card View */
-          <Stack spacing={2}>
-            {users.map((user) => (
-              <Card key={user.id} sx={{ borderRadius: 2 }}>
-                <CardContent>
-                  <Box
-                    display='flex'
-                    justifyContent='space-between'
-                    alignItems='flex-start'
-                    mb={2}
-                  >
-                    <Stack direction='row' spacing={2} alignItems='center'>
-                      <Avatar
-                        src={user.avatar_url}
-                        sx={{
-                          bgcolor: '#3b82f6',
-                          width: 40,
-                          height: 40
-                        }}
-                      >
-                        {user.first_name?.[0].toUpperCase()}
-                      </Avatar>
-                      <Box>
-                        <Stack
-                          direction='row'
-                          spacing={0.5}
-                          alignItems='center'
-                        >
-                          <Typography fontWeight='600' variant='subtitle1'>
-                            {user.full_name}
-                          </Typography>
-                          {user.is_verified && (
-                            <VerifiedIcon
-                              sx={{ fontSize: 16, color: '#3b82f6' }}
-                            />
-                          )}
-                        </Stack>
-                        <Typography variant='body2' color='text.secondary'>
-                          {user.email}
-                        </Typography>
-                      </Box>
-                    </Stack>
-                    <IconButton
-                      size='small'
-                      onClick={(e) => handleMenuOpen(e, user)}
-                    >
-                      <MoreVertIcon />
-                    </IconButton>
-                  </Box>
-                  <Divider sx={{ my: 1.5 }} />
-                  <Box
-                    display='flex'
-                    justifyContent='space-between'
-                    alignItems='center'
-                  >
-                    <Box display='flex' gap={1}>
-                      {getRoleBadge(user.role)}
-                      {getStatusBadge(user.is_active)}
-                    </Box>
-                    <Typography variant='caption' color='text.secondary'>
-                      {new Date(user.created_at).toLocaleDateString()}
-                    </Typography>
-                  </Box>
-                </CardContent>
-              </Card>
-            ))}
-            {users.length === 0 && (
-              <Typography textAlign='center' color='text.secondary' py={4}>
-                No se encontraron usuarios
-              </Typography>
-            )}
-          </Stack>
+          <UsersMobileList users={users} onMenuOpen={handleMenuOpen} />
         ) : (
-          /* Desktop Table View */
-          <TableContainer component={Paper} sx={{ borderRadius: 3 }}>
-            <Table sx={{ minWidth: 700 }}>
-              <TableHead sx={{ bgcolor: '#f8fafc' }}>
-                <TableRow>
-                  <TableCell sx={{ fontWeight: '700', color: '#475569' }}>
-                    Usuario
-                  </TableCell>
-                  <TableCell sx={{ fontWeight: '700', color: '#475569' }}>
-                    Rol
-                  </TableCell>
-                  <TableCell sx={{ fontWeight: '700', color: '#475569' }}>
-                    Estado
-                  </TableCell>
-                  <TableCell sx={{ fontWeight: '700', color: '#475569' }}>
-                    Registro
-                  </TableCell>
-                  <TableCell
-                    align='right'
-                    sx={{ fontWeight: '700', color: '#475569' }}
-                  >
-                    Acciones
-                  </TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {users.map((user) => (
-                  <TableRow
-                    key={user.id}
-                    hover
-                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                  >
-                    <TableCell>
-                      <Stack direction='row' spacing={2} alignItems='center'>
-                        <Avatar
-                          src={user.avatar_url}
-                          sx={{
-                            bgcolor: '#3b82f6',
-                            width: 40,
-                            height: 40,
-                            border: '1px solid #e2e8f0'
-                          }}
-                        >
-                          {user.first_name?.[0].toUpperCase()}
-                        </Avatar>
-                        <Box>
-                          <Stack
-                            direction='row'
-                            alignItems='center'
-                            spacing={0.5}
-                          >
-                            <Typography
-                              fontWeight='600'
-                              variant='body2'
-                              color='#1e293b'
-                            >
-                              {user.full_name}
-                            </Typography>
-                            {user.is_verified && (
-                              <VerifiedIcon
-                                sx={{ fontSize: 14, color: '#3b82f6' }}
-                              />
-                            )}
-                          </Stack>
-                          <Typography variant='caption' color='#64748b'>
-                            {user.email}
-                          </Typography>
-                        </Box>
-                      </Stack>
-                    </TableCell>
-                    <TableCell>{getRoleBadge(user.role)}</TableCell>
-                    <TableCell>{getStatusBadge(user.is_active)}</TableCell>
-                    <TableCell>
-                      <Typography variant='body2' color='#475569'>
-                        {new Date(user.created_at).toLocaleDateString()}
-                      </Typography>
-                    </TableCell>
-                    <TableCell align='right'>
-                      <IconButton
-                        size='small'
-                        onClick={(e) => handleMenuOpen(e, user)}
-                      >
-                        <MoreVertIcon fontSize='small' />
-                      </IconButton>
-                    </TableCell>
-                  </TableRow>
-                ))}
-                {users.length === 0 && (
-                  <TableRow>
-                    <TableCell colSpan={5} align='center' sx={{ py: 8 }}>
-                      <Typography color='text.secondary'>
-                        No se encontraron usuarios
-                      </Typography>
-                    </TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </TableContainer>
+          <UsersTable users={users} onMenuOpen={handleMenuOpen} />
         )}
 
         <TablePagination
@@ -500,44 +263,14 @@ export const UsersTab: React.FC = () => {
         />
 
         {/* Actions Menu */}
-        <Menu
+        <UserActionsMenu
           anchorEl={anchorEl}
-          open={Boolean(anchorEl)}
           onClose={handleMenuClose}
-          PaperProps={{
-            sx: {
-              borderRadius: 3,
-              boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
-            }
-          }}
-        >
-          <MenuItem onClick={handleEditRole}>
-            <ListItemIcon>
-              <EditIcon fontSize='small' />
-            </ListItemIcon>
-            Cambiar Rol
-          </MenuItem>
-          <MenuItem onClick={handleToggleStatus}>
-            <ListItemIcon>
-              {selectedUser?.is_active ? (
-                <BlockIcon fontSize='small' color='error' />
-              ) : (
-                <ActiveIcon fontSize='small' color='success' />
-              )}
-            </ListItemIcon>
-            <Typography
-              color={selectedUser?.is_active ? 'error' : 'success.main'}
-            >
-              {selectedUser?.is_active ? 'Suspender' : 'Activar'}
-            </Typography>
-          </MenuItem>
-          <MenuItem onClick={handleDelete}>
-            <ListItemIcon>
-              <DeleteIcon fontSize='small' color='error' />
-            </ListItemIcon>
-            <Typography color='error'>Eliminar</Typography>
-          </MenuItem>
-        </Menu>
+          selectedUser={selectedUser}
+          onEditRole={handleEditRole}
+          onToggleStatus={handleToggleStatus}
+          onDelete={handleDelete}
+        />
 
         {/* Edit Role Modal */}
         <Dialog
@@ -568,9 +301,9 @@ export const UsersTab: React.FC = () => {
             </Box>
           </DialogContent>
           <DialogActions>
-            <Button onClick={() => setEditRoleOpen(false)} variant='secondary'>
+            <MuiButton onClick={() => setEditRoleOpen(false)} color='inherit'>
               Cancelar
-            </Button>
+            </MuiButton>
             <Button
               onClick={handleSaveRole}
               variant='primary'
