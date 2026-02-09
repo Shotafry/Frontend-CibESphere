@@ -1,6 +1,6 @@
 # 🐛 Errores Conocidos y Deuda Técnica
 
-> **Última Auditoría:** Febrero 2026 (Beta v0.6.0 - COMPLETADA)
+> **Última Auditoría:** Febrero 2026 (Beta v0.8.0 - COMPLETADA)
 
 ---
 
@@ -48,18 +48,22 @@
 - **Page Transitions:** `PageTransition` wrapper con `framer-motion`.
 - **Self-Follow Prevention:** `FollowButton` oculto para miembros de la organización.
 
+### Refactorización y Estabilidad ✅ v0.8.0
+
+- **Modularización:** `EventFilters`, `NotificationsTab` y `UsersTab` divididos en subcomponentes atómicos.
+- **Custom Hooks:** Lógica de negocio centralizada en `useEventFilters`, `useNotifications` y `useUsers`.
+- **Tab Persistence:** Sincronización de pestañas en paneles vía URL query params.
+- **Organizer Onboarding:** Implementado `OrganizerGuard` y UI dinámica en Header/Menu para forzar creación de organización.
+- **Date Filtering:** Corregida discrepancia de formatos de fecha entre frontend y backend.
+
 ---
 
 ## 🛠️ Deuda Técnica Conocida
 
-### 1. Componentes Grandes (Refactorizar en v1.0.0)
+### 1. Gestión de Datos (v1.0.0+)
 
-| Componente                       | Tamaño  | Estado    | Acción                                |
-| -------------------------------- | ------- | --------- | ------------------------------------- |
-| `NotificationsTab (Usuario)`     | ~750 ln | ⚠️ Grande | Dividir en History, Settings, Regions |
-| `NotificationsTab (Organizador)` | ~500 ln | ⚠️ Grande | Dividir en History y Settings         |
-| `EventFilters.tsx`               | 11.8KB  | ⚠️ Grande | Extraer filtros individuales          |
-| `PanelDeOrganizador.tsx`         | >500 ln | ⚠️ Grande | Revisar estructura de tabs            |
+- **Cache Layer:** Implementar una capa de caché para evitar peticiones redundantes al cambiar entre pestañas.
+- **Optimistic UI:** Añadir actualizaciones optimistas en acciones como "Seguir" o "Conectar".
 
 ### 2. Layout & Responsividad (Desktop-First)
 

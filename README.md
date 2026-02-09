@@ -116,7 +116,7 @@ Sistema de control de acceso basado en roles gestionado por el backend.
 #### 🌍 Internacionalización (i18n)
 
 - **react-i18next configurado**: Soporte para múltiples idiomas
-- **Landing Page traducida**: PoC con textos en Español e Inglés
+- **Landing Page traducida**: PoC con textos en Español e Inglés (traducida solo una parte de muestra)
 - **Selector de Idioma**: Nuevo componente `LanguageSelector` en Header y menú móvil
 - **Nueva variante Button `text`**: Para elementos interactivos ligeros (dropdown, etc.)
 
@@ -160,11 +160,32 @@ Sistema de control de acceso basado en roles gestionado por el backend.
 
 ---
 
-### 🔜 Próximamente: Beta v0.8.0 (Estabilidad y Polish)
+### 🆕 Novedades Beta v0.8.0 (Febrero 2026)
 
-- **Audit Logs UI**: Visualización completa de los logs de auditoría en el panel.
-- **Refinamiento Visual**: Micro-interacciones y pulido de estilos globales.
-- **Bug Fixes**: Resolución de issues menores reportados en v0.7.0.
+#### 🏗️ Arquitectura y Refactorización
+
+- **Modularización de Componentes:** Desacoplamiento de componentes monolíticos (`EventFilters`, `NotificationsTab`, `UsersTab`).
+- **Custom Hooks:** Implementación de lógica de negocio en hooks especializados (`useEventFilters`, `useNotifications`, `useUsers`) para mejor mantenibilidad.
+- **Sub-componentes Atómicos:** Extracción de componentes más pequeños para filtros (Date, Location, Category, Type).
+
+#### 🛡️ Mejoras en Paneles y Seguridad
+
+- **Persistencia de Pestañas:** El estado de las pestañas en el Panel de Administrador ahora persiste tras recargar la página mediante parámetros URL (`?tab=...`).
+- **Organizer Onboarding Guard:** Redirección automática forzada a `/crear-organizacion` para organizadores sin perfil completo, impidiendo el acceso a paneles incompletos.
+- **UI Dinámica de Onboarding:** El Header y Menú Móvil ahora muestran dinámicamente el botón "Crear Organización" si el usuario lo requiere.
+
+#### 🐛 Estabilidad y Bug Fixes
+
+- **Filtros de Eventos:** Corregida la sincronización de fechas entre Frontend y Backend.
+- **Backend Sync:** Adaptación a nuevas estructuras de DTOs para mayor seguridad de tipos.
+
+---
+
+### 🔜 Próximamente: Beta v0.9.0 (Estabilización y Pulido)
+
+- **Audit Visualizer:** Interfaz visual para los logs de auditoría del backend.
+- **Visual Polish:** Micro-interacciones finales y refinamiento de sombras/gradientes.
+- **Bug Bashing:** Resolución de detalles visuales acumulados antes de la versión estable.
 
 ---
 

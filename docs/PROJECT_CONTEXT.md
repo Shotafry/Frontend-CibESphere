@@ -1,6 +1,6 @@
 > **Documento Maestro**: Este archivo contiene toda la información necesaria para que una IA o desarrollador entienda la arquitectura, flujos y diseño de CybESphere.
-> **Versión**: Beta v0.7.0 (Febrero 2026) - **Gestión y Auditoría**
-> **Próxima**: Beta v0.8.0 - Estabilidad y Polish
+> **Versión**: Beta v0.8.0 (Febrero 2026) - **Estabilidad y Polish**
+> **Próxima**: Beta v0.9.0 - Calidad y Auditoría Visual
 
 ---
 
@@ -95,6 +95,9 @@ src/
 │
 ├── hooks/
 │   ├── useApi.ts, useEvents.ts, useOrganizations.ts
+│   ├── useEventFilters.ts (Filtros modulares)
+│   ├── useNotifications.ts (Suscripciones y Alertas)
+│   └── useUsers.ts (Gestión Admin)
 │
 ├── i18n/ (v0.6.0)
 │   ├── index.ts (Configuración react-i18next)
@@ -178,9 +181,9 @@ src/
 
 ---
 
-## 7. Próximos Pasos (Beta v0.7.0)
+## 7. Próximos Pasos (Beta v0.9.0)
 
-1. **Panel Admin:** Mejoras en gestión de usuarios (banning, verificación manual).
-2. **Panel Organizador:** Dashboard mejorado con métricas ampliadas.
-3. **i18n Completa:** Extender traducciones a todas las páginas (actual: PoC Landing).
-4. **Refactorización:** Dividir componentes grandes (NotificationsTab, EventFilters).
+1. **Audit Logs:** Interfaz visual para auditoría de cambios en recursos.
+2. **Visual Polish:** Refinamiento de estética global (shadows, gradients) y micro-interacciones.
+3. **i18n Completa:** Extender traducciones a todas las páginas (actualmente avanzado).
+4. **Testing QA:** Validación de caminos críticos post-refactor.

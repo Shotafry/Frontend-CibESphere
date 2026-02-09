@@ -189,37 +189,38 @@ _Estado: COMPLETADO_
 
 ---
 
-## 🏗️ Fase 8: Arquitectura y Refactorización (Beta v0.8.0) 🔄
+## 🏗️ Fase 8: Arquitectura y Refactorización (Beta v0.8.0) ✅
 
-_Estado: EN PROGRESO_
+_Estado: COMPLETADO_
 
-### 8.1 Desacoplamiento de Componentes Monolíticos
+### 8.1 Desacoplamiento de Componentes Monolíticos ✅
 
-- [ ] **NotificationsTab (Usuario):** Dividir en `NotificationList`, `NotificationItem`, `NotificationFilters`.
-- [ ] **NotificationsTab (Organizador):** Extraer subcomponentes compartidos.
-- [ ] **UsersTab (Admin):** Extraer `UserTable`, `EditRoleModal`, `StatusBadge` a componentes propios.
+- [x] **NotificationsTab:** Dividido en `NotificationList`, `NotificationItem` y filtros para Asistente/Organizador.
+- [x] **EventFilters:** Modularizado en `DateFilter`, `LocationFilter`, `CategoryFilter`, etc.
+- [x] **UsersTab (Admin):** Extraídos modales y componentes de tabla.
 
-### 8.2 Optimización de Rendimiento
+### 8.2 Optimización y Onboarding ✅
 
-- [ ] **EventFilters:** Modularizar para evitar re-renders masivos.
-- [ ] **Data Management:** Mover lógica de fetch compleja a custom hooks (`useNotifications`, `useUsers`).
+- [x] **Custom Hooks:** Lógica de negocio extraída a `useEventFilters`, `useNotifications`, `useUsers`.
+- [x] **Tab Persistence:** Sincronización de pestañas con la URL (`?tab=...`).
+- [x] **Organizer Guard:** Redirección forzada y UI dinámica para completar onboarding.
 
 ---
 
-## 🛡️ Fase 9: Calidad y Auditoría (Beta v0.9.0)
+## 🎨 Fase 9: Calidad y Auditoría (Beta v0.9.0) 🔄
 
-_Estado: PLANIFICADA_
+_Estado: EN PROGRESO_
 
 ### 9.1 UI de Auditoría (Audit Logs)
 
-- [ ] **AuditVisualizer:** Interfaz visual para logs de backend.
-- [ ] **JSON Diff Viewer:** Para ver cambios exactos en recursos editados.
+- [ ] **AuditVisualizer:** Interfaz visual para logs de backend en el panel admin.
+- [ ] **JSON Diff Viewer:** Comparación visual de cambios en recursos.
 
-### 9.2 Testing & QA
+### 9.2 Testing & Estética
 
-- [ ] **Unit Testing:** Tests para componentes aislados en Fase 8.
-- [ ] **E2E Critical Paths:** Registro, Login, Compra de Entrada.
-- [ ] **Bug Bashing:** Resolver lista de issues menores acumulados.
+- [ ] **Visual Polish:** Revisión de micro-interacciones, sombras y gradientes.
+- [ ] **Testing QA:** Validación de flujos críticos post-refactorización.
+- [ ] **Bug Fixes:** Resolución de items cosméticos menores.
 
 ---
 
@@ -266,6 +267,7 @@ _Estado: FUTURO_ solo implementar si la web crece y se hace popular.
 | **v0.5.0**  | Beta    | ✅ Completado  | Testing, Bug Fixes, Preferencias de Notificaciones, CSV Export. |
 | **v0.6.0**  | Beta    | ✅ Completado  | Verificación Email, i18n (PoC), Cookie Banner GDPR, Bug Fixes.  |
 | **v0.7.0**  | Beta    | ✅ Completado  | Panel de Administración Rediseñado, Gestión de Org/Usuarios.    |
-| **v0.8.0**  | Beta    | 🔄 En Progreso | Estabilidad, UI Auditoría, Polish Visual.                       |
+| **v0.8.0**  | Beta    | ✅ Completado  | Estabilidad, DTO Refactor, Modularización, Tab Persistence.     |
+| **v0.9.0**  | Beta    | 🔄 En Progreso | Calidad, Visual Polish, Audit UI.                               |
 | **v1.0.0**  | RC      | 📋 Futuro      | "Sentinel" - Primera versión estable para producción.           |
 | **v1.1.0+** | Release | 📋 Futuro      | Por definir.                                                    |
