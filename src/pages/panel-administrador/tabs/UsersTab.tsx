@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState } from 'react'
 import {
   Box,
   Typography,
@@ -18,7 +18,6 @@ import {
   TextField,
   MenuItem,
   InputAdornment,
-  Tooltip,
   CircularProgress,
   Menu,
   ListItemIcon,
@@ -30,7 +29,13 @@ import {
   FormControl,
   InputLabel,
   Select,
-  Alert
+  Alert,
+  useTheme,
+  useMediaQuery,
+  Card,
+  CardContent,
+  CardActions,
+  Divider
 } from '@mui/material'
 import {
   Delete as DeleteIcon,
@@ -45,58 +50,38 @@ import {
   Person as UserIcon
 } from '@mui/icons-material'
 import { User, Role } from '../../../types'
-import * as apiService from '../../../services/apiService'
 import { TableSkeleton } from '../../../components/skeletons'
-import { useDebounce } from '../../../hooks/useDebounce'
+import { useUsers } from '../../../hooks/useUsers'
 
 export const UsersTab: React.FC = () => {
-  // Data State
-  const [users, setUsers] = useState<User[]>([])
-  const [loading, setLoading] = useState(true)
-  const [total, setTotal] = useState(0)
+  const theme = useTheme()
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
 
-  // Filter State
-  const [page, setPage] = useState(0)
-  const [limit, setLimit] = useState(10)
-  const [search, setSearch] = useState('')
-  const [roleFilter, setRoleFilter] = useState<string>('all')
-  const [statusFilter, setStatusFilter] = useState<string>('all')
-  const [debouncedSearch] = useDebounce(search, 500)
+  const {
+    users,
+    loading,
+    total,
+    page,
+    limit,
+    search,
+    roleFilter,
+    statusFilter,
+    setPage,
+    setLimit,
+    setSearch,
+    setRoleFilter,
+    setStatusFilter,
+    changeUserRole,
+    toggleUserStatus,
+    deleteUser
+  } = useUsers()
 
-  // Actions State
+  // Actions UI State
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const [selectedUser, setSelectedUser] = useState<User | null>(null)
   const [editRoleOpen, setEditRoleOpen] = useState(false)
   const [newRole, setNewRole] = useState<Role | ''>('')
   const [actionLoading, setActionLoading] = useState(false)
-
-  const fetchUsers = useCallback(async () => {
-    setLoading(true)
-    try {
-      const resp = await apiService.getAllUsers({
-        page: page + 1,
-        limit,
-        search: debouncedSearch,
-        role: roleFilter !== 'all' ? roleFilter : undefined,
-        is_active:
-          statusFilter === 'active'
-            ? true
-            : statusFilter === 'suspended'
-              ? false
-              : undefined
-      })
-      setUsers(resp.users)
-      setTotal(resp.pagination?.total_items || 0)
-    } catch (error) {
-      console.error('Error fetching users:', error)
-    } finally {
-      setLoading(false)
-    }
-  }, [page, limit, debouncedSearch, roleFilter, statusFilter])
-
-  useEffect(() => {
-    fetchUsers()
-  }, [fetchUsers])
 
   // Handlers
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>, user: User) => {
@@ -122,11 +107,7 @@ export const UsersTab: React.FC = () => {
 
     setActionLoading(true)
     try {
-      await apiService.changeUserRole(selectedUser.id, {
-        role: newRole as Role,
-        reason: 'Admin Panel Update'
-      })
-      await fetchUsers()
+      await changeUserRole(selectedUser.id, newRole as Role)
       setEditRoleOpen(false)
       handleMenuClose()
     } catch (error) {
@@ -151,18 +132,7 @@ export const UsersTab: React.FC = () => {
 
     setActionLoading(true)
     try {
-      if (isActive) {
-        await apiService.deactivateUser(selectedUser.id, {
-          reason: 'Admin Action',
-          is_active: false
-        })
-      } else {
-        await apiService.activateUser(selectedUser.id, {
-          reason: 'Admin Action',
-          is_active: true
-        })
-      }
-      await fetchUsers()
+      await toggleUserStatus(selectedUser)
       handleMenuClose()
     } catch (error) {
       console.error(error)
@@ -182,8 +152,7 @@ export const UsersTab: React.FC = () => {
     ) {
       setActionLoading(true)
       try {
-        await apiService.deleteUser(selectedUser.id)
-        await fetchUsers()
+        await deleteUser(selectedUser.id)
         handleMenuClose()
       } catch (error) {
         console.error(error)
@@ -252,6 +221,8 @@ export const UsersTab: React.FC = () => {
           justifyContent='space-between'
           alignItems='center'
           mb={4}
+          flexWrap='wrap'
+          gap={2}
         >
           <Box>
             <Typography
@@ -286,7 +257,11 @@ export const UsersTab: React.FC = () => {
             alignItems: 'center'
           }}
         >
-          <Stack direction={{ xs: 'column', md: 'row' }} spacing={2}>
+          <Stack
+            direction={{ xs: 'column', md: 'row' }}
+            spacing={2}
+            sx={{ width: '100%' }}
+          >
             <TextField
               placeholder='Buscar por nombre o email...'
               size='small'
@@ -309,7 +284,7 @@ export const UsersTab: React.FC = () => {
               value={roleFilter}
               onChange={(e) => setRoleFilter(e.target.value)}
               size='small'
-              sx={{ minWidth: 150 }}
+              sx={{ minWidth: { xs: '100%', md: 150 } }}
             >
               <MenuItem value='all'>Todos los roles</MenuItem>
               <MenuItem value={Role.Admin}>Admin</MenuItem>
@@ -323,7 +298,7 @@ export const UsersTab: React.FC = () => {
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
               size='small'
-              sx={{ minWidth: 150 }}
+              sx={{ minWidth: { xs: '100%', md: 150 } }}
             >
               <MenuItem value='all'>Todos</MenuItem>
               <MenuItem value='active'>Activo</MenuItem>
@@ -332,16 +307,85 @@ export const UsersTab: React.FC = () => {
           </Stack>
         </Paper>
 
-        {/* Users Table */}
-        <TableContainer
-          component={Paper}
-          sx={{
-            borderRadius: 3
-          }}
-        >
-          {loading ? (
-            <TableSkeleton />
-          ) : (
+        {/* Users Content */}
+        {loading ? (
+          <TableSkeleton />
+        ) : isMobile ? (
+          /* Mobile Card View */
+          <Stack spacing={2}>
+            {users.map((user) => (
+              <Card key={user.id} sx={{ borderRadius: 2 }}>
+                <CardContent>
+                  <Box
+                    display='flex'
+                    justifyContent='space-between'
+                    alignItems='flex-start'
+                    mb={2}
+                  >
+                    <Stack direction='row' spacing={2} alignItems='center'>
+                      <Avatar
+                        src={user.avatar_url}
+                        sx={{
+                          bgcolor: '#3b82f6',
+                          width: 40,
+                          height: 40
+                        }}
+                      >
+                        {user.first_name?.[0].toUpperCase()}
+                      </Avatar>
+                      <Box>
+                        <Stack
+                          direction='row'
+                          spacing={0.5}
+                          alignItems='center'
+                        >
+                          <Typography fontWeight='600' variant='subtitle1'>
+                            {user.full_name}
+                          </Typography>
+                          {user.is_verified && (
+                            <VerifiedIcon
+                              sx={{ fontSize: 16, color: '#3b82f6' }}
+                            />
+                          )}
+                        </Stack>
+                        <Typography variant='body2' color='text.secondary'>
+                          {user.email}
+                        </Typography>
+                      </Box>
+                    </Stack>
+                    <IconButton
+                      size='small'
+                      onClick={(e) => handleMenuOpen(e, user)}
+                    >
+                      <MoreVertIcon />
+                    </IconButton>
+                  </Box>
+                  <Divider sx={{ my: 1.5 }} />
+                  <Box
+                    display='flex'
+                    justifyContent='space-between'
+                    alignItems='center'
+                  >
+                    <Box display='flex' gap={1}>
+                      {getRoleBadge(user.role)}
+                      {getStatusBadge(user.is_active)}
+                    </Box>
+                    <Typography variant='caption' color='text.secondary'>
+                      {new Date(user.created_at).toLocaleDateString()}
+                    </Typography>
+                  </Box>
+                </CardContent>
+              </Card>
+            ))}
+            {users.length === 0 && (
+              <Typography textAlign='center' color='text.secondary' py={4}>
+                No se encontraron usuarios
+              </Typography>
+            )}
+          </Stack>
+        ) : (
+          /* Desktop Table View */
+          <TableContainer component={Paper} sx={{ borderRadius: 3 }}>
             <Table sx={{ minWidth: 700 }}>
               <TableHead sx={{ bgcolor: '#f8fafc' }}>
                 <TableRow>
@@ -438,21 +482,22 @@ export const UsersTab: React.FC = () => {
                 )}
               </TableBody>
             </Table>
-          )}
-          <TablePagination
-            component='div'
-            count={total}
-            page={page}
-            onPageChange={(_, newPage) => setPage(newPage)}
-            rowsPerPage={limit}
-            onRowsPerPageChange={(e) => {
-              setLimit(parseInt(e.target.value, 10))
-              setPage(0)
-            }}
-            rowsPerPageOptions={[5, 10, 25, 50]}
-            labelRowsPerPage='Filas:'
-          />
-        </TableContainer>
+          </TableContainer>
+        )}
+
+        <TablePagination
+          component='div'
+          count={total}
+          page={page}
+          onPageChange={(_, newPage) => setPage(newPage)}
+          rowsPerPage={limit}
+          onRowsPerPageChange={(e) => {
+            setLimit(parseInt(e.target.value, 10))
+            setPage(0)
+          }}
+          rowsPerPageOptions={[5, 10, 25, 50]}
+          labelRowsPerPage='Filas:'
+        />
 
         {/* Actions Menu */}
         <Menu
