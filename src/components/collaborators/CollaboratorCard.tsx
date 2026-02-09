@@ -16,7 +16,7 @@ export interface CollaboratorProps {
   name: string
   role: string
   image: string
-  contribution: string
+  contributions: string[]
   social?: {
     linkedin?: string
     github?: string
@@ -27,7 +27,7 @@ export const CollaboratorCard: React.FC<CollaboratorProps> = ({
   name,
   role,
   image,
-  contribution,
+  contributions,
   social
 }) => {
   return (
@@ -38,13 +38,13 @@ export const CollaboratorCard: React.FC<CollaboratorProps> = ({
         flexDirection: { xs: 'column', sm: 'row' }, // Stack on mobile, row on tablet+
         alignItems: 'center',
         p: 2,
-        borderRadius: '20px',
+        borderRadius: '24px', // Matched with Member Card
         border: '1px solid #E2E8F0',
         transition: 'all 0.3s ease',
         '&:hover': {
-          transform: 'translateY(-4px)',
-          boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.05)',
-          borderColor: 'var(--color-cadetblue)'
+          transform: 'translateY(-5px)', // Slightly less lift than members (-10px)
+          boxShadow: '0 10px 20px rgba(0, 217, 255, 0.1)', // Cyan shadow, less intense
+          borderColor: 'rgba(0, 217, 255, 0.3)'
         }
       }}
     >
@@ -145,15 +145,21 @@ export const CollaboratorCard: React.FC<CollaboratorProps> = ({
             fontWeight='bold'
             mb={0.5}
           >
-            Contribución Principal:
+            Contribuciones:
           </Typography>
-          <Typography
-            variant='body2'
-            color='text.primary'
-            sx={{ fontSize: '0.9rem', lineHeight: 1.5 }}
-          >
-            {contribution}
-          </Typography>
+          <Box component='ul' sx={{ m: 0, pl: 2, mb: 0 }}>
+            {contributions.map((item, index) => (
+              <Typography
+                component='li'
+                key={index}
+                variant='body2'
+                color='text.primary'
+                sx={{ fontSize: '0.9rem', lineHeight: 1.5 }}
+              >
+                {item}
+              </Typography>
+            ))}
+          </Box>
         </Box>
       </CardContent>
     </Card>

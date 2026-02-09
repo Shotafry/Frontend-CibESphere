@@ -32,8 +32,8 @@ const TEAM_MEMBERS = [
     bio: 'Apasionado por la tecnología y la innovación. Mi objetivo es utilizar mis habilidades técnicas para ayudar a las empresas a adoptar la nube y optimizar su infraestructura. Experiencia en AWS y Azure, y proyectos de migración cloud.',
     skills: ['AWS', 'Azure', 'Infrastructure', 'Cloud Migration'],
     social: {
-      linkedin: '#',
-      github: '#'
+      linkedin: 'https://www.linkedin.com/in/cloud-engenieer-angcapb/',
+      github: 'https://github.com/kubaliski'
     }
   },
   {
@@ -43,8 +43,8 @@ const TEAM_MEMBERS = [
     bio: 'Analista con orientación a SOC y base técnica en sistemas, redes y pentesting. Cuento con Máster en Ciberseguridad y certificación eJPT. Experiencia desplegando SOC con Wazuh y realizando hardening de servidores.',
     skills: ['SOC', 'Pentesting', 'Wazuh', 'Linux/Windows', 'eJPT'],
     social: {
-      linkedin: '#',
-      github: '#'
+      linkedin: 'https://www.linkedin.com/in/braylozano',
+      github: 'https://github.com/Shotafry'
     }
   }
 ]
@@ -53,13 +53,15 @@ const TEAM_MEMBERS = [
 const COLLABORATORS = [
   {
     name: 'Carolina Romero',
-    role: 'Colaboradora & Full-Stack Dev',
+    role: 'Full-Stack Dev',
     image: carolinaImg,
-    contribution:
-      'Unificar los estilos de botones en el componente button y creación de un plan inicial de refactorización que se hizo en la Beta 0.2.0.',
+    contributions: [
+      'Unificar los estilos de botones en el componente button.',
+      'Creación de un plan inicial de refactorización (Beta 0.2.0).'
+    ],
     social: {
-      linkedin: '#',
-      github: '#'
+      linkedin: 'https://www.linkedin.com/in/carolina-romero-c/',
+      github: 'https://github.com/Carol-88'
     }
   }
 ]
