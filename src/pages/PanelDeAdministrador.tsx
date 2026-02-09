@@ -1,5 +1,6 @@
 // src/pages/PanelDeAdministrador.tsx
 import React from 'react'
+import { AnimatePresence, motion } from 'framer-motion'
 import {
   Box,
   Typography,
@@ -211,10 +212,21 @@ const PanelDeAdministrador: React.FC = () => {
 
           {/* Tab Content Area */}
           <Box sx={{ flex: 1, p: { xs: 3, md: 5 }, bgcolor: '#fff' }}>
-            {currentTab === 0 && <DashboardTab stats={stats} />}
-            {currentTab === 1 && <OrganizationsTab />}
-            {currentTab === 2 && <UsersTab />}
-            {currentTab === 3 && <LogsTab />}
+            <AnimatePresence mode='wait'>
+              <motion.div
+                key={currentTab}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.15 }}
+                style={{ width: '100%', minHeight: '100%' }}
+              >
+                {currentTab === 0 && <DashboardTab stats={stats} />}
+                {currentTab === 1 && <OrganizationsTab />}
+                {currentTab === 2 && <UsersTab />}
+                {currentTab === 3 && <LogsTab />}
+              </motion.div>
+            </AnimatePresence>
           </Box>
         </Paper>
       </Container>
