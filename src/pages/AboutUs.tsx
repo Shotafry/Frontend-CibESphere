@@ -9,9 +9,9 @@ import {
   Avatar,
   Stack,
   Chip,
-  IconButton,
-  Button
+  IconButton
 } from '@mui/material'
+import { Button } from '../components/Button'
 import LinkedInIcon from '@mui/icons-material/LinkedIn'
 import GitHubIcon from '@mui/icons-material/GitHub'
 import { motion } from 'framer-motion'
@@ -317,28 +317,17 @@ const AboutUs: React.FC = () => {
             </Typography>
 
             <Button
-              variant='contained'
+              variant='secondary'
               size='large'
-              href='https://linkedin.com' // TODO: Update with real link
+              href='https://www.linkedin.com/company/cybesphere/'
               target='_blank'
               startIcon={<LinkedInIcon />}
               sx={{
-                bgcolor: 'white',
-                color: 'var(--color-cadetblue)',
                 px: 6,
                 py: 1.5,
                 borderRadius: '50px',
                 fontSize: '1.1rem',
-                fontWeight: 'bold',
-                textTransform: 'none',
-                boxShadow: '0 4px 14px rgba(0, 0, 0, 0.1)',
-                '&:hover': {
-                  bgcolor: '#f8fafc',
-                  color: 'var(--color-cadetblue)',
-                  transform: 'scale(1.05)',
-                  boxShadow: '0 6px 20px rgba(0, 0, 0, 0.15)'
-                },
-                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+                boxShadow: '0 4px 14px rgba(0, 0, 0, 0.1)'
               }}
             >
               Contáctanos en LinkedIn
