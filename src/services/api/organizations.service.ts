@@ -138,7 +138,16 @@ export const verifyOrganization = async (
   orgId: string
 ): Promise<OrganizationSummary> => {
   const response = await httpClient.post<OrganizationSummary>(
-    `/admin/organizations/${orgId}/verify`
+    `/organizations/${orgId}/verify`
+  )
+  return response.data
+}
+
+export const unverifyOrganization = async (
+  orgId: string
+): Promise<OrganizationSummary> => {
+  const response = await httpClient.post<OrganizationSummary>(
+    `/organizations/${orgId}/unverify`
   )
   return response.data
 }

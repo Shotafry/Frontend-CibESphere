@@ -1,5 +1,5 @@
 // src/pages/PanelDeAdministrador.tsx
-import React, { useState } from 'react'
+import React from 'react'
 import {
   Box,
   Typography,
@@ -9,7 +9,7 @@ import {
   Tab,
   Stack
 } from '@mui/material'
-import { useLoaderData } from 'react-router-dom'
+import { useLoaderData, useSearchParams } from 'react-router-dom'
 import { AdminStats } from '../types'
 import {
   DashboardTab,
@@ -29,12 +29,32 @@ interface AdminLoaderData {
   stats: AdminStats
 }
 
+// Tab mapping for URL persistence
+const TAB_MAPPING: { [key: number]: string } = {
+  0: 'dashboard',
+  1: 'organizations',
+  2: 'users',
+  3: 'logs'
+}
+
+const REVERSE_TAB_MAPPING: { [key: string]: number } = {
+  dashboard: 0,
+  organizations: 1,
+  users: 2,
+  logs: 3
+}
+
 const PanelDeAdministrador: React.FC = () => {
   const { stats } = useLoaderData() as AdminLoaderData
-  const [currentTab, setCurrentTab] = useState(0)
+  const [searchParams, setSearchParams] = useSearchParams()
+
+  // Get current tab from URL or default to 0 (dashboard)
+  const currentTabSlug = searchParams.get('tab') || 'dashboard'
+  const currentTab = REVERSE_TAB_MAPPING[currentTabSlug] ?? 0
 
   const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
-    setCurrentTab(newValue)
+    // Update URL with new tab
+    setSearchParams({ tab: TAB_MAPPING[newValue] })
   }
 
   return (

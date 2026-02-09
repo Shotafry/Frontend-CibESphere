@@ -9,18 +9,18 @@ import { OrganizationSummary } from '../types'
  */
 export function useOrganizations() {
   const {
-    data: organizations,
+    data,
     loading,
     error,
     execute: fetchOrganizations
-  } = useApi<OrganizationSummary[]>(api.getAllOrganizations)
+  } = useApi(api.getAllOrganizations)
 
   const loadOrganizations = useCallback(async () => {
     return fetchOrganizations()
   }, [fetchOrganizations])
 
   return {
-    organizations: organizations || [],
+    organizations: data?.organizations || [],
     loading,
     error,
     loadOrganizations,

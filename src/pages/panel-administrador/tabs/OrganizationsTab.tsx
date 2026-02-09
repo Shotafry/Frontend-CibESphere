@@ -36,10 +36,7 @@ import {
 } from '@mui/icons-material'
 import { OrganizationSummary } from '../../../types'
 import * as apiService from '../../../services/api/organizations.service'
-import {
-  updateOrganizationStatus,
-  verifyOrganization as verifyOrgAdmin
-} from '../../../services/api/admin.service'
+import { updateOrganizationStatus } from '../../../services/api/admin.service'
 import { TableSkeleton } from '../../../components/skeletons'
 import { useDebounce } from '../../../hooks/useDebounce'
 
@@ -113,12 +110,34 @@ export const OrganizationsTab: React.FC = () => {
 
     setActionLoading(true)
     try {
-      await verifyOrgAdmin(selectedOrg.id)
+      await apiService.verifyOrganization(selectedOrg.id)
       await fetchOrgs()
       handleMenuClose()
     } catch (error) {
       console.error(error)
       alert('Error al verificar organización')
+    } finally {
+      setActionLoading(false)
+    }
+  }
+
+  const handleUnverify = async () => {
+    if (!selectedOrg) return
+    if (
+      !window.confirm(
+        `¿Estás seguro de quitar la verificación a la organización "${selectedOrg.name}"?`
+      )
+    )
+      return
+
+    setActionLoading(true)
+    try {
+      await apiService.unverifyOrganization(selectedOrg.id)
+      await fetchOrgs()
+      handleMenuClose()
+    } catch (error) {
+      console.error(error)
+      alert('Error al desverificar organización')
     } finally {
       setActionLoading(false)
     }
@@ -454,6 +473,18 @@ export const OrganizationsTab: React.FC = () => {
               </ListItemIcon>
               <Typography color='primary.main' fontWeight='600'>
                 Verificar
+              </Typography>
+            </MenuItem>
+          )}
+
+          {/* Unverify Check - Only if verified */}
+          {selectedOrg?.is_verified && (
+            <MenuItem onClick={handleUnverify} disabled={actionLoading}>
+              <ListItemIcon>
+                <GppBadIcon fontSize='small' color='warning' />
+              </ListItemIcon>
+              <Typography color='warning.main' fontWeight='600'>
+                Quitar Verificado
               </Typography>
             </MenuItem>
           )}
