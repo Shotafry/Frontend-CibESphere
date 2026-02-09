@@ -9,17 +9,21 @@ import {
   Avatar,
   Stack,
   Chip,
-  IconButton
+  IconButton,
+  Button
 } from '@mui/material'
 import LinkedInIcon from '@mui/icons-material/LinkedIn'
 import GitHubIcon from '@mui/icons-material/GitHub'
-import TwitterIcon from '@mui/icons-material/Twitter'
-import angelImg from '/img/team/angel.jpg'
-import brayImg from '/img/team/bray.jpg'
-import carolinaImg from '/img/team/carolina.jpg'
 import { motion } from 'framer-motion'
+import { CollaboratorCard } from '../components/collaborators/CollaboratorCard'
+import { HeroSection } from '../components/ui/HeroSection'
 
-// Datos del equipo
+// Imágenes (Rutas públicas)
+const angelImg = '/img/team/angel.jpg'
+const brayImg = '/img/team/bray.jpg'
+const carolinaImg = '/img/collaborators/carolina.jpg'
+
+// Datos del equipo (Miembros Principales)
 const TEAM_MEMBERS = [
   {
     name: 'Angel Caparros',
@@ -42,13 +46,17 @@ const TEAM_MEMBERS = [
       linkedin: '#',
       github: '#'
     }
-  },
+  }
+]
+
+// Datos de Colaboradores
+const COLLABORATORS = [
   {
     name: 'Carolina Romero',
-    role: 'Desarrolladora Full-Stack',
+    role: 'Colaboradora & Full-Stack Dev',
     image: carolinaImg,
-    bio: 'Desarrolladora Web con enfoque Frontend, buscando la excelencia técnica y UX accesibles. Especializada en el ecosistema JavaScript/TypeScript (React, Next.js) y Spring Boot. Pasión por el código limpio y escalable.',
-    skills: ['React', 'TypeScript', 'Next.js', 'Java', 'Spring Boot'],
+    contribution:
+      'Unificar los estilos de botones en el componente button y creación de un plan inicial de refactorización que se hizo en la Beta 0.2.0.',
     social: {
       linkedin: '#',
       github: '#'
@@ -59,51 +67,20 @@ const TEAM_MEMBERS = [
 const AboutUs: React.FC = () => {
   return (
     <Box sx={{ minHeight: '100vh', bgcolor: '#F8FAFC', pb: 12 }}>
-      {/* HERO SECTION */}
-      <Box
-        sx={{
-          background: 'var(--gradient-header-footer)',
-          color: 'white',
-          pt: { xs: 12, md: 20 },
-          pb: { xs: 12, md: 16 },
-          clipPath: 'ellipse(150% 100% at 50% 0%)',
-          textAlign: 'center',
-          mb: 8
-        }}
-      >
-        <Container maxWidth='md'>
-          <Typography
-            variant='h2'
-            fontWeight='900'
-            sx={{
-              mb: 3,
-              fontSize: { xs: '2.5rem', md: '3.5rem' },
-              textShadow: '0 4px 10px rgba(0,0,0,0.2)'
-            }}
-          >
-            Conoce al Equipo
-          </Typography>
-          <Typography
-            variant='h6'
-            sx={{
-              opacity: 0.9,
-              maxWidth: '800px',
-              mx: 'auto',
-              lineHeight: 1.6
-            }}
-          >
-            Las mentes detrás de CybESphere. Un grupo de profesionales
-            apasionados por la ciberseguridad y el desarrollo tecnológico,
-            unidos para fortalecer la comunidad.
-          </Typography>
-        </Container>
-      </Box>
+      {/* HERO SECTION - Updated to Secondary Variant */}
+      <HeroSection
+        title='Conoce al Equipo'
+        subtitle='Las mentes detrás de CybESphere. Un grupo de profesionales apasionados por la ciberseguridad y el desarrollo tecnológico, unidos para fortalecer la comunidad.'
+        variant='secondary'
+      />
 
-      {/* TEAM GRID */}
-      <Container maxWidth='xl'>
+      {/* TEAM GRID (MIEMBROS) */}
+
+      {/* TEAM GRID (MIEMBROS) */}
+      <Container maxWidth='lg'>
         <Grid container spacing={4} justifyContent='center'>
           {TEAM_MEMBERS.map((member, index) => (
-            <Grid size={{ xs: 12, md: 4 }} key={member.name}>
+            <Grid size={{ xs: 12, md: 5 }} key={member.name}>
               <motion.div
                 initial={{ opacity: 0, y: 50 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -152,7 +129,7 @@ const AboutUs: React.FC = () => {
                   </Box>
 
                   <CardContent
-                    sx={{ pt: 8, px: 4, pb: 4, textAlign: 'center' }}
+                    sx={{ pt: 10, px: 4, pb: 4, textAlign: 'center' }}
                   >
                     <Typography variant='h5' fontWeight='800' gutterBottom>
                       {member.name}
@@ -236,6 +213,136 @@ const AboutUs: React.FC = () => {
             </Grid>
           ))}
         </Grid>
+
+        {/* SECTION DIVIDER */}
+        <Box sx={{ py: 8 }}>
+          <Box
+            sx={{
+              height: '1px',
+              background:
+                'linear-gradient(90deg, transparent, #E2E8F0, transparent)'
+            }}
+          />
+        </Box>
+
+        {/* COLLABORATORS SECTION */}
+        <Box sx={{ mb: 8 }}>
+          <Typography
+            variant='h4'
+            fontWeight='900'
+            textAlign='center'
+            sx={{ mb: 1, color: 'var(--Gray-900)' }}
+          >
+            Nuestros Colaboradores
+          </Typography>
+          <Typography
+            textAlign='center'
+            color='text.secondary'
+            sx={{ mb: 6, maxWidth: 600, mx: 'auto' }}
+          >
+            Personas talentosas que han aportado su granito de arena para hacer
+            crecer CybESphere.
+          </Typography>
+
+          <Grid container spacing={3} justifyContent='center'>
+            {COLLABORATORS.map((collab, index) => (
+              <Grid size={{ xs: 12, md: 6, lg: 5 }} key={collab.name}>
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.4, delay: index * 0.1 }}
+                >
+                  <CollaboratorCard {...collab} />
+                </motion.div>
+              </Grid>
+            ))}
+          </Grid>
+        </Box>
+
+        {/* JOIN US CTA */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+        >
+          <Box
+            sx={{
+              borderRadius: '32px',
+              background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)',
+              p: { xs: 4, md: 8 },
+              textAlign: 'center',
+              color: 'white',
+              position: 'relative',
+              overflow: 'hidden',
+              boxShadow: '0 20px 40px -10px rgba(15, 23, 42, 0.3)'
+            }}
+          >
+            {/* Background Decoration */}
+            <Box
+              sx={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '100%',
+                opacity: 0.1,
+                backgroundImage:
+                  'radial-gradient(circle at 20% 50%, var(--color-cadetblue) 0%, transparent 40%)'
+              }}
+            />
+
+            <Typography
+              variant='h3'
+              fontWeight='900'
+              sx={{ mb: 2, position: 'relative' }}
+            >
+              ¿Quieres unirte al equipo?
+            </Typography>
+            <Typography
+              variant='h6'
+              sx={{
+                mb: 4,
+                opacity: 0.8,
+                maxWidth: '600px',
+                mx: 'auto',
+                fontWeight: 400
+              }}
+            >
+              Si te apasiona la ciberseguridad y quieres contribuir a un
+              proyecto open community, ¡nos encantaría conocerte!
+            </Typography>
+
+            <Button
+              variant='contained'
+              size='large'
+              href='https://linkedin.com' // TODO: Update with real link
+              target='_blank'
+              startIcon={<LinkedInIcon />}
+              sx={{
+                bgcolor: 'var(--color-cadetblue)',
+                color: 'white',
+                px: 6,
+                py: 1.5,
+                borderRadius: '50px',
+                fontSize: '1.1rem',
+                fontWeight: 'bold',
+                textTransform: 'none',
+                boxShadow: '0 0 20px rgba(0, 217, 255, 0.4)',
+                '&:hover': {
+                  bgcolor: 'white',
+                  color: 'var(--color-cadetblue)',
+                  transform: 'scale(1.05)',
+                  boxShadow: '0 0 30px rgba(0, 217, 255, 0.6)'
+                },
+                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+              }}
+            >
+              Contáctanos en LinkedIn
+            </Button>
+          </Box>
+        </motion.div>
       </Container>
     </Box>
   )
