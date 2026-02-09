@@ -1,5 +1,5 @@
 // src/pages/panel-usuario/tabs/NotificationsTab.tsx
-// v0.5.0 - Refactorizado con useNotifications hook
+// v0.6.0 - Notificaciones mejoradas con link al perfil y acciones visibles
 
 import React, { useState, useEffect } from 'react'
 import {
@@ -25,7 +25,8 @@ import {
   Badge,
   TextField,
   Autocomplete,
-  Button as MuiButton
+  Button as MuiButton,
+  Link
 } from '@mui/material'
 import {
   Settings as SettingsIcon,
@@ -36,7 +37,8 @@ import {
   Person as PersonIcon,
   Business as OrgIcon,
   Refresh as RefreshIcon,
-  MarkEmailRead as MarkAllReadIcon
+  MarkEmailRead as MarkAllReadIcon,
+  OpenInNew as ProfileIcon
 } from '@mui/icons-material'
 import { Button } from '../../../components/Button'
 import { useNotifications } from '../../../hooks/useNotifications'
@@ -52,6 +54,7 @@ import {
   ConnectionRequest
 } from '../../../services/api/connections.service'
 import { Check as AcceptIcon, Close as RejectIcon } from '@mui/icons-material'
+import { useNavigate } from 'react-router-dom'
 
 // Lista de comunidades autónomas españolas
 const SPANISH_REGIONS = [
@@ -75,6 +78,7 @@ const SPANISH_REGIONS = [
 ]
 
 export const NotificationsTab: React.FC = () => {
+  const navigate = useNavigate()
   const [subTab, setSubTab] = useState(0) // 0: Historial, 1: Configuración
   const [requests, setRequests] = useState<ConnectionRequest[]>([])
 
@@ -99,17 +103,23 @@ export const NotificationsTab: React.FC = () => {
   const [selectedRegions, setSelectedRegions] = useState<string[]>([])
 
   // Cargar solicitudes de conexión (específico de usuario)
-  useEffect(() => {
-    const loadRequests = async () => {
-      try {
-        const result = await getPendingRequests(1, 100)
-        setRequests(result.data)
-      } catch (error) {
-        console.error('Error loading connection requests:', error)
-      }
+  const loadRequests = async () => {
+    try {
+      const result = await getPendingRequests(1, 100)
+      setRequests(result.data)
+    } catch (error) {
+      console.error('Error loading connection requests:', error)
     }
+  }
+
+  useEffect(() => {
     loadRequests()
   }, [])
+
+  const handleRefresh = () => {
+    refreshNotifications()
+    loadRequests()
+  }
 
   // Sincronizar regiones seleccionadas cuando carguen las preferencias
   useEffect(() => {
@@ -132,6 +142,7 @@ export const NotificationsTab: React.FC = () => {
     try {
       await acceptConnection(request.id)
       refreshNotifications() // Recargar notificaciones
+      loadRequests() // Recargar solicitudes para actualizar UI
       if (!notification.is_read) {
         markOneAsRead(notification.id)
       }
@@ -149,6 +160,7 @@ export const NotificationsTab: React.FC = () => {
     try {
       await rejectConnection(request.id)
       refreshNotifications()
+      loadRequests() // Recargar solicitudes para actualizar UI
       if (!notification.is_read) {
         markOneAsRead(notification.id)
       }
@@ -244,7 +256,7 @@ export const NotificationsTab: React.FC = () => {
           )}
         </Box>
         <Box sx={{ display: 'flex', gap: 1 }}>
-          <IconButton onClick={refreshNotifications} title='Actualizar'>
+          <IconButton onClick={handleRefresh} title='Actualizar'>
             <RefreshIcon />
           </IconButton>
           {unreadCount > 0 && (
@@ -374,68 +386,161 @@ export const NotificationsTab: React.FC = () => {
                       }
                       secondary={
                         <Box sx={{ mt: 0.5 }}>
-                          <Box
-                            sx={{
-                              display: 'flex',
-                              flexDirection: { xs: 'column', sm: 'row' },
-                              justifyContent: 'space-between',
-                              alignItems: { xs: 'flex-start', sm: 'center' },
-                              gap: 0.5
-                            }}
-                          >
-                            <Typography variant='body2' color='text.secondary'>
-                              {notification.message}
-                            </Typography>
-                            <Typography
-                              variant='caption'
-                              color='text.disabled'
-                              sx={{ whiteSpace: 'nowrap' }}
-                            >
-                              {formatRelativeTime(
-                                notification.created_at || ''
-                              )}
-                            </Typography>
-                          </Box>
+                          {/* Para notificaciones de conexión, mostrar diseño especial */}
+                          {[
+                            'CONNECTION_REQUEST',
+                            'CONNECTION_ACCEPTED',
+                            'CONNECTION_REJECTED'
+                          ].includes(notification.type) ? (
+                            <Box>
+                              {/* Mensaje con el contenido del solicitante */}
+                              <Typography
+                                variant='body2'
+                                color='text.secondary'
+                                sx={{ mb: 1, whiteSpace: 'pre-wrap' }}
+                              >
+                                {notification.message}
+                              </Typography>
 
-                          {notification.type === 'CONNECTION_REQUEST' &&
-                            !notification.is_read && (
-                              <Box sx={{ display: 'flex', gap: 1, mt: 2 }}>
-                                <MuiButton
-                                  size='small'
-                                  variant='contained'
-                                  color='success'
-                                  startIcon={<AcceptIcon />}
-                                  onClick={(e) => {
-                                    e.stopPropagation()
-                                    handleAcceptConnection(notification)
-                                  }}
-                                  sx={{
-                                    borderRadius: 4,
-                                    textTransform: 'none',
-                                    fontWeight: 700
-                                  }}
-                                >
-                                  Aceptar
-                                </MuiButton>
+                              {/* Botón para ver perfil (SOLO si no es reject, o si lo es pero queremos permitir ver quién fue) */}
+                              {notification.action_url && (
                                 <MuiButton
                                   size='small'
                                   variant='outlined'
-                                  color='error'
-                                  startIcon={<RejectIcon />}
+                                  startIcon={
+                                    <ProfileIcon sx={{ fontSize: 18 }} />
+                                  }
                                   onClick={(e) => {
                                     e.stopPropagation()
-                                    handleRejectConnection(notification)
+                                    navigate(notification.action_url || '')
                                   }}
                                   sx={{
-                                    borderRadius: 4,
+                                    borderRadius: '12px',
+                                    fontWeight: 600,
                                     textTransform: 'none',
-                                    fontWeight: 700
+                                    transition: 'all 0.3s ease',
+                                    background: 'white',
+                                    color: 'var(--color-cadetblue)',
+                                    border: '1px solid var(--color-cadetblue)',
+                                    mb: 1.5,
+                                    '&:hover': {
+                                      background:
+                                        'var(--gradient-button-primary)',
+                                      color: 'var(--White)',
+                                      borderColor: 'transparent'
+                                    }
                                   }}
                                 >
-                                  Rechazar
+                                  Ver perfil
                                 </MuiButton>
-                              </Box>
-                            )}
+                              )}
+
+                              {/* Botones de acción - solo para REQUEST no leída */}
+                              {notification.type === 'CONNECTION_REQUEST' &&
+                              requests.some(
+                                (r) =>
+                                  r.requester?.id ===
+                                  notification.related_user_id
+                              ) ? (
+                                <Box sx={{ display: 'flex', gap: 1, mt: 1 }}>
+                                  <MuiButton
+                                    size='small'
+                                    variant='contained'
+                                    startIcon={<AcceptIcon />}
+                                    onClick={(e) => {
+                                      e.stopPropagation()
+                                      handleAcceptConnection(notification)
+                                    }}
+                                    sx={{
+                                      borderRadius: '12px',
+                                      fontWeight: 600,
+                                      textTransform: 'none',
+                                      transition: 'all 0.3s ease',
+                                      background:
+                                        'var(--gradient-button-primary)',
+                                      color: 'var(--White)',
+                                      border: 'none',
+                                      boxShadow: 'none',
+                                      '&:hover': {
+                                        background: 'white',
+                                        color: 'var(--color-cadetblue)',
+                                        border:
+                                          '1px solid var(--color-cadetblue)',
+                                        boxShadow: 'none'
+                                      }
+                                    }}
+                                  >
+                                    Aceptar
+                                  </MuiButton>
+                                  <MuiButton
+                                    size='small'
+                                    variant='outlined'
+                                    startIcon={<RejectIcon />}
+                                    onClick={(e) => {
+                                      e.stopPropagation()
+                                      handleRejectConnection(notification)
+                                    }}
+                                    sx={{
+                                      borderRadius: '12px',
+                                      fontWeight: 600,
+                                      textTransform: 'none',
+                                      transition: 'all 0.3s ease',
+                                      background: 'white',
+                                      color: 'var(--color-cadetblue)',
+                                      border:
+                                        '1px solid var(--color-cadetblue)',
+                                      '&:hover': {
+                                        background:
+                                          'var(--gradient-button-primary)',
+                                        color: 'var(--White)',
+                                        borderColor: 'transparent'
+                                      }
+                                    }}
+                                  >
+                                    Rechazar
+                                  </MuiButton>
+                                </Box>
+                              ) : null}
+
+                              {/* Timestamp */}
+                              <Typography
+                                variant='caption'
+                                color='text.disabled'
+                                sx={{ display: 'block', mt: 1 }}
+                              >
+                                {formatRelativeTime(
+                                  notification.created_at || ''
+                                )}
+                              </Typography>
+                            </Box>
+                          ) : (
+                            /* Renderizado normal para otras notificaciones */
+                            <Box
+                              sx={{
+                                display: 'flex',
+                                flexDirection: { xs: 'column', sm: 'row' },
+                                justifyContent: 'space-between',
+                                alignItems: { xs: 'flex-start', sm: 'center' },
+                                gap: 0.5
+                              }}
+                            >
+                              <Typography
+                                variant='body2'
+                                color='text.secondary'
+                              >
+                                {notification.message}
+                              </Typography>
+                              <Typography
+                                variant='caption'
+                                color='text.disabled'
+                                sx={{ whiteSpace: 'nowrap' }}
+                              >
+                                {formatRelativeTime(
+                                  notification.created_at || ''
+                                )}
+                              </Typography>
+                            </Box>
+                          )}
                         </Box>
                       }
                     />

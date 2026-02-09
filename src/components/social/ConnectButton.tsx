@@ -1,5 +1,5 @@
 // src/components/social/ConnectButton.tsx
-// v0.4.0 - Botón para solicitar conexión con otro usuario con selector de eventos
+// v0.7.0 - Botón con estilos unificados (Cyan/White) y gestión de solicitudes
 
 import { useState, useEffect } from 'react'
 import {
@@ -24,7 +24,8 @@ import {
   Handshake as ConnectIcon,
   Check as ConnectedIcon,
   HourglassEmpty as PendingIcon,
-  Event as EventIcon
+  Event as EventIcon,
+  Close as RejectIcon
 } from '@mui/icons-material'
 import { useAuth } from '../../context/AuthContext'
 import {
@@ -78,6 +79,50 @@ export const ConnectButton = ({
     telegram?: string
   } | null>(null)
 
+  // Estado para tipo de pendiente
+  const [pendingType, setPendingType] = useState<'sent' | 'received' | null>(
+    null
+  )
+  const [requestId, setRequestId] = useState<string | null>(null)
+
+  // --- ESTILOS UNIFICADOS (Primary/Secondary) ---
+  const primarySx = {
+    borderRadius: '12px',
+    fontWeight: 600,
+    textTransform: 'none',
+    transition: 'all 0.3s ease',
+    background: 'var(--gradient-button-primary)', // Cyan Gradient
+    color: 'var(--White)',
+    border: 'none',
+    '&:hover': {
+      background: 'white',
+      color: 'var(--color-cadetblue)',
+      border: '1px solid var(--color-cadetblue)'
+    },
+    '&:disabled': {
+      background: '#e0e0e0',
+      color: '#9e9e9e'
+    },
+    ...buttonProps.sx
+  }
+
+  const secondarySx = {
+    borderRadius: '12px',
+    fontWeight: 600,
+    textTransform: 'none',
+    transition: 'all 0.3s ease',
+    background: 'white',
+    color: 'var(--color-cadetblue)',
+    border: '1px solid var(--color-cadetblue)',
+    '&:hover': {
+      background: 'var(--gradient-button-primary)',
+      color: 'var(--White)',
+      border: '1px solid transparent'
+    },
+    ...buttonProps.sx
+  }
+  // ---------------------------------------------
+
   const handleShowContact = async () => {
     setLoading(true)
     try {
@@ -86,12 +131,12 @@ export const ConnectButton = ({
       setContactDialogOpen(true)
     } catch (error) {
       console.error('Error getting contact info:', error)
-      // Fallback si falla
       setError('No se pudo obtener la información de contacto.')
     } finally {
       setLoading(false)
     }
   }
+
   // Verificar estado inicial
   useEffect(() => {
     const checkConnectionStatus = async () => {
@@ -107,17 +152,25 @@ export const ConnectButton = ({
       }
 
       try {
-        const { is_connected, status } = await isConnectedWith(targetUserId)
-        setIsConnected(is_connected)
+        const result = await isConnectedWith(targetUserId)
+        setIsConnected(result.is_connected)
 
-        // Manejar estados pendientes y rechazados
-        if (status === 'pending_sent' || status === 'pending_received') {
+        if (result.request_id) {
+          setRequestId(result.request_id)
+        }
+
+        if (result.status === 'pending_sent') {
           setIsPending(true)
-          if (onConnectionChange) onConnectionChange('pending')
-        } else if (is_connected) {
-          if (onConnectionChange) onConnectionChange('connected')
+          setPendingType('sent')
+          onConnectionChange?.('pending')
+        } else if (result.status === 'pending_received') {
+          setIsPending(true)
+          setPendingType('received')
+          onConnectionChange?.('pending')
+        } else if (result.is_connected) {
+          onConnectionChange?.('connected')
         } else {
-          if (onConnectionChange) onConnectionChange('none')
+          onConnectionChange?.('none')
         }
       } catch (error) {
         console.error('Error checking connection status:', error)
@@ -133,14 +186,12 @@ export const ConnectButton = ({
   const loadTargetEvents = async () => {
     setLoadingEvents(true)
     try {
-      // Obtener eventos a los que asiste el target
       const response = await httpClient.get<{ events: EventSummary[] }>(
         `/users/${targetUserId}/registered-events`
       )
       setTargetEvents(response.data.events || [])
     } catch (error) {
       console.error('Error loading target events:', error)
-      // Si falla, no pasa nada, el selector simplemente no mostrará eventos
       setTargetEvents([])
     } finally {
       setLoadingEvents(false)
@@ -169,6 +220,7 @@ export const ConnectButton = ({
         message
       )
       setIsPending(true)
+      setPendingType('sent')
       onConnectionChange?.('pending')
       setDialogOpen(false)
       setMessage('')
@@ -188,7 +240,43 @@ export const ConnectButton = ({
     setError(null)
   }
 
-  // No mostrar si es el mismo usuario
+  const handleAcceptRequest = async () => {
+    if (!requestId) return
+    setActionLoading(true)
+    try {
+      const { acceptConnection } =
+        await import('../../services/api/connections.service')
+      await acceptConnection(requestId)
+      setIsConnected(true)
+      setIsPending(false)
+      setPendingType(null)
+      onConnectionChange?.('connected')
+    } catch (error) {
+      console.error('Error accepting request:', error)
+      setError('Error al aceptar la solicitud')
+    } finally {
+      setActionLoading(false)
+    }
+  }
+
+  const handleRejectRequest = async () => {
+    if (!requestId) return
+    setActionLoading(true)
+    try {
+      const { rejectConnection } =
+        await import('../../services/api/connections.service')
+      await rejectConnection(requestId)
+      setIsPending(false)
+      setPendingType(null)
+      onConnectionChange?.('none')
+    } catch (error) {
+      console.error('Error rejecting request:', error)
+      setError('Error al rechazar la solicitud')
+    } finally {
+      setActionLoading(false)
+    }
+  }
+
   if (user?.id === targetUserId) {
     return null
   }
@@ -206,28 +294,55 @@ export const ConnectButton = ({
       return {
         label: 'Contactado',
         icon: <ConnectedIcon />,
-        color: 'success' as const,
-        variant: 'outlined' as const,
+        sx: secondarySx, // Ya conectados → Estilo secundario (menos intrusivo)
         disabled: false,
         onClick: handleShowContact,
         tooltip: 'Ver información de contacto'
       }
     }
+
     if (isPending) {
+      if (pendingType === 'received') {
+        return {
+          type: 'actions',
+          accept: {
+            label: 'Aceptar',
+            icon: <ConnectedIcon />,
+            onClick: handleAcceptRequest,
+            sx: primarySx // Aceptar → Acción principal
+          },
+          reject: {
+            label: 'Rechazar',
+            icon: <RejectIcon />,
+            onClick: handleRejectRequest,
+            sx: secondarySx // Rechazar → Acción secundaria
+          }
+        }
+      }
+
+      // Pending sent
       return {
         label: 'Pendiente',
         icon: <PendingIcon />,
-        color: 'warning' as const,
-        variant: 'outlined' as const,
+        sx: {
+          ...secondarySx,
+          cursor: 'default',
+          color: 'var(--color-cadetblue)', // Mantener cian para consistencia
+          borderColor: 'rgba(0,0,0,0.1)', // Borde sutil
+          '&:hover': {
+            background: 'white',
+            borderColor: 'rgba(0,0,0,0.1)'
+          }
+        },
         disabled: true,
-        tooltip: 'Solicitud pendiente'
+        tooltip: 'Solicitud enviada, esperando respuesta'
       }
     }
+
     return {
       label: 'Conectar',
       icon: <ConnectIcon />,
-      color: 'primary' as const,
-      variant: 'contained' as const,
+      sx: primarySx, // Conectar → Acción principal
       disabled: false,
       onClick: handleClick,
       tooltip: 'Enviar solicitud de conexión'
@@ -235,6 +350,43 @@ export const ConnectButton = ({
   }
 
   const state = getButtonState()
+
+  // Renderizado especial para acciones (Aceptar/Rechazar)
+  if (state.type === 'actions') {
+    return (
+      <Box sx={{ display: 'flex', gap: 1 }}>
+        <Button
+          onClick={state.accept?.onClick}
+          disabled={actionLoading}
+          startIcon={
+            actionLoading ? (
+              <CircularProgress size={16} color='inherit' />
+            ) : (
+              state.accept?.icon
+            )
+          }
+          sx={state.accept?.sx}
+          size={buttonProps.size}
+        >
+          {showLabel && state.accept?.label}
+        </Button>
+        <Tooltip title={state.reject?.label || ''}>
+          <Button
+            onClick={state.reject?.onClick}
+            disabled={actionLoading}
+            sx={{
+              ...state.reject?.sx,
+              minWidth: 'auto',
+              px: { xs: 1, sm: 2 }
+            }}
+            size={buttonProps.size}
+          >
+            {showLabel ? state.reject?.label : state.reject?.icon}
+          </Button>
+        </Tooltip>
+      </Box>
+    )
+  }
 
   const formatEventDate = (dateStr: string) => {
     return new Date(dateStr).toLocaleDateString('es-ES', {
@@ -249,20 +401,10 @@ export const ConnectButton = ({
       <Tooltip title={state.tooltip || ''}>
         <span>
           <Button
-            variant={state.variant}
-            color={state.color}
             onClick={state.onClick}
             disabled={state.disabled || actionLoading}
             startIcon={state.icon}
-            sx={{
-              borderRadius: 2,
-              textTransform: 'none',
-              fontWeight: 600,
-              transition: 'all 0.2s ease',
-              '&:hover:not(:disabled)': {
-                transform: 'scale(1.02)'
-              }
-            }}
+            sx={state.sx}
             {...buttonProps}
           >
             {showLabel && state.label}
@@ -270,7 +412,6 @@ export const ConnectButton = ({
         </span>
       </Tooltip>
 
-      {/* Dialog para enviar solicitud de conexión */}
       <Dialog
         open={dialogOpen}
         onClose={handleCloseDialog}
@@ -300,7 +441,6 @@ export const ConnectButton = ({
             podrás ver sus datos de contacto.
           </Typography>
 
-          {/* Selector de evento */}
           <FormControl fullWidth sx={{ mb: 3 }}>
             <InputLabel id='event-select-label'>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
@@ -344,7 +484,6 @@ export const ConnectButton = ({
             </Select>
           </FormControl>
 
-          {/* Mensaje personalizado */}
           <TextField
             fullWidth
             multiline
@@ -357,7 +496,23 @@ export const ConnectButton = ({
           />
         </DialogContent>
         <DialogActions sx={{ p: 2, pt: 0 }}>
-          <Button onClick={handleCloseDialog} color='inherit'>
+          <Button
+            onClick={handleCloseDialog}
+            sx={{
+              borderRadius: '12px',
+              fontWeight: 600,
+              textTransform: 'none',
+              transition: 'all 0.3s ease',
+              background: 'white',
+              color: 'var(--color-cadetblue)',
+              border: '1px solid var(--color-cadetblue)',
+              '&:hover': {
+                background: 'var(--gradient-button-primary)',
+                color: 'var(--White)',
+                borderColor: 'transparent'
+              }
+            }}
+          >
             Cancelar
           </Button>
           <Button
@@ -367,93 +522,272 @@ export const ConnectButton = ({
             startIcon={
               actionLoading ? <CircularProgress size={16} /> : <ConnectIcon />
             }
+            sx={{
+              borderRadius: '12px',
+              fontWeight: 600,
+              textTransform: 'none',
+              transition: 'all 0.3s ease',
+              background: 'var(--gradient-button-primary)', // Cyan Gradient
+              color: 'var(--White)',
+              border: 'none',
+              '&:hover': {
+                background: 'white',
+                color: 'var(--color-cadetblue)',
+                border: '1px solid var(--color-cadetblue)'
+              }
+            }}
           >
             Enviar solicitud
           </Button>
         </DialogActions>
       </Dialog>
 
-      {/* Dialog de Información de Contacto */}
       <Dialog
         open={contactDialogOpen}
         onClose={() => setContactDialogOpen(false)}
-        maxWidth='xs'
+        maxWidth='sm'
         fullWidth
+        PaperProps={{
+          sx: {
+            borderRadius: 4,
+            background:
+              'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(248,250,252,0.98) 100%)',
+            backdropFilter: 'blur(20px)',
+            border: '1px solid rgba(0, 200, 200, 0.2)',
+            boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.15)'
+          }
+        }}
       >
-        <DialogTitle sx={{ pb: 1 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <ConnectedIcon color='success' />
-            <Typography variant='h6'>¡Estáis conectados!</Typography>
+        <DialogTitle sx={{ pb: 1, pt: 3, px: 3 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+            <Box
+              sx={{
+                p: 1,
+                borderRadius: 2,
+                background: 'linear-gradient(135deg, #10B981 0%, #059669 100%)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+            >
+              <ConnectedIcon sx={{ color: 'white', fontSize: 24 }} />
+            </Box>
+            <Box>
+              <Typography variant='h6' fontWeight={700}>
+                ¡Estáis conectados!
+              </Typography>
+              <Typography variant='caption' color='text.secondary'>
+                Información compartida por {targetUserName}
+              </Typography>
+            </Box>
           </Box>
         </DialogTitle>
-        <DialogContent>
-          <Typography variant='body2' color='text.secondary' paragraph>
-            Información de contacto compartida por {targetUserName}:
-          </Typography>
-
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 1 }}>
+        <DialogContent sx={{ px: 3, pb: 3 }}>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 2 }}>
             {contactInfo?.email && (
-              <Box sx={{ p: 1.5, bgcolor: 'action.hover', borderRadius: 1 }}>
-                <Typography variant='caption' color='text.secondary'>
-                  Email
-                </Typography>
-                <Typography
-                  variant='body1'
-                  fontWeight={500}
-                  sx={{ wordBreak: 'break-all' }}
-                >
-                  {contactInfo.email}
-                </Typography>
+              <Box
+                sx={{
+                  p: 2,
+                  bgcolor: 'rgba(59, 130, 246, 0.08)',
+                  borderRadius: 3,
+                  border: '1px solid rgba(59, 130, 246, 0.2)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  transition: 'all 0.2s ease',
+                  '&:hover': {
+                    bgcolor: 'rgba(59, 130, 246, 0.12)',
+                    transform: 'translateY(-2px)'
+                  }
+                }}
+              >
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                  <Box sx={{ fontSize: '1.5rem' }}>📧</Box>
+                  <Box>
+                    <Typography
+                      variant='caption'
+                      sx={{ color: '#3B82F6', fontWeight: 600 }}
+                    >
+                      Email
+                    </Typography>
+                    <Typography
+                      variant='body1'
+                      fontWeight={500}
+                      sx={{ wordBreak: 'break-all' }}
+                    >
+                      {contactInfo.email}
+                    </Typography>
+                  </Box>
+                </Box>
+                <Tooltip title='Copiar'>
+                  <Button
+                    size='small'
+                    onClick={() => {
+                      navigator.clipboard.writeText(contactInfo.email || '')
+                    }}
+                    sx={{
+                      minWidth: 'auto',
+                      p: 1,
+                      borderRadius: '8px',
+                      color: 'var(--color-cadetblue)',
+                      border: '1px solid var(--color-cadetblue)',
+                      '&:hover': {
+                        bgcolor: 'var(--color-cadetblue)',
+                        color: 'white'
+                      }
+                    }}
+                  >
+                    📋
+                  </Button>
+                </Tooltip>
               </Box>
             )}
 
             {contactInfo?.discord && (
               <Box
                 sx={{
-                  p: 1.5,
-                  bgcolor: '#5865F220',
-                  borderRadius: 1,
-                  border: '1px solid #5865F240'
+                  p: 2,
+                  bgcolor: 'rgba(88, 101, 242, 0.08)',
+                  borderRadius: 3,
+                  border: '1px solid rgba(88, 101, 242, 0.25)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  transition: 'all 0.2s ease',
+                  '&:hover': {
+                    bgcolor: 'rgba(88, 101, 242, 0.15)',
+                    transform: 'translateY(-2px)'
+                  }
                 }}
               >
-                <Typography variant='caption' sx={{ color: '#5865F2' }}>
-                  Discord
-                </Typography>
-                <Typography variant='body1' fontWeight={500}>
-                  {contactInfo.discord}
-                </Typography>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                  <Box sx={{ fontSize: '1.5rem' }}>🎮</Box>
+                  <Box>
+                    <Typography
+                      variant='caption'
+                      sx={{ color: '#5865F2', fontWeight: 600 }}
+                    >
+                      Discord
+                    </Typography>
+                    <Typography variant='body1' fontWeight={500}>
+                      {contactInfo.discord}
+                    </Typography>
+                  </Box>
+                </Box>
+                <Tooltip title='Copiar'>
+                  <Button
+                    size='small'
+                    onClick={() => {
+                      navigator.clipboard.writeText(contactInfo.discord || '')
+                    }}
+                    sx={{
+                      minWidth: 'auto',
+                      p: 1,
+                      borderRadius: '8px',
+                      color: 'var(--color-cadetblue)',
+                      border: '1px solid var(--color-cadetblue)',
+                      '&:hover': {
+                        bgcolor: 'var(--color-cadetblue)',
+                        color: 'white'
+                      }
+                    }}
+                  >
+                    📋
+                  </Button>
+                </Tooltip>
               </Box>
             )}
 
             {contactInfo?.telegram && (
               <Box
                 sx={{
-                  p: 1.5,
-                  bgcolor: '#0088cc20',
-                  borderRadius: 1,
-                  border: '1px solid #0088cc40'
+                  p: 2,
+                  bgcolor: 'rgba(0, 136, 204, 0.08)',
+                  borderRadius: 3,
+                  border: '1px solid rgba(0, 136, 204, 0.25)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  transition: 'all 0.2s ease',
+                  '&:hover': {
+                    bgcolor: 'rgba(0, 136, 204, 0.15)',
+                    transform: 'translateY(-2px)'
+                  }
                 }}
               >
-                <Typography variant='caption' sx={{ color: '#0088cc' }}>
-                  Telegram
-                </Typography>
-                <Typography variant='body1' fontWeight={500}>
-                  {contactInfo.telegram}
-                </Typography>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                  <Box sx={{ fontSize: '1.5rem' }}>✈️</Box>
+                  <Box>
+                    <Typography
+                      variant='caption'
+                      sx={{ color: '#0088cc', fontWeight: 600 }}
+                    >
+                      Telegram
+                    </Typography>
+                    <Typography variant='body1' fontWeight={500}>
+                      {contactInfo.telegram}
+                    </Typography>
+                  </Box>
+                </Box>
+                <Tooltip title='Abrir en Telegram'>
+                  <Button
+                    size='small'
+                    href={`https://t.me/${contactInfo.telegram.replace('@', '')}`}
+                    target='_blank'
+                    sx={{
+                      minWidth: 'auto',
+                      p: 1,
+                      borderRadius: '8px',
+                      color: 'var(--color-cadetblue)',
+                      border: '1px solid var(--color-cadetblue)',
+                      '&:hover': {
+                        bgcolor: 'var(--color-cadetblue)',
+                        color: 'white'
+                      }
+                    }}
+                  >
+                    🔗
+                  </Button>
+                </Tooltip>
               </Box>
             )}
 
             {!contactInfo?.email &&
               !contactInfo?.discord &&
               !contactInfo?.telegram && (
-                <Alert severity='info'>
-                  Este usuario no comparte información pública detallada.
+                <Alert
+                  severity='info'
+                  sx={{
+                    borderRadius: 3,
+                    '& .MuiAlert-icon': { alignItems: 'center' }
+                  }}
+                >
+                  Este usuario no ha compartido información de contacto todavía.
                 </Alert>
               )}
           </Box>
         </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setContactDialogOpen(false)}>Cerrar</Button>
+        <DialogActions sx={{ px: 3, pb: 3 }}>
+          <Button
+            onClick={() => setContactDialogOpen(false)}
+            variant='contained'
+            sx={{
+              borderRadius: '12px',
+              fontWeight: 600,
+              textTransform: 'none',
+              transition: 'all 0.3s ease',
+              background: 'var(--gradient-button-primary)', // Cyan Gradient
+              color: 'var(--White)',
+              border: 'none',
+              '&:hover': {
+                background: 'white',
+                color: 'var(--color-cadetblue)',
+                border: '1px solid var(--color-cadetblue)'
+              }
+            }}
+          >
+            Cerrar
+          </Button>
         </DialogActions>
       </Dialog>
     </>

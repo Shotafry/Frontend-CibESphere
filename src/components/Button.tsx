@@ -9,12 +9,21 @@ export type ButtonVariant = 'primary' | 'secondary' | 'text'
   🔥 ESTILOS DE BOTONES (LA LEY) 🔥
   
   Variant "primary":
-  - Normal: Fondo CIAN (Gradient), Texto BLANCO.
-  - Hover: Fondo BLANCO, Texto CIAN, Borde CIAN.
+  - Normal: Fondo CIAN Gradient (var(--gradient-button-primary)), Texto BLANCO.
+  - Hover: Fondo BLANCO, Texto CIAN, Borde CIAN (1px solid var(--color-cadetblue)).
   
   Variant "secondary":
-  - Normal: Fondo BLANCO, Texto CIAN, Borde CIAN.
-  - Hover: Fondo CIAN (Gradient), Texto BLANCO, Borde Transparente.
+  - Normal: Fondo BLANCO, Texto CIAN, Borde CIAN (1px solid var(--color-cadetblue)).
+  - Hover: Fondo CIAN Gradient (var(--gradient-button-primary)), Texto BLANCO, Borde Transparente.
+
+  Variant "dynamic" (Concepto):
+  - No es una prop 'variant' explícita en este componente, pero se refiere a botones cuyo estado cambia (ej. Conectar -> Pendiente).
+  - Regla:
+    - Estado INICIAL/POSITIVO (Conectar, Aceptar): Usa estilo PRIMARY.
+    - Estado SECUNDARIO/NEGATIVO/NEUTRO (Rechazar, Cancelar, Ver Perfil): Usa estilo SECONDARY.
+    - Estado PENDIENTE/DESHABILITADO: Usa estilo Secondary pero con colores de advertencia o gris, manteniendo la estructura visual.
+
+  NO MODIFICAR ESTE COMPORTAMIENTO. ES LA IDENTIDAD VISUAL DEL PROYECTO.
 
   NO MODIFICAR ESTE COMPORTAMIENTO. ES LA IDENTIDAD VISUAL DEL PROYECTO.
 */
