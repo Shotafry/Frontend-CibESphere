@@ -25,7 +25,6 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
-  Button,
   FormControl,
   InputLabel,
   Select,
@@ -52,6 +51,7 @@ import {
 import { User, Role } from '../../../types'
 import { TableSkeleton } from '../../../components/skeletons'
 import { useUsers } from '../../../hooks/useUsers'
+import { Button } from '../../../components/Button'
 
 export const UsersTab: React.FC = () => {
   const theme = useTheme()
@@ -568,12 +568,12 @@ export const UsersTab: React.FC = () => {
             </Box>
           </DialogContent>
           <DialogActions>
-            <Button onClick={() => setEditRoleOpen(false)} color='inherit'>
+            <Button onClick={() => setEditRoleOpen(false)} variant='secondary'>
               Cancelar
             </Button>
             <Button
               onClick={handleSaveRole}
-              variant='contained'
+              variant='primary'
               disabled={actionLoading}
             >
               {actionLoading ? (
