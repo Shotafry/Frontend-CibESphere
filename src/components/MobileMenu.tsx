@@ -93,7 +93,9 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({
           maxWidth: 320,
           bgcolor: '#FAFBFC',
           borderTopLeftRadius: 24,
-          borderBottomLeftRadius: 24
+          borderBottomLeftRadius: 24,
+          borderTopRightRadius: 0,
+          borderBottomRightRadius: 0
         }
       }}
     >
@@ -104,7 +106,7 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({
           alignItems: 'center',
           justifyContent: 'space-between',
           p: 2,
-          background: 'var(--gradient-header-footer)',
+          background: 'var(--gradient-hero-secondary)',
           color: 'white'
         }}
       >
