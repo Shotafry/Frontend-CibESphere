@@ -4,51 +4,17 @@ import { Box, Container, Typography, Paper, Divider } from '@mui/material'
 import { motion } from 'framer-motion'
 import GavelIcon from '@mui/icons-material/Gavel'
 
+import { HeroSection } from '../components/ui/HeroSection'
+
 const TerminosYCondiciones: React.FC = () => {
   return (
     <Box sx={{ minHeight: '100vh', bgcolor: '#F8FAFC', pb: 12 }}>
       {/* HERO SECTION */}
-      <Box
-        sx={{
-          background: 'var(--gradient-header-footer)',
-          color: 'white',
-          pt: { xs: 12, md: 16 },
-          pb: { xs: 8, md: 12 },
-          clipPath: 'ellipse(150% 100% at 50% 0%)',
-          textAlign: 'center',
-          mb: 6
-        }}
-      >
-        <Container maxWidth='md'>
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5 }}
-          >
-            <GavelIcon sx={{ fontSize: 60, mb: 2, opacity: 0.9 }} />
-            <Typography
-              variant='h2'
-              fontWeight='900'
-              sx={{
-                mb: 2,
-                fontSize: { xs: '2rem', md: '3.5rem' },
-                textShadow: '0 4px 10px rgba(0,0,0,0.2)'
-              }}
-            >
-              Términos y Condiciones
-            </Typography>
-            <Typography
-              variant='h6'
-              sx={{
-                opacity: 0.9,
-                fontWeight: 400
-              }}
-            >
-              Última actualización: 12 de Enero, 2026
-            </Typography>
-          </motion.div>
-        </Container>
-      </Box>
+      <HeroSection
+        title='Términos y Condiciones'
+        subtitle='Última actualización: 12 de Enero, 2026'
+        variant='secondary'
+      />
 
       {/* CONTENT SECTION */}
       <Container maxWidth='lg'>

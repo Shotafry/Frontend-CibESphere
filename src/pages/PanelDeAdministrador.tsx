@@ -68,10 +68,10 @@ const PanelDeAdministrador: React.FC = () => {
         boxSizing: 'border-box'
       }}
     >
-      {/* Header Premium */}
+      {/* Header Premium - Updated to Secondary Hero Style */}
       <Box
         sx={{
-          background: 'var(--gradient-header-footer)',
+          background: 'var(--gradient-hero-secondary)',
           color: 'white',
           pt: { xs: 8, md: 10 },
           pb: { xs: 10, md: 12 },
@@ -90,13 +90,20 @@ const PanelDeAdministrador: React.FC = () => {
             spacing={2}
             mb={2}
           >
-            <VerifiedIcon sx={{ fontSize: { xs: 30, md: 40 }, opacity: 0.8 }} />
+            <VerifiedIcon
+              sx={{
+                fontSize: { xs: 30, md: 40 },
+                opacity: 0.8,
+                color: 'var(--color-cadetblue)'
+              }}
+            />
             <Typography
               variant='h3'
               fontWeight='900'
               sx={{
                 textShadow: '0 4px 20px rgba(0,0,0,0.2)',
-                fontSize: { xs: '1.75rem', sm: '2.5rem', md: '3rem' }
+                fontSize: { xs: '1.75rem', sm: '2.5rem', md: '3rem' },
+                color: 'white'
               }}
             >
               Panel de Control
@@ -108,7 +115,8 @@ const PanelDeAdministrador: React.FC = () => {
               opacity: 0.9,
               maxWidth: '600px',
               fontWeight: 400,
-              fontSize: { xs: '0.9rem', sm: '1rem', md: '1.25rem' }
+              fontSize: { xs: '0.9rem', sm: '1rem', md: '1.25rem' },
+              color: 'var(--color-cadetblue)'
             }}
           >
             Bienvenido, Administrador. Aquí tienes el control total sobre

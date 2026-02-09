@@ -38,6 +38,9 @@ body {
     #80deea 100%
   );
 
+  /* --- Hero Gradient Secondary (High Contrast) --- */
+  --gradient-hero-secondary: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+
   font-family: 'Satoshi', Arial, Helvetica, sans-serif;
 }
 

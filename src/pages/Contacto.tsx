@@ -15,6 +15,7 @@ import SendIcon from '@mui/icons-material/Send'
 import SupportAgentIcon from '@mui/icons-material/SupportAgent'
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline'
 // import { commonInputSx } from '../styles/commonStyles'
+import { HeroSection } from '../components/ui/HeroSection'
 
 const commonInputSx = {
   '& .MuiFilledInput-root': {
@@ -57,47 +58,11 @@ const Contacto: React.FC = () => {
   return (
     <Box sx={{ minHeight: '100vh', bgcolor: '#F8FAFC', pb: 12 }}>
       {/* HERO SECTION */}
-      <Box
-        sx={{
-          background: 'var(--gradient-header-footer)',
-          color: 'white',
-          pt: { xs: 12, md: 16 },
-          pb: { xs: 8, md: 12 },
-          clipPath: 'ellipse(150% 100% at 50% 0%)',
-          textAlign: 'center',
-          mb: 6
-        }}
-      >
-        <Container maxWidth='md'>
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5 }}
-          >
-            <SupportAgentIcon sx={{ fontSize: 60, mb: 2, opacity: 0.9 }} />
-            <Typography
-              variant='h2'
-              fontWeight='900'
-              sx={{
-                mb: 2,
-                fontSize: { xs: '2rem', md: '3.5rem' },
-                textShadow: '0 4px 10px rgba(0,0,0,0.2)'
-              }}
-            >
-              Contáctanos
-            </Typography>
-            <Typography
-              variant='h6'
-              sx={{
-                opacity: 0.9,
-                fontWeight: 400
-              }}
-            >
-              ¿Tienes alguna duda o sugerencia? Estamos aquí para ayudarte.
-            </Typography>
-          </motion.div>
-        </Container>
-      </Box>
+      <HeroSection
+        title='Contáctanos'
+        subtitle='¿Tienes alguna duda o sugerencia? Estamos aquí para ayudarte.'
+        variant='secondary'
+      />
 
       {/* CONTENT SECTION */}
       <Container maxWidth='lg'>
