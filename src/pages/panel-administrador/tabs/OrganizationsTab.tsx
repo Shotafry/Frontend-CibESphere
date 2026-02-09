@@ -21,6 +21,11 @@ import {
   Tooltip,
   Menu,
   ListItemIcon,
+  Card,
+  CardContent,
+  Divider,
+  useTheme,
+  useMediaQuery,
   CircularProgress
 } from '@mui/material'
 import {
@@ -41,6 +46,9 @@ import { TableSkeleton } from '../../../components/skeletons'
 import { useDebounce } from '../../../hooks/useDebounce'
 
 export const OrganizationsTab: React.FC = () => {
+  const theme = useTheme()
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
+
   // Data State
   const [orgs, setOrgs] = useState<OrganizationSummary[]>([])
   const [loading, setLoading] = useState(true)
@@ -273,7 +281,7 @@ export const OrganizationsTab: React.FC = () => {
                 </InputAdornment>
               )
             }}
-            sx={{ minWidth: 250 }}
+            sx={{ minWidth: 250, flexGrow: 1 }}
           />
           <TextField
             select
@@ -302,11 +310,112 @@ export const OrganizationsTab: React.FC = () => {
           </TextField>
         </Paper>
 
-        {/* Table */}
-        <TableContainer component={Paper} sx={{ borderRadius: 3 }}>
-          {loading ? (
-            <TableSkeleton />
-          ) : (
+        {/* Content */}
+        {loading ? (
+          <TableSkeleton />
+        ) : isMobile ? (
+          /* Mobile Card View */
+          <Stack spacing={2}>
+            {orgs.map((org) => {
+              const owner = getOwner(org)
+              return (
+                <Card key={org.id} sx={{ borderRadius: 2 }}>
+                  <CardContent>
+                    <Box
+                      display='flex'
+                      justifyContent='space-between'
+                      alignItems='flex-start'
+                      mb={2}
+                    >
+                      <Stack direction='row' spacing={2} alignItems='center'>
+                        <Avatar
+                          src={org.logo_url}
+                          sx={{
+                            bgcolor: 'primary.main',
+                            width: 40,
+                            height: 40
+                          }}
+                        >
+                          <BusinessIcon />
+                        </Avatar>
+                        <Box>
+                          <Stack
+                            direction='row'
+                            spacing={0.5}
+                            alignItems='center'
+                          >
+                            <Typography fontWeight='600' variant='subtitle1'>
+                              {org.name}
+                            </Typography>
+                            {org.is_verified && (
+                              <VerifiedIcon
+                                sx={{ fontSize: 16, color: '#3b82f6' }}
+                              />
+                            )}
+                          </Stack>
+                          <Typography variant='body2' color='text.secondary'>
+                            @{org.slug}
+                          </Typography>
+                        </Box>
+                      </Stack>
+                      <IconButton
+                        size='small'
+                        onClick={(e) => handleMenuOpen(e, org)}
+                      >
+                        <MoreVertIcon />
+                      </IconButton>
+                    </Box>
+
+                    <Divider sx={{ my: 1.5 }} />
+
+                    <Stack spacing={1}>
+                      {/* Owner Info */}
+                      {owner && (
+                        <Stack direction='row' spacing={1} alignItems='center'>
+                          <PersonIcon
+                            fontSize='small'
+                            sx={{ color: 'text.secondary', fontSize: 16 }}
+                          />
+                          <Typography variant='body2'>
+                            Dueño: <strong>{owner.full_name}</strong>
+                          </Typography>
+                        </Stack>
+                      )}
+
+                      {/* Contact Email */}
+                      <Stack direction='row' spacing={1} alignItems='center'>
+                        <Box
+                          component='span'
+                          sx={{
+                            color: 'text.secondary',
+                            fontSize: 16,
+                            display: 'flex'
+                          }}
+                        >
+                          @
+                        </Box>
+                        <Typography variant='body2'>
+                          {org.email || 'Sin contacto'}
+                        </Typography>
+                      </Stack>
+                    </Stack>
+
+                    <Box mt={2} display='flex' justifyContent='flex-end'>
+                      {getStatusChip(org.status)}
+                    </Box>
+                  </CardContent>
+                </Card>
+              )
+            })}
+            {orgs.length === 0 && (
+              <Typography textAlign='center' color='text.secondary' py={4}>
+                No se encontraron organizaciones
+              </Typography>
+            )}
+          </Stack>
+        ) : (
+          /* Desktop Table View */
+          <TableContainer component={Paper} sx={{ borderRadius: 3 }}>
             <Table>
               <TableHead>
                 <TableRow sx={{ bgcolor: 'grey.50' }}>
@@ -437,21 +546,22 @@ export const OrganizationsTab: React.FC = () => {
                 )}
               </TableBody>
             </Table>
-          )}
-          <TablePagination
-            component='div'
-            count={total}
-            page={page}
-            onPageChange={(_, newPage) => setPage(newPage)}
-            rowsPerPage={limit}
-            onRowsPerPageChange={(e) => {
-              setLimit(parseInt(e.target.value, 10))
-              setPage(0)
-            }}
-            rowsPerPageOptions={[5, 10, 25, 50]}
-            labelRowsPerPage='Por página:'
-          />
-        </TableContainer>
+          </TableContainer>
+        )}
+
+        <TablePagination
+          component='div'
+          count={total}
+          page={page}
+          onPageChange={(_, newPage) => setPage(newPage)}
+          rowsPerPage={limit}
+          onRowsPerPageChange={(e) => {
+            setLimit(parseInt(e.target.value, 10))
+            setPage(0)
+          }}
+          rowsPerPageOptions={[5, 10, 25, 50]}
+          labelRowsPerPage='Por página:'
+        />
 
         {/* Actions Menu */}
         <Menu

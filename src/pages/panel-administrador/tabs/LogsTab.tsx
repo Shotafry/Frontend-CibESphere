@@ -17,7 +17,12 @@ import {
   Stack,
   FormControl,
   InputLabel,
-  Select
+  Select,
+  useTheme,
+  useMediaQuery,
+  Card,
+  CardContent,
+  Divider
 } from '@mui/material'
 import {
   History as HistoryIcon,
@@ -30,6 +35,9 @@ import * as apiService from '../../../services/api/admin.service'
 import { TableSkeleton } from '../../../components/skeletons'
 
 export const LogsTab: React.FC = () => {
+  const theme = useTheme()
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
+
   const [logs, setLogs] = useState<AuditLogEntry[]>([])
   const [loading, setLoading] = useState(true)
   const [total, setTotal] = useState(0)
@@ -111,8 +119,8 @@ export const LogsTab: React.FC = () => {
             alignItems: 'center'
           }}
         >
-          <Stack direction='row' spacing={2}>
-            <FormControl size='small' sx={{ minWidth: 200 }}>
+          <Stack direction='row' spacing={2} sx={{ width: '100%' }}>
+            <FormControl size='small' sx={{ minWidth: 200, flexGrow: 1 }}>
               <InputLabel>Filtrar por Acción</InputLabel>
               <Select
                 value={actionFilter}
@@ -132,11 +140,88 @@ export const LogsTab: React.FC = () => {
           </Stack>
         </Paper>
 
-        {/* Table */}
-        <TableContainer component={Paper} sx={{ borderRadius: 3 }}>
-          {loading ? (
-            <TableSkeleton />
-          ) : (
+        {/* Content */}
+        {loading ? (
+          <TableSkeleton />
+        ) : isMobile ? (
+          /* Mobile Card View */
+          <Stack spacing={2}>
+            {logs.map((log) => (
+              <Card key={log.id} sx={{ borderRadius: 2 }}>
+                <CardContent>
+                  <Box
+                    display='flex'
+                    justifyContent='space-between'
+                    alignItems='center'
+                    mb={1.5}
+                  >
+                    <Chip
+                      label={log.action}
+                      size='small'
+                      color={getActionColor(log.action)}
+                      variant='outlined'
+                      sx={{ fontWeight: 600, fontSize: '0.75rem' }}
+                    />
+                    <Typography variant='caption' color='text.secondary'>
+                      {new Date(log.timestamp).toLocaleDateString()}
+                    </Typography>
+                  </Box>
+
+                  <Stack spacing={1}>
+                    {/* Actor */}
+                    <Stack direction='row' spacing={1} alignItems='center'>
+                      <PersonIcon
+                        fontSize='small'
+                        sx={{ color: 'text.secondary', fontSize: 18 }}
+                      />
+                      <Typography variant='body2' fontWeight='500'>
+                        {log.user_id || 'Sistema'}
+                      </Typography>
+                    </Stack>
+                    <Divider />
+                    {/* Resource */}
+                    <Stack direction='row' spacing={1} alignItems='center'>
+                      <StorageIcon
+                        fontSize='small'
+                        sx={{ color: 'text.secondary', fontSize: 18 }}
+                      />
+                      <Box>
+                        <Typography
+                          variant='caption'
+                          sx={{
+                            fontFamily: 'monospace',
+                            bgcolor: '#f1f5f9',
+                            px: 1,
+                            py: 0.5,
+                            borderRadius: 1,
+                            display: 'inline-block'
+                          }}
+                        >
+                          {log.resource}
+                        </Typography>
+                        <Typography
+                          variant='caption'
+                          color='text.secondary'
+                          display='block'
+                          mt={0.5}
+                        >
+                          ID: {log.resource_id}
+                        </Typography>
+                      </Box>
+                    </Stack>
+                  </Stack>
+                </CardContent>
+              </Card>
+            ))}
+            {logs.length === 0 && (
+              <Typography textAlign='center' color='text.secondary' py={4}>
+                No hay registros de auditoría recientes
+              </Typography>
+            )}
+          </Stack>
+        ) : (
+          /* Desktop Table View */
+          <TableContainer component={Paper} sx={{ borderRadius: 3 }}>
             <Table sx={{ minWidth: 650 }}>
               <TableHead sx={{ bgcolor: '#f8fafc' }}>
                 <TableRow>
@@ -229,21 +314,21 @@ export const LogsTab: React.FC = () => {
                 )}
               </TableBody>
             </Table>
-          )}
-          <TablePagination
-            component='div'
-            count={total}
-            page={page}
-            onPageChange={(_, newPage) => setPage(newPage)}
-            rowsPerPage={limit}
-            onRowsPerPageChange={(e) => {
-              setLimit(parseInt(e.target.value, 10))
-              setPage(0)
-            }}
-            rowsPerPageOptions={[10, 20, 50]}
-            labelRowsPerPage='Filas:'
-          />
-        </TableContainer>
+          </TableContainer>
+        )}
+        <TablePagination
+          component='div'
+          count={total}
+          page={page}
+          onPageChange={(_, newPage) => setPage(newPage)}
+          rowsPerPage={limit}
+          onRowsPerPageChange={(e) => {
+            setLimit(parseInt(e.target.value, 10))
+            setPage(0)
+          }}
+          rowsPerPageOptions={[10, 20, 50]}
+          labelRowsPerPage='Filas:'
+        />
       </Box>
     </Fade>
   )
