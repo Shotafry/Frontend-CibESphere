@@ -171,3 +171,12 @@ export const deactivateUser = async (
   )
   return response.data
 }
+
+export const checkSlugAvailability = async (
+  slug: string
+): Promise<{ slug: string; available: boolean }> => {
+  const response = await httpClient.get<{ slug: string; available: boolean }>(
+    `/users/check-slug?slug=${slug}`
+  )
+  return response.data
+}

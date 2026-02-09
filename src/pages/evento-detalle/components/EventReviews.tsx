@@ -125,7 +125,7 @@ export const EventReviews: React.FC<EventReviewsProps> = ({ reviews }) => {
                   onMouseLeave={handlePopoverClose}
                 >
                   <Link
-                    to={`/usuario/${review.userId}`}
+                    to={`/u/${review.userSlug || review.userId}`}
                     style={{
                       textDecoration: 'none',
                       color: 'inherit',
@@ -142,7 +142,7 @@ export const EventReviews: React.FC<EventReviewsProps> = ({ reviews }) => {
                     </Avatar>
                     <Box>
                       <Typography
-                        fontWeight='bold'
+                        fontWeight='bold' // Keeping bold
                         sx={{
                           '&:hover': { textDecoration: 'underline' }
                         }}

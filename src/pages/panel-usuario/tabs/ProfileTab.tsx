@@ -221,13 +221,58 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
                 <Controller
                   name='slug'
                   control={control}
-                  render={({ field }) => (
+                  rules={{
+                    required: 'El slug es obligatorio',
+                    minLength: {
+                      value: 3,
+                      message: 'El slug debe tener al menos 3 caracteres'
+                    },
+                    pattern: {
+                      value: /^[a-z0-9]+(?:-[a-z0-9]+)*$/,
+                      message: 'Solo letras minúsculas (a-z), números y guiones'
+                    }
+                  }}
+                  render={({
+                    field: { onChange, onBlur, value },
+                    fieldState: { error }
+                  }) => (
                     <TextField
-                      {...field}
+                      value={value || ''}
+                      onChange={(e) => {
+                        // Forzar minúsculas al escribir
+                        onChange(e.target.value.toLowerCase())
+                      }}
+                      onBlur={async (e) => {
+                        onBlur()
+                        const val = e.target.value
+                        if (
+                          val &&
+                          val.length >= 3 &&
+                          val !== user?.slug &&
+                          !error
+                        ) {
+                          try {
+                            const { checkSlugAvailability } =
+                              await import('../../../services/api/users.service')
+                            const res = await checkSlugAvailability(val)
+                            if (!res.available) {
+                              alert(
+                                'Este slug ya está en uso. Por favor elige otro.'
+                              )
+                            }
+                          } catch (err) {
+                            console.error('Error checking slug', err)
+                          }
+                        }
+                      }}
                       label='Username (Slug)'
                       fullWidth
+                      error={!!error}
+                      helperText={
+                        error?.message ||
+                        `URL de tu perfil público: cybesphere.com/u/${value || 'usuario'}`
+                      }
                       variant='outlined'
-                      helperText='URL de tu perfil público: cybesphere.com/u/usuario'
                     />
                   )}
                 />

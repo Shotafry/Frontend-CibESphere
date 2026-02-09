@@ -494,6 +494,7 @@ export interface Review {
   userAvatar?: string
   userCompany?: string
   userPosition?: string
+  userSlug?: string
   userQuote?: string
 }
 
