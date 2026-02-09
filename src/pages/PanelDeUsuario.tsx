@@ -111,7 +111,11 @@ const PanelDeUsuario: FunctionComponent = () => {
       linkedin: user?.linkedin || '',
       personal_website: user?.personal_website || '',
       personal_quote: (user as any)?.personal_quote || '',
-      badges: (user as any)?.badges || ''
+      badges: (user as any)?.badges || '',
+      // Campos de conexión social (v0.9.0)
+      social_discord: user?.social_discord || '',
+      social_telegram: user?.social_telegram || '',
+      show_email_on_match: user?.show_email_on_match || false
     }
   })
 

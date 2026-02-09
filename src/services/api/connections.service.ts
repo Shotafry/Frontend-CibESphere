@@ -82,16 +82,22 @@ export type ConnectionStatus =
  */
 export const isConnectedWith = async (
   targetUserId: string
-): Promise<{ is_connected: boolean; status: ConnectionStatus }> => {
+): Promise<{
+  is_connected: boolean
+  status: ConnectionStatus
+  request_id?: string
+}> => {
   const response = await httpClient.get<{
     is_connected: boolean
     status: ConnectionStatus
+    request_id?: string
   }>(`/users/${targetUserId}/connection-status`)
   return {
     is_connected: response.data.is_connected,
     status:
       response.data.status ||
-      (response.data.is_connected ? 'connected' : 'none')
+      (response.data.is_connected ? 'connected' : 'none'),
+    request_id: response.data.request_id
   }
 }
 

@@ -58,10 +58,14 @@ export const NotificationMenu: React.FC<NotificationMenuProps> = ({
       await markNotificationAsRead(notification.id)
       onMarkAsRead(notification.id)
     }
-    if (notification.link) {
-      navigate(notification.link)
-      onClose()
-    }
+    // Siempre redirigir al panel de usuario (pestaña notificaciones) para ver detalles completos
+    navigate('/panel-usuario?tab=notificaciones')
+    onClose()
+  }
+
+  const handleViewAll = () => {
+    navigate('/panel-usuario?tab=notificaciones')
+    onClose()
   }
 
   return (
@@ -91,7 +95,7 @@ export const NotificationMenu: React.FC<NotificationMenuProps> = ({
       </Box>
       <List sx={{ p: 0 }}>
         {notifications.length > 0 ? (
-          notifications.map((notif) => (
+          notifications.slice(0, 5).map((notif) => (
             <React.Fragment key={notif.id}>
               <ListItem
                 alignItems='flex-start'
@@ -114,34 +118,28 @@ export const NotificationMenu: React.FC<NotificationMenuProps> = ({
                       variant='subtitle2'
                       fontWeight={notif.is_read ? 'normal' : 'bold'}
                       color={notif.is_read ? 'text.secondary' : 'text.primary'}
+                      sx={{
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        whiteSpace: 'nowrap',
+                        maxWidth: 240
+                      }}
                     >
                       {notif.title}
                     </Typography>
                   }
                   secondary={
-                    <React.Fragment>
-                      <Typography
-                        component='span'
-                        variant='body2'
-                        color='text.primary'
-                        sx={{
-                          display: 'block',
-                          fontSize: '0.85rem',
-                          my: 0.5
-                        }}
-                      >
-                        {notif.message}
-                      </Typography>
-                      <Typography
-                        component='span'
-                        variant='caption'
-                        color='text.secondary'
-                      >
-                        {notif.date
+                    <Typography
+                      component='span'
+                      variant='caption'
+                      color='text.secondary'
+                    >
+                      {notif.created_at
+                        ? new Date(notif.created_at).toLocaleDateString()
+                        : notif.date
                           ? new Date(notif.date).toLocaleDateString()
                           : ''}
-                      </Typography>
-                    </React.Fragment>
+                    </Typography>
                   }
                 />
                 {!notif.is_read && (
@@ -172,8 +170,8 @@ export const NotificationMenu: React.FC<NotificationMenuProps> = ({
         )}
       </List>
       <Box sx={{ p: 1.5, borderTop: '1px solid #F1F5F9', textAlign: 'center' }}>
-        <Button variant='primary' size='small' onClick={onClose}>
-          Cerrar
+        <Button variant='primary' size='small' onClick={handleViewAll}>
+          Ver todas las notificaciones
         </Button>
       </Box>
     </Menu>
