@@ -301,9 +301,9 @@ export const UsersTab: React.FC = () => {
             </Box>
           </DialogContent>
           <DialogActions>
-            <MuiButton onClick={() => setEditRoleOpen(false)} color='inherit'>
+            <Button onClick={() => setEditRoleOpen(false)} variant='secondary'>
               Cancelar
-            </MuiButton>
+            </Button>
             <Button
               onClick={handleSaveRole}
               variant='primary'
