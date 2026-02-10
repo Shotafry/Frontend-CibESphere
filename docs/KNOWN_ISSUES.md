@@ -1,6 +1,6 @@
 # 🐛 Errores Conocidos y Deuda Técnica
 
-> **Última Auditoría:** Febrero 2026 (Beta v0.8.0 - COMPLETADA)
+> **Última Auditoría:** Febrero 2026 (Beta v0.9.0 - COMPLETADA)
 
 ---
 
@@ -55,6 +55,11 @@
 - **Tab Persistence:** Sincronización de pestañas en paneles vía URL query params.
 - **Organizer Onboarding:** Implementado `OrganizerGuard` y UI dinámica en Header/Menu para forzar creación de organización.
 - **Date Filtering:** Corregida discrepancia de formatos de fecha entre frontend y backend.
+
+### Calidad y Auditoría ✅ v0.9.0
+
+- **Error Page:** Rediseño total con efecto glitch y estética "cyber".
+- **Audit Logs:** Interfaz visual funcional en el Panel de Administración (`LogsTab`).
 
 ---
 

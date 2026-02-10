@@ -1,14 +1,18 @@
 > **Documento Maestro**: Este archivo contiene toda la información necesaria para que una IA o desarrollador entienda la arquitectura, flujos y diseño de CybESphere.
-> **Versión**: Beta v0.8.0 (Febrero 2026) - **Estabilidad y Polish**
-> **Próxima**: Beta v0.9.0 - Calidad y Auditoría Visual
+> **Versión**: Beta v0.9.0 (Febrero 2026) - **Calidad y Auditoría**
+> **Próxima**: RC v1.0.0 - "Sentinel" (Release Candidate)
 
 ---
 
 ## 1. Identidad y Misión
 
 **CybESphere** es una plataforma centralizada (sin ánimo de lucro) para unificar la comunidad de ciberseguridad en España. Su objetivo es dar visibilidad a todos los eventos y facilitar la gestión integral para organizadores y asistentes.
+**Versión v0.7.0:** Introduce un **Panel de Administración** completo con dashboards de métricas, gestión avanzada de usuarios y organizaciones, y un sistema de **Auditoría** (backend).
 
-**Versión v0.7.0:** Introduce un **Panel de Administración** completo con dashboards de métricas, gestión avanzada de usuarios y organizaciones, y un sistema de **Auditoría** (backend). También mejora la UX para organizaciones suspendidas y optimiza el rendimiento general.
+- **Panel de Administración**: Gestión de usuarios, organizaciones, **Audit Logs** y optimización móvil (Cards View).
+- **UX/UI Core**: Sistema de Heros unificado, páginas de error inmersivas y estructura de equipo ("About Us") optimizada.
+  También mejora la UX para organizaciones suspendidas y optimiza el rendimiento general.
+  **Versión v0.9.0:** Estabiliza la plataforma con un rediseño completo de la página de error, implementación de la UI de auditoría administrativa y la finalización de la infraestructura de internacionalización (i18n) para componentes públicos.
 
 **Stack Tecnológico:**
 
@@ -17,7 +21,7 @@
 - **Mapas:** React Leaflet 5 (con Lazy Loading).
 - **Pagos:** Stripe Connect + Stripe Checkout.
 - **Scanner:** `html5-qrcode` para lectura de QRs.
-- **Animaciones:** Framer Motion (uso selectivo).
+- **Animaciones:** Framer Motion + CSS Keyframes (Glitch effects).
 
 ---
 

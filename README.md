@@ -140,9 +140,13 @@ Sistema de control de acceso basado en roles gestionado por el backend.
 
 ### 🆕 Novedades Beta v0.7.0 (Febrero 2026)
 
-#### 🛡️ Panel de Administración Rediseñado
+#### 🛡️- **Panel de Administración**:
 
-- **Dashboard de Métricas**: Visualización de KPIs clave (usuarios, organizaciones, eventos) con gráficos interactivos (Recharts).
+- Dashboard de métricas (KPIs) en tiempo real.
+- Gestión avanzada de usuarios y organizaciones (Ban/Verify).
+- **Audit Visualizer**: Visualización de logs de seguridad y acciones críticas.
+- **Herramientas de Organización**:
+  tivos (Recharts).
 - **Gestión Avanzada de Usuarios**:
   - Filtro por rol y estado.
   - Acciones rápidas: Editar rol, Suspender/Activar usuario.
@@ -181,11 +185,14 @@ Sistema de control de acceso basado en roles gestionado por el backend.
 
 ---
 
-### 🔜 Próximamente: Beta v0.9.0 (Estabilización y Pulido)
+### 🆕 Novedades Beta v0.9.0 (Febrero 2026)
 
-- **Audit Visualizer:** Interfaz visual para los logs de auditoría del backend.
-- **Visual Polish:** Micro-interacciones finales y refinamiento de sombras/gradientes.
-- **Bug Bashing:** Resolución de detalles visuales acumulados antes de la versión estable.
+#### 🛡️ Calidad, Auditoría y Rediseño de Errores
+
+- **Rediseño de Página de Error (404)**: Nueva estética "cyber" con efectos glitch y animaciones.
+- **Audit Visualizer & Admin Mobile**: Nueva pestaña "Logs" y adaptación responsive (vista de tarjetas) para tablas de administración.
+- **Sistema de Heros & UI Polish**: Unificación visual de cabeceras (`HeroSection`), refactorización de "Sobre Nosotros" y mejoras en el sistema de diseño.
+- **Estabilidad**: Corrección de regresiones visuales, unificación de botones y mejoras en la responsividad.
 
 ---
 
