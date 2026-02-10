@@ -30,7 +30,7 @@ const ErrorPage: FunctionComponent = () => {
   let statusText = 'Error Inesperado'
   let message = 'Ha ocurrido un error al procesar tu solicitud.'
   let subMessage =
-    'Parece que te has perdido en el ciberespacio. Vuelve a la base para seguir impulsando tu negocio.'
+    'Parece que te has perdido en el ciberespacio. Vuelve a la base para seguir encontrando eventos.'
 
   if (isRouteErrorResponse(error)) {
     status = error.status
