@@ -17,6 +17,7 @@ import GitHubIcon from '@mui/icons-material/GitHub'
 import { motion } from 'framer-motion'
 import { CollaboratorCard } from '../components/collaborators/CollaboratorCard'
 import { HeroSection } from '../components/ui/HeroSection'
+import JoinTeamCTA from '../components/about/JoinTeamCTA'
 
 // Imágenes (Rutas públicas)
 const angelImg = '/img/team/angel.jpg'
@@ -262,78 +263,8 @@ const AboutUs: React.FC = () => {
           </Grid>
         </Box>
 
-        {/* JOIN US CTA */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-        >
-          <Box
-            sx={{
-              borderRadius: '32px',
-              background: 'var(--gradient-hero-secondary)',
-              p: { xs: 4, md: 8 },
-              textAlign: 'center',
-              color: 'white',
-              position: 'relative',
-              overflow: 'hidden',
-              boxShadow: '0 20px 40px -10px rgba(15, 23, 42, 0.3)'
-            }}
-          >
-            {/* Background Decoration */}
-            <Box
-              sx={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                width: '100%',
-                height: '100%',
-                opacity: 0.1,
-                backgroundImage:
-                  'radial-gradient(circle at 20% 50%, var(--color-cadetblue) 0%, transparent 40%)'
-              }}
-            />
-
-            <Typography
-              variant='h3'
-              fontWeight='900'
-              sx={{ mb: 2, position: 'relative' }}
-            >
-              ¿Quieres unirte al equipo?
-            </Typography>
-            <Typography
-              variant='h6'
-              sx={{
-                mb: 4,
-                opacity: 0.8,
-                maxWidth: '600px',
-                mx: 'auto',
-                fontWeight: 400
-              }}
-            >
-              Si te apasiona la ciberseguridad y quieres contribuir a un
-              proyecto open community, ¡nos encantaría conocerte!
-            </Typography>
-
-            <Button
-              variant='secondary'
-              size='large'
-              href='https://www.linkedin.com/company/cybesphere/'
-              target='_blank'
-              startIcon={<LinkedInIcon />}
-              sx={{
-                px: 6,
-                py: 1.5,
-                borderRadius: '50px',
-                fontSize: '1.1rem',
-                boxShadow: '0 4px 14px rgba(0, 0, 0, 0.1)'
-              }}
-            >
-              Contáctanos en LinkedIn
-            </Button>
-          </Box>
-        </motion.div>
+        {/* JOIN US CTA (Dual Path) */}
+        <JoinTeamCTA />
       </Container>
     </Box>
   )
