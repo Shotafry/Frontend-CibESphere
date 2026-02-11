@@ -11,6 +11,7 @@ import BookmarkIcon from '@mui/icons-material/Bookmark'
 import { useAuth } from '../context/AuthContext'
 import { toggleBookmarkWithStatus, getMe } from '../services/apiService'
 import { motion } from 'framer-motion'
+import { EVENT_TYPES } from '../constants/filters'
 
 interface EventCardProps {
   event: Event
@@ -113,13 +114,14 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
             alt={`Imagen de ${event.title}`}
             sx={{
               width: { xs: '100%', md: 260 },
-              height: { xs: 140, sm: 180, md: 260 },
+              height: { xs: 180, sm: 220, md: 260 },
               objectFit: 'contain',
               zIndex: 2,
               marginRight: { md: -6 },
               marginBottom: { xs: -2, md: 0 },
               position: 'relative',
-              filter: 'drop-shadow(0px 4px 10px rgba(0,0,0,0.1))'
+              borderRadius: '25px', // Bordes redondeados solicitados
+              filter: 'drop-shadow(0px 4px 12px rgba(0,0,0,0.12))'
             }}
           />
 
@@ -172,6 +174,22 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
             )}
 
             <Box>
+              {event.type && (
+                <Typography
+                  variant='caption'
+                  sx={{
+                    color: 'var(--color-cadetblue)',
+                    fontWeight: 'bold',
+                    textTransform: 'uppercase',
+                    letterSpacing: '1px',
+                    mb: 0.5,
+                    display: 'block'
+                  }}
+                >
+                  {EVENT_TYPES.find((t) => t.value === event.type)?.label ||
+                    event.type}
+                </Typography>
+              )}
               <Typography variant='h5' component='h3' fontWeight='bold' mb={1}>
                 {event.title}
               </Typography>
