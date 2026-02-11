@@ -33,6 +33,12 @@ export const useEventFilters = (initialFilters: EventFilterParams) => {
     endDate: initialFilters.endDate || null
   })
 
+  // Taxonomy State
+  const [type, setType] = useState<string | null>(initialFilters.type || null)
+  const [category, setCategory] = useState<string | null>(
+    initialFilters.category || null
+  )
+
   // Location Logic
   const initialLocations = initialFilters.locations || []
   const [selectedCommunities, setSelectedCommunities] = useState<string[]>(
@@ -99,6 +105,15 @@ export const useEventFilters = (initialFilters: EventFilterParams) => {
       setter(value)
     }
 
+  // New handlers for single select
+  const handleTypeChange = (event: any, value: string | null) => {
+    setType(value)
+  }
+
+  const handleCategoryChange = (event: any, value: string | null) => {
+    setCategory(value)
+  }
+
   const handleApplyFilters = () => {
     const allLocations = [
       ...new Set([...selectedCommunities, ...selectedCities])
@@ -119,7 +134,12 @@ export const useEventFilters = (initialFilters: EventFilterParams) => {
         dates.endDate.toISOString().split('T')[0]
       )
     }
+
+    // Taxonomy params
+    if (type) searchParams.set('type', type)
+    if (category) searchParams.set('category', category)
     tags.forEach((tag) => searchParams.append('tags', tag))
+
     allLocations.forEach((loc) => searchParams.append('locations', loc))
     levels.forEach((level) => searchParams.append('levels', level))
     languages.forEach((lang) => searchParams.append('languages', lang))
@@ -143,6 +163,8 @@ export const useEventFilters = (initialFilters: EventFilterParams) => {
     setTags([])
     setLevels([])
     setLanguages([])
+    setType(null)
+    setCategory(null)
     setModality(null)
     setTimeFilter('upcoming')
     setSelectedCommunities([])
@@ -165,16 +187,22 @@ export const useEventFilters = (initialFilters: EventFilterParams) => {
     modality,
     levels,
     languages,
+    type,
+    category,
     // Setters (exposed for potential direct manipulation if needed, but mostly covered by handlers)
     setTags,
     setLevels,
     setLanguages,
     setTimeFilter,
+    setType,
+    setCategory,
     // Handlers
     handleDateChange,
     handleCommunityChange,
     handleCityChange,
     handleModalityChange,
+    handleTypeChange,
+    handleCategoryChange,
     handleMultiSelectChange,
     handleApplyFilters,
     handleClearFilters

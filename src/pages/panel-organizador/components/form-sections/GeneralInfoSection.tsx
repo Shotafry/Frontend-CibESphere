@@ -57,8 +57,10 @@ export const GeneralInfoSection: React.FC<GeneralInfoSectionProps> = ({
             validate: async (value) => {
               if (!value || value === user?.organization?.slug) return true
               try {
-                const available = await apiService.checkSlugAvailability(value)
-                return available || 'Este URL ya está en uso'
+                // Ensure we use the organization check
+                const available =
+                  await apiService.checkOrgSlugAvailability(value)
+                return available === true || 'Este URL ya está en uso'
               } catch (e) {
                 console.error(e)
                 return 'Error al validar disponibilidad'
