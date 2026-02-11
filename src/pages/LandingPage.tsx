@@ -12,6 +12,7 @@ import {
 import { useLoaderData } from 'react-router-dom'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
+import { es } from 'date-fns/locale'
 import { Hero } from '../components/Hero'
 import { LazyEventMap } from '../components/LazyMap'
 import { EventCard } from '../components/EventCard'
@@ -73,7 +74,7 @@ const LandingPage: FunctionComponent = () => {
   }
 
   return (
-    <LocalizationProvider dateAdapter={AdapterDateFns}>
+    <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
       <PageTransition>
         <Hero />
 

@@ -59,6 +59,39 @@ export const DateLocationSection: React.FC<DateLocationSectionProps> = ({
               variant: 'filled',
               fullWidth: true,
               sx: commonInputSx
+            },
+            actionBar: {
+              actions: ['cancel', 'accept'],
+              sx: {
+                '& .MuiButton-root:first-of-type': {
+                  // Estilo Secondary (Cancelar)
+                  background: 'var(--White)',
+                  color: 'var(--color-cadetblue)',
+                  border: '1px solid var(--color-cadetblue)',
+                  borderRadius: '12px',
+                  fontWeight: 600,
+                  textTransform: 'none',
+                  '&:hover': {
+                    background: 'var(--gradient-button-primary)',
+                    color: 'var(--White)',
+                    border: '1px solid transparent'
+                  }
+                },
+                '& .MuiButton-root:last-of-type': {
+                  // Estilo Primary (Aceptar)
+                  background: 'var(--gradient-button-primary)',
+                  color: 'var(--White)',
+                  border: 'none',
+                  borderRadius: '12px',
+                  fontWeight: 600,
+                  textTransform: 'none',
+                  '&:hover': {
+                    background: 'var(--White)',
+                    color: 'var(--color-cadetblue)',
+                    border: '1px solid var(--color-cadetblue)'
+                  }
+                }
+              }
             }
           }}
         />
@@ -73,6 +106,39 @@ export const DateLocationSection: React.FC<DateLocationSectionProps> = ({
               variant: 'filled',
               fullWidth: true,
               sx: commonInputSx
+            },
+            actionBar: {
+              actions: ['cancel', 'accept'],
+              sx: {
+                '& .MuiButton-root:first-of-type': {
+                  // Estilo Secondary (Cancelar)
+                  background: 'var(--White)',
+                  color: 'var(--color-cadetblue)',
+                  border: '1px solid var(--color-cadetblue)',
+                  borderRadius: '12px',
+                  fontWeight: 600,
+                  textTransform: 'none',
+                  '&:hover': {
+                    background: 'var(--gradient-button-primary)',
+                    color: 'var(--White)',
+                    border: '1px solid transparent'
+                  }
+                },
+                '& .MuiButton-root:last-of-type': {
+                  // Estilo Primary (Aceptar)
+                  background: 'var(--gradient-button-primary)',
+                  color: 'var(--White)',
+                  border: 'none',
+                  borderRadius: '12px',
+                  fontWeight: 600,
+                  textTransform: 'none',
+                  '&:hover': {
+                    background: 'var(--White)',
+                    color: 'var(--color-cadetblue)',
+                    border: '1px solid var(--color-cadetblue)'
+                  }
+                }
+              }
             }
           }}
         />

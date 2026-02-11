@@ -12,6 +12,7 @@ import {
 } from '@mui/material'
 import { LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
+import { es } from 'date-fns/locale'
 import { ErrorBoundary } from '../components/ErrorBoundary'
 import { Button } from '../components/Button'
 import {
@@ -134,7 +135,7 @@ const CrearEvento: FunctionComponent = () => {
   }
 
   return (
-    <LocalizationProvider dateAdapter={AdapterDateFns}>
+    <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
       <PageTransition>
         <Container maxWidth='md' sx={{ my: 5 }}>
           <Paper
