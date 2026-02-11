@@ -120,10 +120,36 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
               marginRight: { md: -6 },
               marginBottom: { xs: -2, md: 0 },
               position: 'relative',
-              borderRadius: '25px', // Bordes redondeados solicitados
+              borderRadius: '25px',
               filter: 'drop-shadow(0px 4px 12px rgba(0,0,0,0.12))'
             }}
           />
+
+          {/* Badge de Tipo de Evento flotante sobre la imagen */}
+          {event.type && (
+            <Box
+              sx={{
+                position: 'absolute',
+                top: { xs: 10, md: 20 },
+                left: { xs: 10, md: 20 },
+                zIndex: 5,
+                backgroundColor: 'var(--color-cadetblue)',
+                color: 'var(--White)',
+                padding: '4px 12px',
+                borderRadius: '12px',
+                fontSize: '0.75rem',
+                fontWeight: 'bold',
+                textTransform: 'uppercase',
+                letterSpacing: '0.5px',
+                boxShadow: '0 4px 10px rgba(0,0,0,0.2)',
+                backdropFilter: 'blur(4px)',
+                border: '1px solid rgba(255,255,255,0.2)'
+              }}
+            >
+              {EVENT_TYPES.find((t) => t.value === event.type)?.label ||
+                event.type}
+            </Box>
+          )}
 
           <Box
             className='event-content'
@@ -174,22 +200,6 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
             )}
 
             <Box>
-              {event.type && (
-                <Typography
-                  variant='caption'
-                  sx={{
-                    color: 'var(--color-cadetblue)',
-                    fontWeight: 'bold',
-                    textTransform: 'uppercase',
-                    letterSpacing: '1px',
-                    mb: 0.5,
-                    display: 'block'
-                  }}
-                >
-                  {EVENT_TYPES.find((t) => t.value === event.type)?.label ||
-                    event.type}
-                </Typography>
-              )}
               <Typography variant='h5' component='h3' fontWeight='bold' mb={1}>
                 {event.title}
               </Typography>
@@ -243,6 +253,16 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
             </Grid>
 
             <Box sx={{ mt: 2, display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+              {event.category && (
+                <Chip
+                  label={event.category}
+                  size='small'
+                  sx={{
+                    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                    color: 'var(--White)'
+                  }}
+                />
+              )}
               {event.tags &&
                 event.tags.slice(0, 5).map((tag) => (
                   <Chip
