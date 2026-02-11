@@ -1,5 +1,5 @@
 > **Documento Maestro**: Este archivo contiene toda la información necesaria para que una IA o desarrollador entienda la arquitectura, flujos y diseño de CybESphere.
-> **Versión**: Beta v0.9.0 (Febrero 2026) - **Calidad y Auditoría**
+> **Versión**: Beta v0.9.0 (Febrero 2026) - **Calidad, Taxonomía y Multimedia**
 > **Próxima**: RC v1.0.0 - "Sentinel" (Release Candidate)
 
 ---
@@ -7,12 +7,14 @@
 ## 1. Identidad y Misión
 
 **CybESphere** es una plataforma centralizada (sin ánimo de lucro) para unificar la comunidad de ciberseguridad en España. Su objetivo es dar visibilidad a todos los eventos y facilitar la gestión integral para organizadores y asistentes.
+
 **Versión v0.7.0:** Introduce un **Panel de Administración** completo con dashboards de métricas, gestión avanzada de usuarios y organizaciones, y un sistema de **Auditoría** (backend).
 
 - **Panel de Administración**: Gestión de usuarios, organizaciones, **Audit Logs** y optimización móvil (Cards View).
 - **UX/UI Core**: Sistema de Heros unificado, páginas de error inmersivas y estructura de equipo ("About Us") optimizada.
   También mejora la UX para organizaciones suspendidas y optimiza el rendimiento general.
-  **Versión v0.9.0:** Estabiliza la plataforma con un rediseño completo de la página de error, implementación de la UI de auditoría administrativa y la finalización de la infraestructura de internacionalización (i18n) para componentes públicos.
+
+**Versión v0.9.0:** Estabiliza la plataforma con un rediseño completo de la página de error, implementación de la UI de auditoría administrativa y la finalización de la infraestructura de internacionalización (i18n) para componentes públicos. Cierra la fase Beta con una refactorización profunda de la taxonomía de eventos (tipos, categorías, niveles), un sistema de agenda y ponentes persistente mediante JSONB, y una estrategia de doble imagen (Banner vs Logo). Estabiliza la plataforma con un rediseño completo de la página de error, la implementación de la UI de auditoría administrativa y el pulido visual de componentes clave como la `EventCard`.
 
 **Stack Tecnológico:**
 

@@ -56,10 +56,14 @@
 - **Organizer Onboarding:** Implementado `OrganizerGuard` y UI dinámica en Header/Menu para forzar creación de organización.
 - **Date Filtering:** Corregida discrepancia de formatos de fecha entre frontend y backend.
 
-### Calidad y Auditoría ✅ v0.9.0
+### Calidad, Taxonomía y Multimedia ✅ v0.9.0
 
 - **Error Page:** Rediseño total con efecto glitch y estética "cyber".
 - **Audit Logs:** Interfaz visual funcional en el Panel de Administración (`LogsTab`).
+- **Taxonomía:** Normalización completa de Tipos, Categorías y Niveles entre Frontend y Backend.
+- **Doble Imagen:** Separación de Banner e Imagen de Tarjeta (Logo) con lógica de fallback.
+- **Agenda & Speakers:** Sistema estructurado para itinerarios y ponentes con visualización de avatares.
+- **EventCard Fixes:** Bordes redondeados, ajuste `contain` para logos y badges dinámicos.
 
 ---
 

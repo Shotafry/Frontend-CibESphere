@@ -207,7 +207,7 @@ _Estado: COMPLETADO_
 
 ---
 
-## 🎨 Fase 9: Calidad y Auditoría (Beta v0.9.0) ✅
+## 🎨 Fase 9: Calidad, Taxonomía y Auditoría (Beta v0.9.0) ✅
 
 _Estado: COMPLETADO_
 
@@ -216,13 +216,25 @@ _Estado: COMPLETADO_
 - [x] **LogsTab:** Interfaz visual para logs de backend en el panel admin con filtrado por acción.
 - [x] **Visualización de Recursos:** Identificación clara de Actor, Acción y Recurso afectado.
 
-### 9.2 Rediseño de Errores y Calidad (UX/UI Polish) ✅
+### 9.2 Refactorización de Datos y Taxonomía ✅
 
+- [x] **Normalización de Eventos:** Implementación de Tipos, Categorías y Niveles unificados entre Frontend y Backend.
+- [x] **Sistema de Agenda:** Gestión de itinerarios dinámicos persistidos como JSONB.
+- [x] **Gestión de Ponentes:** Inclusión de Speakers con avatares y cargos en el flujo de creación.
+
+### 9.3 Experiencia Multimedia y UI Polish ✅
+
+- [x] **Doble Imagen:** Soporte independiente para Banner y Logo/Tarjeta de evento.
+- [x] **Rediseño de EventCard:** Imágenes con bordes redondeados, badges flotantes (glassmorphism) y optimización de espacio.
 - [x] **Error Page (404/500):** Rediseño total con estética "cybersecurity" y animaciones glitch.
-- [x] **Sistema de Heros:** Unificación de `HeroSection` con variantes (`primary`/`secondary`) en todas las páginas internas.
-- [x] **About Us Refactor:** Reestructuración de equipo, sección de colaboradores y optimización de imágenes.
-- [x] **Admin Mobile Experience:** Implementación de vista de Tarjetas (Cards) para tablas de Organizaciones y Logs en móviles.
-- [x] **Visual Polish:** Unificación de botones, transiciones de pestañas en Admin y corrección de estilos responsive.
+- [x] **Sistema de Heros:** Unificación de `HeroSection` en todas las páginas internas.
+- [x] **Admin Mobile Experience:** Vista de Tarjetas (Cards) para tablas de administración.
+
+### 9.4 Estabilidad y Backend Sync ✅
+
+- [x] **Sincronización de DTOs:** Actualización de mappers y modelos para soportar los nuevos campos estructurados.
+- [x] **Manejo de Nulos:** Fallbacks para imágenes y campos opcionales en el renderizado de tarjetas y detalles.
+- [x] **Corrección de Edición:** El formulario de edición ahora carga y persiste correctamente Ponentes y Agenda.
 
 ---
 

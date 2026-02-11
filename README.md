@@ -185,14 +185,30 @@ Sistema de control de acceso basado en roles gestionado por el backend.
 
 ---
 
-### 🆕 Novedades Beta v0.9.0 (Febrero 2026)
+### 🆕 Novedades Beta v0.9.0 (Febrero 2026) ✅
 
-#### 🛡️ Calidad, Auditoría y Rediseño de Errores
+#### 🏗️ Refactorización de Taxonomía y Datos
 
-- **Rediseño de Página de Error (404)**: Nueva estética "cyber" con efectos glitch y animaciones.
+- **Categorías y Tipos Normalizados**: Sistema de filtrado robusto basado en una taxonomía unificada (Meetups, Workshops, Conferencias, etc.).
+- **Niveles de Dificultad**: Etiquetado de eventos por nivel (Principiante, Intermedio, Avanzado, Experto).
+- **Gestión de Agenda Dinámica**: Los organizadores pueden definir itinerarios complejos (Agenda) que se persisten como JSON estructurado en el backend.
+- **Sistema de Ponentes (Speakers)**: Gestión premium de ponentes con nombre, cargo y avatar personalizado.
+
+#### 🖼️ Experiencia Visual y Multimedia
+
+- **Estrategia de Doble Imagen**: Separación clara entre **Imagen de Cabecera (Banner)** e **Imagen de Tarjeta (Logo)**.
+- **Rediseño de Tarjetas (EventCard)**:
+  - Imágenes con bordes redondeados y soporte para transparencias (`contain`).
+  - **Floating Badges**: El tipo de evento (ej. "TALLER") aparece como un elegante badge flotante sobre la imagen.
+  - Jerarquía visual mejorada con chips de categoría unificados.
+- **Itinerario Premium**: Visualización estilizada de la agenda con avatares de ponentes y diseño de línea de tiempo.
+
+#### 🛡️ Auditoría y Calidad (UX/UI Polish)
+
+- **Rediseño de Página de Error (404)**: Estética "cyber" con efectos glitch y animaciones inmersivas.
 - **Audit Visualizer & Admin Mobile**: Nueva pestaña "Logs" y adaptación responsive (vista de tarjetas) para tablas de administración.
-- **Sistema de Heros & UI Polish**: Unificación visual de cabeceras (`HeroSection`), refactorización de "Sobre Nosotros" y mejoras en el sistema de diseño.
-- **Estabilidad**: Corrección de regresiones visuales, unificación de botones y mejoras en la responsividad.
+- **Sistema de Heros unificado**: Estandarización de `HeroSection` con variantes en todas las páginas internas.
+- **Estabilidad**: Corrección de persistencia en edición de eventos y sincronización de datos nulos.
 
 ---
 
