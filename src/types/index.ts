@@ -385,6 +385,7 @@ export interface CreateEventDTO {
   tags: string[]
   requirements?: string
   agenda?: string
+  speakers?: string
 
   // Contacto
   contact_email?: string

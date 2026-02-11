@@ -1,5 +1,5 @@
 import React from 'react'
-import { Box, Typography, Grid, Paper, Divider } from '@mui/material'
+import { Box, Typography, Grid, Paper, Divider, Avatar } from '@mui/material'
 import { Event } from '../../../types'
 
 interface EventItineraryProps {
@@ -147,9 +147,15 @@ export const EventItinerary: React.FC<EventItineraryProps> = ({ event }) => {
                           p: 2,
                           bgcolor: 'white',
                           borderRadius: '12px',
-                          boxShadow: '0 2px 8px rgba(0,0,0,0.05)'
+                          boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
+                          alignItems: 'center'
                         }}
                       >
+                        <Avatar
+                          src={speaker.avatar_url}
+                          alt={speaker.name}
+                          sx={{ width: 64, height: 64, borderRadius: '12px' }}
+                        />
                         <Box sx={{ flex: 1 }}>
                           <Typography variant='subtitle1' fontWeight='bold'>
                             {speaker.name}

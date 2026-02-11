@@ -85,6 +85,18 @@ export const SpeakersSection: React.FC<SpeakersSectionProps> = ({
               sx={commonInputSx}
             />
             <TextField
+              label='URL de la Foto'
+              value={speaker.avatar_url || ''}
+              onChange={(e) =>
+                handleSpeakerChange(speaker.id, 'avatar_url', e.target.value)
+              }
+              variant='filled'
+              size='small'
+              fullWidth
+              sx={commonInputSx}
+              placeholder='https://...'
+            />
+            <TextField
               label='Hora Ligada'
               value={speaker.time}
               onChange={(e) =>
