@@ -1,7 +1,12 @@
 import React from 'react'
 import { Grid, TextField, MenuItem, Autocomplete } from '@mui/material'
 import { commonInputSx } from '../styles'
-import { CYBERSECURITY_TAGS, EVENT_LEVELS } from '../../../constants/filters'
+import {
+  EVENT_TYPES,
+  EVENT_CATEGORIES,
+  EVENT_TAGS,
+  EVENT_LEVELS
+} from '../../../constants/filters'
 import { EventImageUploader } from '../../../components/EventImageUploader'
 
 interface BasicInfoSectionProps {
@@ -84,23 +89,47 @@ export const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({
         />
       </Grid>
 
+      {/* TAXONOMÍA */}
       <Grid size={{ xs: 12, md: 4 }}>
         <TextField
           name='type'
           label='Tipo de Evento'
           select
           fullWidth
+          required
           variant='filled'
           value={formData.type}
           onChange={handleChange}
           sx={commonInputSx}
         >
-          <MenuItem value='conference'>Conferencia</MenuItem>
-          <MenuItem value='workshop'>Taller</MenuItem>
-          <MenuItem value='meetup'>Meetup</MenuItem>
-          <MenuItem value='webinar'>Webinar</MenuItem>
+          {EVENT_TYPES.map((type) => (
+            <MenuItem key={type.value} value={type.value}>
+              {type.label}
+            </MenuItem>
+          ))}
         </TextField>
       </Grid>
+
+      <Grid size={{ xs: 12, md: 4 }}>
+        <TextField
+          name='category'
+          label='Categoría'
+          select
+          fullWidth
+          required
+          variant='filled'
+          value={formData.category || ''}
+          onChange={handleChange}
+          sx={commonInputSx}
+        >
+          {EVENT_CATEGORIES.map((cat) => (
+            <MenuItem key={cat} value={cat}>
+              {cat}
+            </MenuItem>
+          ))}
+        </TextField>
+      </Grid>
+
       <Grid size={{ xs: 12, md: 4 }}>
         <TextField
           name='level'
@@ -119,7 +148,8 @@ export const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({
           ))}
         </TextField>
       </Grid>
-      <Grid size={{ xs: 12, md: 4 }}>
+
+      <Grid size={{ xs: 12, md: 6 }}>
         <Autocomplete
           options={[
             'Español',
@@ -143,13 +173,12 @@ export const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({
         />
       </Grid>
 
-      <Grid size={{ xs: 12 }}>
+      <Grid size={{ xs: 12, md: 6 }}>
         <Autocomplete
           multiple
-          options={CYBERSECURITY_TAGS}
+          options={EVENT_TAGS}
           value={formData.tags}
           onChange={handleAutocompleteChange('tags')}
-          freeSolo
           renderInput={(params) => (
             <TextField
               {...params}

@@ -6,19 +6,23 @@ import {
   Grid,
   Paper,
   Collapse,
-  IconButton
+  IconButton,
+  TextField,
+  Autocomplete,
+  MenuItem
 } from '@mui/material'
 import ExpandMore from '@mui/icons-material/ExpandMore'
 import FilterListIcon from '@mui/icons-material/FilterList'
 import { Button } from './Button'
 import { EventFilterParams } from '../types'
 import { useEventFilters } from '../hooks/useEventFilters'
+import { EVENT_TYPES, EVENT_CATEGORIES, EVENT_TAGS } from '../constants/filters'
+import { filterInputSx } from '../styles/filterStyles'
 
 // Subcomponents
 import { DateFilter } from './filters/DateFilter'
 import { LocationFilter } from './filters/LocationFilter'
-import { CategoryTagsFilter } from './filters/CategoryTagsFilter'
-import { TypeFilter } from './filters/TypeFilter'
+import { DetailsFilter } from './filters/DetailsFilter'
 
 interface EventFiltersProps {
   initialFilters: EventFilterParams
@@ -39,6 +43,8 @@ export const EventFilters: React.FC<EventFiltersProps> = ({
     modality,
     levels,
     languages,
+    type,
+    category,
     setTags,
     setLevels,
     setLanguages,
@@ -47,6 +53,8 @@ export const EventFilters: React.FC<EventFiltersProps> = ({
     handleCommunityChange,
     handleCityChange,
     handleModalityChange,
+    handleTypeChange,
+    handleCategoryChange,
     handleApplyFilters,
     handleClearFilters
   } = useEventFilters(initialFilters)
@@ -112,23 +120,77 @@ export const EventFilters: React.FC<EventFiltersProps> = ({
               onCityChange={handleCityChange}
             />
 
-            {/* FILA 3: CATEGORÍAS Y ESTADO */}
-            <CategoryTagsFilter
-              tags={tags}
-              onTagsChange={(e, v) => setTags(v)}
-              timeFilter={timeFilter}
-              onTimeFilterChange={setTimeFilter}
-              hasDates={!!(dates.startDate || dates.endDate)}
-            />
+            {/* FILA 3: TAXONOMÍA (TIPO, CATEGORÍA, TAGS) */}
+            <Grid size={{ xs: 12, md: 4 }}>
+              <TextField
+                select
+                label='Tipo de Evento'
+                value={type || ''}
+                onChange={(e) => handleTypeChange(e, e.target.value)}
+                variant='filled'
+                fullWidth
+                sx={filterInputSx}
+              >
+                <MenuItem value=''>
+                  <em>Todos</em>
+                </MenuItem>
+                {EVENT_TYPES.map((t) => (
+                  <MenuItem key={t.value} value={t.value}>
+                    {t.label}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </Grid>
 
-            {/* FILA 4: MODALIDAD, NIVEL, IDIOMA */}
-            <TypeFilter
+            <Grid size={{ xs: 12, md: 4 }}>
+              <TextField
+                select
+                label='Categoría'
+                value={category || ''}
+                onChange={(e) => handleCategoryChange(e, e.target.value)}
+                variant='filled'
+                fullWidth
+                sx={filterInputSx}
+              >
+                <MenuItem value=''>
+                  <em>Todas</em>
+                </MenuItem>
+                {EVENT_CATEGORIES.map((c) => (
+                  <MenuItem key={c} value={c}>
+                    {c}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </Grid>
+
+            <Grid size={{ xs: 12, md: 4 }}>
+              <Autocomplete
+                multiple
+                options={EVENT_TAGS}
+                value={tags}
+                onChange={(e, v) => setTags(v)}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label='Tags'
+                    variant='filled'
+                    sx={filterInputSx}
+                  />
+                )}
+              />
+            </Grid>
+
+            {/* FILA 4: DETALLES (MODALIDAD, NIVEL, IDIOMA, ESTADO) */}
+            <DetailsFilter
               modality={modality}
               onModalityChange={handleModalityChange}
               levels={levels}
               onLevelsChange={(e, v) => setLevels(v)}
               languages={languages}
               onLanguagesChange={(e, v) => setLanguages(v)}
+              timeFilter={timeFilter}
+              onTimeFilterChange={setTimeFilter}
+              hasDates={!!(dates.startDate || dates.endDate)}
             />
 
             {/* BOTONES */}

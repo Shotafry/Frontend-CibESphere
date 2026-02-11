@@ -331,6 +331,7 @@ export interface EventFilterParams {
   languages?: string[]
   search?: string
   type?: string
+  category?: string // Added category for taxonomy
   is_online?: boolean // Added for modality filtering
   organization_id?: string // Added for organization filtering
   page?: number // Added pagination

@@ -3,26 +3,39 @@ import { Grid, Autocomplete, TextField } from '@mui/material'
 import { EVENT_LEVELS } from '../../constants/filters'
 import { filterInputSx } from '../../styles/filterStyles'
 
-interface TypeFilterProps {
+interface DetailsFilterProps {
   modality: string | null
   onModalityChange: (event: React.SyntheticEvent, value: string | null) => void
   levels: string[]
   onLevelsChange: (event: React.SyntheticEvent, value: string[]) => void
   languages: string[]
   onLanguagesChange: (event: React.SyntheticEvent, value: string[]) => void
+  timeFilter: string | null
+  onTimeFilterChange: (value: string | null) => void
+  hasDates: boolean
 }
 
-export const TypeFilter: React.FC<TypeFilterProps> = ({
+export const DetailsFilter: React.FC<DetailsFilterProps> = ({
   modality,
   onModalityChange,
   levels,
   onLevelsChange,
   languages,
-  onLanguagesChange
+  onLanguagesChange,
+  timeFilter,
+  onTimeFilterChange,
+  hasDates
 }) => {
+  const getTimeFilterLabel = (val: string | null) => {
+    if (val === 'upcoming') return 'Próximos'
+    if (val === 'past') return 'Finalizados'
+    if (val === 'all') return 'Todos'
+    return 'Próximos'
+  }
+
   return (
     <>
-      <Grid size={{ xs: 12, md: 4 }}>
+      <Grid size={{ xs: 12, md: 3 }}>
         <Autocomplete
           options={['Online', 'Presencial']}
           value={modality}
@@ -38,7 +51,7 @@ export const TypeFilter: React.FC<TypeFilterProps> = ({
         />
       </Grid>
 
-      <Grid size={{ xs: 12, md: 4 }}>
+      <Grid size={{ xs: 12, md: 3 }}>
         <Autocomplete
           multiple
           options={EVENT_LEVELS}
@@ -47,7 +60,7 @@ export const TypeFilter: React.FC<TypeFilterProps> = ({
           renderInput={(params) => (
             <TextField
               {...params}
-              label='Nivel del Evento'
+              label='Nivel'
               variant='filled'
               sx={filterInputSx}
             />
@@ -55,7 +68,7 @@ export const TypeFilter: React.FC<TypeFilterProps> = ({
         />
       </Grid>
 
-      <Grid size={{ xs: 12, md: 4 }}>
+      <Grid size={{ xs: 12, md: 3 }}>
         <Autocomplete
           multiple
           options={[
@@ -74,6 +87,29 @@ export const TypeFilter: React.FC<TypeFilterProps> = ({
               label='Idioma'
               variant='filled'
               sx={filterInputSx}
+            />
+          )}
+        />
+      </Grid>
+
+      <Grid size={{ xs: 12, md: 3 }}>
+        <Autocomplete
+          options={['Próximos', 'Finalizados', 'Todos']}
+          value={getTimeFilterLabel(timeFilter)}
+          onChange={(_, value) => {
+            if (value === 'Próximos') onTimeFilterChange('upcoming')
+            else if (value === 'Finalizados') onTimeFilterChange('past')
+            else if (value === 'Todos') onTimeFilterChange('all')
+            else onTimeFilterChange('upcoming')
+          }}
+          disabled={hasDates}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              label='Estado'
+              variant='filled'
+              sx={filterInputSx}
+              helperText={hasDates ? 'Deshabilitado (fechas)' : undefined}
             />
           )}
         />

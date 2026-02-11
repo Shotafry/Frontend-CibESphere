@@ -173,6 +173,8 @@ const routes: RouteObject[] = [
               ? searchParams.get('is_online') === 'true'
               : undefined,
             timeFilter,
+            type: searchParams.get('type') || undefined,
+            category: searchParams.get('category') || undefined,
             limit: 15
           }
 
