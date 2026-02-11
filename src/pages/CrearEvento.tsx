@@ -79,6 +79,7 @@ const CrearEvento: FunctionComponent = () => {
     handleSpeakerChange,
     handleLocationChange,
     handleImageChange,
+    handleCardImageChange,
     handleAddTicketType,
     handleRemoveTicketType,
     handleTicketTypeChange,
@@ -179,6 +180,7 @@ const CrearEvento: FunctionComponent = () => {
                     handleAutocompleteChange={handleAutocompleteChange}
                     handleLanguageChange={handleLanguageChange}
                     handleImageChange={handleImageChange}
+                    handleCardImageChange={handleCardImageChange}
                   />
                 </Box>
 

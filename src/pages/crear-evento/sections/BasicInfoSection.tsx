@@ -1,5 +1,11 @@
 import React from 'react'
-import { Grid, TextField, MenuItem, Autocomplete } from '@mui/material'
+import {
+  Grid,
+  TextField,
+  MenuItem,
+  Autocomplete,
+  Typography
+} from '@mui/material'
 import { commonInputSx } from '../styles'
 import {
   EVENT_TYPES,
@@ -17,6 +23,7 @@ interface BasicInfoSectionProps {
   ) => (event: any, value: string[]) => void
   handleLanguageChange: (event: any, value: string | null) => void
   handleImageChange?: (url: string | null) => void
+  handleCardImageChange?: (url: string | null) => void
 }
 
 export const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({
@@ -24,7 +31,8 @@ export const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({
   handleChange,
   handleAutocompleteChange,
   handleLanguageChange,
-  handleImageChange
+  handleImageChange,
+  handleCardImageChange
 }) => {
   return (
     <Grid container spacing={3}>
@@ -43,7 +51,10 @@ export const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({
         />
       </Grid>
 
-      <Grid size={{ xs: 12 }}>
+      <Grid size={{ xs: 12, md: 6 }}>
+        <Typography variant='caption' sx={{ mb: 1, display: 'block' }}>
+          Imagen de Cabecera (Banner)
+        </Typography>
         {handleImageChange ? (
           <EventImageUploader
             imageUrl={formData.image_url || null}
@@ -52,12 +63,35 @@ export const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({
         ) : (
           <TextField
             name='image_url'
-            label='URL del Logo o Imagen Principal'
+            label='URL del Banner'
             fullWidth
             variant='filled'
             value={formData.image_url}
             onChange={handleChange}
-            placeholder='https://ejemplo.com/imagen.jpg'
+            placeholder='https://ejemplo.com/banner.jpg'
+            sx={commonInputSx}
+          />
+        )}
+      </Grid>
+
+      <Grid size={{ xs: 12, md: 6 }}>
+        <Typography variant='caption' sx={{ mb: 1, display: 'block' }}>
+          Imagen para Tarjeta (Logo / Cuadrada)
+        </Typography>
+        {handleCardImageChange ? (
+          <EventImageUploader
+            imageUrl={formData.card_image_url || null}
+            onImageChange={handleCardImageChange}
+          />
+        ) : (
+          <TextField
+            name='card_image_url'
+            label='URL del Logo'
+            fullWidth
+            variant='filled'
+            value={formData.card_image_url}
+            onChange={handleChange}
+            placeholder='https://ejemplo.com/logo.jpg'
             sx={commonInputSx}
           />
         )}

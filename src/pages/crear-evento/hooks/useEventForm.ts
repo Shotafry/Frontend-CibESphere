@@ -43,6 +43,7 @@ export const useEventForm = () => {
     online_url: loadedEvent?.online_url || '',
     price: loadedEvent?.price ? loadedEvent.price / 100 : 0,
     image_url: loadedEvent?.image_url || '',
+    card_image_url: loadedEvent?.card_image_url || '',
     ticket_types: loadedEvent?.ticket_types
       ? loadedEvent.ticket_types.map((t) => ({ ...t, price: t.price / 100 }))
       : [],
@@ -127,6 +128,10 @@ export const useEventForm = () => {
   // Handler for image upload
   const handleImageChange = (url: string | null) => {
     setFormData((prev: any) => ({ ...prev, image_url: url || '' }))
+  }
+
+  const handleCardImageChange = (url: string | null) => {
+    setFormData((prev: any) => ({ ...prev, card_image_url: url || '' }))
   }
 
   // --- AGENDA MANAGEMENT ---
@@ -260,6 +265,7 @@ export const useEventForm = () => {
       const urlFields = [
         'image_url',
         'banner_url',
+        'card_image_url',
         'online_url',
         'streaming_url',
         'registration_url'
@@ -355,6 +361,7 @@ export const useEventForm = () => {
     handleSpeakerChange,
     handleLocationChange,
     handleImageChange,
+    handleCardImageChange,
     handleAddTicketType,
     handleRemoveTicketType,
     handleTicketTypeChange,

@@ -254,6 +254,7 @@ export interface Event {
   // Media
   image_url: string
   banner_url?: string
+  card_image_url?: string
 
   // Estado
   status: 'draft' | 'published' | 'canceled' | 'completed'
@@ -380,6 +381,7 @@ export interface CreateEventDTO {
   // Media
   image_url?: string
   banner_url?: string
+  card_image_url?: string
 
   // Contenido adicional
   tags: string[]
