@@ -38,6 +38,8 @@ export const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({
           value={formData.title}
           onChange={handleChange}
           sx={commonInputSx}
+          helperText='Mínimo 5 caracteres'
+          error={formData.title.length > 0 && formData.title.length < 5}
         />
       </Grid>
 
@@ -86,6 +88,10 @@ export const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({
           value={formData.description}
           onChange={handleChange}
           sx={commonInputSx}
+          helperText='Mínimo 10 caracteres'
+          error={
+            formData.description.length > 0 && formData.description.length < 10
+          }
         />
       </Grid>
 

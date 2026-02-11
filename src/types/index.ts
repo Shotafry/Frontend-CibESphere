@@ -362,6 +362,7 @@ export interface CreateEventDTO {
   venue_name?: string
   venue_address?: string
   venue_city?: string
+  venue_state?: string
   venue_country?: string
   latitude?: number
   longitude?: number

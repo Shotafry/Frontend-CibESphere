@@ -92,7 +92,7 @@ const EventPopupContent: React.FC<{ event: Event }> = ({ event }) => {
           >
             {event.is_online
               ? 'Online'
-              : event.venue_city || event.venue_address || 'Presencial'}
+              : event.venue_address || event.venue_city || 'Presencial'}
           </Typography>
         </Box>
       </Box>

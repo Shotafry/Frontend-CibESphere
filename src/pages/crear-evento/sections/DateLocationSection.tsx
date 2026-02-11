@@ -24,7 +24,7 @@ interface DateLocationSectionProps {
     field: 'start_date' | 'end_date'
   ) => (date: Date | null) => void
   handleSingleAutocompleteChange: (
-    field: 'venue_city' | 'venue_community'
+    field: 'venue_city' | 'venue_state'
   ) => (event: any, value: string | null) => void
   handleLocationChange?: (location: LocationData | null) => void
 }
@@ -148,9 +148,9 @@ export const DateLocationSection: React.FC<DateLocationSectionProps> = ({
           <Grid size={{ xs: 12, md: 6 }}>
             <Autocomplete
               options={SPANISH_COMMUNITIES}
-              value={formData.venue_community || null}
+              value={formData.venue_state || null}
               onChange={(e, value) => {
-                handleSingleAutocompleteChange('venue_community')(e, value)
+                handleSingleAutocompleteChange('venue_state')(e, value)
               }}
               renderInput={(params) => (
                 <TextField
@@ -166,10 +166,10 @@ export const DateLocationSection: React.FC<DateLocationSectionProps> = ({
 
           <Grid size={{ xs: 12, md: 6 }}>
             <Autocomplete
-              options={getCitiesByCommunity(formData.venue_community)}
+              options={getCitiesByCommunity(formData.venue_state)}
               value={formData.venue_city || null}
               onChange={handleSingleAutocompleteChange('venue_city')}
-              disabled={!formData.venue_community}
+              disabled={!formData.venue_state}
               freeSolo
               renderInput={(params) => (
                 <TextField

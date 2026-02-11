@@ -30,21 +30,23 @@ export const useEventForm = () => {
     level: loadedEvent?.level || 'intermediate',
     language: loadedEvent?.language || 'Español',
     start_date: loadedEvent ? new Date(loadedEvent.start_date) : new Date(),
-    end_date: loadedEvent ? new Date(loadedEvent.end_date) : new Date(),
+    end_date: loadedEvent
+      ? new Date(loadedEvent.end_date)
+      : new Date(Date.now() + 3600000), // Default 1 hour later
     is_online: loadedEvent?.is_online || false,
     is_free: loadedEvent ? loadedEvent.is_free : true,
     tags: loadedEvent?.tags || [],
     venue_name: loadedEvent?.venue_name || '',
     venue_address: loadedEvent?.venue_address || '',
     venue_city: loadedEvent?.venue_city || '',
-    venue_community: loadedEvent?.venue_community || '',
+    venue_state: loadedEvent?.venue_state || '',
     online_url: loadedEvent?.online_url || '',
     price: loadedEvent?.price ? loadedEvent.price / 100 : 0,
     image_url: loadedEvent?.image_url || '',
     ticket_types: loadedEvent?.ticket_types
       ? loadedEvent.ticket_types.map((t) => ({ ...t, price: t.price / 100 }))
       : [],
-    max_attendees: loadedEvent?.max_attendees || 0,
+    max_attendees: loadedEvent?.max_attendees || '',
     agenda: loadedEvent?.agenda || [],
     speakers: loadedEvent?.speakers || [],
     requirements: loadedEvent?.requirements || '',
@@ -56,10 +58,10 @@ export const useEventForm = () => {
   const [availableCities, setAvailableCities] = useState<string[]>([])
 
   useEffect(() => {
-    if (isEditMode && formData.venue_community) {
-      setAvailableCities(getCitiesByCommunity(formData.venue_community))
+    if (isEditMode && formData.venue_state) {
+      setAvailableCities(getCitiesByCommunity(formData.venue_state))
     }
-  }, [isEditMode, formData.venue_community])
+  }, [isEditMode, formData.venue_state])
 
   // --- HANDLERS ---
 
@@ -88,13 +90,13 @@ export const useEventForm = () => {
   }
 
   const handleSingleAutocompleteChange =
-    (field: 'venue_city' | 'venue_community') =>
+    (field: 'venue_city' | 'venue_state') =>
     (event: any, value: string | null) => {
-      if (field === 'venue_community') {
+      if (field === 'venue_state') {
         const newCommunity = value || ''
         setFormData((prev: any) => ({
           ...prev,
-          venue_community: newCommunity,
+          venue_state: newCommunity,
           venue_city: ''
         }))
         setAvailableCities(getCitiesByCommunity(newCommunity))
@@ -103,15 +105,15 @@ export const useEventForm = () => {
       }
     }
 
-  // Handler for LocationPicker
+  // Handler for LocationPicker - Decoupled from city/community
   const handleLocationChange = (location: LocationData | null) => {
     if (location) {
       setFormData((prev: any) => ({
         ...prev,
         latitude: location.latitude,
         longitude: location.longitude,
-        venue_address: location.address,
-        ...(location.city && { venue_city: location.city })
+        venue_address: location.address
+        // city and community are handled exclusively by manual selectors
       }))
     } else {
       setFormData((prev: any) => ({
@@ -245,6 +247,14 @@ export const useEventForm = () => {
     setError(null)
 
     try {
+      // Basic length validation
+      if (formData.title.trim().length < 5) {
+        throw new Error('El título debe tener al menos 5 caracteres')
+      }
+      if (formData.description.trim().length < 10) {
+        throw new Error('La descripción debe tener al menos 10 caracteres')
+      }
+
       // Clean empty strings that would fail URL validation
       const cleanData = { ...formData }
       const urlFields = [
@@ -302,7 +312,10 @@ export const useEventForm = () => {
       const eventData: CreateEventDTO = {
         ...cleanData,
         organization_id: user.organization.id,
-        max_attendees: Number(cleanData.max_attendees)
+        max_attendees:
+          cleanData.max_attendees && Number(cleanData.max_attendees) > 0
+            ? Number(cleanData.max_attendees)
+            : undefined
       } as CreateEventDTO
 
       if (isEditMode) {
