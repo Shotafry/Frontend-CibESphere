@@ -69,7 +69,9 @@ export const getOrganizationBySlug = async (
   return response.data
 }
 
-export const checkSlugAvailability = async (slug: string): Promise<boolean> => {
+export const checkOrgSlugAvailability = async (
+  slug: string
+): Promise<boolean> => {
   try {
     await getOrganizationBySlug(slug)
     return false // Exists -> Not available

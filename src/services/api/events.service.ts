@@ -43,6 +43,14 @@ export const getEvents = async (
     filters.languages.forEach((lang) => params.append('languages', lang))
   }
 
+  // Taxonomy filters
+  if (filters.type) {
+    params.append('type', filters.type)
+  }
+  if (filters.category) {
+    params.append('category', filters.category)
+  }
+
   // Modality filter
   if (filters.is_online !== undefined) {
     params.append('is_online', filters.is_online.toString())
