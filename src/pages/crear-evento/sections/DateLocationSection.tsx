@@ -8,7 +8,10 @@ import {
 } from '@mui/material'
 import { DateTimePicker } from '@mui/x-date-pickers'
 import { commonInputSx } from '../styles'
-import { AUTONOMOUS_COMMUNITIES } from '../../../constants/filters'
+import {
+  SPANISH_COMMUNITIES,
+  getCitiesByCommunity
+} from '../../../constants/filters'
 import {
   LocationPicker,
   LocationData
@@ -16,7 +19,6 @@ import {
 
 interface DateLocationSectionProps {
   formData: any
-  availableCities: string[]
   handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void
   handleDateChange: (
     field: 'start_date' | 'end_date'
@@ -29,7 +31,6 @@ interface DateLocationSectionProps {
 
 export const DateLocationSection: React.FC<DateLocationSectionProps> = ({
   formData,
-  availableCities,
   handleChange,
   handleDateChange,
   handleSingleAutocompleteChange,
@@ -146,9 +147,11 @@ export const DateLocationSection: React.FC<DateLocationSectionProps> = ({
 
           <Grid size={{ xs: 12, md: 6 }}>
             <Autocomplete
-              options={AUTONOMOUS_COMMUNITIES}
+              options={SPANISH_COMMUNITIES}
               value={formData.venue_community || null}
-              onChange={handleSingleAutocompleteChange('venue_community')}
+              onChange={(e, value) => {
+                handleSingleAutocompleteChange('venue_community')(e, value)
+              }}
               renderInput={(params) => (
                 <TextField
                   {...params}
@@ -163,7 +166,7 @@ export const DateLocationSection: React.FC<DateLocationSectionProps> = ({
 
           <Grid size={{ xs: 12, md: 6 }}>
             <Autocomplete
-              options={availableCities}
+              options={getCitiesByCommunity(formData.venue_community)}
               value={formData.venue_city || null}
               onChange={handleSingleAutocompleteChange('venue_city')}
               disabled={!formData.venue_community}

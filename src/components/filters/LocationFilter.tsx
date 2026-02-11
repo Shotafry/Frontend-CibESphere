@@ -1,6 +1,6 @@
 import React from 'react'
 import { Grid, Autocomplete, TextField } from '@mui/material'
-import { AUTONOMOUS_COMMUNITIES } from '../../constants/filters'
+import { SPANISH_COMMUNITIES } from '../../constants/filters'
 import { filterInputSx } from '../../styles/filterStyles'
 
 interface LocationFilterProps {
@@ -23,7 +23,7 @@ export const LocationFilter: React.FC<LocationFilterProps> = ({
       <Grid size={{ xs: 12, md: 6 }}>
         <Autocomplete
           multiple
-          options={AUTONOMOUS_COMMUNITIES}
+          options={SPANISH_COMMUNITIES}
           value={selectedCommunities}
           onChange={onCommunityChange}
           renderInput={(params) => (

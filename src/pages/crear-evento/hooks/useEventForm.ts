@@ -9,7 +9,7 @@ import {
   Speaker,
   TicketType
 } from '../../../types'
-import { LOCATION_DATA } from '../../../constants/filters'
+import { getCitiesByCommunity } from '../../../constants/filters'
 import { LocationData } from '../../../components/LocationPicker'
 
 export const useEventForm = () => {
@@ -57,7 +57,7 @@ export const useEventForm = () => {
 
   useEffect(() => {
     if (isEditMode && formData.venue_community) {
-      setAvailableCities(LOCATION_DATA[formData.venue_community] || [])
+      setAvailableCities(getCitiesByCommunity(formData.venue_community))
     }
   }, [isEditMode, formData.venue_community])
 
@@ -97,7 +97,7 @@ export const useEventForm = () => {
           venue_community: newCommunity,
           venue_city: ''
         }))
-        setAvailableCities(newCommunity ? LOCATION_DATA[newCommunity] : [])
+        setAvailableCities(getCitiesByCommunity(newCommunity))
       } else {
         setFormData((prev: any) => ({ ...prev, [field]: value || '' }))
       }

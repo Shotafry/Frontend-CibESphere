@@ -3,7 +3,7 @@ import { useSubmit } from 'react-router-dom'
 import { EventFilterParams } from '../types'
 import {
   LOCATION_DATA,
-  AUTONOMOUS_COMMUNITIES,
+  SPANISH_COMMUNITIES,
   ALL_CITIES
 } from '../constants/filters'
 
@@ -42,7 +42,7 @@ export const useEventFilters = (initialFilters: EventFilterParams) => {
   // Location Logic
   const initialLocations = initialFilters.locations || []
   const [selectedCommunities, setSelectedCommunities] = useState<string[]>(
-    initialLocations.filter((loc) => AUTONOMOUS_COMMUNITIES.includes(loc))
+    initialLocations.filter((loc) => SPANISH_COMMUNITIES.includes(loc))
   )
   const [selectedCities, setSelectedCities] = useState<string[]>(
     initialLocations.filter((loc) => ALL_CITIES.includes(loc))

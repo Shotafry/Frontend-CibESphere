@@ -193,7 +193,6 @@ const CrearEvento: FunctionComponent = () => {
                   </Typography>
                   <DateLocationSection
                     formData={formData}
-                    availableCities={availableCities}
                     handleChange={handleChange}
                     handleDateChange={handleDateChange}
                     handleSingleAutocompleteChange={
