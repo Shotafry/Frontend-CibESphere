@@ -142,8 +142,8 @@ export const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({
           sx={commonInputSx}
         >
           {EVENT_LEVELS.map((level) => (
-            <MenuItem key={level} value={level.toLowerCase()}>
-              {level}
+            <MenuItem key={level.value} value={level.value}>
+              {level.label}
             </MenuItem>
           ))}
         </TextField>

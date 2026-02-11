@@ -55,8 +55,15 @@ export const DetailsFilter: React.FC<DetailsFilterProps> = ({
         <Autocomplete
           multiple
           options={EVENT_LEVELS}
-          value={levels}
-          onChange={onLevelsChange}
+          value={EVENT_LEVELS.filter((level) => levels.includes(level.value))}
+          onChange={(event, value) => {
+            onLevelsChange(
+              event,
+              value.map((v) => v.value)
+            )
+          }}
+          getOptionLabel={(option) => option.label}
+          isOptionEqualToValue={(option, value) => option.value === value.value}
           renderInput={(params) => (
             <TextField
               {...params}

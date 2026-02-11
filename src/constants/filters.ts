@@ -105,110 +105,148 @@ export const LOCATION_OPTIONS = [
   ...new Set([...AUTONOMOUS_COMMUNITIES, ...ALL_CITIES])
 ].sort()
 
-// --- Listas que se mantienen igual ---
-
+// ==========================================
+// 1. TIPOS DE EVENTO (Labels cortos para Badges)
+// ==========================================
 export const EVENT_TYPES = [
   { value: 'conference', label: 'Conferencia' },
   { value: 'workshop', label: 'Taller' },
   { value: 'meetup', label: 'Meetup' },
   { value: 'webinar', label: 'Webinar' },
-  { value: 'training', label: 'Formación / Curso' },
-  { value: 'competition', label: 'Competición / CTF' }
+  { value: 'training', label: 'Formación' },
+  { value: 'competition', label: 'CTF / Competición' },
+  { value: 'bugbounty', label: 'Bug Bounty' },
+  { value: 'networking', label: 'Networking' },
+  { value: 'fair', label: 'Feria de Empleo' },
+  { value: 'other', label: 'Otro' }
 ]
 
+// ==========================================
+// 2. NIVELES (Estándar)
+// ==========================================
+export const EVENT_LEVELS = [
+  { value: 'beginner', label: 'Principiante' },
+  { value: 'intermediate', label: 'Intermedio' },
+  { value: 'advanced', label: 'Avanzado' },
+  { value: 'expert', label: 'Experto' }
+]
+
+// ==========================================
+// 3. CATEGORÍAS PRINCIPALES (15 Categorías Clave)
+// ==========================================
 export const EVENT_CATEGORIES = [
-  'Red Team',
-  'Blue Team',
-  'Purple Team',
-  'GRC (Gobernanza, Riesgo y Cumplimiento)',
-  'DevSecOps',
+  'Red Team & Pentesting',
+  'Blue Team & Defensa',
+  'DevSecOps & AppSec',
   'Cloud Security',
-  'Forense y Respuesta a Incidentes (DFIR)',
-  'Ciberinteligencia',
-  'Seguridad IoT/OT',
+  'GRC & Cumplimiento',
+  'Forense & DFIR',
+  'Threat Intelligence',
+  'Malware & Reversing',
   'Criptografía',
-  'Investigación',
-  'Concienciación y Divulgación',
-  'Legal y Normativa',
-  'Otros'
+  'IoT & Hardware',
+  'IA & Seguridad',
+  'Gestión & CISO',
+  'Ingeniería Social',
+  'Carrera Profesional',
+  'Otro'
 ]
 
+// ==========================================
+// 4. TAGS (+100 Tecnologías y Conceptos)
+// ==========================================
 export const EVENT_TAGS = [
-  'Active Directory',
-  'Android',
-  'Ansible',
-  'AppSec',
+  // Conceptos & Roles
+  'CISO',
+  'DPO',
+  'SysAdmin',
+  'Red Teamer',
+  'Blue Teamer',
+  'Threat Hunter',
+  // Normativa & GRC
+  'ENS',
+  'NIS2',
+  'RGPD',
+  'ISO 27001',
+  'PCI DSS',
+  'HIPAA',
+  'DORA',
+  'Compliance',
   'Auditoría',
+  // Cloud & Infra
   'AWS',
   'Azure',
-  'Bash',
-  'Blockchain',
-  'Bug Bounty',
-  'C++',
-  'CISO',
-  'Compliance',
-  'Contenedores',
-  'Criptografía',
-  'CTF',
-  'Dark Web',
-  'Docker',
-  'Exploit Development',
-  'Firewalls',
-  'Forensics',
-  'Fortinet',
   'GCP',
-  'Git',
+  'Kubernetes',
+  'Docker',
+  'Terraform',
+  'Ansible',
+  'Serverless',
+  'Microservicios',
+  // Hacking & Offensive
+  'Pentesting',
   'Hacking Ético',
-  'Hardware Hacking',
-  'IAM',
-  'Incidente',
+  'Bug Bounty',
+  'Exploit Dev',
+  'Web Hacking',
+  'Mobile Hacking',
+  'WiFi Hacking',
   'Ingeniería Social',
-  'iOS',
-  'ISO 27001',
+  'Phishing',
+  'Ransomware',
+  'C2',
+  'Cobalt Strike',
+  'Metasploit',
+  'Burp Suite',
+  // Defensive & Blue Team
+  'SOC',
+  'SIEM',
+  'XDR',
+  'EDR',
+  'Firewall',
+  'WAF',
+  'Honeypot',
+  'Splunk',
+  'Elastic',
+  'Wazuh',
+  'Incident Response',
+  'Forensics',
+  'Malware Analysis',
+  'YARA',
+  'MITRE ATT&CK',
+  // AppSec & Dev
+  'DevSecOps',
+  'Secure Coding',
+  'OWASP Top 10',
+  'SCA',
+  'SAST',
+  'DAST',
+  'API Security',
+  'Python',
+  'Go',
+  'Rust',
   'Java',
   'JavaScript',
-  'Kali Linux',
-  'Kubernetes',
-  'Linux',
-  'Malware',
-  'Metasploit',
-  'MITRE ATT&CK',
-  'Networking',
-  'NIST',
-  'Node.js',
-  'Open Source',
-  'OSINT',
-  'OWASP',
-  'Palo Alto',
-  'Pentesting',
-  'Phishing',
+  'Bash',
   'PowerShell',
-  'Privacidad',
-  'Python',
-  'Ransomware',
-  'React',
-  'Reverse Engineering',
-  'Rust',
-  'SIEM',
-  'SOC',
-  'Threat Hunting',
-  'Threat Intelligence',
-  'VPN',
-  'Vulnerabilidades',
-  'Web Security',
-  'Wireshark',
+  'C++',
+  // Tecnologías Emergentes
+  'IA Security',
+  'LLM Hacking',
+  'Blockchain',
+  'Smart Contracts',
+  'Web3',
+  'Quantum Crypto',
   'Zero Trust',
-  'Zero Day'
-]
+  // Otros
+  'OSINT',
+  'Privacidad',
+  'Hardware Hacking',
+  'Lockpicking',
+  'IoT',
+  'SCADA/ICS',
+  'Active Directory'
+].sort()
 
-// Mantener compatibilidad temporal si es necesario, o eliminar si ya no se usa.
-// Por ahora lo redirigimos a EVENT_TAGS para minimizar roturas inmediatas,
-// pero el objetivo es usar EVENT_TAGS.
+// Mantener compatibilidad temporal si es necesario
 export const CYBERSECURITY_TAGS = EVENT_TAGS
-
-export const EVENT_LEVELS = [
-  'Principiante',
-  'Intermedio',
-  'Avanzado',
-  'Experto' // Para ponentes o temas muy específicos
-]
