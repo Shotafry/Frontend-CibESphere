@@ -1,5 +1,5 @@
 // src/components/EventCard.tsx
-import React, { useCallback, useState, useEffect } from 'react'
+import React, { useCallback, useState, useEffect, memo } from 'react'
 import { Box, Typography, Grid, Chip, IconButton } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
 import { Event, Role } from '../types'
@@ -30,7 +30,13 @@ const capitalizeTag = (tag: string) => {
   return tag.charAt(0).toUpperCase() + tag.slice(1).toLowerCase()
 }
 
-export const EventCard: React.FC<EventCardProps> = ({ event }) => {
+/**
+ * Optimized with React.memo to prevent unnecessary re-renders in lists.
+ * Since this component is used in long lists (LandingPage, OrgEvents),
+ * avoiding re-renders when parent state changes (but event prop is stable)
+ * significantly improves performance.
+ */
+export const EventCard: React.FC<EventCardProps> = memo(({ event }) => {
   const navigate = useNavigate()
 
   const { user, refreshUserData } = useAuth()
@@ -281,4 +287,4 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
       </motion.div>
     </Grid>
   )
-}
+})
