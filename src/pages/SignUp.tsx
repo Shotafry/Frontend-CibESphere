@@ -357,6 +357,15 @@ const SignUp: FunctionComponent = () => {
                 minLength: {
                   value: 8,
                   message: 'La contraseña debe tener al menos 8 caracteres'
+                },
+                validate: (value) => {
+                  if (isLogin) return true
+                  if (!/[a-zA-Z]/.test(value))
+                    return 'Debe contener al menos una letra'
+                  if (!/\d/.test(value)) return 'Debe contener al menos un número'
+                  if (!/[!@#$%^&*(),.?":{}|<>]/.test(value))
+                    return 'Debe contener al menos un carácter especial (!@#$%...)'
+                  return true
                 }
               })}
               onFocus={() => setIsPasswordFocused(true)}
