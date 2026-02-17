@@ -9,34 +9,37 @@ import {
   RouterProvider,
   ShouldRevalidateFunction
 } from 'react-router-dom'
-import React, { useEffect } from 'react'
+import React, { useEffect, Suspense, lazy } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { AuthProvider } from './context/AuthContext'
 import { ProtectedRoute } from './components/ProtectedRoute'
 import { Layout } from './components/Layout'
 import { Role, User, EventFilterParams } from './types'
 import * as apiService from './services/apiService'
+import { LoadingScreen } from './components/LoadingScreen'
 
 // Importación de todas las páginas
 import LandingPage from './pages/LandingPage'
-import SignUp from './pages/SignUp'
-import Eventos from './pages/Eventos'
-import PanelDeUsuario from './pages/PanelDeUsuario'
-import PanelDeOrganizador from './pages/PanelDeOrganizador'
-import PanelDeAdministrador from './pages/PanelDeAdministrador'
-import CrearEvento from './pages/CrearEvento'
 import ErrorPage from './pages/ErrorPage'
-import TestFont from './pages/test-font'
-import OrganizationProfile from './pages/OrganizationProfile'
-import AboutUs from './pages/AboutUs'
-import UserProfile from './pages/UserProfile'
-import TerminosYCondiciones from './pages/TerminosYCondiciones'
-import PoliticaCookies from './pages/PoliticaCookies'
-import Contacto from './pages/Contacto'
-import ProgramaVulnerabilidades from './pages/ProgramaVulnerabilidades'
-import VerifyEmail from './pages/VerifyEmail'
-import CheckEmail from './pages/CheckEmail'
-import CreateOrganization from './pages/CreateOrganization'
+
+// Lazy loaded pages
+const SignUp = lazy(() => import('./pages/SignUp'))
+const Eventos = lazy(() => import('./pages/Eventos'))
+const PanelDeUsuario = lazy(() => import('./pages/PanelDeUsuario'))
+const PanelDeOrganizador = lazy(() => import('./pages/PanelDeOrganizador'))
+const PanelDeAdministrador = lazy(() => import('./pages/PanelDeAdministrador'))
+const CrearEvento = lazy(() => import('./pages/CrearEvento'))
+const TestFont = lazy(() => import('./pages/test-font'))
+const OrganizationProfile = lazy(() => import('./pages/OrganizationProfile'))
+const AboutUs = lazy(() => import('./pages/AboutUs'))
+const UserProfile = lazy(() => import('./pages/UserProfile'))
+const TerminosYCondiciones = lazy(() => import('./pages/TerminosYCondiciones'))
+const PoliticaCookies = lazy(() => import('./pages/PoliticaCookies'))
+const Contacto = lazy(() => import('./pages/Contacto'))
+const ProgramaVulnerabilidades = lazy(() => import('./pages/ProgramaVulnerabilidades'))
+const VerifyEmail = lazy(() => import('./pages/VerifyEmail'))
+const CheckEmail = lazy(() => import('./pages/CheckEmail'))
+const CreateOrganization = lazy(() => import('./pages/CreateOrganization'))
 
 import {
   CssBaseline,
@@ -103,7 +106,9 @@ const AppWrapper: React.FC = () => {
     <AuthProvider>
       <CookieProvider>
         <Layout>
-          <Outlet />
+          <Suspense fallback={<LoadingScreen />}>
+            <Outlet />
+          </Suspense>
         </Layout>
         <CookieBanner />
       </CookieProvider>
