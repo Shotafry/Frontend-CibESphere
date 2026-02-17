@@ -1,0 +1,1 @@
+const r=i=>{if(!i)return;const t=i.trim();if(!t.match(/^(javascript|vbscript|data):/i)){if(t.match(/^https?:\/\//i))return t;if(!t.match(/^[a-zA-Z][a-zA-Z0-9+.-]*:/))return`https://${t}`}};export{r as s};

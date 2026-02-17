@@ -1,0 +1,10 @@
+
+> cybesphere@0.2.0 start
+> vite
+
+
+  VITE v5.4.21  ready in 313 ms
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: use --host to expose
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
