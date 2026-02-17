@@ -118,6 +118,8 @@ export const EventCard: React.FC<EventCardProps> = memo(({ event }) => {
               '/img/brand/logo-main-full.png'
             }
             alt={`Imagen de ${event.title}`}
+            loading='lazy'
+            decoding='async'
             sx={{
               width: { xs: '100%', md: 260 },
               height: { xs: 180, sm: 220, md: 260 },
