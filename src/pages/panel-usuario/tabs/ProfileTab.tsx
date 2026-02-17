@@ -370,12 +370,24 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
                   <Controller
                     name='linkedin'
                     control={control}
-                    render={({ field }) => (
+                    rules={{
+                      pattern: {
+                        value: /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/,
+                        message: 'Ingresa una URL válida'
+                      },
+                      validate: (value) =>
+                        !value ||
+                        !/^(javascript|vbscript|data):/i.test(value) ||
+                        'URL no permitida'
+                    }}
+                    render={({ field, fieldState: { error } }) => (
                       <TextField
                         {...field}
                         label='LinkedIn URL'
                         fullWidth
                         variant='outlined'
+                        error={!!error}
+                        helperText={error?.message}
                         InputProps={{
                           startAdornment: (
                             <LinkedInIcon sx={{ color: '#0077b5', mr: 1 }} />
@@ -389,12 +401,24 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
                   <Controller
                     name='github'
                     control={control}
-                    render={({ field }) => (
+                    rules={{
+                      pattern: {
+                        value: /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/,
+                        message: 'Ingresa una URL válida'
+                      },
+                      validate: (value) =>
+                        !value ||
+                        !/^(javascript|vbscript|data):/i.test(value) ||
+                        'URL no permitida'
+                    }}
+                    render={({ field, fieldState: { error } }) => (
                       <TextField
                         {...field}
                         label='GitHub URL'
                         fullWidth
                         variant='outlined'
+                        error={!!error}
+                        helperText={error?.message}
                         InputProps={{
                           startAdornment: (
                             <GitHubIcon sx={{ color: '#333', mr: 1 }} />
@@ -408,12 +432,24 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
                   <Controller
                     name='personal_website'
                     control={control}
-                    render={({ field }) => (
+                    rules={{
+                      pattern: {
+                        value: /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/,
+                        message: 'Ingresa una URL válida'
+                      },
+                      validate: (value) =>
+                        !value ||
+                        !/^(javascript|vbscript|data):/i.test(value) ||
+                        'URL no permitida'
+                    }}
+                    render={({ field, fieldState: { error } }) => (
                       <TextField
                         {...field}
                         label='Sitio Web'
                         fullWidth
                         variant='outlined'
+                        error={!!error}
+                        helperText={error?.message}
                         InputProps={{
                           startAdornment: (
                             <LanguageIcon
