@@ -31,6 +31,9 @@ export const ParticlesBackground: React.FC = () => {
     const isMobile = window.innerWidth < 768
     const particleCount = isMobile ? 25 : 80
     const connectionDistance = isMobile ? 100 : 150
+    // Optimization: Pre-calculate squared distance for faster checks
+    const connectionDistanceSq = connectionDistance * connectionDistance
+
     const mouseDistance = 250
     const particleColor = '#4fbac8'
     const particleSpeed = 0.5
@@ -61,14 +64,12 @@ export const ParticlesBackground: React.FC = () => {
     const draw = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height)
 
-      particles.forEach((p, index) => {
+      // Update positions
+      particles.forEach((p) => {
         // --- INTERACCIÓN CON EL MOUSE ---
         const dxMouse = p.x - mouseRef.x
         const dyMouse = p.y - mouseRef.y
         const distMouse = Math.sqrt(dxMouse * dxMouse + dyMouse * dyMouse)
-
-        // 1. Efecto Burbuja (ELIMINADO)
-        // p.size = p.baseSize
 
         // 2. Efecto Repulsión (Click) - SUTIL
         if (isMouseDownRef.current && distMouse < mouseDistance) {
@@ -86,40 +87,50 @@ export const ParticlesBackground: React.FC = () => {
         p.y += p.vy
 
         // Normalizar velocidad (Evitar caos)
-        // Si la velocidad supera el límite normal, la reducimos suavemente
         const currentSpeed = Math.sqrt(p.vx * p.vx + p.vy * p.vy)
-        const maxSpeed = particleSpeed * 2 // Permitir solo un pequeño aumento temporal
+        const maxSpeed = particleSpeed * 2
 
         if (currentSpeed > maxSpeed) {
-          p.vx *= 0.9 // Fricción fuerte para volver a la normalidad rápido
+          p.vx *= 0.9
           p.vy *= 0.9
         } else if (currentSpeed > particleSpeed) {
-          p.vx *= 0.98 // Fricción suave para estabilizar
+          p.vx *= 0.98
           p.vy *= 0.98
         }
 
         // Rebote en bordes
         if (p.x < 0 || p.x > canvas.width) p.vx *= -1
         if (p.y < 0 || p.y > canvas.height) p.vy *= -1
+      })
 
-        // Dibujar punto
-        ctx.beginPath()
+      // Optimization: Batch draw points to minimize state changes
+      ctx.fillStyle = particleColor
+      ctx.beginPath()
+      particles.forEach((p) => {
+        ctx.moveTo(p.x + p.size, p.y)
         ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2)
-        ctx.fillStyle = particleColor
-        ctx.fill()
+      })
+      ctx.fill()
 
-        // Dibujar líneas a vecinos
-        for (let j = index + 1; j < particles.length; j++) {
+      // Optimization: Set common styles once
+      ctx.strokeStyle = particleColor
+      ctx.lineWidth = 0.5
+
+      // Draw lines
+      for (let i = 0; i < particles.length; i++) {
+        const p = particles[i]
+        for (let j = i + 1; j < particles.length; j++) {
           const p2 = particles[j]
           const dx = p.x - p2.x
           const dy = p.y - p2.y
-          const distance = Math.sqrt(dx * dx + dy * dy)
+          // Optimization: Use squared distance to avoid expensive Math.sqrt
+          const distSq = dx * dx + dy * dy
 
-          if (distance < connectionDistance) {
-            ctx.beginPath()
-            ctx.strokeStyle = particleColor
-            ctx.lineWidth = 0.5
+          if (distSq < connectionDistanceSq) {
+            const distance = Math.sqrt(distSq)
             const opacity = 1 - distance / connectionDistance
+
+            ctx.beginPath()
             ctx.globalAlpha = opacity
             ctx.moveTo(p.x, p.y)
             ctx.lineTo(p2.x, p2.y)
@@ -127,22 +138,7 @@ export const ParticlesBackground: React.FC = () => {
             ctx.globalAlpha = 1.0
           }
         }
-
-        // Dibujar líneas al mouse (ELIMINADO)
-        /*
-        if (distMouse < mouseDistance) {
-          ctx.beginPath()
-          ctx.strokeStyle = particleColor
-          ctx.lineWidth = 1.0
-          const opacity = 1 - distMouse / mouseDistance
-          ctx.globalAlpha = opacity
-          ctx.moveTo(p.x, p.y)
-          ctx.lineTo(mouseRef.x, mouseRef.y)
-          ctx.stroke()
-          ctx.globalAlpha = 1.0
-        }
-        */
-      })
+      }
 
       animationFrameId = requestAnimationFrame(draw)
     }
@@ -152,11 +148,16 @@ export const ParticlesBackground: React.FC = () => {
     createParticles()
     draw()
 
-    // Event Listeners
+    // Event Listeners with Debounce
+    let resizeTimeout: ReturnType<typeof setTimeout>
     const handleResize = () => {
-      resizeCanvas()
-      createParticles()
+      clearTimeout(resizeTimeout)
+      resizeTimeout = setTimeout(() => {
+        resizeCanvas()
+        createParticles()
+      }, 200) // Debounce resize by 200ms
     }
+
     const handleMouseMove = (e: MouseEvent) => {
       mouseRef.x = e.clientX
       mouseRef.y = e.clientY
@@ -211,6 +212,7 @@ export const ParticlesBackground: React.FC = () => {
       window.removeEventListener('touchmove', handleTouchMove)
       window.removeEventListener('touchend', handleTouchEnd)
       cancelAnimationFrame(animationFrameId)
+      clearTimeout(resizeTimeout)
     }
   }, [])
 
