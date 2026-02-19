@@ -1,1 +1,0 @@
-import{ac as s}from"./index-BTfyewrQ.js";const n=async t=>{try{const e=await s.get(`/events/${t}/reviews`);return e.data.reviews||e.data.data||[]}catch(e){return console.warn("Reviews endpoint not ready",e),[]}},r=async t=>(await s.post(`/events/${t.eventId}/reviews`,t)).data;export{r as c,n as g};
