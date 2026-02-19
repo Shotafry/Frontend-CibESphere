@@ -1,0 +1,1 @@
+const n=s=>{if(!s)return;const t=s.trim();if(t){if(t.startsWith("//"))return`https:${t}`;try{const e=new URL(t);return["http:","https:"].includes(e.protocol)?t:void 0}catch{try{const r=`https://${t}`,i=new URL(r);if(["http:","https:"].includes(i.protocol))return r}catch{return}return}}};export{n as s};

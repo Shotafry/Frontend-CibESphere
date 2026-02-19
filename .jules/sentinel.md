@@ -7,3 +7,8 @@
 **Vulnerability:** Stored XSS in user profile social links.
 **Learning:** User input was passed directly to the `href` attribute of `<a>` tags (via MUI `IconButton`). While React blocks `javascript:` URLs by throwing an error, it's safer and cleaner to validate input and sanitize output explicitly to prevent malicious data from ever being rendered or stored.
 **Prevention:** Always sanitize user-provided URLs before rendering them in `href` attributes. Use a helper function to ensure the protocol is `http` or `https`. Enforce URL validation on input forms.
+
+## 2025-05-25 - Incomplete URL Sanitization Logic
+**Vulnerability:** Decentralized and incomplete URL sanitization.
+**Learning:** `UserSocials.tsx` had a local `sanitizeUrl` function that used a blacklist approach (blocking `javascript:`), which is error-prone. Other components like `OrgHeader.tsx` used raw user input in `href` attributes.
+**Prevention:** Centralized `sanitizeUrl` logic in `src/utils/security.ts` using a whitelist approach (allowing only `http:` and `https:`). Updated all components to use this utility. Note that `new URL()` treats protocol-relative URLs (starting with `//`) as invalid without a base, so they need explicit handling (upgrading to `https:`).
