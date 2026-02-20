@@ -7,3 +7,8 @@
 **Vulnerability:** Stored XSS in user profile social links.
 **Learning:** User input was passed directly to the `href` attribute of `<a>` tags (via MUI `IconButton`). While React blocks `javascript:` URLs by throwing an error, it's safer and cleaner to validate input and sanitize output explicitly to prevent malicious data from ever being rendered or stored.
 **Prevention:** Always sanitize user-provided URLs before rendering them in `href` attributes. Use a helper function to ensure the protocol is `http` or `https`. Enforce URL validation on input forms.
+
+## 2025-05-25 - Inconsistent Validation Logic
+**Vulnerability:** Client-side validation bypass risk in `ImageUpload.tsx`.
+**Learning:** While `EventImageUploader.tsx` had robust validation, `ImageUpload.tsx` (used for profiles) completely lacked it. This inconsistency is a common pattern where newer components get security features but older/different ones are overlooked. Always check "sibling" components when finding a security feature in one place.
+**Prevention:** Centralize validation logic (e.g., a `validateImage` helper function) instead of duplicating it across components. This ensures all upload points share the same security posture.

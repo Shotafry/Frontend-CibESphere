@@ -19,6 +19,7 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
   isBanner = false
 }) => {
   const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const handleFileChange = async (
@@ -27,16 +28,36 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
     const file = event.target.files?.[0]
     if (!file) return
 
+    setError(null)
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      setError('Solo se permiten imágenes (PNG, JPEG, WebP).')
+      if (fileInputRef.current) fileInputRef.current.value = ''
+      return
+    }
+
+    // Validate size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      setError('La imagen no debe superar los 5MB.')
+      if (fileInputRef.current) fileInputRef.current.value = ''
+      return
+    }
+
     setIsLoading(true)
     try {
       const type = isBanner ? 'banner' : 'avatar'
       const url = await uploadImage(file, type)
       onUpload(url)
-    } catch (error) {
-      console.error('Error uploading image:', error)
-      alert('Error al subir la imagen. Inténtalo de nuevo.')
+    } catch (err: any) {
+      console.error('Error uploading image:', err)
+      setError(err.message || 'Error al subir la imagen. Inténtalo de nuevo.')
     } finally {
       setIsLoading(false)
+      // Reset input value to allow re-uploading the same file if needed
+      if (fileInputRef.current) {
+        fileInputRef.current.value = ''
+      }
     }
   }
 
@@ -125,6 +146,12 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
       >
         {isLoading ? 'Subiendo...' : 'Cambiar Imagen'}
       </Button>
+
+      {error && (
+        <Typography variant='caption' color='error' textAlign='center'>
+          {error}
+        </Typography>
+      )}
     </Box>
   )
 }
