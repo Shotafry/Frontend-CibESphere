@@ -27,17 +27,25 @@ export const ParticlesBackground: React.FC = () => {
     const mouseRef = { x: -1000, y: -1000 }
     const isMouseDownRef = { current: false }
 
-    // Configuración - reducir partículas en móvil
-    const isMobile = window.innerWidth < 768
-    const particleCount = isMobile ? 25 : 80
-    const connectionDistance = isMobile ? 100 : 150
+    // Configuración
     const mouseDistance = 250
     const particleColor = '#4fbac8'
     const particleSpeed = 0.5
 
+    // Variables mutables para configuración que depende del tamaño de ventana
+    let connectionDistance = 150
+    let connectionDistanceSq = 150 * 150
+
+    const updateConfig = () => {
+      const isMobile = window.innerWidth < 768
+      connectionDistance = isMobile ? 100 : 150
+      connectionDistanceSq = connectionDistance * connectionDistance
+    }
+
     const resizeCanvas = () => {
       canvas.width = window.innerWidth
       canvas.height = window.innerHeight
+      updateConfig()
     }
 
     const createParticles = () => {
@@ -65,6 +73,8 @@ export const ParticlesBackground: React.FC = () => {
         // --- INTERACCIÓN CON EL MOUSE ---
         const dxMouse = p.x - mouseRef.x
         const dyMouse = p.y - mouseRef.y
+        // Nota: Mantenemos Math.sqrt aquí porque necesitamos la distancia exacta para el efecto de fuerza
+        // Se podría optimizar, pero el número de partículas es bajo, así que es menos crítico que el bucle n^2
         const distMouse = Math.sqrt(dxMouse * dxMouse + dyMouse * dyMouse)
 
         // 1. Efecto Burbuja (ELIMINADO)
@@ -113,9 +123,15 @@ export const ParticlesBackground: React.FC = () => {
           const p2 = particles[j]
           const dx = p.x - p2.x
           const dy = p.y - p2.y
-          const distance = Math.sqrt(dx * dx + dy * dy)
 
-          if (distance < connectionDistance) {
+          // OPTIMIZACIÓN: Comparar cuadrados de distancia evita Math.sqrt costoso
+          // en la mayoría de los casos (partículas lejanas)
+          const distSq = dx * dx + dy * dy
+
+          if (distSq < connectionDistanceSq) {
+            // Solo calculamos la raíz cuadrada si están cerca para dibujar
+            const distance = Math.sqrt(distSq)
+
             ctx.beginPath()
             ctx.strokeStyle = particleColor
             ctx.lineWidth = 0.5
@@ -127,21 +143,6 @@ export const ParticlesBackground: React.FC = () => {
             ctx.globalAlpha = 1.0
           }
         }
-
-        // Dibujar líneas al mouse (ELIMINADO)
-        /*
-        if (distMouse < mouseDistance) {
-          ctx.beginPath()
-          ctx.strokeStyle = particleColor
-          ctx.lineWidth = 1.0
-          const opacity = 1 - distMouse / mouseDistance
-          ctx.globalAlpha = opacity
-          ctx.moveTo(p.x, p.y)
-          ctx.lineTo(mouseRef.x, mouseRef.y)
-          ctx.stroke()
-          ctx.globalAlpha = 1.0
-        }
-        */
       })
 
       animationFrameId = requestAnimationFrame(draw)
