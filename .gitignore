@@ -1,3 +1,6 @@
 node_modules
 .env
-.vscodedist/
+.vscode/
+dist/
+coverage/
+dev_server.log
