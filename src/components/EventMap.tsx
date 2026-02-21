@@ -141,7 +141,9 @@ const EventPopupContent: React.FC<{ event: Event }> = ({ event }) => {
 }
 
 // --- COMPONENTE PRINCIPAL DEL MAPA (Modificado) ---
-export const EventMap: React.FC<EventMapProps> = ({ events }) => {
+// Usamos React.memo para evitar re-renderizados innecesarios del mapa
+// cuando el estado del padre cambia (ej. paginación) pero los eventos son los mismos.
+export const EventMap: React.FC<EventMapProps> = React.memo(({ events }) => {
   // Centramos el mapa en España
   const mapCenter: [number, number] = [40.416775, -3.70379]
 
@@ -194,4 +196,4 @@ export const EventMap: React.FC<EventMapProps> = ({ events }) => {
       </ErrorBoundary>
     </Box>
   )
-}
+})
