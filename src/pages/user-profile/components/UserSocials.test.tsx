@@ -40,7 +40,7 @@ describe('UserSocials Security', () => {
     render(<UserSocials user={validUser} />)
 
     const websiteLink = screen.getByLabelText(/Website/i)
-    expect(websiteLink).toHaveAttribute('href', 'https://example.com')
+    expect(websiteLink).toHaveAttribute('href', 'https://example.com/')
     expect(websiteLink).toHaveAttribute('rel', 'noopener noreferrer')
 
     const linkedinLink = screen.getByLabelText(/LinkedIn/i)

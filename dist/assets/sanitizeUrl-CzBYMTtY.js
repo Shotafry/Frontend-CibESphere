@@ -1,0 +1,1 @@
+const i=o=>{if(!o)return;const t=o.trim();if(!t)return;let s=t;t.match(/^[a-zA-Z][a-zA-Z0-9+.-]*:/)||(s=`https://${t}`);try{const r=new URL(s);return["http:","https:","mailto:","tel:","sms:"].includes(r.protocol)?r.toString():void 0}catch{return}};export{i as s};
