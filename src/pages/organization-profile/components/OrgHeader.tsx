@@ -19,6 +19,7 @@ import {
 } from '@mui/icons-material'
 import { OrganizationSummary } from '../../../types'
 import { FollowButton } from '../../../components/social'
+import { sanitizeUrl } from '../../../utils/sanitizeUrl'
 
 interface OrgHeaderProps {
   organization: OrganizationSummary
@@ -115,11 +116,11 @@ export const OrgHeader: React.FC<OrgHeaderProps> = ({
               {organization.city}
             </Typography>
           </Box>
-          {organization.website && (
+          {organization.website && sanitizeUrl(organization.website) && (
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
               <WebsiteIcon fontSize='small' />
               <a
-                href={organization.website}
+                href={sanitizeUrl(organization.website)}
                 target='_blank'
                 rel='noopener noreferrer'
                 style={{
@@ -157,9 +158,9 @@ export const OrgHeader: React.FC<OrgHeaderProps> = ({
           useFlexGap
           sx={{ gap: 1 }}
         >
-          {socialLinks?.twitter && (
+          {socialLinks?.twitter && sanitizeUrl(socialLinks.twitter) && (
             <IconButton
-              href={socialLinks.twitter}
+              href={sanitizeUrl(socialLinks.twitter)}
               target='_blank'
               size='small'
               sx={{
@@ -172,9 +173,9 @@ export const OrgHeader: React.FC<OrgHeaderProps> = ({
               <XIcon fontSize='small' />
             </IconButton>
           )}
-          {socialLinks?.linkedin && (
+          {socialLinks?.linkedin && sanitizeUrl(socialLinks.linkedin) && (
             <IconButton
-              href={socialLinks.linkedin}
+              href={sanitizeUrl(socialLinks.linkedin)}
               target='_blank'
               size='small'
               sx={{
@@ -187,9 +188,9 @@ export const OrgHeader: React.FC<OrgHeaderProps> = ({
               <LinkedInIcon fontSize='small' />
             </IconButton>
           )}
-          {socialLinks?.github && (
+          {socialLinks?.github && sanitizeUrl(socialLinks.github) && (
             <IconButton
-              href={socialLinks.github}
+              href={sanitizeUrl(socialLinks.github)}
               target='_blank'
               size='small'
               sx={{

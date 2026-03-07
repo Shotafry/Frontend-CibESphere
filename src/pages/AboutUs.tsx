@@ -18,6 +18,7 @@ import { motion } from 'framer-motion'
 import { CollaboratorCard } from '../components/collaborators/CollaboratorCard'
 import { HeroSection } from '../components/ui/HeroSection'
 import JoinTeamCTA from '../components/about/JoinTeamCTA'
+import { sanitizeUrl } from '../utils/sanitizeUrl'
 
 // Imágenes (Rutas públicas)
 const angelImg = '/img/team/angel.jpg'
@@ -189,8 +190,9 @@ const AboutUs: React.FC = () => {
                       justifyContent='center'
                       sx={{ mt: 2 }}
                     >
+                      {member.social.linkedin && sanitizeUrl(member.social.linkedin) && (
                       <IconButton
-                        href={member.social.linkedin}
+                        href={sanitizeUrl(member.social.linkedin)}
                         target='_blank'
                         sx={{
                           color: '#0A66C2',
@@ -199,8 +201,10 @@ const AboutUs: React.FC = () => {
                       >
                         <LinkedInIcon />
                       </IconButton>
+                      )}
+                      {member.social.github && sanitizeUrl(member.social.github) && (
                       <IconButton
-                        href={member.social.github}
+                        href={sanitizeUrl(member.social.github)}
                         target='_blank'
                         sx={{
                           color: '#333',
@@ -209,6 +213,7 @@ const AboutUs: React.FC = () => {
                       >
                         <GitHubIcon />
                       </IconButton>
+                      )}
                     </Stack>
                   </CardContent>
                 </Card>
