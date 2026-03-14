@@ -112,6 +112,7 @@ export const EventCard: React.FC<EventCardProps> = memo(({ event }) => {
           <Box
             component='img'
             className='event-logo'
+          loading='lazy' // Defers loading the image until it is near the viewport, improving initial load time and saving bandwidth for off-screen event cards.
             src={
               event.card_image_url ||
               event.image_url ||
