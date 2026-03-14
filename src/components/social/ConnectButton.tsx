@@ -34,6 +34,7 @@ import {
   getContactInfo
 } from '../../services/api/connections.service'
 import { httpClient } from '../../services/httpClient'
+import { sanitizeUrl } from '../../utils/sanitizeUrl'
 
 interface EventSummary {
   id: string
@@ -732,7 +733,7 @@ export const ConnectButton = ({
                 <Tooltip title='Abrir en Telegram'>
                   <Button
                     size='small'
-                    href={`https://t.me/${contactInfo.telegram.replace('@', '')}`}
+                    href={sanitizeUrl(`https://t.me/${contactInfo.telegram.replace('@', '')}`)}
                     target='_blank'
                     sx={{
                       minWidth: 'auto',

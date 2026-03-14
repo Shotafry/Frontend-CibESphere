@@ -15,6 +15,7 @@ import CodeIcon from '@mui/icons-material/Code'
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
 import StarIcon from '@mui/icons-material/Star'
 import VerifiedUserIcon from '@mui/icons-material/VerifiedUser'
+import { sanitizeUrl } from '../../utils/sanitizeUrl'
 
 const JoinTeamCTA: React.FC = () => {
   const theme = useTheme()
@@ -222,7 +223,7 @@ const JoinTeamCTA: React.FC = () => {
                   </Stack>
 
                   <Button
-                    href={card.ctaLink}
+                    href={sanitizeUrl(card.ctaLink)}
                     target='_blank'
                     variant={
                       card.variant === 'primary' ? 'secondary' : 'primary'

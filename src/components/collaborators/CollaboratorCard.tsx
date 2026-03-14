@@ -11,6 +11,7 @@ import {
 } from '@mui/material'
 import LinkedInIcon from '@mui/icons-material/LinkedIn'
 import GitHubIcon from '@mui/icons-material/GitHub'
+import { sanitizeUrl } from '../../utils/sanitizeUrl'
 
 export interface CollaboratorProps {
   name: string
@@ -71,9 +72,9 @@ export const CollaboratorCard: React.FC<CollaboratorProps> = ({
         />
         {/* Social Icons (Compact) */}
         <Stack direction='row' spacing={0.5} mt={1}>
-          {social?.linkedin && (
+          {social?.linkedin && sanitizeUrl(social.linkedin) && (
             <IconButton
-              href={social.linkedin}
+              href={sanitizeUrl(social.linkedin)}
               target='_blank'
               size='small'
               sx={{
@@ -84,9 +85,9 @@ export const CollaboratorCard: React.FC<CollaboratorProps> = ({
               <LinkedInIcon fontSize='small' />
             </IconButton>
           )}
-          {social?.github && (
+          {social?.github && sanitizeUrl(social.github) && (
             <IconButton
-              href={social.github}
+              href={sanitizeUrl(social.github)}
               target='_blank'
               size='small'
               sx={{
