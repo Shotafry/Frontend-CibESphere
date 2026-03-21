@@ -18,6 +18,7 @@ import { motion } from 'framer-motion'
 import { CollaboratorCard } from '../components/collaborators/CollaboratorCard'
 import { HeroSection } from '../components/ui/HeroSection'
 import JoinTeamCTA from '../components/about/JoinTeamCTA'
+import { sanitizeUrl } from '../utils/sanitizeUrl'
 
 // Imágenes (Rutas públicas)
 const angelImg = '/img/team/angel.jpg'
@@ -189,26 +190,30 @@ const AboutUs: React.FC = () => {
                       justifyContent='center'
                       sx={{ mt: 2 }}
                     >
-                      <IconButton
-                        href={member.social.linkedin}
-                        target='_blank'
-                        sx={{
-                          color: '#0A66C2',
-                          '&:hover': { bgcolor: 'rgba(10, 102, 194, 0.1)' }
-                        }}
-                      >
-                        <LinkedInIcon />
-                      </IconButton>
-                      <IconButton
-                        href={member.social.github}
-                        target='_blank'
-                        sx={{
-                          color: '#333',
-                          '&:hover': { bgcolor: 'rgba(51, 51, 51, 0.1)' }
-                        }}
-                      >
-                        <GitHubIcon />
-                      </IconButton>
+                      {sanitizeUrl(member.social.linkedin) && (
+                        <IconButton
+                          href={sanitizeUrl(member.social.linkedin) as string}
+                          target='_blank'
+                          sx={{
+                            color: '#0A66C2',
+                            '&:hover': { bgcolor: 'rgba(10, 102, 194, 0.1)' }
+                          }}
+                        >
+                          <LinkedInIcon />
+                        </IconButton>
+                      )}
+                      {sanitizeUrl(member.social.github) && (
+                        <IconButton
+                          href={sanitizeUrl(member.social.github) as string}
+                          target='_blank'
+                          sx={{
+                            color: '#333',
+                            '&:hover': { bgcolor: 'rgba(51, 51, 51, 0.1)' }
+                          }}
+                        >
+                          <GitHubIcon />
+                        </IconButton>
+                      )}
                     </Stack>
                   </CardContent>
                 </Card>

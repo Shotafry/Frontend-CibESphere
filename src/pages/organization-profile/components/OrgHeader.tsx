@@ -19,6 +19,7 @@ import {
 } from '@mui/icons-material'
 import { OrganizationSummary } from '../../../types'
 import { FollowButton } from '../../../components/social'
+import { sanitizeUrl } from '../../../utils/sanitizeUrl'
 
 interface OrgHeaderProps {
   organization: OrganizationSummary
@@ -38,6 +39,12 @@ export const OrgHeader: React.FC<OrgHeaderProps> = ({
   // Support both social_media (backend) and social_links (legacy) fields
   const socialLinks =
     organization.social_links || organization.social_media || {}
+
+  const websiteUrl = sanitizeUrl(organization.website)
+  const twitterUrl = sanitizeUrl(socialLinks?.twitter)
+  const linkedInUrl = sanitizeUrl(socialLinks?.linkedin)
+  const githubUrl = sanitizeUrl(socialLinks?.github)
+  const emailUrl = sanitizeUrl(`mailto:${organization.email}`)
 
   return (
     <Paper
@@ -115,11 +122,11 @@ export const OrgHeader: React.FC<OrgHeaderProps> = ({
               {organization.city}
             </Typography>
           </Box>
-          {organization.website && (
+          {websiteUrl && (
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
               <WebsiteIcon fontSize='small' />
               <a
-                href={organization.website}
+                href={websiteUrl}
                 target='_blank'
                 rel='noopener noreferrer'
                 style={{
@@ -157,9 +164,9 @@ export const OrgHeader: React.FC<OrgHeaderProps> = ({
           useFlexGap
           sx={{ gap: 1 }}
         >
-          {socialLinks?.twitter && (
+          {twitterUrl && (
             <IconButton
-              href={socialLinks.twitter}
+              href={twitterUrl}
               target='_blank'
               size='small'
               sx={{
@@ -172,9 +179,9 @@ export const OrgHeader: React.FC<OrgHeaderProps> = ({
               <XIcon fontSize='small' />
             </IconButton>
           )}
-          {socialLinks?.linkedin && (
+          {linkedInUrl && (
             <IconButton
-              href={socialLinks.linkedin}
+              href={linkedInUrl}
               target='_blank'
               size='small'
               sx={{
@@ -187,9 +194,9 @@ export const OrgHeader: React.FC<OrgHeaderProps> = ({
               <LinkedInIcon fontSize='small' />
             </IconButton>
           )}
-          {socialLinks?.github && (
+          {githubUrl && (
             <IconButton
-              href={socialLinks.github}
+              href={githubUrl}
               target='_blank'
               size='small'
               sx={{
@@ -202,9 +209,9 @@ export const OrgHeader: React.FC<OrgHeaderProps> = ({
               <GitHubIcon fontSize='small' />
             </IconButton>
           )}
-          {organization.email && (
+          {emailUrl && (
             <IconButton
-              href={`mailto:${organization.email}`}
+              href={emailUrl}
               size='small'
               sx={{
                 color: 'var(--color-cadetblue)',
