@@ -1,6 +1,7 @@
 import React, { Suspense, lazy } from 'react'
 import { Skeleton, Box } from '@mui/material'
 import { Event } from '../types'
+import { useIntersectionObserver } from '../hooks/useIntersectionObserver'
 
 // Lazy imports
 const SingleEventMap = lazy(() =>
@@ -28,19 +29,45 @@ interface LazySingleEventMapProps {
 
 export const LazySingleEventMap: React.FC<LazySingleEventMapProps> = ({
   event
-}) => (
-  <Suspense fallback={<MapSkeleton />}>
-    <SingleEventMap event={event} />
-  </Suspense>
-)
+}) => {
+  const [ref, inView] = useIntersectionObserver<HTMLDivElement>({
+    rootMargin: '200px',
+    triggerOnce: true
+  })
+
+  return (
+    <Box ref={ref} sx={{ minHeight: 300, width: '100%', height: '100%' }}>
+      {inView ? (
+        <Suspense fallback={<MapSkeleton />}>
+          <SingleEventMap event={event} />
+        </Suspense>
+      ) : (
+        <MapSkeleton />
+      )}
+    </Box>
+  )
+}
 
 // Wrapper for EventMap
 interface LazyEventMapProps {
   events: Event[]
 }
 
-export const LazyEventMap: React.FC<LazyEventMapProps> = (props) => (
-  <Suspense fallback={<MapSkeleton />}>
-    <EventMap {...props} />
-  </Suspense>
-)
+export const LazyEventMap: React.FC<LazyEventMapProps> = (props) => {
+  const [ref, inView] = useIntersectionObserver<HTMLDivElement>({
+    rootMargin: '200px',
+    triggerOnce: true
+  })
+
+  return (
+    <Box ref={ref} sx={{ minHeight: 300, width: '100%', height: '100%' }}>
+      {inView ? (
+        <Suspense fallback={<MapSkeleton />}>
+          <EventMap {...props} />
+        </Suspense>
+      ) : (
+        <MapSkeleton />
+      )}
+    </Box>
+  )
+}
