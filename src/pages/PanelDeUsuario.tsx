@@ -283,6 +283,7 @@ const PanelDeUsuario: FunctionComponent = () => {
               variant='primary'
               href={`/u/${user?.slug || user?.id}`}
               target='_blank'
+              rel='noopener noreferrer'
               startIcon={<PersonIcon />}
               size='small'
               sx={{

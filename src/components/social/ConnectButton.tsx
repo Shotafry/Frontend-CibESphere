@@ -734,6 +734,7 @@ export const ConnectButton = ({
                     size='small'
                     href={`https://t.me/${contactInfo.telegram.replace('@', '')}`}
                     target='_blank'
+                    rel='noopener noreferrer'
                     sx={{
                       minWidth: 'auto',
                       p: 1,

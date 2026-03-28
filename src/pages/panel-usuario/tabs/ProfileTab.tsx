@@ -75,6 +75,7 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
         <Button
           href={`/u/${user?.slug || user?.id}`}
           target='_blank'
+          rel='noopener noreferrer'
           size='small'
           variant='secondary'
           sx={{

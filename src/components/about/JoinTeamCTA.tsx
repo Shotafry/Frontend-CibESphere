@@ -224,6 +224,7 @@ const JoinTeamCTA: React.FC = () => {
                   <Button
                     href={card.ctaLink}
                     target='_blank'
+                    rel='noopener noreferrer'
                     variant={
                       card.variant === 'primary' ? 'secondary' : 'primary'
                     }

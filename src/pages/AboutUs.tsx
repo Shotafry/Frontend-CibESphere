@@ -192,6 +192,7 @@ const AboutUs: React.FC = () => {
                       <IconButton
                         href={member.social.linkedin}
                         target='_blank'
+                        rel='noopener noreferrer'
                         sx={{
                           color: '#0A66C2',
                           '&:hover': { bgcolor: 'rgba(10, 102, 194, 0.1)' }
@@ -202,6 +203,7 @@ const AboutUs: React.FC = () => {
                       <IconButton
                         href={member.social.github}
                         target='_blank'
+                        rel='noopener noreferrer'
                         sx={{
                           color: '#333',
                           '&:hover': { bgcolor: 'rgba(51, 51, 51, 0.1)' }

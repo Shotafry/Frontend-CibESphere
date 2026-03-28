@@ -161,6 +161,7 @@ export const OrgHeader: React.FC<OrgHeaderProps> = ({
             <IconButton
               href={socialLinks.twitter}
               target='_blank'
+              rel='noopener noreferrer'
               size='small'
               sx={{
                 color: '#000000',
@@ -176,6 +177,7 @@ export const OrgHeader: React.FC<OrgHeaderProps> = ({
             <IconButton
               href={socialLinks.linkedin}
               target='_blank'
+              rel='noopener noreferrer'
               size='small'
               sx={{
                 color: '#0A66C2',
@@ -191,6 +193,7 @@ export const OrgHeader: React.FC<OrgHeaderProps> = ({
             <IconButton
               href={socialLinks.github}
               target='_blank'
+              rel='noopener noreferrer'
               size='small'
               sx={{
                 color: '#333',

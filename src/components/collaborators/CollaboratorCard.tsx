@@ -75,6 +75,7 @@ export const CollaboratorCard: React.FC<CollaboratorProps> = ({
             <IconButton
               href={social.linkedin}
               target='_blank'
+              rel='noopener noreferrer'
               size='small'
               sx={{
                 color: '#0A66C2',
@@ -88,6 +89,7 @@ export const CollaboratorCard: React.FC<CollaboratorProps> = ({
             <IconButton
               href={social.github}
               target='_blank'
+              rel='noopener noreferrer'
               size='small'
               sx={{
                 color: '#333',
