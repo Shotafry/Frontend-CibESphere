@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useMemo } from 'react'
 import { Box, Tabs, Tab, Stack, Typography } from '@mui/material'
 import { Event as EventIcon } from '@mui/icons-material'
 import { Event } from '../../../types'
@@ -10,9 +10,15 @@ interface OrgEventsProps {
 
 export const OrgEvents: React.FC<OrgEventsProps> = ({ events }) => {
   const [tabValue, setTabValue] = useState(0)
-  const now = new Date()
-  const upcomingEvents = events.filter((e) => new Date(e.start_date) >= now)
-  const pastEvents = events.filter((e) => new Date(e.start_date) < now)
+
+  // ⚡ Bolt: Memoize expensive array filtering to prevent recalculation on every tab switch/render
+  const { upcomingEvents, pastEvents } = useMemo(() => {
+    const now = new Date()
+    return {
+      upcomingEvents: events.filter((e) => new Date(e.start_date) >= now),
+      pastEvents: events.filter((e) => new Date(e.start_date) < now)
+    }
+  }, [events])
 
   const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue)

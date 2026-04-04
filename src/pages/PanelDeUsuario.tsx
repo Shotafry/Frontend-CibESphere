@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useState, useEffect } from 'react'
+import React, { FunctionComponent, useState, useEffect, useMemo } from 'react'
 import {
   Box,
   Typography,
@@ -199,13 +199,14 @@ const PanelDeUsuario: FunctionComponent = () => {
     )
   }
 
-  // Filtrar eventos
-  const upcomingEvents = subscribedEvents.filter(
-    (e) => new Date(e.start_date) > new Date()
-  )
-  const pastEvents = subscribedEvents.filter(
-    (e) => new Date(e.start_date) <= new Date()
-  )
+  // ⚡ Bolt: Memoize expensive array filtering to prevent recalculation on every render
+  const { upcomingEvents, pastEvents } = useMemo(() => {
+    const now = new Date()
+    return {
+      upcomingEvents: subscribedEvents.filter((e) => new Date(e.start_date) > now),
+      pastEvents: subscribedEvents.filter((e) => new Date(e.start_date) <= now)
+    }
+  }, [subscribedEvents])
 
   return (
     <Box

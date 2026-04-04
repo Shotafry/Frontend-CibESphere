@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useMemo } from 'react'
 import {
   Box,
   Typography,
@@ -42,21 +42,24 @@ export const EventsListTab: React.FC<EventsListTabProps> = ({
     setExpandedEvent((prev) => (prev === eventId ? null : eventId))
   }
 
-  const now = new Date()
-
-  const upcomingEvents = events
-    .filter((e) => new Date(e.start_date) >= now)
-    .sort(
-      (a, b) =>
-        new Date(a.start_date).getTime() - new Date(b.start_date).getTime()
-    )
-
-  const pastEvents = events
-    .filter((e) => new Date(e.start_date) < now)
-    .sort(
-      (a, b) =>
-        new Date(b.start_date).getTime() - new Date(a.start_date).getTime()
-    )
+  // ⚡ Bolt: Memoize expensive array filtering and sorting to prevent recalculation on expand/collapse
+  const { upcomingEvents, pastEvents } = useMemo(() => {
+    const now = new Date()
+    return {
+      upcomingEvents: events
+        .filter((e) => new Date(e.start_date) >= now)
+        .sort(
+          (a, b) =>
+            new Date(a.start_date).getTime() - new Date(b.start_date).getTime()
+        ),
+      pastEvents: events
+        .filter((e) => new Date(e.start_date) < now)
+        .sort(
+          (a, b) =>
+            new Date(b.start_date).getTime() - new Date(a.start_date).getTime()
+        )
+    }
+  }, [events])
 
   const renderEventList = (
     eventList: Event[],
