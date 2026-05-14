@@ -16,7 +16,8 @@ import {
   DashboardTab,
   OrganizationsTab,
   UsersTab,
-  LogsTab
+  LogsTab,
+  ScraperTab // v2.0 - Scraper admin
 } from './panel-administrador'
 
 // Icons
@@ -25,6 +26,7 @@ import PeopleIcon from '@mui/icons-material/People'
 import BusinessIcon from '@mui/icons-material/Business'
 import VerifiedIcon from '@mui/icons-material/Verified'
 import HistoryIcon from '@mui/icons-material/History'
+import CodeIcon from '@mui/icons-material/Code' // v2.0 - Scraper
 
 interface AdminLoaderData {
   stats: AdminStats
@@ -35,14 +37,16 @@ const TAB_MAPPING: { [key: number]: string } = {
   0: 'dashboard',
   1: 'organizations',
   2: 'users',
-  3: 'logs'
+  3: 'logs',
+  4: 'scraper' // v2.0
 }
 
 const REVERSE_TAB_MAPPING: { [key: string]: number } = {
   dashboard: 0,
   organizations: 1,
   users: 2,
-  logs: 3
+  logs: 3,
+  scraper: 4 // v2.0
 }
 
 const PanelDeAdministrador: React.FC = () => {
@@ -206,7 +210,16 @@ const PanelDeAdministrador: React.FC = () => {
                 iconPosition='start'
                 label='Usuarios'
               />
-              <Tab icon={<HistoryIcon />} iconPosition='start' label='Logs' />
+              <Tab
+                icon={<HistoryIcon />}
+                iconPosition='start'
+                label='Logs'
+              />
+              <Tab
+                icon={<CodeIcon />}
+                iconPosition='start'
+                label='Scraper'
+              />
             </Tabs>
           </Box>
 
@@ -225,6 +238,7 @@ const PanelDeAdministrador: React.FC = () => {
                 {currentTab === 1 && <OrganizationsTab />}
                 {currentTab === 2 && <UsersTab />}
                 {currentTab === 3 && <LogsTab />}
+                {currentTab === 4 && <ScraperTab />}
               </motion.div>
             </AnimatePresence>
           </Box>

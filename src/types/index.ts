@@ -302,6 +302,28 @@ export interface EventSummary {
   is_free: boolean
 }
 
+// --- TIPOS SCRAPER (v2.0) ---
+export interface ScraperSource {
+  id: string
+  name: string
+  type: 'ical' | 'website' | 'rss' | 'api' | 'twitter'
+  enabled: boolean
+  rate_limit?: number
+  url?: string
+}
+
+export type ScraperRunStatus = 'running' | 'completed' | 'failed'
+
+export interface ScraperRun {
+  id: string
+  mode: 'fast' | 'slow'
+  status: ScraperRunStatus
+  started_at: string
+  finished_at?: string
+  output?: string
+  created_at: string
+}
+
 // --- OTROS TIPOS NECESARIOS ---
 
 export interface LoginDTO {
